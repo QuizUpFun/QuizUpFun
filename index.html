@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<script src="https://quge5.com/88/tag.min.js" data-zone="272911" async data-cfasync="false"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QuizUp</title>
@@ -49,6 +50,7 @@
  <div class="stat">🎲 Rodada <span id="round">1</span></div>
  <button class="ghost" onclick="logout()">Sair</button>
 </div>
+
 <div class="nav">
  <button class="ghost" onclick="tab('quiz')">🎲 Quiz</button>
  <button class="ghost" onclick="tab('ref')">🎁 Indicação</button>
@@ -63,19 +65,30 @@
   <button class="primary roll" onclick="rollDice()">JOGAR DADO</button>
   <p id="diceResult" class="result"></p>
  </div>
+
  <div id="questionCard" class="card hidden">
-  <div class="top"><b id="difficulty"></b><span class="timer">⏱️ <span id="time">5</span>s</span></div>
+  <div class="top">
+   <b id="difficulty"></b>
+   <span class="timer">⏱️ <span id="time">5</span>s</span>
+  </div>
+
   <div class="bar"><div id="progress"></div></div>
+
   <h2 id="question"></h2>
   <div id="answers" class="answers"></div>
   <p id="feedback" class="notice hidden"></p>
-  <div class="score">⭐ Pontuação: <span id="totalScore">0</span></div>
+
+  <div class="score">
+   ⭐ Pontuação: <span id="totalScore">0</span>
+  </div>
  </div>
 </div>
 
 <div id="refTab" class="hidden card">
- <h2>🎁 Indicação</h2><p>Ganhe <b>50 pontos</b> quando seu convidado atingir <b>300 pontos</b>.</p>
- <input id="refCode" readonly><input id="refLink" readonly>
+ <h2>🎁 Indicação</h2>
+ <p>Ganhe <b>50 pontos</b> quando seu convidado atingir <b>300 pontos</b>.</p>
+ <input id="refCode" readonly>
+ <input id="refLink" readonly>
  <button class="primary" onclick="copyRef()">Copiar link</button>
  <button class="light" onclick="shareRef()">Enviar link</button>
  <p id="refMsg"></p>
@@ -83,23 +96,60 @@
 
 <div id="cashTab" class="hidden card">
  <h2>💸 Saque</h2>
- <div class="notice"><b>Valores:</b><br>2.000 pontos → R$ 1,00<br>6.000 pontos → R$ 5,00<br>11.000 pontos → R$ 10,00</div>
- <select id="payMethod" onchange="payFields()"><option value="pix">Pix</option><option value="paypal">PayPal</option></select>
- <div id="pix"><input id="pixKey" placeholder="Chave Pix"></div>
- <div id="paypal" class="hidden"><input id="paypalKey" type="email" placeholder="E-mail PayPal"></div>
- <select id="withdrawAmount"><option value="1">R$ 1,00 — 2.000 pontos</option><option value="5">R$ 5,00 — 6.000 pontos</option><option value="10">R$ 10,00 — 11.000 pontos</option></select>
+
+ <div class="notice">
+  <b>Valores:</b><br>
+  2.000 pontos → R$ 1,00<br>
+  6.000 pontos → R$ 5,00<br>
+  11.000 pontos → R$ 10,00
+ </div>
+
+ <select id="payMethod" onchange="payFields()">
+  <option value="pix">Pix</option>
+  <option value="paypal">PayPal</option>
+ </select>
+
+ <div id="pix">
+  <input id="pixKey" placeholder="Chave Pix">
+ </div>
+
+ <div id="paypal" class="hidden">
+  <input id="paypalKey" type="email" placeholder="E-mail PayPal">
+ </div>
+
+ <select id="withdrawAmount">
+  <option value="1">R$ 1,00 — 2.000 pontos</option>
+  <option value="5">R$ 5,00 — 6.000 pontos</option>
+  <option value="10">R$ 10,00 — 11.000 pontos</option>
+ </select>
+
  <button class="primary" onclick="withdraw()">Solicitar saque</button>
+
  <p id="cashMsg" class="notice hidden"></p>
- <p class="small">A solicitação é apenas registrada nesta versão. O pagamento real será conectado posteriormente a um backend seguro.</p>
+
+ <p class="small">
+  A solicitação é apenas registrada nesta versão.
+  O pagamento real será conectado posteriormente a um backend seguro.
+ </p>
 </div>
 
 <div id="premiumTab" class="hidden card">
  <h2>💎 Premium</h2>
  <p>Área Premium preparada para receber os benefícios do QuizUp.</p>
- <ul><li>Benefícios exclusivos</li><li>Recursos extras</li><li>Experiência Premium</li></ul>
- <button class="primary" onclick="alert('O pagamento Premium ainda será conectado.')">Quero ser Premium</button>
+
+ <ul>
+  <li>Benefícios exclusivos</li>
+  <li>Recursos extras</li>
+  <li>Experiência Premium</li>
+ </ul>
+
+ <button class="primary" onclick="alert('O pagamento Premium ainda será conectado.')">
+  Quero ser Premium
+ </button>
+
  <p class="small">Nenhuma cobrança é feita nesta versão.</p>
 </div>
+
 </section>
 </div>
 
@@ -112,6 +162,7 @@ easy:[
 ["Quantos dias tem uma semana?",["5","6","7","8"],2],
 ["Qual animal é conhecido como rei da selva?",["Tigre","Elefante","Leão","Urso"],2]
 ],
+
 medium:[
 ["Qual é o maior oceano da Terra?",["Atlântico","Índico","Pacífico","Ártico"],2],
 ["Quanto é 12 × 8?",["86","96","108","112"],1],
@@ -129,6 +180,7 @@ medium:[
 ["Qual é a fórmula química do ácido sulfúrico?",["HCl","H₂SO₄","HNO₃","NaOH"],1],
 ["Em qual camada da atmosfera ocorre a maior parte dos fenômenos meteorológicos?",["Troposfera","Estratosfera","Mesosfera","Termosfera"],0]
 ],
+
 hard:[
 ["Qual é a raiz quadrada de 144?",["10","11","12","14"],2],
 ["Qual é o maior país do mundo em área?",["China","Canadá","Brasil","Rússia"],3],
@@ -142,142 +194,391 @@ hard:[
 ["Qual destes números é irracional?",["0,25","3/4","√2","1,5"],2],
 ["Em genética, qual molécula normalmente leva a informação do DNA para o ribossomo?",["RNA mensageiro","ATP","Lipídio","Glicogênio"],0]
 ]};
-let s={email:"",name:"",cpf:"",points:0,round:1,code:"",referrer:"",dice:0,question:null,questionKey:"",recentQuestions:[],timer:20,answered:false,tenCooldown:0},handle;
 
-function key(){return "quizup_"+s.email}
-function save(){localStorage.setItem(key(),JSON.stringify(s));ui()}
-function authMode(m){document.getElementById("registerBox").classList.toggle("hidden",m!=="register");document.getElementById("loginBox").classList.toggle("hidden",m!=="login")}
+let s={
+ email:"",
+ name:"",
+ cpf:"",
+ points:0,
+ round:1,
+ code:"",
+ referrer:"",
+ dice:0,
+ question:null,
+ questionKey:"",
+ recentQuestions:[],
+ timer:20,
+ answered:false,
+ tenCooldown:0
+},
+handle;
+
+function key(){
+ return "quizup_"+s.email;
+}
+
+function save(){
+ localStorage.setItem(key(),JSON.stringify(s));
+ ui();
+}
+
+function authMode(m){
+ document.getElementById("registerBox").classList.toggle("hidden",m!=="register");
+ document.getElementById("loginBox").classList.toggle("hidden",m!=="login");
+}
+
 function register(){
- let e=rEmail.value.trim().toLowerCase(),p=rPass.value;
- if(!e||!p||!rName.value.trim()||!rCpf.value.trim()){alert("Preencha e-mail, senha, nome completo e CPF.");return}
- if(localStorage.getItem("quizup_"+e)){alert("Essa conta já existe. Use Entrar.");return}
- s={email:e,name:rName.value.trim(),cpf:rCpf.value.trim(),points:0,round:1,questionKey:"",recentQuestions:[],tenCooldown:0,code:"QU"+Math.random().toString(36).slice(2,8).toUpperCase(),referrer:new URLSearchParams(location.search).get("ref")||"",dice:0,question:null,timer:20,answered:false};
- save();openGame();
+ let e=rEmail.value.trim().toLowerCase(),
+     p=rPass.value;
+
+ if(!e||!p||!rName.value.trim()||!rCpf.value.trim()){
+  alert("Preencha e-mail, senha, nome completo e CPF.");
+  return;
+ }
+
+ if(localStorage.getItem("quizup_"+e)){
+  alert("Essa conta já existe. Use Entrar.");
+  return;
+ }
+
+ s={
+  email:e,
+  name:rName.value.trim(),
+  cpf:rCpf.value.trim(),
+  points:0,
+  round:1,
+  questionKey:"",
+  recentQuestions:[],
+  tenCooldown:0,
+  code:"QU"+Math.random().toString(36).slice(2,8).toUpperCase(),
+  referrer:new URLSearchParams(location.search).get("ref")||"",
+  dice:0,
+  question:null,
+  timer:20,
+  answered:false
+ };
+
+ save();
+ openGame();
 }
+
 function login(){
- let e=lEmail.value.trim().toLowerCase(); if(!e||!lPass.value){alert("Preencha e-mail e senha.");return}
- let x=localStorage.getItem("quizup_"+e);if(!x){alert("Conta não encontrada. Use Criar conta.");return}
- s=JSON.parse(x);openGame();
+ let e=lEmail.value.trim().toLowerCase();
+
+ if(!e||!lPass.value){
+  alert("Preencha e-mail e senha.");
+  return;
+ }
+
+ let x=localStorage.getItem("quizup_"+e);
+
+ if(!x){
+  alert("Conta não encontrada. Use Criar conta.");
+  return;
+ }
+
+ s=JSON.parse(x);
+ openGame();
 }
-function openGame(){auth.classList.add("hidden");game.classList.remove("hidden");ui();tab("quiz")}
-function logout(){clearInterval(handle);game.classList.add("hidden");auth.classList.remove("hidden")}
-function ui(){points.textContent=s.points;round.textContent=s.round;refCode.value=s.code;refLink.value=location.origin+location.pathname+"?ref="+encodeURIComponent(s.code)}
-function tab(x){["quiz","ref","cash","premium"].forEach(a=>document.getElementById(a+"Tab").classList.toggle("hidden",a!==x+"Tab".replace("Tab",""))); if(x==="quiz"){rollCard.classList.remove("hidden");questionCard.classList.add("hidden")}}
+
+function openGame(){
+ auth.classList.add("hidden");
+ game.classList.remove("hidden");
+ ui();
+ tab("quiz");
+}
+
+function logout(){
+ clearInterval(handle);
+ game.classList.add("hidden");
+ auth.classList.remove("hidden");
+}
+
+function ui(){
+ points.textContent=s.points;
+ round.textContent=s.round;
+ refCode.value=s.code;
+ refLink.value=location.origin+location.pathname+"?ref="+encodeURIComponent(s.code);
+}
+
+function tab(x){
+ ["quiz","ref","cash","premium"].forEach(a=>{
+  document.getElementById(a+"Tab").classList.toggle("hidden",a!==x);
+ });
+
+ if(x==="quiz"){
+  rollCard.classList.remove("hidden");
+  questionCard.classList.add("hidden");
+ }
+}
+
 function updateScore(){
  const n=Number(s.points||0);
+
  totalScore.textContent=n;
+
  document.querySelectorAll("#score").forEach(el=>el.textContent=n);
  document.querySelectorAll("#round").forEach(el=>el.textContent=s.round||1);
 }
-function pickQuestion(list, category){
-  // Evita repetir a pergunta imediatamente. Uma pergunta errada fica
-  // algumas rodadas fora e pode voltar mais tarde.
-  const recent = s.recentQuestions || [];
-  const available = list.filter((q,idx)=>{
-    const key=category+":"+q[0];
-    return !recent.includes(key);
-  });
-  const pool=available.length?available:list;
-  const q=pool[Math.floor(Math.random()*pool.length)];
-  s.questionKey=category+":"+q[0];
-  s.recentQuestions=[...(recent||[]),s.questionKey].slice(-4);
-  return q;
+
+function pickQuestion(list,category){
+ const recent=s.recentQuestions||[];
+
+ const available=list.filter((q,idx)=>{
+  const key=category+":"+q[0];
+  return !recent.includes(key);
+ });
+
+ const pool=available.length?available:list;
+
+ const q=pool[Math.floor(Math.random()*pool.length)];
+
+ s.questionKey=category+":"+q[0];
+
+ s.recentQuestions=[
+  ...(recent||[]),
+  s.questionKey
+ ].slice(-4);
+
+ return q;
 }
 
 function rollDice(){
  clearInterval(handle);
  s.answered=false;
 
- // 1–4 são muito mais frequentes. 5–7 aparecem menos e 8–10 são raros.
  let choices=[];
  const r=Math.random();
- if(r<0.82) choices=[1,2,3,4];
- else if(r<0.97) choices=[5,6,7];
- else choices=[8,9,10];
+
+ if(r<0.82)
+  choices=[1,2,3,4];
+ else if(r<0.97)
+  choices=[5,6,7];
+ else
+  choices=[8,9,10];
 
  choices=choices.filter(n=>n!==s.dice);
- if(s.tenCooldown>0) choices=choices.filter(n=>n!==10);
- if(!choices.length) choices=[1,2,3,4].filter(n=>n!==s.dice);
- if(!choices.length) choices=[1,2,3,4];
+
+ if(s.tenCooldown>0)
+  choices=choices.filter(n=>n!==10);
+
+ if(!choices.length)
+  choices=[1,2,3,4].filter(n=>n!==s.dice);
+
+ if(!choices.length)
+  choices=[1,2,3,4];
 
  s.dice=choices[Math.floor(Math.random()*choices.length)];
- if(s.dice===10) s.tenCooldown=9;
- else if(s.tenCooldown>0) s.tenCooldown--;
 
- const pointsByDice={1:5,2:10,3:15,4:20,5:30,6:35,7:40,8:50,9:60,10:75};
+ if(s.dice===10)
+  s.tenCooldown=9;
+ else if(s.tenCooldown>0)
+  s.tenCooldown--;
+
+ const pointsByDice={
+  1:5,
+  2:10,
+  3:15,
+  4:20,
+  5:30,
+  6:35,
+  7:40,
+  8:50,
+  9:60,
+  10:75
+ };
+
  s.roundPoints=pointsByDice[s.dice];
 
  dice.textContent="🎲 "+s.dice;
- diceResult.textContent="Você tirou "+s.dice+" • Esta pergunta vale "+s.roundPoints+" pontos";
 
- // A partir do dado 5, usa perguntas mais difíceis.
- // 1–4 = fácil; 5–7 = médio mais difícil; 8–10 = difícil.
- let list=s.dice<=4?Q.easy:s.dice<=7?Q.medium:Q.hard;
- let category=s.dice<=4?"easy":s.dice<=7?"medium":"hard";
+ diceResult.textContent=
+  "Você tirou "+s.dice+
+  " • Esta pergunta vale "+s.roundPoints+" pontos";
+
+ let list=s.dice<=4
+   ?Q.easy
+   :s.dice<=7
+   ?Q.medium
+   :Q.hard;
+
+ let category=s.dice<=4
+   ?"easy"
+   :s.dice<=7
+   ?"medium"
+   :"hard";
+
  s.question=pickQuestion(list,category);
 
  difficulty.textContent="Dado: "+s.dice;
+
  question.textContent=s.question[0];
+
  answers.innerHTML="";
+
  s.question[1].forEach((a,i)=>{
-   let b=document.createElement("button");
-   b.className="answer";
-   b.textContent=a;
-   b.onclick=()=>answer(i);
-   answers.appendChild(b);
+  let b=document.createElement("button");
+
+  b.className="answer";
+  b.textContent=a;
+  b.onclick=()=>answer(i);
+
+  answers.appendChild(b);
  });
+
  updateScore();
+
  rollCard.classList.add("hidden");
  questionCard.classList.remove("hidden");
+
  startTimer();
 }
-function startTimer(){s.timer=5;time.textContent=5;handle=setInterval(()=>{s.timer--;time.textContent=s.timer;if(s.timer<=0){clearInterval(handle);answer(-1)}},1000)}
+
+function startTimer(){
+ s.timer=5;
+ time.textContent=5;
+
+ handle=setInterval(()=>{
+  s.timer--;
+  time.textContent=s.timer;
+
+  if(s.timer<=0){
+   clearInterval(handle);
+   answer(-1);
+  }
+ },1000);
+}
+
 function answer(i){
  if(s.answered)return;
+
  s.answered=true;
  clearInterval(handle);
 
  let correct=s.question[2];
- let bs=[...document.querySelectorAll(".answer")];
- if(i>=0)bs[i].classList.add(i===correct?"correct":"wrong");
+
+ let bs=[
+  ...document.querySelectorAll(".answer")
+ ];
+
+ if(i>=0)
+  bs[i].classList.add(i===correct?"correct":"wrong");
+
  bs[correct].classList.add("correct");
 
  let ok=i===correct;
  let pts=ok?(s.roundPoints||0):0;
 
- if(ok)s.points+=pts;
+ if(ok)
+  s.points+=pts;
+
  updateScore();
 
  feedback.classList.remove("hidden");
+
  feedback.textContent=ok
-   ?"✅ Correto! +"+pts+" pontos."
-   :"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
+  ?"✅ Correto! +"+pts+" pontos."
+  :"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
 
  save();
 
  setTimeout(()=>{
-   s.round++;
-   save();
-   rollCard.classList.remove("hidden");
-   questionCard.classList.add("hidden");
-   dice.textContent="🎲";
-   diceResult.textContent="";
-   feedback.classList.add("hidden");
+  s.round++;
+  save();
+
+  rollCard.classList.remove("hidden");
+  questionCard.classList.add("hidden");
+
+  dice.textContent="🎲";
+  diceResult.textContent="";
+  feedback.classList.add("hidden");
  },1300);
 }
-function copyRef(){navigator.clipboard?.writeText(refLink.value);refMsg.textContent="Link copiado!"}
-async function shareRef(){if(navigator.share)await navigator.share({title:"QuizUp",text:"Venha jogar QuizUp comigo!",url:refLink.value});else copyRef()}
-function payFields(){let p=payMethod.value==="pix";pix.classList.toggle("hidden",!p);paypal.classList.toggle("hidden",p)}
-function need(v){return v==="10"?11000:v==="5"?6000:2000}
-function withdraw(){
- let v=withdrawAmount.value,n=need(v),method=payMethod.value,k=method==="pix"?pixKey.value.trim():paypalKey.value.trim();
- if(!k){alert("Preencha o dado de pagamento.");return}
- cashMsg.classList.remove("hidden");
- if(s.points<n){cashMsg.textContent="Pontos insuficientes. Você precisa de "+n+" pontos.";return}
- let arr=JSON.parse(localStorage.getItem("quizup_withdrawals")||"[]");arr.push({email:s.email,value:v,method:method,date:new Date().toISOString()});localStorage.setItem("quizup_withdrawals",JSON.stringify(arr));
- cashMsg.textContent="Solicitação registrada. O pagamento real será processado quando o sistema de pagamentos estiver conectado.";
+
+function copyRef(){
+ navigator.clipboard?.writeText(refLink.value);
+ refMsg.textContent="Link copiado!";
 }
-(function(){let k=Object.keys(localStorage).find(k=>k.startsWith("quizup_")&&!k.includes("withdrawals"));if(k){s=JSON.parse(localStorage.getItem(k));openGame()}})();
+
+async function shareRef(){
+ if(navigator.share)
+  await navigator.share({
+   title:"QuizUp",
+   text:"Venha jogar QuizUp comigo!",
+   url:refLink.value
+  });
+ else
+  copyRef();
+}
+
+function payFields(){
+ let p=payMethod.value==="pix";
+
+ pix.classList.toggle("hidden",!p);
+ paypal.classList.toggle("hidden",p);
+}
+
+function need(v){
+ return v==="10"
+  ?11000
+  :v==="5"
+  ?6000
+  :2000;
+}
+
+function withdraw(){
+ let v=withdrawAmount.value,
+     n=need(v),
+     method=payMethod.value,
+     k=method==="pix"
+      ?pixKey.value.trim()
+      :paypalKey.value.trim();
+
+ if(!k){
+  alert("Preencha o dado de pagamento.");
+  return;
+ }
+
+ cashMsg.classList.remove("hidden");
+
+ if(s.points<n){
+  cashMsg.textContent=
+   "Pontos insuficientes. Você precisa de "+
+   n+" pontos.";
+  return;
+ }
+
+ let arr=JSON.parse(
+  localStorage.getItem("quizup_withdrawals")||"[]"
+ );
+
+ arr.push({
+  email:s.email,
+  value:v,
+  method:method,
+  date:new Date().toISOString()
+ });
+
+ localStorage.setItem(
+  "quizup_withdrawals",
+  JSON.stringify(arr)
+ );
+
+ cashMsg.textContent=
+  "Solicitação registrada. O pagamento real será processado quando o sistema de pagamentos estiver conectado.";
+}
+
+(function(){
+ let k=Object.keys(localStorage).find(
+  k=>k.startsWith("quizup_")&&!k.includes("withdrawals")
+ );
+
+ if(k){
+  s=JSON.parse(localStorage.getItem(k));
+  openGame();
+ }
+})();
 </script>
+
 </body>
-</html>
+                                            </html>
