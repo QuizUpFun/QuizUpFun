@@ -24,30 +24,8 @@
   .appendChild(document.createElement('script')));
 </script>
 
-<!-- =====================================================
-     VIDEO.JS
-====================================================== -->
-<link
-  href="https://vjs.zencdn.net/8.23.4/video-js.css"
-  rel="stylesheet"
-/>
-
-<script src="https://vjs.zencdn.net/8.23.4/video.min.js"></script>
-
-<!-- GOOGLE IMA -->
-<script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-
-<!-- VIDEO.JS ADS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-ads/7.5.2/videojs-contrib-ads.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-ima/2.5.0/videojs.ima.min.js"></script>
-
-
 <style>
-
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
@@ -98,7 +76,6 @@ button{
 
 button:disabled{
   opacity:.5;
-  cursor:not-allowed;
 }
 
 .primary{
@@ -154,13 +131,6 @@ button:disabled{
   text-align:center;
   font-size:21px;
   font-weight:800;
-}
-
-.score{
-  text-align:center;
-  font-size:28px;
-  font-weight:900;
-  margin-top:16px;
 }
 
 .answers{
@@ -232,50 +202,16 @@ select{
   gap:8px;
 }
 
-
-/* =====================================================
-   VÍDEO
-===================================================== */
-
-.videoBox{
-  margin-top:16px;
-  padding:14px;
-  background:rgba(0,0,0,.25);
-  border-radius:16px;
-}
-
-.videoBox h3{
-  margin-top:0;
-}
-
-.video-js{
+.adbox{
   width:100%;
-  height:240px;
-  border-radius:12px;
+  min-height:60px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
   overflow:hidden;
+  margin:12px auto;
+  border-radius:10px;
 }
-
-.videoStatus{
-  text-align:center;
-  margin:10px 0 0;
-  font-size:14px;
-  opacity:.85;
-}
-
-.adButton{
-  margin-top:12px;
-  width:100%;
-}
-
-.rewardBox{
-  margin-top:14px;
-  text-align:center;
-}
-
-
-/* =====================================================
-   RESPONSIVO
-===================================================== */
 
 @media(max-width:560px){
 
@@ -291,19 +227,12 @@ select{
     font-size:38px;
   }
 
-  .video-js{
-    height:210px;
-  }
-
 }
-
 </style>
 
 </head>
 
-
 <body>
-
 
 <div class="wrap">
 
@@ -312,13 +241,34 @@ QuizUp
 </div>
 
 <div class="sub">
-🎲 Jogue o dado, responda e acumule pontos
+🎲 Jogue, responda e acumule pontos
 </div>
 
 
 <!-- =====================================================
-     CADASTRO / LOGIN
-===================================================== -->
+     ADSTERRA — BANNER 320x50
+====================================================== -->
+
+<div class="adbox">
+
+<script>
+  atOptions = {
+    'key' : '827464848b02582093e6b5d45cb10d0a',
+    'format' : 'iframe',
+    'height' : 50,
+    'width' : 320,
+    'params' : {}
+  };
+</script>
+
+<script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
+
+</div>
+
+
+<!-- =====================================================
+     LOGIN / CADASTRO
+====================================================== -->
 
 <section id="auth" class="card">
 
@@ -445,19 +395,17 @@ Entrar
 
 Protótipo do QuizUp.
 
-Para pagamentos reais,
-pontos e dados pessoais será necessário
-um servidor seguro.
+Pagamentos reais e dados pessoais
+precisam de servidor seguro.
 
 </p>
 
 </section>
 
 
-
 <!-- =====================================================
      JOGO
-===================================================== -->
+====================================================== -->
 
 <section
 id="game"
@@ -500,10 +448,9 @@ Sair
 </div>
 
 
-
 <!-- =====================================================
      MENU
-===================================================== -->
+====================================================== -->
 
 <div class="nav">
 
@@ -545,10 +492,9 @@ onclick="tab('premium')">
 </div>
 
 
-
 <!-- =====================================================
      QUIZ
-===================================================== -->
+====================================================== -->
 
 <div id="quizTab">
 
@@ -592,10 +538,9 @@ class="result">
 </div>
 
 
-
 <!-- =====================================================
      PERGUNTA
-===================================================== -->
+====================================================== -->
 
 <div
 id="questionCard"
@@ -649,7 +594,9 @@ class="notice hidden">
 </p>
 
 
-<div class="score">
+<div
+class="score"
+style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
 
 ⭐ Pontuação:
 
@@ -660,62 +607,39 @@ class="notice hidden">
 </div>
 
 
-
 <!-- =====================================================
-     VÍDEO VAST
-===================================================== -->
+     ADSTERRA APÓS A RESPOSTA
+====================================================== -->
 
 <div
-id="videoBox"
-class="videoBox hidden">
+id="answerAd"
+class="adbox">
 
-<h3>
-🎬 Vídeo
-</h3>
+<script>
+  atOptions = {
+    'key' : '827464848b02582093e6b5d45cb10d0a',
+    'format' : 'iframe',
+    'height' : 50,
+    'width' : 320,
+    'params' : {}
+  };
+</script>
 
-
-<p class="small">
-
-O anúncio em vídeo será carregado
-pelo player do QuizUp.
-
-</p>
-
-
-<video
-id="quizVideo"
-class="video-js vjs-default-skin"
-controls
-playsinline
-preload="auto">
-
-<source
-src=""
-type="video/mp4">
-
-</video>
-
-
-<p
-id="videoStatus"
-class="videoStatus">
-
-Preparando vídeo...
-
-</p>
+<script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
 
 </div>
 
 
-
 <div
 id="rewardBox"
-class="rewardBox hidden">
+class="hidden"
+style="text-align:center">
 
 <button
 id="continueButton"
-class="primary adButton"
-onclick="finishVideo()">
+class="primary"
+style="width:100%"
+onclick="finishQuestion()">
 
 CONTINUAR
 
@@ -729,10 +653,9 @@ CONTINUAR
 </div>
 
 
-
 <!-- =====================================================
      INDICAÇÃO
-===================================================== -->
+====================================================== -->
 
 <div
 id="refTab"
@@ -788,16 +711,17 @@ Enviar link
 </button>
 
 
-<p id="refMsg">
+<p
+id="refMsg">
+
 </p>
 
 </div>
 
 
-
 <!-- =====================================================
      SAQUE
-===================================================== -->
+====================================================== -->
 
 <div
 id="cashTab"
@@ -865,7 +789,8 @@ placeholder="E-mail PayPal">
 </div>
 
 
-<select id="withdrawAmount">
+<select
+id="withdrawAmount">
 
 <option value="1">
 R$ 1,00 — 2.000 pontos
@@ -908,10 +833,9 @@ O pagamento real ainda não está conectado.
 </div>
 
 
-
 <!-- =====================================================
      PREMIUM
-===================================================== -->
+====================================================== -->
 
 <div
 id="premiumTab"
@@ -930,23 +854,6 @@ benefícios do QuizUp.
 </p>
 
 
-<ul>
-
-<li>
-Benefícios exclusivos
-</li>
-
-<li>
-Recursos extras
-</li>
-
-<li>
-Experiência Premium
-</li>
-
-</ul>
-
-
 <button
 class="primary"
 onclick="alert('O pagamento Premium ainda será conectado.')">
@@ -954,13 +861,6 @@ onclick="alert('O pagamento Premium ainda será conectado.')">
 Quero ser Premium
 
 </button>
-
-
-<p class="small">
-
-Nenhuma cobrança é feita nesta versão.
-
-</p>
 
 </div>
 
@@ -970,16 +870,13 @@ Nenhuma cobrança é feita nesta versão.
 </div>
 
 
-
 <script>
-
 
 /* =====================================================
    PERGUNTAS
-===================================================== */
+====================================================== */
 
 const Q = {
-
 
 easy:[
 
@@ -1046,7 +943,6 @@ easy:[
 ],
 
 
-
 medium:[
 
 [
@@ -1101,46 +997,9 @@ medium:[
 "Qual continente tem a maior área?",
 ["África","Ásia","Europa","América do Sul"],
 1
-],
-
-[
-"Qual é o resultado de 17 × 6 − 14?",
-["78","88","90","102"],
-1
-],
-
-[
-"Se 5x − 9 = 31, qual é o valor de x?",
-["6","7","8","9"],
-2
-],
-
-[
-"Qual é a soma dos ângulos internos de um hexágono?",
-["540°","600°","720°","900°"],
-2
-],
-
-[
-"Qual órgão produz a maior parte da bile?",
-["Pâncreas","Fígado","Rim","Estômago"],
-1
-],
-
-[
-"Qual é a fórmula química do ácido sulfúrico?",
-["HCl","H₂SO₄","HNO₃","NaOH"],
-1
-],
-
-[
-"Em qual camada da atmosfera ocorre a maior parte dos fenômenos meteorológicos?",
-["Troposfera","Estratosfera","Mesosfera","Termosfera"],
-0
 ]
 
 ],
-
 
 
 hard:[
@@ -1185,45 +1044,11 @@ hard:[
 "Qual processo celular produz a maior parte do ATP em condições aeróbicas?",
 ["Fermentação","Glicólise","Fosforilação oxidativa","Transcrição"],
 2
-],
-
-[
-"Qual é o pH aproximado de uma solução neutra a 25 °C?",
-["0","5","7","14"],
-2
-],
-
-[
-"Qual é a principal função dos ribossomos?",
-["Armazenar DNA","Produzir proteínas","Produzir lipídios","Degradar glicose"],
-1
-],
-
-[
-"Qual destes números é irracional?",
-["0,25","3/4","√2","1,5"],
-2
-],
-
-[
-"Em genética, qual molécula leva a informação do DNA para o ribossomo?",
-["RNA mensageiro","ATP","Lipídio","Glicogênio"],
-0
 ]
 
 ]
 
 };
-
-
-
-/* =====================================================
-   HILLTOPADS VAST
-===================================================== */
-
-const HILLTOP_VAST =
-"https://smooth-survey.com/dnmBFpz.d/GSNGv/Z/GNUW/DeFmc9puhZ/UFlLkOPLTPcWzRNpDdku2_N/zyc/tUNGzTMi0lO-T/Y/4oMQQW";
-
 
 
 /* =====================================================
@@ -1254,17 +1079,12 @@ timer:5,
 
 answered:false,
 
-roundPoints:0,
-
-waitingVideo:false
+roundPoints:0
 
 };
 
 
 let handle=null;
-
-let player=null;
-
 
 
 /* =====================================================
@@ -1276,7 +1096,6 @@ function key(){
 return "quizup_"+s.email;
 
 }
-
 
 
 /* =====================================================
@@ -1295,9 +1114,8 @@ ui();
 }
 
 
-
 /* =====================================================
-   LOGIN/CADASTRO
+   LOGIN / CADASTRO
 ===================================================== */
 
 function authMode(m){
@@ -1314,7 +1132,6 @@ document
 .toggle("hidden",m!=="login");
 
 }
-
 
 
 /* =====================================================
@@ -1351,7 +1168,7 @@ document
 if(!e||!p||!n||!cpf){
 
 alert(
-"Preencha e-mail, senha, nome completo e CPF."
+"Preencha todos os campos."
 );
 
 return;
@@ -1366,7 +1183,7 @@ localStorage.getItem(
 ){
 
 alert(
-"Essa conta já existe. Use Entrar."
+"Essa conta já existe."
 );
 
 return;
@@ -1406,9 +1223,7 @@ timer:5,
 
 answered:false,
 
-roundPoints:0,
-
-waitingVideo:false
+roundPoints:0
 
 };
 
@@ -1418,7 +1233,6 @@ save();
 openGame();
 
 }
-
 
 
 /* =====================================================
@@ -1460,7 +1274,7 @@ localStorage.getItem(
 if(!x){
 
 alert(
-"Conta não encontrada. Use Cadastro."
+"Conta não encontrada."
 );
 
 return;
@@ -1490,7 +1304,6 @@ openGame();
 }
 
 
-
 /* =====================================================
    ABRIR JOGO
 ===================================================== */
@@ -1502,17 +1315,18 @@ document
 .classList
 .add("hidden");
 
+
 document
 .getElementById("game")
 .classList
 .remove("hidden");
+
 
 ui();
 
 tab("quiz");
 
 }
-
 
 
 /* =====================================================
@@ -1528,13 +1342,13 @@ document
 .classList
 .add("hidden");
 
+
 document
 .getElementById("auth")
 .classList
 .remove("hidden");
 
 }
-
 
 
 /* =====================================================
@@ -1547,17 +1361,21 @@ document
 .getElementById("points")
 .textContent=s.points;
 
+
 document
 .getElementById("round")
 .textContent=s.round;
+
 
 document
 .getElementById("totalScore")
 .textContent=s.points;
 
+
 document
 .getElementById("refCode")
 .value=s.code||"";
+
 
 document
 .getElementById("refLink")
@@ -1570,7 +1388,6 @@ s.code||""
 );
 
 }
-
 
 
 /* =====================================================
@@ -1605,6 +1422,7 @@ document
 .classList
 .remove("hidden");
 
+
 document
 .getElementById("questionCard")
 .classList
@@ -1613,7 +1431,6 @@ document
 }
 
 }
-
 
 
 /* =====================================================
@@ -1649,14 +1466,10 @@ Math.random()*pool.length
 ];
 
 
-s.questionKey=
-category+":"+q[0];
-
-
 s.recentQuestions=
 [
 ...recent,
-s.questionKey
+category+":"+q[0]
 ]
 .slice(-8);
 
@@ -1664,7 +1477,6 @@ s.questionKey
 return q;
 
 }
-
 
 
 /* =====================================================
@@ -1677,8 +1489,8 @@ clearInterval(handle);
 
 s.answered=false;
 
-let dice;
 
+let dice;
 
 if(
 s.round%30===0
@@ -1724,13 +1536,11 @@ if(dice<=4){
 category="easy";
 
 }
-
 else if(dice<=7){
 
 category="medium";
 
 }
-
 else{
 
 category="hard";
@@ -1766,10 +1576,10 @@ document
 .getElementById("difficulty")
 .textContent=
 dice<=4
-?"🟢 Fácil — "+dice+" ponto"+(dice===1?"":"s")
+?"🟢 Fácil"
 :dice<=7
-?"🟡 Médio — "+dice+" pontos"
-:"🔴 Difícil — "+dice+" pontos";
+?"🟡 Médio"
+:"🔴 Difícil";
 
 
 document
@@ -1779,7 +1589,8 @@ s.question[0];
 
 
 let answers=
-document.getElementById("answers");
+document
+.getElementById("answers");
 
 answers.innerHTML="";
 
@@ -1818,7 +1629,7 @@ document
 
 
 document
-.getElementById("videoBox")
+.getElementById("feedback")
 .classList
 .add("hidden");
 
@@ -1834,7 +1645,6 @@ startTimer();
 }
 
 
-
 /* =====================================================
    CRONÔMETRO
 ===================================================== */
@@ -1845,9 +1655,11 @@ clearInterval(handle);
 
 s.timer=5;
 
+
 document
 .getElementById("time")
 .textContent=5;
+
 
 document
 .getElementById("progress")
@@ -1859,6 +1671,7 @@ setInterval(
 ()=>{
 
 s.timer--;
+
 
 document
 .getElementById("time")
@@ -1875,7 +1688,9 @@ Math.max(
 )+"%";
 
 
-if(s.timer<=0){
+if(
+s.timer<=0
+){
 
 clearInterval(handle);
 
@@ -1888,7 +1703,6 @@ answer(-1);
 );
 
 }
-
 
 
 /* =====================================================
@@ -1908,7 +1722,7 @@ let correct=
 s.question[2];
 
 
-let bs=
+let buttons=
 [
 ...document.querySelectorAll(
 ".answer"
@@ -1918,7 +1732,7 @@ let bs=
 
 if(i>=0){
 
-bs[i]
+buttons[i]
 .classList
 .add(
 i===correct
@@ -1929,7 +1743,7 @@ i===correct
 }
 
 
-bs[correct]
+buttons[correct]
 .classList
 .add("correct");
 
@@ -1938,15 +1752,10 @@ let ok=
 i===correct;
 
 
-let pts=
-ok
-?s.roundPoints
-:0;
-
-
 if(ok){
 
-s.points+=pts;
+s.points+=
+s.roundPoints;
 
 }
 
@@ -1969,155 +1778,24 @@ feedback
 feedback.textContent=
 ok
 ?"✅ Correto! Você ganhou "+
-pts+
-" ponto"+
-(pts===1?"":"s")+"!"
+s.roundPoints+
+" pontos!"
 :"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
 
 
-showVideo();
-
-}
-
-
-
-/* =====================================================
-   VÍDEO
-===================================================== */
-
-function showVideo(){
-
-let box=
-document.getElementById(
-"videoBox"
-);
-
-let reward=
-document.getElementById(
-"rewardBox"
-);
-
-
-box
+document
+.getElementById("rewardBox")
 .classList
 .remove("hidden");
 
-reward
-.classList
-.remove("hidden");
-
-
-document
-.getElementById("videoStatus")
-.textContent=
-"Carregando anúncio em vídeo...";
-
-
-try{
-
-if(!player){
-
-player=
-videojs("quizVideo");
-
 }
-
-
-if(
-player.ima
-){
-
-player.ima({
-
-adTagUrl:
-HILLTOP_VAST
-
-});
-
-}
-
-
-player.ready(
-()=>{
-
-try{
-
-if(
-player.ima &&
-player.ima
-.initializeAdDisplayContainer
-){
-
-player.ima
-.initializeAdDisplayContainer();
-
-}
-
-}
-catch(e){
-
-console.log(
-"IMA:",
-e
-);
-
-}
-
-});
-
-
-document
-.getElementById("videoStatus")
-.textContent=
-"Player pronto. Toque no vídeo para iniciar.";
-
-}
-catch(e){
-
-console.log(e);
-
-document
-.getElementById("videoStatus")
-.textContent=
-"O vídeo não pôde ser iniciado automaticamente. Você pode continuar.";
-
-}
-
-}
-
 
 
 /* =====================================================
    CONTINUAR
 ===================================================== */
 
-function finishVideo(){
-
-s.waitingVideo=false;
-
-
-document
-.getElementById("videoBox")
-.classList
-.add("hidden");
-
-
-document
-.getElementById("rewardBox")
-.classList
-.add("hidden");
-
-
-document
-.getElementById("feedback")
-.classList
-.add("hidden");
-
-
-s.round++;
-
-save();
-
+function finishQuestion(){
 
 document
 .getElementById("questionCard")
@@ -2141,10 +1819,11 @@ document
 .textContent="";
 
 
-ui();
+s.round++;
+
+save();
 
 }
-
 
 
 /* =====================================================
@@ -2153,12 +1832,20 @@ ui();
 
 function copyRef(){
 
-navigator.clipboard
-?.writeText(
+let link=
 document
 .getElementById("refLink")
-.value
-);
+.value;
+
+
+if(
+navigator.clipboard
+){
+
+navigator.clipboard
+.writeText(link);
+
+}
 
 
 document
@@ -2177,7 +1864,9 @@ document
 .value;
 
 
-if(navigator.share){
+if(
+navigator.share
+){
 
 await navigator.share({
 
@@ -2198,7 +1887,6 @@ copyRef();
 }
 
 }
-
 
 
 /* =====================================================
@@ -2233,7 +1921,6 @@ pix
 }
 
 
-
 /* =====================================================
    PONTOS
 ===================================================== */
@@ -2247,7 +1934,6 @@ return v==="10"
 :2000;
 
 }
-
 
 
 /* =====================================================
@@ -2301,20 +1987,19 @@ document
 );
 
 
+msg
+.classList
+.remove("hidden");
+
+
 if(!k){
 
-alert(
-"Preencha o dado de pagamento."
-);
+msg.textContent=
+"Preencha o dado de pagamento.";
 
 return;
 
 }
-
-
-msg
-.classList
-.remove("hidden");
 
 
 if(s.points<n){
@@ -2365,7 +2050,6 @@ msg.textContent=
 }
 
 
-
 /* =====================================================
    RECUPERAR CONTA
 ===================================================== */
@@ -2408,4 +2092,4 @@ console.log(e);
 </script>
 
 </body>
-</html>
+     </html>
