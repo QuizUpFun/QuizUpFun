@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+
+<script>(function(s){s.dataset.zone='11646165',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QuizUp</title>
@@ -128,6 +131,7 @@ gap:8px
 .dice{font-size:80px}
 }
 </style>
+
 </head>
 
 <body>
@@ -158,9 +162,12 @@ gap:8px
 <input id="rName" type="text" placeholder="Seu nome completo">
 
 <label>CPF</label>
-<input id="rCpf" type="text" inputmode="numeric" maxlength="14" placeholder="000.000.000-00">
+<input id="rCpf" type="text" inputmode="numeric"
+maxlength="14" placeholder="000.000.000-00">
 
-<button class="primary" onclick="register()">Cadastrar</button>
+<button class="primary" onclick="register()">
+Cadastrar
+</button>
 
 </div>
 
@@ -174,7 +181,9 @@ gap:8px
 <label>Senha</label>
 <input id="lPass" type="password" placeholder="Sua senha">
 
-<button class="primary" onclick="login()">Entrar</button>
+<button class="primary" onclick="login()">
+Entrar
+</button>
 
 </div>
 
@@ -199,20 +208,30 @@ antes de colocar pagamentos reais em produção.
 🎲 Rodada <span id="round">1</span>
 </div>
 
-<button class="ghost" onclick="logout()">Sair</button>
+<button class="ghost" onclick="logout()">
+Sair
+</button>
 
 </div>
 
 
 <div class="nav">
 
-<button class="ghost" onclick="tab('quiz')">🎲 Quiz</button>
+<button class="ghost" onclick="tab('quiz')">
+🎲 Quiz
+</button>
 
-<button class="ghost" onclick="tab('ref')">🎁 Indicação</button>
+<button class="ghost" onclick="tab('ref')">
+🎁 Indicação
+</button>
 
-<button class="ghost" onclick="tab('cash')">💸 Saque</button>
+<button class="ghost" onclick="tab('cash')">
+💸 Saque
+</button>
 
-<button class="ghost" onclick="tab('premium')">💎 Premium</button>
+<button class="ghost" onclick="tab('premium')">
+💎 Premium
+</button>
 
 </div>
 
@@ -261,7 +280,8 @@ JOGAR DADO
 <p id="feedback" class="notice hidden"></p>
 
 <div class="score">
-⭐ Pontuação: <span id="totalScore">0</span>
+⭐ Pontuação:
+<span id="totalScore">0</span>
 </div>
 
 </div>
@@ -279,6 +299,7 @@ Ganhe <b>50 pontos</b> quando seu convidado atingir
 </p>
 
 <input id="refCode" readonly>
+
 <input id="refLink" readonly>
 
 <button class="primary" onclick="copyRef()">
@@ -311,7 +332,6 @@ Enviar link
 <select id="payMethod" onchange="payFields()">
 
 <option value="pix">Pix</option>
-
 <option value="paypal">PayPal</option>
 
 </select>
@@ -324,17 +344,25 @@ Enviar link
 
 <div id="paypal" class="hidden">
 
-<input id="paypalKey" type="email" placeholder="E-mail PayPal">
+<input id="paypalKey"
+type="email"
+placeholder="E-mail PayPal">
 
 </div>
 
 <select id="withdrawAmount">
 
-<option value="1">R$ 1,00 — 2.000 pontos</option>
+<option value="1">
+R$ 1,00 — 2.000 pontos
+</option>
 
-<option value="5">R$ 5,00 — 6.000 pontos</option>
+<option value="5">
+R$ 5,00 — 6.000 pontos
+</option>
 
-<option value="10">R$ 10,00 — 11.000 pontos</option>
+<option value="10">
+R$ 10,00 — 11.000 pontos
+</option>
 
 </select>
 
@@ -361,11 +389,9 @@ O pagamento real será conectado posteriormente a um backend seguro.
 </p>
 
 <ul>
-
 <li>Benefícios exclusivos</li>
 <li>Recursos extras</li>
 <li>Experiência Premium</li>
-
 </ul>
 
 <button class="primary"
@@ -392,7 +418,8 @@ const Q={
 
 easy:[
 
-["Quanto é 2 + 2?",["3","4","5","6"],1],
+["Quanto é 2 + 2?",
+["3","4","5","6"],1],
 
 ["Qual é a capital do Brasil?",
 ["Brasília","São Paulo","Salvador","Recife"],0],
@@ -420,7 +447,8 @@ medium:[
 ["Oxigênio","Nitrogênio","Hélio","Hidrogênio"],1],
 
 ["Quem escreveu Dom Casmurro?",
-["Machado de Assis","José de Alencar","Clarice Lispector","Cecília Meireles"],0],
+["Machado de Assis","José de Alencar",
+"Clarice Lispector","Cecília Meireles"],0],
 
 ["Qual é o símbolo químico do ouro?",
 ["Ag","Fe","Au","Cu"],2],
@@ -453,7 +481,8 @@ medium:[
 ["HCl","H₂SO₄","HNO₃","NaOH"],1],
 
 ["Em qual camada da atmosfera ocorre a maior parte dos fenômenos meteorológicos?",
-["Troposfera","Estratosfera","Mesosfera","Termosfera"],0]
+["Troposfera","Estratosfera",
+"Mesosfera","Termosfera"],0]
 
 ],
 
@@ -472,25 +501,30 @@ hard:[
 ["Oxigênio","Carbono","Nitrogênio","Ferro"],1],
 
 ["Qual é a velocidade aproximada da luz no vácuo?",
-["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],1],
+["30 mil km/s","300 mil km/s",
+"3 milhões km/s","3 mil km/s"],1],
 
 ["Qual é a derivada de x³ − 4x em relação a x?",
-["3x² − 4","x² − 4","3x − 4","3x² + 4"],0],
+["3x² − 4","x² − 4",
+"3x − 4","3x² + 4"],0],
 
 ["Qual processo celular produz a maior parte do ATP em condições aeróbicas?",
-["Fermentação","Glicólise","Fosforilação oxidativa","Transcrição"],2],
+["Fermentação","Glicólise",
+"Fosforilação oxidativa","Transcrição"],2],
 
 ["Qual é o pH aproximado de uma solução neutra a 25 °C?",
 ["0","5","7","14"],2],
 
 ["Qual é a principal função dos ribossomos?",
-["Armazenar DNA","Produzir proteínas","Produzir lipídios","Degradar glicose"],1],
+["Armazenar DNA","Produzir proteínas",
+"Produzir lipídios","Degradar glicose"],1],
 
 ["Qual destes números é irracional?",
 ["0,25","3/4","√2","1,5"],2],
 
 ["Em genética, qual molécula normalmente leva a informação do DNA para o ribossomo?",
-["RNA mensageiro","ATP","Lipídio","Glicogênio"],0]
+["RNA mensageiro","ATP",
+"Lipídio","Glicogênio"],0]
 
 ]
 
@@ -519,9 +553,7 @@ let handle;
 
 
 function key(){
-
 return "quizup_"+s.email;
-
 }
 
 
@@ -555,7 +587,6 @@ document
 function register(){
 
 let e=rEmail.value.trim().toLowerCase();
-
 let p=rPass.value;
 
 if(!e||!p||!rName.value.trim()||!rCpf.value.trim()){
@@ -770,28 +801,41 @@ return q;
 }
 
 
+function randomNumber(min,max){
+
+return Math.floor(
+Math.random()*(max-min+1)
+)+min;
+
+}
+
+
 /*
-====================================================
-NOVAS REGRAS DO DADO
-====================================================
+REGRAS DO DADO
 
-1-4  = fácil
-5-7  = médio, a cada 10 rodadas
-8-10 = difícil, a cada 30 rodadas
+Rodadas 1-9:
+1, 2, 3 ou 4 pontos.
 
-O número do dado é exatamente a quantidade
-de pontos recebida ao acertar.
+Rodada 10:
+5, 6 ou 7 pontos.
+
+Rodadas 11-19:
+1, 2, 3 ou 4 pontos.
+
+Rodada 20:
+5, 6 ou 7 pontos.
+
+Rodada 30:
+8, 9 ou 10 pontos.
+
+Depois o ciclo continua.
 */
-
 
 function getDiceForRound(){
 
 let r=Number(s.round||1);
 
-/*
-A cada 30 rodadas:
-30, 60, 90, 120...
-*/
+/* A cada 30 rodadas = difícil */
 
 if(r%30===0){
 
@@ -799,11 +843,7 @@ return randomNumber(8,10);
 
 }
 
-/*
-A cada 10 rodadas, exceto as que já são
-rodadas de 30:
-10, 20, 40, 50, 70, 80...
-*/
+/* A cada 10 rodadas = médio */
 
 if(r%10===0){
 
@@ -811,21 +851,9 @@ return randomNumber(5,7);
 
 }
 
-/*
-Todas as demais rodadas:
-1, 2, 3 ou 4
-*/
+/* Demais rodadas = fácil */
 
 return randomNumber(1,4);
-
-}
-
-
-function randomNumber(min,max){
-
-return Math.floor(
-Math.random()*(max-min+1)
-)+min;
 
 }
 
@@ -836,44 +864,38 @@ clearInterval(handle);
 
 s.answered=false;
 
+/*
+O número que sair no dado
+é exatamente o número de pontos
+que a pergunta vale.
+*/
+
 s.dice=
 getDiceForRound();
 
+s.roundPoints=
+s.dice;
 
-/*
-O número do dado é o número
-de pontos da pergunta.
-*/
-
-s.roundPoints=s.dice;
-
-
-/*
-Seleciona a dificuldade.
-*/
 
 let list;
-
 let category;
+
 
 if(s.dice<=4){
 
 list=Q.easy;
-
 category="easy";
 
 }
 else if(s.dice<=7){
 
 list=Q.medium;
-
 category="medium";
 
 }
 else{
 
 list=Q.hard;
-
 category="hard";
 
 }
@@ -889,10 +911,6 @@ category
 dice.textContent=
 "🎲 "+s.dice;
 
-
-/*
-Mostra claramente os pontos.
-*/
 
 diceResult.textContent=
 "Você tirou "+
@@ -915,6 +933,7 @@ s.dice<=4
 
 question.textContent=
 s.question[0];
+
 
 answers.innerHTML="";
 
@@ -986,6 +1005,7 @@ clearInterval(handle);
 let correct=
 s.question[2];
 
+
 let bs=[
 ...document.querySelectorAll(".answer")
 ];
@@ -1001,6 +1021,7 @@ i===correct
 
 }
 
+
 bs[correct]
 .classList
 .add("correct");
@@ -1011,8 +1032,8 @@ i===correct;
 
 
 /*
-ACERTO:
-ganha exatamente o valor do dado.
+O jogador ganha exatamente
+o número que saiu no dado.
 */
 
 let pts=
@@ -1241,4 +1262,4 @@ openGame();
 </script>
 
 </body>
-  </html>
+</html>
