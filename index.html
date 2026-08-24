@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<script src="https://quge5.com/88/tag.min.js" data-zone="272911" async data-cfasync="false"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QuizUp</title>
@@ -10,8 +9,10 @@
 </style>
 </head>
 <body>
+
 <div class="wrap">
-<div class="logo">QuizUp</div><div class="sub">🎲 Jogue o dado, responda e acumule pontos</div>
+<div class="logo">QuizUp</div>
+<div class="sub">🎲 Jogue o dado, responda e acumule pontos</div>
 
 <section id="auth" class="card">
   <div class="tabs2">
@@ -21,30 +22,43 @@
 
   <div id="registerBox">
     <h2>📝 Cadastro</h2>
+
     <label>E-mail</label>
     <input id="rEmail" type="email" placeholder="Seu e-mail">
+
     <label>Senha</label>
     <input id="rPass" type="password" placeholder="Sua senha">
+
     <label>Nome completo</label>
     <input id="rName" type="text" placeholder="Seu nome completo">
+
     <label>CPF</label>
     <input id="rCpf" type="text" inputmode="numeric" maxlength="14" placeholder="000.000.000-00">
+
     <button class="primary" onclick="register()">Cadastrar</button>
   </div>
 
   <div id="loginBox" class="hidden">
     <h2>🔐 Login</h2>
+
     <label>E-mail</label>
     <input id="lEmail" type="email" placeholder="Seu e-mail">
+
     <label>Senha</label>
     <input id="lPass" type="password" placeholder="Sua senha">
+
     <button class="primary" onclick="login()">Entrar</button>
   </div>
 
-  <p class="small">A versão atual é um protótipo no navegador. Para proteger CPF, senha, pontos e saques reais, será necessário um servidor seguro antes de colocar pagamentos reais em produção.</p>
+  <p class="small">
+    A versão atual é um protótipo no navegador. Para proteger CPF, senha,
+    pontos e saques reais, será necessário um servidor seguro antes de
+    colocar pagamentos reais em produção.
+  </p>
 </section>
 
 <section id="game" class="hidden">
+
 <div class="top card">
  <div class="stat">⭐ <span id="points">0</span> pontos</div>
  <div class="stat">🎲 Rodada <span id="round">1</span></div>
@@ -59,42 +73,68 @@
 </div>
 
 <div id="quizTab">
+
  <div id="rollCard" class="card">
   <h2 style="text-align:center">Jogue o dado</h2>
+
   <div id="dice" class="dice">🎲</div>
-  <button class="primary roll" onclick="rollDice()">JOGAR DADO</button>
+
+  <button class="primary roll" onclick="rollDice()">
+   JOGAR DADO
+  </button>
+
   <p id="diceResult" class="result"></p>
  </div>
 
  <div id="questionCard" class="card hidden">
+
   <div class="top">
    <b id="difficulty"></b>
    <span class="timer">⏱️ <span id="time">5</span>s</span>
   </div>
 
-  <div class="bar"><div id="progress"></div></div>
+  <div class="bar">
+   <div id="progress"></div>
+  </div>
 
   <h2 id="question"></h2>
+
   <div id="answers" class="answers"></div>
+
   <p id="feedback" class="notice hidden"></p>
 
   <div class="score">
    ⭐ Pontuação: <span id="totalScore">0</span>
   </div>
+
  </div>
 </div>
 
 <div id="refTab" class="hidden card">
+
  <h2>🎁 Indicação</h2>
- <p>Ganhe <b>50 pontos</b> quando seu convidado atingir <b>300 pontos</b>.</p>
+
+ <p>
+  Ganhe <b>50 pontos</b> quando seu convidado atingir
+  <b>300 pontos</b>.
+ </p>
+
  <input id="refCode" readonly>
  <input id="refLink" readonly>
- <button class="primary" onclick="copyRef()">Copiar link</button>
- <button class="light" onclick="shareRef()">Enviar link</button>
+
+ <button class="primary" onclick="copyRef()">
+  Copiar link
+ </button>
+
+ <button class="light" onclick="shareRef()">
+  Enviar link
+ </button>
+
  <p id="refMsg"></p>
 </div>
 
 <div id="cashTab" class="hidden card">
+
  <h2>💸 Saque</h2>
 
  <div class="notice">
@@ -123,7 +163,9 @@
   <option value="10">R$ 10,00 — 11.000 pontos</option>
  </select>
 
- <button class="primary" onclick="withdraw()">Solicitar saque</button>
+ <button class="primary" onclick="withdraw()">
+  Solicitar saque
+ </button>
 
  <p id="cashMsg" class="notice hidden"></p>
 
@@ -131,11 +173,16 @@
   A solicitação é apenas registrada nesta versão.
   O pagamento real será conectado posteriormente a um backend seguro.
  </p>
+
 </div>
 
 <div id="premiumTab" class="hidden card">
+
  <h2>💎 Premium</h2>
- <p>Área Premium preparada para receber os benefícios do QuizUp.</p>
+
+ <p>
+  Área Premium preparada para receber os benefícios do QuizUp.
+ </p>
 
  <ul>
   <li>Benefícios exclusivos</li>
@@ -147,14 +194,19 @@
   Quero ser Premium
  </button>
 
- <p class="small">Nenhuma cobrança é feita nesta versão.</p>
+ <p class="small">
+  Nenhuma cobrança é feita nesta versão.
+ </p>
+
 </div>
 
 </section>
 </div>
 
 <script>
+
 const Q={
+
 easy:[
 ["Quanto é 2 + 2?",["3","4","5","6"],1],
 ["Qual é a capital do Brasil?",["Brasília","São Paulo","Salvador","Recife"],0],
@@ -193,7 +245,9 @@ hard:[
 ["Qual é a principal função dos ribossomos?",["Armazenar DNA","Produzir proteínas","Produzir lipídios","Degradar glicose"],1],
 ["Qual destes números é irracional?",["0,25","3/4","√2","1,5"],2],
 ["Em genética, qual molécula normalmente leva a informação do DNA para o ribossomo?",["RNA mensageiro","ATP","Lipídio","Glicogênio"],0]
-]};
+]
+
+};
 
 let s={
  email:"",
@@ -223,11 +277,15 @@ function save(){
 }
 
 function authMode(m){
- document.getElementById("registerBox").classList.toggle("hidden",m!=="register");
- document.getElementById("loginBox").classList.toggle("hidden",m!=="login");
+ document.getElementById("registerBox")
+ .classList.toggle("hidden",m!=="register");
+
+ document.getElementById("loginBox")
+ .classList.toggle("hidden",m!=="login");
 }
 
 function register(){
+
  let e=rEmail.value.trim().toLowerCase(),
      p=rPass.value;
 
@@ -263,6 +321,7 @@ function register(){
 }
 
 function login(){
+
  let e=lEmail.value.trim().toLowerCase();
 
  if(!e||!lPass.value){
@@ -282,56 +341,82 @@ function login(){
 }
 
 function openGame(){
+
  auth.classList.add("hidden");
  game.classList.remove("hidden");
+
  ui();
  tab("quiz");
 }
 
 function logout(){
+
  clearInterval(handle);
+
  game.classList.add("hidden");
  auth.classList.remove("hidden");
 }
 
 function ui(){
+
  points.textContent=s.points;
  round.textContent=s.round;
+
  refCode.value=s.code;
- refLink.value=location.origin+location.pathname+"?ref="+encodeURIComponent(s.code);
+
+ refLink.value=
+  location.origin+
+  location.pathname+
+  "?ref="+
+  encodeURIComponent(s.code);
 }
 
 function tab(x){
+
  ["quiz","ref","cash","premium"].forEach(a=>{
-  document.getElementById(a+"Tab").classList.toggle("hidden",a!==x);
+
+  document.getElementById(a+"Tab")
+  .classList.toggle("hidden",a!==x);
+
  });
 
  if(x==="quiz"){
+
   rollCard.classList.remove("hidden");
   questionCard.classList.add("hidden");
+
  }
 }
 
 function updateScore(){
+
  const n=Number(s.points||0);
 
  totalScore.textContent=n;
 
- document.querySelectorAll("#score").forEach(el=>el.textContent=n);
- document.querySelectorAll("#round").forEach(el=>el.textContent=s.round||1);
+ document.querySelectorAll("#score")
+ .forEach(el=>el.textContent=n);
+
+ document.querySelectorAll("#round")
+ .forEach(el=>el.textContent=s.round||1);
 }
 
 function pickQuestion(list,category){
+
  const recent=s.recentQuestions||[];
 
  const available=list.filter((q,idx)=>{
+
   const key=category+":"+q[0];
+
   return !recent.includes(key);
+
  });
 
  const pool=available.length?available:list;
 
- const q=pool[Math.floor(Math.random()*pool.length)];
+ const q=
+  pool[Math.floor(Math.random()*pool.length)];
 
  s.questionKey=category+":"+q[0];
 
@@ -344,7 +429,9 @@ function pickQuestion(list,category){
 }
 
 function rollDice(){
+
  clearInterval(handle);
+
  s.answered=false;
 
  let choices=[];
@@ -352,8 +439,10 @@ function rollDice(){
 
  if(r<0.82)
   choices=[1,2,3,4];
+
  else if(r<0.97)
   choices=[5,6,7];
+
  else
   choices=[8,9,10];
 
@@ -368,10 +457,12 @@ function rollDice(){
  if(!choices.length)
   choices=[1,2,3,4];
 
- s.dice=choices[Math.floor(Math.random()*choices.length)];
+ s.dice=
+  choices[Math.floor(Math.random()*choices.length)];
 
  if(s.dice===10)
   s.tenCooldown=9;
+
  else if(s.tenCooldown>0)
   s.tenCooldown--;
 
@@ -394,36 +485,46 @@ function rollDice(){
 
  diceResult.textContent=
   "Você tirou "+s.dice+
-  " • Esta pergunta vale "+s.roundPoints+" pontos";
+  " • Esta pergunta vale "+
+  s.roundPoints+
+  " pontos";
 
- let list=s.dice<=4
+ let list=
+  s.dice<=4
    ?Q.easy
    :s.dice<=7
    ?Q.medium
    :Q.hard;
 
- let category=s.dice<=4
+ let category=
+  s.dice<=4
    ?"easy"
    :s.dice<=7
    ?"medium"
    :"hard";
 
- s.question=pickQuestion(list,category);
+ s.question=
+  pickQuestion(list,category);
 
- difficulty.textContent="Dado: "+s.dice;
+ difficulty.textContent=
+  "Dado: "+s.dice;
 
- question.textContent=s.question[0];
+ question.textContent=
+  s.question[0];
 
  answers.innerHTML="";
 
  s.question[1].forEach((a,i)=>{
+
   let b=document.createElement("button");
 
   b.className="answer";
   b.textContent=a;
+
   b.onclick=()=>answer(i);
 
   answers.appendChild(b);
+
  });
 
  updateScore();
@@ -435,24 +536,34 @@ function rollDice(){
 }
 
 function startTimer(){
+
  s.timer=5;
+
  time.textContent=5;
 
  handle=setInterval(()=>{
+
   s.timer--;
+
   time.textContent=s.timer;
 
   if(s.timer<=0){
+
    clearInterval(handle);
+
    answer(-1);
+
   }
+
  },1000);
 }
 
 function answer(i){
+
  if(s.answered)return;
 
  s.answered=true;
+
  clearInterval(handle);
 
  let correct=s.question[2];
@@ -462,12 +573,16 @@ function answer(i){
  ];
 
  if(i>=0)
-  bs[i].classList.add(i===correct?"correct":"wrong");
+  bs[i].classList.add(
+   i===correct?"correct":"wrong"
+  );
 
  bs[correct].classList.add("correct");
 
  let ok=i===correct;
- let pts=ok?(s.roundPoints||0):0;
+
+ let pts=
+  ok?(s.roundPoints||0):0;
 
  if(ok)
   s.points+=pts;
@@ -476,49 +591,64 @@ function answer(i){
 
  feedback.classList.remove("hidden");
 
- feedback.textContent=ok
-  ?"✅ Correto! +"+pts+" pontos."
-  :"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
+ feedback.textContent=
+  ok
+   ?"✅ Correto! +"+pts+" pontos."
+   :"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
 
  save();
 
  setTimeout(()=>{
+
   s.round++;
+
   save();
 
   rollCard.classList.remove("hidden");
+
   questionCard.classList.add("hidden");
 
   dice.textContent="🎲";
+
   diceResult.textContent="";
+
   feedback.classList.add("hidden");
+
  },1300);
 }
 
 function copyRef(){
+
  navigator.clipboard?.writeText(refLink.value);
+
  refMsg.textContent="Link copiado!";
 }
 
 async function shareRef(){
+
  if(navigator.share)
+
   await navigator.share({
    title:"QuizUp",
    text:"Venha jogar QuizUp comigo!",
    url:refLink.value
   });
+
  else
   copyRef();
 }
 
 function payFields(){
+
  let p=payMethod.value==="pix";
 
  pix.classList.toggle("hidden",!p);
+
  paypal.classList.toggle("hidden",p);
 }
 
 function need(v){
+
  return v==="10"
   ?11000
   :v==="5"
@@ -527,36 +657,47 @@ function need(v){
 }
 
 function withdraw(){
+
  let v=withdrawAmount.value,
      n=need(v),
      method=payMethod.value,
-     k=method==="pix"
-      ?pixKey.value.trim()
-      :paypalKey.value.trim();
+     k=
+      method==="pix"
+       ?pixKey.value.trim()
+       :paypalKey.value.trim();
 
  if(!k){
+
   alert("Preencha o dado de pagamento.");
+
   return;
  }
 
  cashMsg.classList.remove("hidden");
 
  if(s.points<n){
+
   cashMsg.textContent=
    "Pontos insuficientes. Você precisa de "+
    n+" pontos.";
+
   return;
  }
 
- let arr=JSON.parse(
-  localStorage.getItem("quizup_withdrawals")||"[]"
- );
+ let arr=
+  JSON.parse(
+   localStorage.getItem(
+    "quizup_withdrawals"
+   )||"[]"
+  );
 
  arr.push({
+
   email:s.email,
   value:v,
   method:method,
   date:new Date().toISOString()
+
  });
 
  localStorage.setItem(
@@ -569,16 +710,27 @@ function withdraw(){
 }
 
 (function(){
- let k=Object.keys(localStorage).find(
-  k=>k.startsWith("quizup_")&&!k.includes("withdrawals")
- );
+
+ let k=
+  Object.keys(localStorage).find(
+   k=>
+    k.startsWith("quizup_") &&
+    !k.includes("withdrawals")
+  );
 
  if(k){
-  s=JSON.parse(localStorage.getItem(k));
+
+  s=
+   JSON.parse(
+    localStorage.getItem(k)
+   );
+
   openGame();
  }
+
 })();
+
 </script>
 
 </body>
-                                            </html>
+</html>
