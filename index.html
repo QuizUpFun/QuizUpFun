@@ -4,733 +4,1241 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QuizUp</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#101936,#25105e);color:#fff;min-height:100vh}.wrap{max-width:760px;margin:auto;padding:16px}.logo{text-align:center;font-size:40px;font-weight:900;margin:10px}.sub{text-align:center;opacity:.8}.card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:20px;margin:14px 0}.hidden{display:none!important}button{border:0;border-radius:12px;padding:13px 16px;font-weight:700;cursor:pointer}.primary{background:#ffd43b;color:#171717}.light{background:#fff;color:#171717}.ghost{background:rgba(255,255,255,.12);color:#fff}.top,.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.stat{padding:10px 14px;background:rgba(255,255,255,.1);border-radius:12px}.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.dice{font-size:100px;text-align:center;line-height:1.1;margin:8px}.roll{display:block;margin:auto;font-size:18px}.result{text-align:center;font-size:21px;font-weight:800}.score{text-align:center;font-size:28px;font-weight:900}.answers{display:grid;gap:10px}.answer{background:#fff;color:#111;text-align:left;width:100%}.answer.correct{outline:4px solid #4ade80}.answer.wrong{outline:4px solid #fb7185}input,select{width:100%;padding:13px;border:0;border-radius:10px;margin:5px 0 12px}.timer{text-align:center;font-size:22px;font-weight:800}.bar{height:9px;background:rgba(255,255,255,.15);border-radius:20px;overflow:hidden}.bar div{height:100%;background:#ffd43b;width:0}.notice{padding:12px;border-radius:12px;background:rgba(255,212,59,.12);border:1px solid rgba(255,212,59,.3)}.small{font-size:13px;opacity:.75}.tabs2{display:grid;grid-template-columns:1fr 1fr;gap:8px}@media(max-width:560px){.nav{grid-template-columns:1fr 1fr}.dice{font-size:80px}}
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:linear-gradient(135deg,#101936,#25105e);
+color:#fff;
+min-height:100vh
+}
+.wrap{max-width:760px;margin:auto;padding:16px}
+.logo{text-align:center;font-size:40px;font-weight:900;margin:10px}
+.sub{text-align:center;opacity:.8}
+.card{
+background:rgba(255,255,255,.1);
+border:1px solid rgba(255,255,255,.15);
+border-radius:20px;
+padding:20px;
+margin:14px 0
+}
+.hidden{display:none!important}
+button{
+border:0;
+border-radius:12px;
+padding:13px 16px;
+font-weight:700;
+cursor:pointer
+}
+.primary{background:#ffd43b;color:#171717}
+.light{background:#fff;color:#171717}
+.ghost{background:rgba(255,255,255,.12);color:#fff}
+.top,.row{
+display:flex;
+gap:10px;
+align-items:center;
+justify-content:space-between;
+flex-wrap:wrap
+}
+.stat{
+padding:10px 14px;
+background:rgba(255,255,255,.1);
+border-radius:12px
+}
+.nav{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:8px
+}
+.dice{
+font-size:100px;
+text-align:center;
+line-height:1.1;
+margin:8px
+}
+.roll{
+display:block;
+margin:auto;
+font-size:18px
+}
+.result{
+text-align:center;
+font-size:21px;
+font-weight:800
+}
+.score{
+text-align:center;
+font-size:28px;
+font-weight:900
+}
+.answers{
+display:grid;
+gap:10px
+}
+.answer{
+background:#fff;
+color:#111;
+text-align:left;
+width:100%
+}
+.answer.correct{outline:4px solid #4ade80}
+.answer.wrong{outline:4px solid #fb7185}
+input,select{
+width:100%;
+padding:13px;
+border:0;
+border-radius:10px;
+margin:5px 0 12px
+}
+.timer{
+text-align:center;
+font-size:22px;
+font-weight:800
+}
+.bar{
+height:9px;
+background:rgba(255,255,255,.15);
+border-radius:20px;
+overflow:hidden
+}
+.bar div{
+height:100%;
+background:#ffd43b;
+width:0
+}
+.notice{
+padding:12px;
+border-radius:12px;
+background:rgba(255,212,59,.12);
+border:1px solid rgba(255,212,59,.3)
+}
+.small{
+font-size:13px;
+opacity:.75
+}
+.tabs2{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px
+}
+@media(max-width:560px){
+.nav{grid-template-columns:1fr 1fr}
+.dice{font-size:80px}
+}
 </style>
 </head>
+
 <body>
 
 <div class="wrap">
+
 <div class="logo">QuizUp</div>
 <div class="sub">🎲 Jogue o dado, responda e acumule pontos</div>
 
 <section id="auth" class="card">
-  <div class="tabs2">
-    <button class="primary" onclick="authMode('register')">Cadastro</button>
-    <button class="light" onclick="authMode('login')">Login</button>
-  </div>
 
-  <div id="registerBox">
-    <h2>📝 Cadastro</h2>
+<div class="tabs2">
+<button class="primary" onclick="authMode('register')">Cadastro</button>
+<button class="light" onclick="authMode('login')">Login</button>
+</div>
 
-    <label>E-mail</label>
-    <input id="rEmail" type="email" placeholder="Seu e-mail">
+<div id="registerBox">
 
-    <label>Senha</label>
-    <input id="rPass" type="password" placeholder="Sua senha">
+<h2>📝 Cadastro</h2>
 
-    <label>Nome completo</label>
-    <input id="rName" type="text" placeholder="Seu nome completo">
+<label>E-mail</label>
+<input id="rEmail" type="email" placeholder="Seu e-mail">
 
-    <label>CPF</label>
-    <input id="rCpf" type="text" inputmode="numeric" maxlength="14" placeholder="000.000.000-00">
+<label>Senha</label>
+<input id="rPass" type="password" placeholder="Sua senha">
 
-    <button class="primary" onclick="register()">Cadastrar</button>
-  </div>
+<label>Nome completo</label>
+<input id="rName" type="text" placeholder="Seu nome completo">
 
-  <div id="loginBox" class="hidden">
-    <h2>🔐 Login</h2>
+<label>CPF</label>
+<input id="rCpf" type="text" inputmode="numeric" maxlength="14" placeholder="000.000.000-00">
 
-    <label>E-mail</label>
-    <input id="lEmail" type="email" placeholder="Seu e-mail">
+<button class="primary" onclick="register()">Cadastrar</button>
 
-    <label>Senha</label>
-    <input id="lPass" type="password" placeholder="Sua senha">
+</div>
 
-    <button class="primary" onclick="login()">Entrar</button>
-  </div>
+<div id="loginBox" class="hidden">
 
-  <p class="small">
-    A versão atual é um protótipo no navegador. Para proteger CPF, senha,
-    pontos e saques reais, será necessário um servidor seguro antes de
-    colocar pagamentos reais em produção.
-  </p>
+<h2>🔐 Login</h2>
+
+<label>E-mail</label>
+<input id="lEmail" type="email" placeholder="Seu e-mail">
+
+<label>Senha</label>
+<input id="lPass" type="password" placeholder="Sua senha">
+
+<button class="primary" onclick="login()">Entrar</button>
+
+</div>
+
+<p class="small">
+A versão atual é um protótipo no navegador. Para proteger CPF,
+senha, pontos e saques reais, será necessário um servidor seguro
+antes de colocar pagamentos reais em produção.
+</p>
+
 </section>
+
 
 <section id="game" class="hidden">
 
 <div class="top card">
- <div class="stat">⭐ <span id="points">0</span> pontos</div>
- <div class="stat">🎲 Rodada <span id="round">1</span></div>
- <button class="ghost" onclick="logout()">Sair</button>
+
+<div class="stat">
+⭐ <span id="points">0</span> pontos
 </div>
 
-<div class="nav">
- <button class="ghost" onclick="tab('quiz')">🎲 Quiz</button>
- <button class="ghost" onclick="tab('ref')">🎁 Indicação</button>
- <button class="ghost" onclick="tab('cash')">💸 Saque</button>
- <button class="ghost" onclick="tab('premium')">💎 Premium</button>
+<div class="stat">
+🎲 Rodada <span id="round">1</span>
 </div>
+
+<button class="ghost" onclick="logout()">Sair</button>
+
+</div>
+
+
+<div class="nav">
+
+<button class="ghost" onclick="tab('quiz')">🎲 Quiz</button>
+
+<button class="ghost" onclick="tab('ref')">🎁 Indicação</button>
+
+<button class="ghost" onclick="tab('cash')">💸 Saque</button>
+
+<button class="ghost" onclick="tab('premium')">💎 Premium</button>
+
+</div>
+
 
 <div id="quizTab">
 
- <div id="rollCard" class="card">
-  <h2 style="text-align:center">Jogue o dado</h2>
+<div id="rollCard" class="card">
 
-  <div id="dice" class="dice">🎲</div>
+<h2 style="text-align:center">
+Jogue o dado
+</h2>
 
-  <button class="primary roll" onclick="rollDice()">
-   JOGAR DADO
-  </button>
-
-  <p id="diceResult" class="result"></p>
- </div>
-
- <div id="questionCard" class="card hidden">
-
-  <div class="top">
-   <b id="difficulty"></b>
-   <span class="timer">⏱️ <span id="time">5</span>s</span>
-  </div>
-
-  <div class="bar">
-   <div id="progress"></div>
-  </div>
-
-  <h2 id="question"></h2>
-
-  <div id="answers" class="answers"></div>
-
-  <p id="feedback" class="notice hidden"></p>
-
-  <div class="score">
-   ⭐ Pontuação: <span id="totalScore">0</span>
-  </div>
-
- </div>
+<div id="dice" class="dice">
+🎲
 </div>
+
+<button class="primary roll" onclick="rollDice()">
+JOGAR DADO
+</button>
+
+<p id="diceResult" class="result"></p>
+
+</div>
+
+
+<div id="questionCard" class="card hidden">
+
+<div class="top">
+
+<b id="difficulty"></b>
+
+<span class="timer">
+⏱️ <span id="time">5</span>s
+</span>
+
+</div>
+
+<div class="bar">
+<div id="progress"></div>
+</div>
+
+<h2 id="question"></h2>
+
+<div id="answers" class="answers"></div>
+
+<p id="feedback" class="notice hidden"></p>
+
+<div class="score">
+⭐ Pontuação: <span id="totalScore">0</span>
+</div>
+
+</div>
+
+</div>
+
 
 <div id="refTab" class="hidden card">
 
- <h2>🎁 Indicação</h2>
+<h2>🎁 Indicação</h2>
 
- <p>
-  Ganhe <b>50 pontos</b> quando seu convidado atingir
-  <b>300 pontos</b>.
- </p>
+<p>
+Ganhe <b>50 pontos</b> quando seu convidado atingir
+<b>300 pontos</b>.
+</p>
 
- <input id="refCode" readonly>
- <input id="refLink" readonly>
+<input id="refCode" readonly>
+<input id="refLink" readonly>
 
- <button class="primary" onclick="copyRef()">
-  Copiar link
- </button>
+<button class="primary" onclick="copyRef()">
+Copiar link
+</button>
 
- <button class="light" onclick="shareRef()">
-  Enviar link
- </button>
+<button class="light" onclick="shareRef()">
+Enviar link
+</button>
 
- <p id="refMsg"></p>
+<p id="refMsg"></p>
+
 </div>
+
 
 <div id="cashTab" class="hidden card">
 
- <h2>💸 Saque</h2>
+<h2>💸 Saque</h2>
 
- <div class="notice">
-  <b>Valores:</b><br>
-  2.000 pontos → R$ 1,00<br>
-  6.000 pontos → R$ 5,00<br>
-  11.000 pontos → R$ 10,00
- </div>
+<div class="notice">
 
- <select id="payMethod" onchange="payFields()">
-  <option value="pix">Pix</option>
-  <option value="paypal">PayPal</option>
- </select>
+<b>Valores:</b><br>
 
- <div id="pix">
-  <input id="pixKey" placeholder="Chave Pix">
- </div>
-
- <div id="paypal" class="hidden">
-  <input id="paypalKey" type="email" placeholder="E-mail PayPal">
- </div>
-
- <select id="withdrawAmount">
-  <option value="1">R$ 1,00 — 2.000 pontos</option>
-  <option value="5">R$ 5,00 — 6.000 pontos</option>
-  <option value="10">R$ 10,00 — 11.000 pontos</option>
- </select>
-
- <button class="primary" onclick="withdraw()">
-  Solicitar saque
- </button>
-
- <p id="cashMsg" class="notice hidden"></p>
-
- <p class="small">
-  A solicitação é apenas registrada nesta versão.
-  O pagamento real será conectado posteriormente a um backend seguro.
- </p>
+2.000 pontos → R$ 1,00<br>
+6.000 pontos → R$ 5,00<br>
+11.000 pontos → R$ 10,00
 
 </div>
 
+<select id="payMethod" onchange="payFields()">
+
+<option value="pix">Pix</option>
+
+<option value="paypal">PayPal</option>
+
+</select>
+
+<div id="pix">
+
+<input id="pixKey" placeholder="Chave Pix">
+
+</div>
+
+<div id="paypal" class="hidden">
+
+<input id="paypalKey" type="email" placeholder="E-mail PayPal">
+
+</div>
+
+<select id="withdrawAmount">
+
+<option value="1">R$ 1,00 — 2.000 pontos</option>
+
+<option value="5">R$ 5,00 — 6.000 pontos</option>
+
+<option value="10">R$ 10,00 — 11.000 pontos</option>
+
+</select>
+
+<button class="primary" onclick="withdraw()">
+Solicitar saque
+</button>
+
+<p id="cashMsg" class="notice hidden"></p>
+
+<p class="small">
+A solicitação é apenas registrada nesta versão.
+O pagamento real será conectado posteriormente a um backend seguro.
+</p>
+
+</div>
+
+
 <div id="premiumTab" class="hidden card">
 
- <h2>💎 Premium</h2>
+<h2>💎 Premium</h2>
 
- <p>
-  Área Premium preparada para receber os benefícios do QuizUp.
- </p>
+<p>
+Área Premium preparada para receber os benefícios do QuizUp.
+</p>
 
- <ul>
-  <li>Benefícios exclusivos</li>
-  <li>Recursos extras</li>
-  <li>Experiência Premium</li>
- </ul>
+<ul>
 
- <button class="primary" onclick="alert('O pagamento Premium ainda será conectado.')">
-  Quero ser Premium
- </button>
+<li>Benefícios exclusivos</li>
+<li>Recursos extras</li>
+<li>Experiência Premium</li>
 
- <p class="small">
-  Nenhuma cobrança é feita nesta versão.
- </p>
+</ul>
+
+<button class="primary"
+onclick="alert('O pagamento Premium ainda será conectado.')">
+
+Quero ser Premium
+
+</button>
+
+<p class="small">
+Nenhuma cobrança é feita nesta versão.
+</p>
 
 </div>
 
 </section>
+
 </div>
+
 
 <script>
 
 const Q={
 
 easy:[
+
 ["Quanto é 2 + 2?",["3","4","5","6"],1],
-["Qual é a capital do Brasil?",["Brasília","São Paulo","Salvador","Recife"],0],
-["Qual planeta é conhecido como Planeta Vermelho?",["Terra","Marte","Vênus","Saturno"],1],
-["Quantos dias tem uma semana?",["5","6","7","8"],2],
-["Qual animal é conhecido como rei da selva?",["Tigre","Elefante","Leão","Urso"],2]
+
+["Qual é a capital do Brasil?",
+["Brasília","São Paulo","Salvador","Recife"],0],
+
+["Qual planeta é conhecido como Planeta Vermelho?",
+["Terra","Marte","Vênus","Saturno"],1],
+
+["Quantos dias tem uma semana?",
+["5","6","7","8"],2],
+
+["Qual animal é conhecido como rei da selva?",
+["Tigre","Elefante","Leão","Urso"],2]
+
 ],
 
 medium:[
-["Qual é o maior oceano da Terra?",["Atlântico","Índico","Pacífico","Ártico"],2],
-["Quanto é 12 × 8?",["86","96","108","112"],1],
-["Qual gás é mais abundante na atmosfera?",["Oxigênio","Nitrogênio","Hélio","Hidrogênio"],1],
-["Quem escreveu Dom Casmurro?",["Machado de Assis","José de Alencar","Clarice Lispector","Cecília Meireles"],0],
-["Qual é o símbolo químico do ouro?",["Ag","Fe","Au","Cu"],2],
-["Qual é o resultado de 15² − 10²?",["125","150","175","225"],0],
-["Qual destes números é primo?",["21","27","29","33"],2],
-["Se 3x + 7 = 25, qual é o valor de x?",["4","5","6","7"],1],
-["Qual continente tem a maior área?",["África","Ásia","Europa","América do Sul"],1],
-["Qual é o resultado de 17 × 6 − 14?",["78","88","90","102"],1],
-["Se 5x − 9 = 31, qual é o valor de x?",["6","7","8","9"],2],
-["Qual é a soma dos ângulos internos de um hexágono?",["540°","600°","720°","900°"],2],
-["Qual órgão produz a maior parte da bile?",["Pâncreas","Fígado","Rim","Estômago"],1],
-["Qual é a fórmula química do ácido sulfúrico?",["HCl","H₂SO₄","HNO₃","NaOH"],1],
-["Em qual camada da atmosfera ocorre a maior parte dos fenômenos meteorológicos?",["Troposfera","Estratosfera","Mesosfera","Termosfera"],0]
+
+["Qual é o maior oceano da Terra?",
+["Atlântico","Índico","Pacífico","Ártico"],2],
+
+["Quanto é 12 × 8?",
+["86","96","108","112"],1],
+
+["Qual gás é mais abundante na atmosfera?",
+["Oxigênio","Nitrogênio","Hélio","Hidrogênio"],1],
+
+["Quem escreveu Dom Casmurro?",
+["Machado de Assis","José de Alencar","Clarice Lispector","Cecília Meireles"],0],
+
+["Qual é o símbolo químico do ouro?",
+["Ag","Fe","Au","Cu"],2],
+
+["Qual é o resultado de 15² − 10²?",
+["125","150","175","225"],0],
+
+["Qual destes números é primo?",
+["21","27","29","33"],2],
+
+["Se 3x + 7 = 25, qual é o valor de x?",
+["4","5","6","7"],1],
+
+["Qual continente tem a maior área?",
+["África","Ásia","Europa","América do Sul"],1],
+
+["Qual é o resultado de 17 × 6 − 14?",
+["78","88","90","102"],1],
+
+["Se 5x − 9 = 31, qual é o valor de x?",
+["6","7","8","9"],2],
+
+["Qual é a soma dos ângulos internos de um hexágono?",
+["540°","600°","720°","900°"],2],
+
+["Qual órgão produz a maior parte da bile?",
+["Pâncreas","Fígado","Rim","Estômago"],1],
+
+["Qual é a fórmula química do ácido sulfúrico?",
+["HCl","H₂SO₄","HNO₃","NaOH"],1],
+
+["Em qual camada da atmosfera ocorre a maior parte dos fenômenos meteorológicos?",
+["Troposfera","Estratosfera","Mesosfera","Termosfera"],0]
+
 ],
 
 hard:[
-["Qual é a raiz quadrada de 144?",["10","11","12","14"],2],
-["Qual é o maior país do mundo em área?",["China","Canadá","Brasil","Rússia"],3],
-["Em que ano terminou a Segunda Guerra Mundial?",["1943","1944","1945","1946"],2],
-["Qual é o elemento químico de número atômico 6?",["Oxigênio","Carbono","Nitrogênio","Ferro"],1],
-["Qual é a velocidade aproximada da luz no vácuo?",["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],1],
-["Qual é a derivada de x³ − 4x em relação a x?",["3x² − 4","x² − 4","3x − 4","3x² + 4"],0],
-["Qual processo celular produz a maior parte do ATP em condições aeróbicas?",["Fermentação","Glicólise","Fosforilação oxidativa","Transcrição"],2],
-["Qual é o pH aproximado de uma solução neutra a 25 °C?",["0","5","7","14"],2],
-["Qual é a principal função dos ribossomos?",["Armazenar DNA","Produzir proteínas","Produzir lipídios","Degradar glicose"],1],
-["Qual destes números é irracional?",["0,25","3/4","√2","1,5"],2],
-["Em genética, qual molécula normalmente leva a informação do DNA para o ribossomo?",["RNA mensageiro","ATP","Lipídio","Glicogênio"],0]
+
+["Qual é a raiz quadrada de 144?",
+["10","11","12","14"],2],
+
+["Qual é o maior país do mundo em área?",
+["China","Canadá","Brasil","Rússia"],3],
+
+["Em que ano terminou a Segunda Guerra Mundial?",
+["1943","1944","1945","1946"],2],
+
+["Qual é o elemento químico de número atômico 6?",
+["Oxigênio","Carbono","Nitrogênio","Ferro"],1],
+
+["Qual é a velocidade aproximada da luz no vácuo?",
+["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],1],
+
+["Qual é a derivada de x³ − 4x em relação a x?",
+["3x² − 4","x² − 4","3x − 4","3x² + 4"],0],
+
+["Qual processo celular produz a maior parte do ATP em condições aeróbicas?",
+["Fermentação","Glicólise","Fosforilação oxidativa","Transcrição"],2],
+
+["Qual é o pH aproximado de uma solução neutra a 25 °C?",
+["0","5","7","14"],2],
+
+["Qual é a principal função dos ribossomos?",
+["Armazenar DNA","Produzir proteínas","Produzir lipídios","Degradar glicose"],1],
+
+["Qual destes números é irracional?",
+["0,25","3/4","√2","1,5"],2],
+
+["Em genética, qual molécula normalmente leva a informação do DNA para o ribossomo?",
+["RNA mensageiro","ATP","Lipídio","Glicogênio"],0]
+
 ]
 
 };
 
+
 let s={
- email:"",
- name:"",
- cpf:"",
- points:0,
- round:1,
- code:"",
- referrer:"",
- dice:0,
- question:null,
- questionKey:"",
- recentQuestions:[],
- timer:20,
- answered:false,
- tenCooldown:0
-},
-handle;
+
+email:"",
+name:"",
+cpf:"",
+points:0,
+round:1,
+code:"",
+referrer:"",
+dice:0,
+question:null,
+questionKey:"",
+recentQuestions:[],
+timer:5,
+answered:false
+
+};
+
+let handle;
+
 
 function key(){
- return "quizup_"+s.email;
+
+return "quizup_"+s.email;
+
 }
+
 
 function save(){
- localStorage.setItem(key(),JSON.stringify(s));
- ui();
+
+localStorage.setItem(
+key(),
+JSON.stringify(s)
+);
+
+ui();
+
 }
+
 
 function authMode(m){
- document.getElementById("registerBox")
- .classList.toggle("hidden",m!=="register");
 
- document.getElementById("loginBox")
- .classList.toggle("hidden",m!=="login");
+document
+.getElementById("registerBox")
+.classList
+.toggle("hidden",m!=="register");
+
+document
+.getElementById("loginBox")
+.classList
+.toggle("hidden",m!=="login");
+
 }
+
 
 function register(){
 
- let e=rEmail.value.trim().toLowerCase(),
-     p=rPass.value;
+let e=rEmail.value.trim().toLowerCase();
 
- if(!e||!p||!rName.value.trim()||!rCpf.value.trim()){
-  alert("Preencha e-mail, senha, nome completo e CPF.");
-  return;
- }
+let p=rPass.value;
 
- if(localStorage.getItem("quizup_"+e)){
-  alert("Essa conta já existe. Use Entrar.");
-  return;
- }
+if(!e||!p||!rName.value.trim()||!rCpf.value.trim()){
 
- s={
-  email:e,
-  name:rName.value.trim(),
-  cpf:rCpf.value.trim(),
-  points:0,
-  round:1,
-  questionKey:"",
-  recentQuestions:[],
-  tenCooldown:0,
-  code:"QU"+Math.random().toString(36).slice(2,8).toUpperCase(),
-  referrer:new URLSearchParams(location.search).get("ref")||"",
-  dice:0,
-  question:null,
-  timer:20,
-  answered:false
- };
+alert(
+"Preencha e-mail, senha, nome completo e CPF."
+);
 
- save();
- openGame();
+return;
+
 }
+
+if(localStorage.getItem("quizup_"+e)){
+
+alert(
+"Essa conta já existe. Use Entrar."
+);
+
+return;
+
+}
+
+s={
+
+email:e,
+
+name:rName.value.trim(),
+
+cpf:rCpf.value.trim(),
+
+points:0,
+
+round:1,
+
+questionKey:"",
+
+recentQuestions:[],
+
+code:
+"QU"+
+Math.random()
+.toString(36)
+.slice(2,8)
+.toUpperCase(),
+
+referrer:
+new URLSearchParams(location.search)
+.get("ref")||"",
+
+dice:0,
+
+question:null,
+
+timer:5,
+
+answered:false
+
+};
+
+save();
+
+openGame();
+
+}
+
 
 function login(){
 
- let e=lEmail.value.trim().toLowerCase();
+let e=lEmail.value.trim().toLowerCase();
 
- if(!e||!lPass.value){
-  alert("Preencha e-mail e senha.");
-  return;
- }
+if(!e||!lPass.value){
 
- let x=localStorage.getItem("quizup_"+e);
+alert(
+"Preencha e-mail e senha."
+);
 
- if(!x){
-  alert("Conta não encontrada. Use Criar conta.");
-  return;
- }
+return;
 
- s=JSON.parse(x);
- openGame();
 }
+
+let x=
+localStorage.getItem(
+"quizup_"+e
+);
+
+if(!x){
+
+alert(
+"Conta não encontrada. Use Criar conta."
+);
+
+return;
+
+}
+
+s=JSON.parse(x);
+
+openGame();
+
+}
+
 
 function openGame(){
 
- auth.classList.add("hidden");
- game.classList.remove("hidden");
+auth.classList.add("hidden");
 
- ui();
- tab("quiz");
+game.classList.remove("hidden");
+
+ui();
+
+tab("quiz");
+
 }
+
 
 function logout(){
 
- clearInterval(handle);
+clearInterval(handle);
 
- game.classList.add("hidden");
- auth.classList.remove("hidden");
+game.classList.add("hidden");
+
+auth.classList.remove("hidden");
+
 }
+
 
 function ui(){
 
- points.textContent=s.points;
- round.textContent=s.round;
+points.textContent=s.points;
 
- refCode.value=s.code;
+round.textContent=s.round;
 
- refLink.value=
-  location.origin+
-  location.pathname+
-  "?ref="+
-  encodeURIComponent(s.code);
+refCode.value=s.code;
+
+refLink.value=
+location.origin+
+location.pathname+
+"?ref="+
+encodeURIComponent(s.code);
+
 }
+
 
 function tab(x){
 
- ["quiz","ref","cash","premium"].forEach(a=>{
+["quiz","ref","cash","premium"]
+.forEach(a=>{
 
-  document.getElementById(a+"Tab")
-  .classList.toggle("hidden",a!==x);
+document
+.getElementById(a+"Tab")
+.classList
+.toggle("hidden",a!==x);
 
- });
+});
 
- if(x==="quiz"){
+if(x==="quiz"){
 
-  rollCard.classList.remove("hidden");
-  questionCard.classList.add("hidden");
+rollCard.classList.remove("hidden");
 
- }
+questionCard.classList.add("hidden");
+
 }
+
+}
+
 
 function updateScore(){
 
- const n=Number(s.points||0);
+totalScore.textContent=
+Number(s.points||0);
 
- totalScore.textContent=n;
-
- document.querySelectorAll("#score")
- .forEach(el=>el.textContent=n);
-
- document.querySelectorAll("#round")
- .forEach(el=>el.textContent=s.round||1);
 }
+
 
 function pickQuestion(list,category){
 
- const recent=s.recentQuestions||[];
+const recent=
+s.recentQuestions||[];
 
- const available=list.filter((q,idx)=>{
+const available=
+list.filter(q=>{
 
-  const key=category+":"+q[0];
+const k=
+category+":"+q[0];
 
-  return !recent.includes(key);
+return !recent.includes(k);
 
- });
+});
 
- const pool=available.length?available:list;
+const pool=
+available.length
+?available
+:list;
 
- const q=
-  pool[Math.floor(Math.random()*pool.length)];
+const q=
+pool[
+Math.floor(
+Math.random()*pool.length
+)
+];
 
- s.questionKey=category+":"+q[0];
+s.questionKey=
+category+":"+q[0];
 
- s.recentQuestions=[
-  ...(recent||[]),
-  s.questionKey
- ].slice(-4);
+s.recentQuestions=[
+...recent,
+s.questionKey
+].slice(-4);
 
- return q;
+return q;
+
 }
+
+
+/*
+====================================================
+NOVAS REGRAS DO DADO
+====================================================
+
+1-4  = fácil
+5-7  = médio, a cada 10 rodadas
+8-10 = difícil, a cada 30 rodadas
+
+O número do dado é exatamente a quantidade
+de pontos recebida ao acertar.
+*/
+
+
+function getDiceForRound(){
+
+let r=Number(s.round||1);
+
+/*
+A cada 30 rodadas:
+30, 60, 90, 120...
+*/
+
+if(r%30===0){
+
+return randomNumber(8,10);
+
+}
+
+/*
+A cada 10 rodadas, exceto as que já são
+rodadas de 30:
+10, 20, 40, 50, 70, 80...
+*/
+
+if(r%10===0){
+
+return randomNumber(5,7);
+
+}
+
+/*
+Todas as demais rodadas:
+1, 2, 3 ou 4
+*/
+
+return randomNumber(1,4);
+
+}
+
+
+function randomNumber(min,max){
+
+return Math.floor(
+Math.random()*(max-min+1)
+)+min;
+
+}
+
 
 function rollDice(){
 
- clearInterval(handle);
+clearInterval(handle);
 
- s.answered=false;
+s.answered=false;
 
- let choices=[];
- const r=Math.random();
+s.dice=
+getDiceForRound();
 
- if(r<0.82)
-  choices=[1,2,3,4];
 
- else if(r<0.97)
-  choices=[5,6,7];
+/*
+O número do dado é o número
+de pontos da pergunta.
+*/
 
- else
-  choices=[8,9,10];
+s.roundPoints=s.dice;
 
- choices=choices.filter(n=>n!==s.dice);
 
- if(s.tenCooldown>0)
-  choices=choices.filter(n=>n!==10);
+/*
+Seleciona a dificuldade.
+*/
 
- if(!choices.length)
-  choices=[1,2,3,4].filter(n=>n!==s.dice);
+let list;
 
- if(!choices.length)
-  choices=[1,2,3,4];
+let category;
 
- s.dice=
-  choices[Math.floor(Math.random()*choices.length)];
+if(s.dice<=4){
 
- if(s.dice===10)
-  s.tenCooldown=9;
+list=Q.easy;
 
- else if(s.tenCooldown>0)
-  s.tenCooldown--;
+category="easy";
 
- const pointsByDice={
-  1:5,
-  2:10,
-  3:15,
-  4:20,
-  5:30,
-  6:35,
-  7:40,
-  8:50,
-  9:60,
-  10:75
- };
-
- s.roundPoints=pointsByDice[s.dice];
-
- dice.textContent="🎲 "+s.dice;
-
- diceResult.textContent=
-  "Você tirou "+s.dice+
-  " • Esta pergunta vale "+
-  s.roundPoints+
-  " pontos";
-
- let list=
-  s.dice<=4
-   ?Q.easy
-   :s.dice<=7
-   ?Q.medium
-   :Q.hard;
-
- let category=
-  s.dice<=4
-   ?"easy"
-   :s.dice<=7
-   ?"medium"
-   :"hard";
-
- s.question=
-  pickQuestion(list,category);
-
- difficulty.textContent=
-  "Dado: "+s.dice;
-
- question.textContent=
-  s.question[0];
-
- answers.innerHTML="";
-
- s.question[1].forEach((a,i)=>{
-
-  let b=document.createElement("button");
-
-  b.className="answer";
-  b.textContent=a;
-
-  b.onclick=()=>answer(i);
-
-  answers.appendChild(b);
-
- });
-
- updateScore();
-
- rollCard.classList.add("hidden");
- questionCard.classList.remove("hidden");
-
- startTimer();
 }
+else if(s.dice<=7){
+
+list=Q.medium;
+
+category="medium";
+
+}
+else{
+
+list=Q.hard;
+
+category="hard";
+
+}
+
+
+s.question=
+pickQuestion(
+list,
+category
+);
+
+
+dice.textContent=
+"🎲 "+s.dice;
+
+
+/*
+Mostra claramente os pontos.
+*/
+
+diceResult.textContent=
+"Você tirou "+
+s.dice+
+" ponto"+
+(s.dice===1?"":"s")+
+" • Esta pergunta vale "+
+s.dice+
+" ponto"+
+(s.dice===1?"":"s");
+
+
+difficulty.textContent=
+s.dice<=4
+?"Fácil • "+s.dice+" ponto"+(s.dice===1?"":"s")
+:s.dice<=7
+?"Médio • "+s.dice+" pontos"
+:"Difícil • "+s.dice+" pontos";
+
+
+question.textContent=
+s.question[0];
+
+answers.innerHTML="";
+
+
+s.question[1]
+.forEach((a,i)=>{
+
+let b=
+document.createElement("button");
+
+b.className="answer";
+
+b.textContent=a;
+
+b.onclick=
+()=>answer(i);
+
+answers.appendChild(b);
+
+});
+
+
+updateScore();
+
+rollCard.classList.add("hidden");
+
+questionCard.classList.remove("hidden");
+
+startTimer();
+
+}
+
 
 function startTimer(){
 
- s.timer=5;
+s.timer=5;
 
- time.textContent=5;
+time.textContent=5;
 
- handle=setInterval(()=>{
+handle=
+setInterval(()=>{
 
-  s.timer--;
+s.timer--;
 
-  time.textContent=s.timer;
+time.textContent=s.timer;
 
-  if(s.timer<=0){
+if(s.timer<=0){
 
-   clearInterval(handle);
+clearInterval(handle);
 
-   answer(-1);
+answer(-1);
 
-  }
-
- },1000);
 }
+
+},1000);
+
+}
+
 
 function answer(i){
 
- if(s.answered)return;
+if(s.answered)
+return;
 
- s.answered=true;
+s.answered=true;
 
- clearInterval(handle);
+clearInterval(handle);
 
- let correct=s.question[2];
+let correct=
+s.question[2];
 
- let bs=[
-  ...document.querySelectorAll(".answer")
- ];
+let bs=[
+...document.querySelectorAll(".answer")
+];
 
- if(i>=0)
-  bs[i].classList.add(
-   i===correct?"correct":"wrong"
-  );
 
- bs[correct].classList.add("correct");
+if(i>=0){
 
- let ok=i===correct;
+bs[i].classList.add(
+i===correct
+?"correct"
+:"wrong"
+);
 
- let pts=
-  ok?(s.roundPoints||0):0;
-
- if(ok)
-  s.points+=pts;
-
- updateScore();
-
- feedback.classList.remove("hidden");
-
- feedback.textContent=
-  ok
-   ?"✅ Correto! +"+pts+" pontos."
-   :"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
-
- save();
-
- setTimeout(()=>{
-
-  s.round++;
-
-  save();
-
-  rollCard.classList.remove("hidden");
-
-  questionCard.classList.add("hidden");
-
-  dice.textContent="🎲";
-
-  diceResult.textContent="";
-
-  feedback.classList.add("hidden");
-
- },1300);
 }
+
+bs[correct]
+.classList
+.add("correct");
+
+
+let ok=
+i===correct;
+
+
+/*
+ACERTO:
+ganha exatamente o valor do dado.
+*/
+
+let pts=
+ok
+?s.dice
+:0;
+
+
+if(ok){
+
+s.points+=pts;
+
+}
+
+
+updateScore();
+
+feedback.classList.remove("hidden");
+
+
+if(ok){
+
+feedback.textContent=
+"✅ Correto! Você ganhou "+
+pts+
+" ponto"+
+(pts===1?"":"s")+".";
+
+}
+else{
+
+feedback.textContent=
+"❌ Incorreto ou tempo esgotado. "+
+"Você não ganhou os pontos desta rodada.";
+
+}
+
+
+save();
+
+
+setTimeout(()=>{
+
+s.round++;
+
+save();
+
+rollCard.classList.remove("hidden");
+
+questionCard.classList.add("hidden");
+
+dice.textContent="🎲";
+
+diceResult.textContent="";
+
+feedback.classList.add("hidden");
+
+},1300);
+
+}
+
 
 function copyRef(){
 
- navigator.clipboard?.writeText(refLink.value);
+navigator.clipboard
+?.writeText(refLink.value);
 
- refMsg.textContent="Link copiado!";
+refMsg.textContent=
+"Link copiado!";
+
 }
+
 
 async function shareRef(){
 
- if(navigator.share)
+if(navigator.share){
 
-  await navigator.share({
-   title:"QuizUp",
-   text:"Venha jogar QuizUp comigo!",
-   url:refLink.value
-  });
+await navigator.share({
 
- else
-  copyRef();
+title:"QuizUp",
+
+text:"Venha jogar QuizUp comigo!",
+
+url:refLink.value
+
+});
+
 }
+else{
+
+copyRef();
+
+}
+
+}
+
 
 function payFields(){
 
- let p=payMethod.value==="pix";
+let p=
+payMethod.value==="pix";
 
- pix.classList.toggle("hidden",!p);
+pix.classList.toggle(
+"hidden",
+!p
+);
 
- paypal.classList.toggle("hidden",p);
+paypal.classList.toggle(
+"hidden",
+p
+);
+
 }
+
 
 function need(v){
 
- return v==="10"
-  ?11000
-  :v==="5"
-  ?6000
-  :2000;
+return v==="10"
+?11000
+:v==="5"
+?6000
+:2000;
+
 }
+
 
 function withdraw(){
 
- let v=withdrawAmount.value,
-     n=need(v),
-     method=payMethod.value,
-     k=
-      method==="pix"
-       ?pixKey.value.trim()
-       :paypalKey.value.trim();
+let v=
+withdrawAmount.value;
 
- if(!k){
+let n=
+need(v);
 
-  alert("Preencha o dado de pagamento.");
+let method=
+payMethod.value;
 
-  return;
- }
+let k=
+method==="pix"
+?pixKey.value.trim()
+:paypalKey.value.trim();
 
- cashMsg.classList.remove("hidden");
 
- if(s.points<n){
+if(!k){
 
-  cashMsg.textContent=
-   "Pontos insuficientes. Você precisa de "+
-   n+" pontos.";
+alert(
+"Preencha o dado de pagamento."
+);
 
-  return;
- }
+return;
 
- let arr=
-  JSON.parse(
-   localStorage.getItem(
-    "quizup_withdrawals"
-   )||"[]"
-  );
-
- arr.push({
-
-  email:s.email,
-  value:v,
-  method:method,
-  date:new Date().toISOString()
-
- });
-
- localStorage.setItem(
-  "quizup_withdrawals",
-  JSON.stringify(arr)
- );
-
- cashMsg.textContent=
-  "Solicitação registrada. O pagamento real será processado quando o sistema de pagamentos estiver conectado.";
 }
+
+
+cashMsg.classList.remove("hidden");
+
+
+if(s.points<n){
+
+cashMsg.textContent=
+"Pontos insuficientes. Você precisa de "+
+n+
+" pontos.";
+
+return;
+
+}
+
+
+let arr=
+JSON.parse(
+localStorage.getItem(
+"quizup_withdrawals"
+)||"[]"
+);
+
+
+arr.push({
+
+email:s.email,
+
+value:v,
+
+method:method,
+
+date:
+new Date().toISOString()
+
+});
+
+
+localStorage.setItem(
+"quizup_withdrawals",
+JSON.stringify(arr)
+);
+
+
+cashMsg.textContent=
+"Solicitação registrada. O pagamento real será processado quando o sistema de pagamentos estiver conectado.";
+
+}
+
 
 (function(){
 
- let k=
-  Object.keys(localStorage).find(
-   k=>
-    k.startsWith("quizup_") &&
-    !k.includes("withdrawals")
-  );
+let k=
+Object.keys(localStorage)
+.find(k=>
+k.startsWith("quizup_")&&
+!k.includes("withdrawals")
+);
 
- if(k){
+if(k){
 
-  s=
-   JSON.parse(
-    localStorage.getItem(k)
-   );
+s=
+JSON.parse(
+localStorage.getItem(k)
+);
 
-  openGame();
- }
+openGame();
+
+}
 
 })();
 
 </script>
 
 </body>
-</html>
+  </html>
