@@ -64,7 +64,7 @@
   <p id="diceResult" class="result"></p>
  </div>
  <div id="questionCard" class="card hidden">
-  <div class="top"><b id="difficulty"></b><span class="timer">⏱️ <span id="time">20</span>s</span></div>
+  <div class="top"><b id="difficulty"></b><span class="timer">⏱️ <span id="time">5</span>s</span></div>
   <div class="bar"><div id="progress"></div></div>
   <h2 id="question"></h2>
   <div id="answers" class="answers"></div>
@@ -121,14 +121,26 @@ medium:[
 ["Qual é o resultado de 15² − 10²?",["125","150","175","225"],0],
 ["Qual destes números é primo?",["21","27","29","33"],2],
 ["Se 3x + 7 = 25, qual é o valor de x?",["4","5","6","7"],1],
-["Qual continente tem a maior área?",["África","Ásia","Europa","América do Sul"],1]
+["Qual continente tem a maior área?",["África","Ásia","Europa","América do Sul"],1],
+["Qual é o resultado de 17 × 6 − 14?",["78","88","90","102"],1],
+["Se 5x − 9 = 31, qual é o valor de x?",["6","7","8","9"],2],
+["Qual é a soma dos ângulos internos de um hexágono?",["540°","600°","720°","900°"],2],
+["Qual órgão produz a maior parte da bile?",["Pâncreas","Fígado","Rim","Estômago"],1],
+["Qual é a fórmula química do ácido sulfúrico?",["HCl","H₂SO₄","HNO₃","NaOH"],1],
+["Em qual camada da atmosfera ocorre a maior parte dos fenômenos meteorológicos?",["Troposfera","Estratosfera","Mesosfera","Termosfera"],0]
 ],
 hard:[
 ["Qual é a raiz quadrada de 144?",["10","11","12","14"],2],
 ["Qual é o maior país do mundo em área?",["China","Canadá","Brasil","Rússia"],3],
 ["Em que ano terminou a Segunda Guerra Mundial?",["1943","1944","1945","1946"],2],
 ["Qual é o elemento químico de número atômico 6?",["Oxigênio","Carbono","Nitrogênio","Ferro"],1],
-["Qual é a velocidade aproximada da luz no vácuo?",["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],1]
+["Qual é a velocidade aproximada da luz no vácuo?",["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],1],
+["Qual é a derivada de x³ − 4x em relação a x?",["3x² − 4","x² − 4","3x − 4","3x² + 4"],0],
+["Qual processo celular produz a maior parte do ATP em condições aeróbicas?",["Fermentação","Glicólise","Fosforilação oxidativa","Transcrição"],2],
+["Qual é o pH aproximado de uma solução neutra a 25 °C?",["0","5","7","14"],2],
+["Qual é a principal função dos ribossomos?",["Armazenar DNA","Produzir proteínas","Produzir lipídios","Degradar glicose"],1],
+["Qual destes números é irracional?",["0,25","3/4","√2","1,5"],2],
+["Em genética, qual molécula normalmente leva a informação do DNA para o ribossomo?",["RNA mensageiro","ATP","Lipídio","Glicogênio"],0]
 ]};
 let s={email:"",name:"",cpf:"",points:0,round:1,code:"",referrer:"",dice:0,question:null,questionKey:"",recentQuestions:[],timer:20,answered:false,tenCooldown:0},handle;
 
@@ -219,7 +231,7 @@ function rollDice(){
  questionCard.classList.remove("hidden");
  startTimer();
 }
-function startTimer(){s.timer=20;time.textContent=20;handle=setInterval(()=>{s.timer--;time.textContent=s.timer;if(s.timer<=0){clearInterval(handle);answer(-1)}},1000)}
+function startTimer(){s.timer=5;time.textContent=5;handle=setInterval(()=>{s.timer--;time.textContent=s.timer;if(s.timer<=0){clearInterval(handle);answer(-1)}},1000)}
 function answer(i){
  if(s.answered)return;
  s.answered=true;
@@ -268,4 +280,4 @@ function withdraw(){
 (function(){let k=Object.keys(localStorage).find(k=>k.startsWith("quizup_")&&!k.includes("withdrawals"));if(k){s=JSON.parse(localStorage.getItem(k));openGame()}})();
 </script>
 </body>
-</html>
+                                                 </html>
