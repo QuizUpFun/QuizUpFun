@@ -117,7 +117,11 @@ medium:[
 ["Quanto é 12 × 8?",["86","96","108","112"],1],
 ["Qual gás é mais abundante na atmosfera?",["Oxigênio","Nitrogênio","Hélio","Hidrogênio"],1],
 ["Quem escreveu Dom Casmurro?",["Machado de Assis","José de Alencar","Clarice Lispector","Cecília Meireles"],0],
-["Qual é o símbolo químico do ouro?",["Ag","Fe","Au","Cu"],2]
+["Qual é o símbolo químico do ouro?",["Ag","Fe","Au","Cu"],2],
+["Qual é o resultado de 15² − 10²?",["125","150","175","225"],0],
+["Qual destes números é primo?",["21","27","29","33"],2],
+["Se 3x + 7 = 25, qual é o valor de x?",["4","5","6","7"],1],
+["Qual continente tem a maior área?",["África","Ásia","Europa","América do Sul"],1]
 ],
 hard:[
 ["Qual é a raiz quadrada de 144?",["10","11","12","14"],2],
@@ -126,7 +130,7 @@ hard:[
 ["Qual é o elemento químico de número atômico 6?",["Oxigênio","Carbono","Nitrogênio","Ferro"],1],
 ["Qual é a velocidade aproximada da luz no vácuo?",["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],1]
 ]};
-let s={email:"",points:0,round:1,code:"",referrer:"",dice:0,question:null,timer:20,answered:false},handle;
+let s={email:"",name:"",cpf:"",points:0,round:1,code:"",referrer:"",dice:0,question:null,questionKey:"",recentQuestions:[],timer:20,answered:false,tenCooldown:0},handle;
 
 function key(){return "quizup_"+s.email}
 function save(){localStorage.setItem(key(),JSON.stringify(s));ui()}
@@ -135,7 +139,7 @@ function register(){
  let e=rEmail.value.trim().toLowerCase(),p=rPass.value;
  if(!e||!p||!rName.value.trim()||!rCpf.value.trim()){alert("Preencha e-mail, senha, nome completo e CPF.");return}
  if(localStorage.getItem("quizup_"+e)){alert("Essa conta já existe. Use Entrar.");return}
- s={email:e,name:rName.value.trim(),cpf:rCpf.value.trim(),points:0,round:1,code:"QU"+Math.random().toString(36).slice(2,8).toUpperCase(),referrer:new URLSearchParams(location.search).get("ref")||"",dice:0,question:null,timer:20,answered:false};
+ s={email:e,name:rName.value.trim(),cpf:rCpf.value.trim(),points:0,round:1,questionKey:"",recentQuestions:[],tenCooldown:0,code:"QU"+Math.random().toString(36).slice(2,8).toUpperCase(),referrer:new URLSearchParams(location.search).get("ref")||"",dice:0,question:null,timer:20,answered:false};
  save();openGame();
 }
 function login(){
@@ -153,44 +157,52 @@ function updateScore(){
  document.querySelectorAll("#score").forEach(el=>el.textContent=n);
  document.querySelectorAll("#round").forEach(el=>el.textContent=s.round||1);
 }
+function pickQuestion(list, category){
+  // Evita repetir a pergunta imediatamente. Uma pergunta errada fica
+  // algumas rodadas fora e pode voltar mais tarde.
+  const recent = s.recentQuestions || [];
+  const available = list.filter((q,idx)=>{
+    const key=category+":"+q[0];
+    return !recent.includes(key);
+  });
+  const pool=available.length?available:list;
+  const q=pool[Math.floor(Math.random()*pool.length)];
+  s.questionKey=category+":"+q[0];
+  s.recentQuestions=[...(recent||[]),s.questionKey].slice(-4);
+  return q;
+}
+
 function rollDice(){
  clearInterval(handle);
  s.answered=false;
 
- // Distribuição controlada:
- // 1–4 = 80% | 5–7 = 15% | 8–10 = 5%.
- // O mesmo número não repete em seguida e o 10 tem intervalo mínimo.
+ // 1–4 são muito mais frequentes. 5–7 aparecem menos e 8–10 são raros.
  let choices=[];
  const r=Math.random();
-
- if(r<0.80) choices=[1,2,3,4];
- else if(r<0.95) choices=[5,6,7];
+ if(r<0.82) choices=[1,2,3,4];
+ else if(r<0.97) choices=[5,6,7];
  else choices=[8,9,10];
 
- // Evita repetir o mesmo dado consecutivamente.
  choices=choices.filter(n=>n!==s.dice);
-
- // O 10 fica raro: depois de sair, só pode voltar após 9 novas rodadas.
  if(s.tenCooldown>0) choices=choices.filter(n=>n!==10);
-
- // Se não sobrar opção, usa 1–4.
  if(!choices.length) choices=[1,2,3,4].filter(n=>n!==s.dice);
  if(!choices.length) choices=[1,2,3,4];
 
  s.dice=choices[Math.floor(Math.random()*choices.length)];
-
  if(s.dice===10) s.tenCooldown=9;
  else if(s.tenCooldown>0) s.tenCooldown--;
 
- // Pontos da rodada conforme o dado.
  const pointsByDice={1:5,2:10,3:15,4:20,5:30,6:35,7:40,8:50,9:60,10:75};
  s.roundPoints=pointsByDice[s.dice];
 
  dice.textContent="🎲 "+s.dice;
  diceResult.textContent="Você tirou "+s.dice+" • Esta pergunta vale "+s.roundPoints+" pontos";
 
+ // A partir do dado 5, usa perguntas mais difíceis.
+ // 1–4 = fácil; 5–7 = médio mais difícil; 8–10 = difícil.
  let list=s.dice<=4?Q.easy:s.dice<=7?Q.medium:Q.hard;
- s.question=list[Math.floor(Math.random()*list.length)];
+ let category=s.dice<=4?"easy":s.dice<=7?"medium":"hard";
+ s.question=pickQuestion(list,category);
 
  difficulty.textContent="Dado: "+s.dice;
  question.textContent=s.question[0];
@@ -202,7 +214,6 @@ function rollDice(){
    b.onclick=()=>answer(i);
    answers.appendChild(b);
  });
-
  updateScore();
  rollCard.classList.add("hidden");
  questionCard.classList.remove("hidden");
