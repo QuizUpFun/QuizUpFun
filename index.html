@@ -234,6 +234,17 @@ select{
 
 <body>
 
+<!-- =====================================================
+     MÚSICA DO QUIZUP
+====================================================== -->
+
+<audio
+  id="backgroundMusic"
+  src="música.mp3"
+  loop
+  preload="auto">
+</audio>
+
 <div class="wrap">
 
 <div class="logo">
@@ -299,6 +310,7 @@ Login
 📝 Cadastro
 </h2>
 
+
 <label>
 E-mail
 </label>
@@ -359,6 +371,7 @@ class="hidden">
 <h2>
 🔐 Login
 </h2>
+
 
 <label>
 E-mail
@@ -873,8 +886,63 @@ Quero ser Premium
 <script>
 
 /* =====================================================
+   MÚSICA
+===================================================== */
+
+const backgroundMusic =
+document.getElementById("backgroundMusic");
+
+backgroundMusic.volume = 0.35;
+
+
+/*
+   O navegador do celular pode bloquear
+   autoplay. Por isso tentamos iniciar
+   a música na primeira interação.
+*/
+
+function startMusic(){
+
+  if(
+    backgroundMusic.paused
+  ){
+
+    backgroundMusic
+      .play()
+      .catch(
+        ()=>{}
+      );
+
+  }
+
+}
+
+
+/*
+   Primeira interação do usuário
+*/
+
+document.addEventListener(
+  "click",
+  startMusic,
+  {
+    once:true
+  }
+);
+
+document.addEventListener(
+  "touchstart",
+  startMusic,
+  {
+    once:true,
+    passive:true
+  }
+);
+
+
+/* =====================================================
    PERGUNTAS
-====================================================== */
+===================================================== */
 
 const Q = {
 
@@ -1310,6 +1378,8 @@ openGame();
 
 function openGame(){
 
+startMusic();
+
 document
 .getElementById("auth")
 .classList
@@ -1484,6 +1554,8 @@ return q;
 ===================================================== */
 
 function rollDice(){
+
+startMusic();
 
 clearInterval(handle);
 
@@ -2092,4 +2164,4 @@ console.log(e);
 </script>
 
 </body>
-     </html>
+</html>
