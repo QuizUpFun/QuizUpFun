@@ -1,62 +1,48 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width,initial-scale=1">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QuizUp</title>
 
-
-<!-- =====================================================
-     MONETAG — IN-PAGE PUSH
-===================================================== -->
-
+<!-- MONETAG — IN-PAGE PUSH -->
 <script>
 (function(s){
   s.dataset.zone='11646165';
   s.src='https://nap5k.com/tag.min.js';
 })([document.documentElement, document.body]
-  .filter(Boolean)
-  .pop()
+  .filter(Boolean).pop()
   .appendChild(document.createElement('script')));
 </script>
 
-
 <style>
-
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
   font-family:Arial,sans-serif;
   background:linear-gradient(135deg,#101936,#25105e);
   color:#fff;
-  min-height:100vh;
+  min-height:100vh
 }
 
 .wrap{
   max-width:760px;
   margin:auto;
-  padding:16px;
+  padding:16px
 }
 
 .logo{
   text-align:center;
   font-size:42px;
   font-weight:900;
-  margin:10px;
+  margin:10px
 }
 
 .sub{
   text-align:center;
   opacity:.8;
-  margin-bottom:16px;
+  margin-bottom:16px
 }
 
 .card{
@@ -64,11 +50,11 @@ body{
   border:1px solid rgba(255,255,255,.15);
   border-radius:20px;
   padding:20px;
-  margin:14px 0;
+  margin:14px 0
 }
 
 .hidden{
-  display:none!important;
+  display:none!important
 }
 
 button{
@@ -76,102 +62,100 @@ button{
   border-radius:12px;
   padding:13px 16px;
   font-weight:700;
-  cursor:pointer;
+  cursor:pointer
 }
 
 button:disabled{
-  opacity:.5;
+  opacity:.5
 }
 
 .primary{
   background:#ffd43b;
-  color:#171717;
+  color:#171717
 }
 
 .light{
   background:#fff;
-  color:#171717;
+  color:#171717
 }
 
 .ghost{
   background:rgba(255,255,255,.12);
-  color:#fff;
+  color:#fff
 }
 
-.top,
-.row{
+.top,.row{
   display:flex;
   gap:10px;
   align-items:center;
   justify-content:space-between;
-  flex-wrap:wrap;
+  flex-wrap:wrap
 }
 
 .stat{
   padding:10px 14px;
   background:rgba(255,255,255,.1);
-  border-radius:12px;
+  border-radius:12px
 }
 
 .nav{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:8px;
+  gap:8px
 }
 
 .dice{
   font-size:90px;
   text-align:center;
   line-height:1.1;
-  margin:8px;
+  margin:8px
 }
 
 .roll{
   display:block;
   margin:auto;
-  font-size:18px;
+  font-size:18px
 }
 
 .result{
   text-align:center;
   font-size:21px;
-  font-weight:800;
+  font-weight:800
 }
 
 .answers{
   display:grid;
-  gap:10px;
+  gap:10px
 }
 
 .answer{
   background:#fff;
   color:#111;
   text-align:left;
-  width:100%;
+  width:100%
 }
 
 .answer.correct{
-  outline:4px solid #4ade80;
+  outline:4px solid #4ade80
 }
 
 .answer.wrong{
-  outline:4px solid #fb7185;
+  outline:4px solid #fb7185
 }
 
-input,
-select{
+input,select{
   width:100%;
   padding:13px;
   border:0;
   border-radius:10px;
   margin:5px 0 12px;
-  font-size:16px;
+  font-size:16px
 }
 
 .timer{
   text-align:center;
   font-size:22px;
-  font-weight:800;
+  font-weight:800
 }
 
 .bar{
@@ -179,32 +163,32 @@ select{
   background:rgba(255,255,255,.15);
   border-radius:20px;
   overflow:hidden;
-  margin-top:12px;
+  margin-top:12px
 }
 
 .bar div{
   height:100%;
   background:#ffd43b;
   width:0;
-  transition:width .2s linear;
+  transition:width .2s linear
 }
 
 .notice{
   padding:12px;
   border-radius:12px;
   background:rgba(255,212,59,.12);
-  border:1px solid rgba(255,212,59,.3);
+  border:1px solid rgba(255,212,59,.3)
 }
 
 .small{
   font-size:13px;
-  opacity:.75;
+  opacity:.75
 }
 
 .tabs2{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:8px;
+  gap:8px
 }
 
 .adbox{
@@ -215,63 +199,61 @@ select{
   align-items:center;
   overflow:hidden;
   margin:12px auto;
-  border-radius:10px;
+  border-radius:10px
+}
+
+.auth-buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px
+}
+
+.forgot{
+  width:100%;
+  margin-top:10px;
+  background:#1988c7;
+  color:#fff
 }
 
 @media(max-width:560px){
 
-  .nav{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .dice{
-    font-size:75px;
-  }
-
-  .logo{
-    font-size:38px;
-  }
-
+.nav{
+  grid-template-columns:1fr 1fr
 }
 
-</style>
+.dice{
+  font-size:75px
+}
 
+.logo{
+  font-size:38px
+}
+
+}
+</style>
 </head>
 
-
 <body>
-
 
 <!-- =====================================================
      MÚSICA
 ===================================================== -->
 
-<audio
-  id="backgroundMusic"
-  preload="auto"
-  loop>
-
-  <source
-    src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
-    type="audio/mpeg">
-
+<audio id="backgroundMusic" preload="auto" loop>
+  <source src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3" type="audio/mpeg">
 </audio>
-
 
 <div class="wrap">
 
-
-<div class="logo">
-  QuizUp
-</div>
+<div class="logo">QuizUp</div>
 
 <div class="sub">
-  🎲 Jogue, responda e acumule pontos
+🎲 Jogue, responda e acumule pontos
 </div>
 
 
 <!-- =====================================================
-     ANÚNCIO BANNER
+     ANÚNCIO
 ===================================================== -->
 
 <div class="adbox">
@@ -295,28 +277,20 @@ atOptions={
      AUTENTICAÇÃO
 ===================================================== -->
 
-<section
-  id="auth"
-  class="card">
-
+<section id="auth" class="card">
 
 <div class="tabs2">
 
 <button
-  class="primary"
-  onclick="authMode('register')">
-
-  Cadastro
-
+class="primary"
+onclick="authMode('register')">
+Cadastro
 </button>
 
-
 <button
-  class="light"
-  onclick="authMode('login')">
-
-  Login
-
+class="light"
+onclick="authMode('login')">
+Login
 </button>
 
 </div>
@@ -328,60 +302,52 @@ atOptions={
 
 <div id="registerBox">
 
-<h2>
-  📝 Cadastro
-</h2>
+<h2>📝 Cadastro</h2>
 
-
-<label>
-  E-mail
-</label>
+<label>E-mail</label>
 
 <input
-  id="rEmail"
-  type="email"
-  placeholder="Seu e-mail">
+id="rEmail"
+type="email"
+placeholder="Seu e-mail"
+autocomplete="email">
 
 
-<label>
-  Senha
-</label>
-
-<input
-  id="rPass"
-  type="password"
-  placeholder="Sua senha">
-
-
-<label>
-  Nome completo
-</label>
+<label>Senha</label>
 
 <input
-  id="rName"
-  type="text"
-  placeholder="Seu nome completo">
+id="rPass"
+type="password"
+placeholder="Crie uma senha"
+autocomplete="new-password">
 
 
-<label>
-  CPF
-</label>
+<label>Nome completo</label>
 
 <input
-  id="rCpf"
-  type="text"
-  inputmode="numeric"
-  maxlength="14"
-  placeholder="000.000.000-00"
-  oninput="aplicarMascaraCPF(this)">
+id="rName"
+type="text"
+placeholder="Seu nome completo"
+autocomplete="name">
+
+
+<label>CPF</label>
+
+<input
+id="rCpf"
+type="text"
+inputmode="numeric"
+maxlength="14"
+placeholder="000.000.000-00"
+autocomplete="off"
+oninput="formatCpf(this)">
 
 
 <button
-  class="primary"
-  onclick="register()">
-
-  Cadastrar
-
+class="primary"
+style="width:100%"
+onclick="register()">
+Cadastrar
 </button>
 
 </div>
@@ -391,55 +357,101 @@ atOptions={
      LOGIN
 ===================================================== -->
 
-<div
-  id="loginBox"
-  class="hidden">
+<div id="loginBox" class="hidden">
 
+<h2>🔐 Login</h2>
 
-<h2>
-  🔐 Login
-</h2>
-
-
-<label>
-  E-mail
-</label>
+<label>E-mail</label>
 
 <input
-  id="lEmail"
-  type="email"
-  placeholder="Seu e-mail">
+id="lEmail"
+type="email"
+placeholder="Seu e-mail"
+autocomplete="email">
 
 
-<label>
-  Senha
-</label>
-
-<input
-  id="lPass"
-  type="password"
-  placeholder="Sua senha">
-
-
-<label>
-  CPF
-</label>
+<label>Senha</label>
 
 <input
-  id="lCpf"
-  type="text"
-  inputmode="numeric"
-  maxlength="14"
-  placeholder="000.000.000-00"
-  oninput="aplicarMascaraCPF(this)">
+id="lPass"
+type="password"
+placeholder="Sua senha"
+autocomplete="current-password">
 
 
 <button
-  class="primary"
-  onclick="login()">
+class="primary"
+style="width:100%"
+onclick="login()">
+Entrar
+</button>
 
-  Entrar
 
+<button
+class="forgot"
+onclick="showForgot()">
+Esqueci minha senha
+</button>
+
+</div>
+
+
+<!-- =====================================================
+     RECUPERAÇÃO DE SENHA
+===================================================== -->
+
+<div id="forgotBox" class="hidden">
+
+<h2>🔑 Recuperar senha</h2>
+
+<p class="small">
+Digite o e-mail e o CPF usados no cadastro.
+</p>
+
+
+<label>E-mail cadastrado</label>
+
+<input
+id="fEmail"
+type="email"
+placeholder="Seu e-mail"
+autocomplete="email">
+
+
+<label>CPF cadastrado</label>
+
+<input
+id="fCpf"
+type="text"
+inputmode="numeric"
+maxlength="14"
+placeholder="000.000.000-00"
+autocomplete="off"
+oninput="formatCpf(this)">
+
+
+<label>Nova senha</label>
+
+<input
+id="fPass"
+type="password"
+placeholder="Digite a nova senha"
+autocomplete="new-password">
+
+
+<button
+class="primary"
+style="width:100%"
+onclick="resetPassword()">
+Alterar senha
+</button>
+
+
+<button
+class="ghost"
+style="width:100%;margin-top:10px"
+onclick="backToLogin()">
+Voltar para o Login
 </button>
 
 </div>
@@ -447,66 +459,38 @@ atOptions={
 
 <p class="small">
 
-  Protótipo do QuizUp.
-  Pagamentos reais e dados pessoais
-  precisam de servidor seguro.
+Protótipo do QuizUp.
+Pagamentos reais e dados pessoais precisam de servidor seguro.
 
 </p>
 
-
 </section>
-
 
 
 <!-- =====================================================
      JOGO
 ===================================================== -->
 
-<section
-  id="game"
-  class="hidden">
+<section id="game" class="hidden">
 
-
-<!-- =====================================================
-     TOPO
-===================================================== -->
 
 <div class="top card">
 
-
 <div class="stat">
-
-⭐
-<span id="points">
-0
-</span>
-
-pontos
-
+⭐ <span id="points">0</span> pontos
 </div>
 
-
 <div class="stat">
-
-🎲 Rodada
-<span id="round">
-1
-</span>
-
+🎲 Rodada <span id="round">1</span>
 </div>
-
 
 <button
-  class="ghost"
-  onclick="logout()">
-
-  Sair
-
+class="ghost"
+onclick="logout()">
+Sair
 </button>
 
-
 </div>
-
 
 
 <!-- =====================================================
@@ -515,45 +499,31 @@ pontos
 
 <div class="nav">
 
-
 <button
-  class="ghost"
-  onclick="tab('quiz')">
-
-  🎲 Quiz
-
+class="ghost"
+onclick="tab('quiz')">
+🎲 Quiz
 </button>
 
-
 <button
-  class="ghost"
-  onclick="tab('ref')">
-
-  🎁 Indicação
-
+class="ghost"
+onclick="tab('ref')">
+🎁 Indicação
 </button>
 
-
 <button
-  class="ghost"
-  onclick="tab('cash')">
-
-  💸 Saque
-
+class="ghost"
+onclick="tab('cash')">
+💸 Saque
 </button>
 
-
 <button
-  class="ghost"
-  onclick="tab('premium')">
-
-  💎 Premium
-
+class="ghost"
+onclick="tab('premium')">
+💎 Premium
 </button>
-
 
 </div>
-
 
 
 <!-- =====================================================
@@ -563,81 +533,48 @@ pontos
 <div id="quizTab">
 
 
-<!-- DADO -->
-
-<div
-  id="rollCard"
-  class="card">
-
+<div id="rollCard" class="card">
 
 <h2 style="text-align:center">
-
-  Jogue o dado
-
+Jogue o dado
 </h2>
 
 
-<div
-  id="dice"
-  class="dice">
-
-  🎲
-
+<div id="dice" class="dice">
+🎲
 </div>
 
 
 <button
-  class="primary roll"
-  onclick="rollDice()">
-
-  JOGAR DADO
-
+class="primary roll"
+onclick="rollDice()">
+JOGAR DADO
 </button>
 
 
 <p
-  id="diceResult"
-  class="result">
-
+id="diceResult"
+class="result">
 </p>
-
 
 </div>
 
 
-
-<!-- =====================================================
-     PERGUNTA
-===================================================== -->
-
-<div
-  id="questionCard"
-  class="card hidden">
-
+<div id="questionCard" class="card hidden">
 
 <div class="top">
 
-<b>
-  Pergunta
-</b>
-
+<b>Pergunta</b>
 
 <span class="timer">
-
-⏱️
-<span id="time">
-5
-</span>s
-
+⏱️ <span id="time">5</span>s
 </span>
 
 </div>
 
 
 <div class="bar">
-
 <div id="progress"></div>
-
 </div>
 
 
@@ -645,43 +582,31 @@ pontos
 
 
 <div
-  id="answers"
-  class="answers">
-
+id="answers"
+class="answers">
 </div>
 
 
 <p
-  id="feedback"
-  class="notice hidden">
-
+id="feedback"
+class="notice hidden">
 </p>
 
 
 <div
-  style="
-  text-align:center;
-  font-size:28px;
-  font-weight:900;
-  margin-top:16px;
-  ">
+style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
 
 ⭐ Pontuação:
-
-<span id="totalScore">
-0
-</span>
+<span id="totalScore">0</span>
 
 </div>
-
 
 
 <!-- ANÚNCIO -->
 
 <div
-  id="answerAd"
-  class="adbox">
-
+id="answerAd"
+class="adbox">
 
 <script>
 atOptions={
@@ -693,40 +618,31 @@ atOptions={
 };
 </script>
 
-
 <script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
 
-
 </div>
-
 
 
 <div
-  id="rewardBox"
-  class="hidden"
-  style="margin-top:16px">
-
+id="rewardBox"
+class="hidden"
+style="margin-top:16px">
 
 <button
-  id="continueButton"
-  class="primary"
-  style="width:100%"
-  onclick="finishQuestion()">
+id="continueButton"
+class="primary"
+style="width:100%"
+onclick="finishQuestion()">
 
-  CONTINUAR
+CONTINUAR
 
 </button>
 
-
-</div>
-
-
 </div>
 
 </div>
 
 </div>
-
 
 
 <!-- =====================================================
@@ -734,57 +650,46 @@ atOptions={
 ===================================================== -->
 
 <div
-  id="refTab"
-  class="hidden card">
+id="refTab"
+class="hidden card">
 
-
-<h2>
-  🎁 Indicação
-</h2>
-
+<h2>🎁 Indicação</h2>
 
 <p>
 
-  Ganhe <b>50 pontos</b>
-  quando seu convidado atingir
-  <b>300 pontos</b>.
+Ganhe <b>50 pontos</b> quando seu convidado atingir
+<b>300 pontos</b>.
 
 </p>
 
 
 <input
-  id="refCode"
-  readonly>
+id="refCode"
+readonly>
 
 
 <input
-  id="refLink"
-  readonly>
+id="refLink"
+readonly>
 
 
 <button
-  class="primary"
-  onclick="copyRef()">
-
-  Copiar link
-
+class="primary"
+onclick="copyRef()">
+Copiar link
 </button>
 
 
 <button
-  class="light"
-  onclick="shareRef()">
-
-  Enviar link
-
+class="light"
+onclick="shareRef()">
+Enviar link
 </button>
 
 
 <p id="refMsg"></p>
 
-
 </div>
-
 
 
 <!-- =====================================================
@@ -792,135 +697,97 @@ atOptions={
 ===================================================== -->
 
 <div
-  id="cashTab"
-  class="hidden card">
+id="cashTab"
+class="hidden card">
 
-
-<h2>
-  💸 Saque
-</h2>
+<h2>💸 Saque</h2>
 
 
 <div class="notice">
 
-<b>Valores:</b>
-<br>
+<b>Valores:</b><br><br>
 
-2.000 pontos → R$ 1,00
-<br>
-
-6.000 pontos → R$ 5,00
-<br>
-
+2.000 pontos → R$ 1,00<br>
+6.000 pontos → R$ 5,00<br>
 11.000 pontos → R$ 10,00
 
 </div>
 
 
-
 <select
-  id="payMethod"
-  onchange="payFields()">
-
+id="payMethod"
+onchange="payFields()">
 
 <option value="pix">
-
-  Pix
-
+Pix
 </option>
-
 
 <option value="paypal">
-
-  PayPal
-
+PayPal
 </option>
 
-
 </select>
-
 
 
 <div id="pix">
 
-
 <input
-  id="pixKey"
-  placeholder="Chave Pix">
+id="pixKey"
+placeholder="Chave Pix">
 
 </div>
-
 
 
 <div
-  id="paypal"
-  class="hidden">
-
+id="paypal"
+class="hidden">
 
 <input
-  id="paypalKey"
-  type="email"
-  placeholder="E-mail PayPal">
+id="paypalKey"
+type="email"
+placeholder="E-mail PayPal">
 
 </div>
 
 
-
-<select
-  id="withdrawAmount">
-
+<select id="withdrawAmount">
 
 <option value="1">
-
-  R$ 1,00 — 2.000 pontos
-
+R$ 1,00 — 2.000 pontos
 </option>
-
 
 <option value="5">
-
-  R$ 5,00 — 6.000 pontos
-
+R$ 5,00 — 6.000 pontos
 </option>
-
 
 <option value="10">
-
-  R$ 10,00 — 11.000 pontos
-
+R$ 10,00 — 11.000 pontos
 </option>
-
 
 </select>
 
 
-
 <button
-  class="primary"
-  onclick="withdraw()">
-
-  Solicitar saque
-
+class="primary"
+onclick="withdraw()">
+Solicitar saque
 </button>
 
 
 <p
-  id="cashMsg"
-  class="notice hidden">
-
+id="cashMsg"
+class="notice hidden">
 </p>
 
 
 <p class="small">
 
-  Nesta versão o saque é apenas registrado.
-  O pagamento real ainda não está conectado.
+Nesta versão o saque é apenas registrado.
+O pagamento real ainda não está conectado.
 
 </p>
 
-
 </div>
-
 
 
 <!-- =====================================================
@@ -928,1620 +795,1421 @@ atOptions={
 ===================================================== -->
 
 <div
-  id="premiumTab"
-  class="hidden card">
+id="premiumTab"
+class="hidden card">
 
-
-<h2>
-  💎 Premium
-</h2>
-
+<h2>💎 Premium</h2>
 
 <p>
 
-  Área Premium preparada para receber
-  benefícios do QuizUp.
+Área Premium preparada para receber benefícios do QuizUp.
 
 </p>
 
 
 <button
-  class="primary"
-  onclick="alert('O pagamento Premium ainda será conectado.')">
+class="primary"
+onclick="alert('O pagamento Premium ainda será conectado.')">
 
-  Quero ser Premium
+Quero ser Premium
 
 </button>
 
-
 </div>
-
 
 </section>
 
-
 </div>
-
 
 
 <script>
 
-
-/* =====================================================
+/* =========================================================
    PERGUNTAS
-===================================================== */
+========================================================= */
 
-const Q = [
+const Q=[
 
-[
-  "Quanto é 2 + 2?",
-  ["3","4","5","6"],
-  1
-],
+["Quanto é 2 + 2?",["3","4","5","6"],1],
 
-[
-  "Qual é a capital do Brasil?",
-  ["Brasília","São Paulo","Salvador","Recife"],
-  0
-],
+["Qual é a capital do Brasil?",
+["Brasília","São Paulo","Salvador","Recife"],0],
 
-[
-  "Qual planeta é conhecido como Planeta Vermelho?",
-  ["Terra","Marte","Vênus","Saturno"],
-  1
-],
+["Qual planeta é conhecido como Planeta Vermelho?",
+["Terra","Marte","Vênus","Saturno"],1],
 
-[
-  "Quantos dias tem uma semana?",
-  ["5","6","7","8"],
-  2
-],
+["Quantos dias tem uma semana?",
+["5","6","7","8"],2],
 
-[
-  "Qual animal é conhecido como rei da selva?",
-  ["Tigre","Elefante","Leão","Urso"],
-  2
-],
+["Qual animal é conhecido como rei da selva?",
+["Tigre","Elefante","Leão","Urso"],2],
 
-[
-  "Quantos meses tem um ano?",
-  ["10","11","12","13"],
-  2
-],
+["Quantos meses tem um ano?",
+["10","11","12","13"],2],
 
-[
-  "Qual é a cor formada pela mistura de azul e amarelo?",
-  ["Verde","Roxo","Laranja","Rosa"],
-  0
-],
+["Qual é a cor formada pela mistura de azul e amarelo?",
+["Verde","Roxo","Laranja","Rosa"],0],
 
-[
-  "Qual é o maior planeta do Sistema Solar?",
-  ["Terra","Marte","Júpiter","Mercúrio"],
-  2
-],
+["Qual é o maior planeta do Sistema Solar?",
+["Terra","Marte","Júpiter","Mercúrio"],2],
 
-[
-  "Qual é o maior oceano da Terra?",
-  ["Atlântico","Índico","Pacífico","Ártico"],
-  2
-],
+["Qual é o maior oceano da Terra?",
+["Atlântico","Índico","Pacífico","Ártico"],2],
 
-[
-  "Quanto é 12 × 8?",
-  ["86","96","108","112"],
-  1
-],
+["Quanto é 12 × 8?",
+["86","96","108","112"],1],
 
-[
-  "Quem escreveu Dom Casmurro?",
-  [
-    "Machado de Assis",
-    "José de Alencar",
-    "Clarice Lispector",
-    "Cecília Meireles"
-  ],
-  0
-],
+["Quem escreveu Dom Casmurro?",
+["Machado de Assis","José de Alencar","Clarice Lispector","Cecília Meireles"],0],
 
-[
-  "Qual é o símbolo químico do ouro?",
-  ["Ag","Fe","Au","Cu"],
-  2
-],
+["Qual é o símbolo químico do ouro?",
+["Ag","Fe","Au","Cu"],2],
 
-[
-  "Qual destes números é primo?",
-  ["21","27","29","33"],
-  2
-],
+["Qual destes números é primo?",
+["21","27","29","33"],2],
 
-[
-  "Qual é a raiz quadrada de 144?",
-  ["10","11","12","14"],
-  2
-],
+["Qual é a raiz quadrada de 144?",
+["10","11","12","14"],2],
 
-[
-  "Qual é o maior país do mundo em área?",
-  ["China","Canadá","Brasil","Rússia"],
-  3
-],
+["Qual é o maior país do mundo em área?",
+["China","Canadá","Brasil","Rússia"],3],
 
-[
-  "Em que ano terminou a Segunda Guerra Mundial?",
-  ["1943","1944","1945","1946"],
-  2
-],
+["Em que ano terminou a Segunda Guerra Mundial?",
+["1943","1944","1945","1946"],2],
 
-[
-  "Qual é o elemento químico de número atômico 6?",
-  ["Oxigênio","Carbono","Nitrogênio","Ferro"],
-  1
-],
+["Qual é o elemento químico de número atômico 6?",
+["Oxigênio","Carbono","Nitrogênio","Ferro"],1],
 
-[
-  "Qual é a velocidade aproximada da luz no vácuo?",
-  [
-    "30 mil km/s",
-    "300 mil km/s",
-    "3 milhões km/s",
-    "3 mil km/s"
-  ],
-  1
-],
-
-[
-  "Qual é a derivada de x³ − 4x?",
-  [
-    "3x² − 4",
-    "x² − 4",
-    "3x − 4",
-    "3x² + 4"
-  ],
-  0
-]
+["Qual é a velocidade aproximada da luz no vácuo?",
+["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],1]
 
 ];
 
 
-
-/* =====================================================
+/* =========================================================
    ESTADO
-===================================================== */
+========================================================= */
 
-let s = {
+let s={
+email:"",
+password:"",
+name:"",
+cpf:"",
+points:0,
+round:1,
+code:"",
+referrer:"",
+dice:0,
+question:null,
+timer:5,
+answered:false,
+roundPoints:0
+};
 
-  email:"",
-  password:"",
-  name:"",
-  cpf:"",
+let handle=null;
 
-  points:0,
 
-  round:1,
+/* =========================================================
+   CPF
+========================================================= */
 
-  code:"",
+/*
+  Remove tudo que não for número.
+*/
 
-  referrer:"",
+function normalizeCpf(value){
 
-  dice:0,
+return String(value||"")
+.replace(/\D/g,"")
+.slice(0,11);
 
-  question:null,
+}
 
-  timer:5,
 
-  answered:false,
+/*
+  Mostra o CPF no formato:
+  000.000.000-00
+*/
 
-  roundPoints:0
+function formatCpf(input){
+
+let cpf=normalizeCpf(input.value);
+
+let formatted=cpf;
+
+if(cpf.length>3){
+
+formatted=
+cpf.substring(0,3)+
+"."+cpf.substring(3);
+
+}
+
+if(cpf.length>6){
+
+formatted=
+cpf.substring(0,3)+
+"."+
+cpf.substring(3,6)+
+"."+
+cpf.substring(6);
+
+}
+
+if(cpf.length>9){
+
+formatted=
+cpf.substring(0,3)+
+"."+
+cpf.substring(3,6)+
+"."+
+cpf.substring(6,9)+
+"-"+
+cpf.substring(9,11);
+
+}
+
+input.value=formatted;
+
+}
+
+
+/*
+  Verificação básica do CPF.
+*/
+
+function validCpf(value){
+
+let cpf=normalizeCpf(value);
+
+if(cpf.length!==11){
+return false;
+}
+
+if(/^(\d)\1{10}$/.test(cpf)){
+return false;
+}
+
+
+/* Primeiro dígito */
+
+let sum=0;
+
+for(let i=0;i<9;i++){
+
+sum+=Number(cpf[i])*(10-i);
+
+}
+
+let rest=sum%11;
+
+let digit1=rest<2?0:11-rest;
+
+if(digit1!==Number(cpf[9])){
+return false;
+}
+
+
+/* Segundo dígito */
+
+sum=0;
+
+for(let i=0;i<10;i++){
+
+sum+=Number(cpf[i])*(11-i);
+
+}
+
+rest=sum%11;
+
+let digit2=rest<2?0:11-rest;
+
+if(digit2!==Number(cpf[10])){
+return false;
+}
+
+return true;
+
+}
+
+
+/* =========================================================
+   MÚSICA
+========================================================= */
+
+function playMusic(){
+
+const music=
+document.getElementById("backgroundMusic");
+
+if(!music)return;
+
+music.volume=0.35;
+
+music.play()
+.then(()=>{
+
+console.log("🎵 Música iniciada dentro do jogo.");
+
+})
+.catch(error=>{
+
+console.log(
+"Não foi possível iniciar a música:",
+error
+);
+
+});
+
+}
+
+
+function stopMusic(){
+
+const music=
+document.getElementById("backgroundMusic");
+
+if(!music)return;
+
+music.pause();
+
+music.currentTime=0;
+
+}
+
+
+/* =========================================================
+   LOCAL STORAGE
+========================================================= */
+
+function key(){
+
+return "quizup_"+s.email;
+
+}
+
+
+function save(){
+
+if(!s.email)return;
+
+localStorage.setItem(
+key(),
+JSON.stringify(s)
+);
+
+ui();
+
+}
+
+
+/* =========================================================
+   TROCA DE MODO
+========================================================= */
+
+function authMode(m){
+
+stopMusic();
+
+document
+.getElementById("registerBox")
+.classList.toggle(
+"hidden",
+m!=="register"
+);
+
+document
+.getElementById("loginBox")
+.classList.toggle(
+"hidden",
+m!=="login"
+);
+
+document
+.getElementById("forgotBox")
+.classList.add("hidden");
+
+}
+
+
+/* =========================================================
+   CADASTRO
+========================================================= */
+
+function register(){
+
+stopMusic();
+
+
+let e=
+document
+.getElementById("rEmail")
+.value
+.trim()
+.toLowerCase();
+
+
+let p=
+document
+.getElementById("rPass")
+.value;
+
+
+let n=
+document
+.getElementById("rName")
+.value
+.trim();
+
+
+let cpf=
+normalizeCpf(
+document
+.getElementById("rCpf")
+.value
+);
+
+
+if(!e||!p||!n||!cpf){
+
+alert("Preencha todos os campos.");
+
+return;
+
+}
+
+
+if(!validCpf(cpf)){
+
+alert("Digite um CPF válido.");
+
+return;
+
+}
+
+
+if(p.length<6){
+
+alert("A senha precisa ter pelo menos 6 caracteres.");
+
+return;
+
+}
+
+
+if(localStorage.getItem("quizup_"+e)){
+
+alert("Essa conta já existe. Faça login.");
+
+return;
+
+}
+
+
+/*
+  Verifica se o CPF já está cadastrado
+  em outra conta.
+*/
+
+let cpfExists=false;
+
+Object.keys(localStorage)
+.forEach(k=>{
+
+if(
+k.startsWith("quizup_") &&
+!k.includes("withdrawals")
+){
+
+try{
+
+let account=
+JSON.parse(
+localStorage.getItem(k)
+);
+
+if(
+normalizeCpf(account.cpf)===cpf
+){
+
+cpfExists=true;
+
+}
+
+}catch(e){}
+
+}
+
+});
+
+
+if(cpfExists){
+
+alert("Este CPF já está cadastrado em uma conta.");
+
+return;
+
+}
+
+
+/*
+  NOVA CONTA SEMPRE COMEÇA COM ZERO.
+*/
+
+s={
+
+email:e,
+
+password:p,
+
+name:n,
+
+cpf:cpf,
+
+points:0,
+
+round:1,
+
+code:
+"QU"+
+Math.random()
+.toString(36)
+.slice(2,8)
+.toUpperCase(),
+
+referrer:
+new URLSearchParams(location.search)
+.get("ref")||"",
+
+dice:0,
+
+question:null,
+
+timer:5,
+
+answered:false,
+
+roundPoints:0
 
 };
 
 
-let handle = null;
+save();
 
-
-
-/* =====================================================
-   NORMALIZAR CPF
-===================================================== */
-
-function normalizarCPF(cpf){
-
-  return String(cpf || "")
-    .replace(/\D/g,"");
+openGame(true);
 
 }
 
 
-
-/* =====================================================
-   FORMATAR CPF
-===================================================== */
-
-function formatarCPF(cpf){
-
-  cpf = normalizarCPF(cpf);
-
-  if(cpf.length !== 11){
-
-    return cpf;
-
-  }
-
-  return cpf.replace(
-    /(\d{3})(\d{3})(\d{3})(\d{2})/,
-    "$1.$2.$3-$4"
-  );
-
-}
-
-
-
-/* =====================================================
-   MÁSCARA CPF
-===================================================== */
-
-function aplicarMascaraCPF(input){
-
-  let cpf =
-    normalizarCPF(input.value)
-    .slice(0,11);
-
-
-  if(cpf.length > 9){
-
-    cpf = cpf.replace(
-      /(\d{3})(\d{3})(\d{3})(\d{0,2})/,
-      "$1.$2.$3-$4"
-    );
-
-  }
-
-  else if(cpf.length > 6){
-
-    cpf = cpf.replace(
-      /(\d{3})(\d{3})(\d{0,3})/,
-      "$1.$2.$3"
-    );
-
-  }
-
-  else if(cpf.length > 3){
-
-    cpf = cpf.replace(
-      /(\d{3})(\d{0,3})/,
-      "$1.$2"
-    );
-
-  }
-
-
-  input.value = cpf;
-
-}
-
-
-
-/* =====================================================
-   MÚSICA
-===================================================== */
-
-function playMusic(){
-
-  const music =
-    document.getElementById("backgroundMusic");
-
-  if(!music){
-
-    return;
-
-  }
-
-
-  music.volume = 0.35;
-
-
-  music.play()
-    .then(()=>{
-
-      console.log(
-        "🎵 Música iniciada dentro do jogo."
-      );
-
-    })
-    .catch(error=>{
-
-      console.log(
-        "Não foi possível iniciar a música:",
-        error
-      );
-
-    });
-
-}
-
-
-
-/* =====================================================
-   PARAR MÚSICA
-===================================================== */
-
-function stopMusic(){
-
-  const music =
-    document.getElementById("backgroundMusic");
-
-  if(!music){
-
-    return;
-
-  }
-
-
-  music.pause();
-
-  music.currentTime = 0;
-
-}
-
-
-
-/* =====================================================
-   CHAVE DA CONTA
-===================================================== */
-
-function key(){
-
-  return "quizup_" + s.email;
-
-}
-
-
-
-/* =====================================================
-   SALVAR
-===================================================== */
-
-function save(){
-
-  localStorage.setItem(
-    key(),
-    JSON.stringify(s)
-  );
-
-  ui();
-
-}
-
-
-
-/* =====================================================
-   MODO CADASTRO / LOGIN
-===================================================== */
-
-function authMode(m){
-
-  stopMusic();
-
-
-  document
-    .getElementById("registerBox")
-    .classList
-    .toggle(
-      "hidden",
-      m !== "register"
-    );
-
-
-  document
-    .getElementById("loginBox")
-    .classList
-    .toggle(
-      "hidden",
-      m !== "login"
-    );
-
-}
-
-
-
-/* =====================================================
-   CADASTRO
-===================================================== */
-
-function register(){
-
-  stopMusic();
-
-
-  const e =
-    document
-      .getElementById("rEmail")
-      .value
-      .trim()
-      .toLowerCase();
-
-
-  const p =
-    document
-      .getElementById("rPass")
-      .value;
-
-
-  const n =
-    document
-      .getElementById("rName")
-      .value
-      .trim();
-
-
-  const cpfOriginal =
-    document
-      .getElementById("rCpf")
-      .value
-      .trim();
-
-
-  const cpf =
-    normalizarCPF(cpfOriginal);
-
-
-  if(!e || !p || !n || !cpf){
-
-    alert(
-      "Preencha todos os campos."
-    );
-
-    return;
-
-  }
-
-
-  if(cpf.length !== 11){
-
-    alert(
-      "Digite um CPF válido com 11 números."
-    );
-
-    return;
-
-  }
-
-
-  const contaExistente =
-    localStorage.getItem(
-      "quizup_" + e
-    );
-
-
-  if(contaExistente){
-
-    alert(
-      "Essa conta já existe."
-    );
-
-    return;
-
-  }
-
-
-  /*
-    CONTA NOVA COMEÇA COM ZERO
-  */
-
-  s = {
-
-    email:e,
-
-    password:p,
-
-    name:n,
-
-    cpf:cpf,
-
-    points:0,
-
-    round:1,
-
-    code:
-      "QU" +
-      Math.random()
-        .toString(36)
-        .slice(2,8)
-        .toUpperCase(),
-
-    referrer:
-      new URLSearchParams(location.search)
-        .get("ref") || "",
-
-    dice:0,
-
-    question:null,
-
-    timer:5,
-
-    answered:false,
-
-    roundPoints:0
-
-  };
-
-
-  save();
-
-
-  openGame(true);
-
-}
-
-
-
-/* =====================================================
+/* =========================================================
    LOGIN
-===================================================== */
+========================================================= */
 
 function login(){
 
-  stopMusic();
+stopMusic();
 
 
-  const e =
-    document
-      .getElementById("lEmail")
-      .value
-      .trim()
-      .toLowerCase();
+let e=
+document
+.getElementById("lEmail")
+.value
+.trim()
+.toLowerCase();
 
 
-  const p =
-    document
-      .getElementById("lPass")
-      .value;
+let p=
+document
+.getElementById("lPass")
+.value;
 
 
-  const cpfInput =
-    document.getElementById("lCpf");
+if(!e||!p){
 
+alert("Preencha e-mail e senha.");
 
-  const cpf =
-    normalizarCPF(
-      cpfInput
-        ? cpfInput.value
-        : ""
-    );
-
-
-  if(!e || !p){
-
-    alert(
-      "Preencha e-mail e senha."
-    );
-
-    return;
-
-  }
-
-
-  if(!cpfInput || !cpf){
-
-    alert(
-      "Digite seu CPF."
-    );
-
-    return;
-
-  }
-
-
-  const dados =
-    localStorage.getItem(
-      "quizup_" + e
-    );
-
-
-  if(!dados){
-
-    alert(
-      "Conta não encontrada."
-    );
-
-    return;
-
-  }
-
-
-  let conta;
-
-
-  try{
-
-    conta = JSON.parse(dados);
-
-  }
-
-  catch(error){
-
-    alert(
-      "Não foi possível carregar sua conta."
-    );
-
-    return;
-
-  }
-
-
-  /* =================================================
-     SENHA
-  ================================================= */
-
-  if(conta.password !== p){
-
-    alert(
-      "Senha incorreta."
-    );
-
-    return;
-
-  }
-
-
-  /* =================================================
-     CPF
-  ================================================= */
-
-  const cpfCadastrado =
-    normalizarCPF(conta.cpf);
-
-
-  if(cpfCadastrado !== cpf){
-
-    alert(
-      "CPF não confere com o cadastro."
-    );
-
-    return;
-
-  }
-
-
-  /*
-    Corrige contas antigas que estavam
-    armazenando o CPF com formatação.
-  */
-
-  conta.cpf =
-    cpfCadastrado;
-
-
-  s = conta;
-
-
-  save();
-
-
-  /*
-    Abre o jogo.
-  */
-
-  openGame(true);
+return;
 
 }
 
 
+let x=
+localStorage.getItem("quizup_"+e);
 
-/* =====================================================
+
+if(!x){
+
+alert("Conta não encontrada.");
+
+return;
+
+}
+
+
+let a;
+
+try{
+
+a=JSON.parse(x);
+
+}catch(error){
+
+alert("Não foi possível carregar sua conta.");
+
+return;
+
+}
+
+
+if(a.password!==p){
+
+alert("Senha incorreta.");
+
+return;
+
+}
+
+
+/*
+  Corrige CPF de contas antigas.
+*/
+
+if(a.cpf){
+
+a.cpf=
+normalizeCpf(a.cpf);
+
+}
+
+
+s=a;
+
+
+/*
+  Entra no jogo.
+*/
+
+openGame(true);
+
+
+/*
+  Música depois do clique no botão Entrar.
+*/
+
+playMusic();
+
+}
+
+
+/* =========================================================
+   ESQUECI A SENHA
+========================================================= */
+
+function showForgot(){
+
+stopMusic();
+
+document
+.getElementById("registerBox")
+.classList.add("hidden");
+
+document
+.getElementById("loginBox")
+.classList.add("hidden");
+
+document
+.getElementById("forgotBox")
+.classList.remove("hidden");
+
+}
+
+
+/* =========================================================
+   VOLTAR PARA LOGIN
+========================================================= */
+
+function backToLogin(){
+
+stopMusic();
+
+document
+.getElementById("forgotBox")
+.classList.add("hidden");
+
+document
+.getElementById("registerBox")
+.classList.add("hidden");
+
+document
+.getElementById("loginBox")
+.classList.remove("hidden");
+
+}
+
+
+/* =========================================================
+   RECUPERAR SENHA
+========================================================= */
+
+function resetPassword(){
+
+stopMusic();
+
+
+let email=
+document
+.getElementById("fEmail")
+.value
+.trim()
+.toLowerCase();
+
+
+let cpf=
+normalizeCpf(
+document
+.getElementById("fCpf")
+.value
+);
+
+
+let newPass=
+document
+.getElementById("fPass")
+.value;
+
+
+if(!email||!cpf||!newPass){
+
+alert("Preencha todos os campos.");
+
+return;
+
+}
+
+
+if(!validCpf(cpf)){
+
+alert("Digite um CPF válido.");
+
+return;
+
+}
+
+
+if(newPass.length<6){
+
+alert("A nova senha precisa ter pelo menos 6 caracteres.");
+
+return;
+
+}
+
+
+let k="quizup_"+email;
+
+let data=
+localStorage.getItem(k);
+
+
+if(!data){
+
+alert("E-mail não encontrado.");
+
+return;
+
+}
+
+
+let account;
+
+try{
+
+account=JSON.parse(data);
+
+}catch(e){
+
+alert("Não foi possível carregar a conta.");
+
+return;
+
+}
+
+
+/*
+  Comparação normalizada.
+  Isso permite:
+
+  123.456.789-00
+
+  e
+
+  12345678900
+
+  serem reconhecidos como o mesmo CPF.
+*/
+
+let registeredCpf=
+normalizeCpf(account.cpf);
+
+
+if(registeredCpf!==cpf){
+
+alert("CPF não confere com o cadastro.");
+
+return;
+
+}
+
+
+/*
+  Atualiza somente a senha.
+  Pontos e demais dados permanecem.
+*/
+
+account.password=newPass;
+
+account.cpf=registeredCpf;
+
+localStorage.setItem(
+k,
+JSON.stringify(account)
+);
+
+
+alert(
+"Senha alterada com sucesso! Agora faça login."
+);
+
+
+document
+.getElementById("fEmail")
+.value="";
+
+document
+.getElementById("fCpf")
+.value="";
+
+document
+.getElementById("fPass")
+.value="";
+
+
+backToLogin();
+
+}
+
+
+/* =========================================================
    ABRIR JOGO
-===================================================== */
+========================================================= */
 
 function openGame(startMusic=false){
 
-  document
-    .getElementById("auth")
-    .classList
-    .add("hidden");
+document
+.getElementById("auth")
+.classList.add("hidden");
+
+document
+.getElementById("game")
+.classList.remove("hidden");
+
+ui();
+
+tab("quiz");
 
 
-  document
-    .getElementById("game")
-    .classList
-    .remove("hidden");
+if(startMusic){
 
+playMusic();
 
-  ui();
-
-
-  tab("quiz");
-
-
-  /*
-    Música somente dentro do jogo.
-  */
-
-  if(startMusic){
-
-    playMusic();
-
-  }
+}
 
 }
 
 
-
-/* =====================================================
+/* =========================================================
    LOGOUT
-===================================================== */
+========================================================= */
 
 function logout(){
 
-  clearInterval(handle);
+clearInterval(handle);
 
+stopMusic();
 
-  stopMusic();
+document
+.getElementById("game")
+.classList.add("hidden");
 
+document
+.getElementById("auth")
+.classList.remove("hidden");
 
-  document
-    .getElementById("game")
-    .classList
-    .add("hidden");
-
-
-  document
-    .getElementById("auth")
-    .classList
-    .remove("hidden");
-
-
-  authMode("register");
+authMode("register");
 
 }
 
 
-
-/* =====================================================
+/* =========================================================
    UI
-===================================================== */
+========================================================= */
 
 function ui(){
 
-  const points =
-    document.getElementById("points");
+document
+.getElementById("points")
+.textContent=s.points;
 
-  const round =
-    document.getElementById("round");
+document
+.getElementById("round")
+.textContent=s.round;
 
-  const totalScore =
-    document.getElementById("totalScore");
+document
+.getElementById("totalScore")
+.textContent=s.points;
 
-  const refCode =
-    document.getElementById("refCode");
+document
+.getElementById("refCode")
+.value=s.code||"";
 
-  const refLink =
-    document.getElementById("refLink");
-
-
-  if(points){
-
-    points.textContent =
-      s.points;
-
-  }
-
-
-  if(round){
-
-    round.textContent =
-      s.round;
-
-  }
-
-
-  if(totalScore){
-
-    totalScore.textContent =
-      s.points;
-
-  }
-
-
-  if(refCode){
-
-    refCode.value =
-      s.code || "";
-
-  }
-
-
-  if(refLink){
-
-    refLink.value =
-      location.origin +
-      location.pathname +
-      "?ref=" +
-      encodeURIComponent(
-        s.code || ""
-      );
-
-  }
+document
+.getElementById("refLink")
+.value=
+location.origin+
+location.pathname+
+"?ref="+
+encodeURIComponent(s.code||"");
 
 }
 
 
-
-/* =====================================================
+/* =========================================================
    ABAS
-===================================================== */
+========================================================= */
 
 function tab(x){
 
-  [
-    "quiz",
-    "ref",
-    "cash",
-    "premium"
-  ]
-  .forEach(a=>{
+["quiz","ref","cash","premium"]
+.forEach(a=>{
 
-    document
-      .getElementById(a+"Tab")
-      .classList
-      .toggle(
-        "hidden",
-        a !== x
-      );
+document
+.getElementById(a+"Tab")
+.classList.toggle(
+"hidden",
+a!==x
+);
 
-  });
+});
 
 
-  if(x === "quiz"){
+if(x==="quiz"){
 
-    document
-      .getElementById("rollCard")
-      .classList
-      .remove("hidden");
+document
+.getElementById("rollCard")
+.classList.remove("hidden");
 
+document
+.getElementById("questionCard")
+.classList.add("hidden");
 
-    document
-      .getElementById("questionCard")
-      .classList
-      .add("hidden");
-
-  }
+}
 
 }
 
 
-
-/* =====================================================
-   ESCOLHER PERGUNTA
-===================================================== */
+/* =========================================================
+   PERGUNTA
+========================================================= */
 
 function pickQuestion(){
 
-  return Q[
-    Math.floor(
-      Math.random() * Q.length
-    )
-  ];
+return Q[
+Math.floor(
+Math.random()*Q.length
+)
+];
 
 }
 
 
-
-/* =====================================================
+/* =========================================================
    DADO
-===================================================== */
+========================================================= */
 
 function rollDice(){
 
-  const music =
-    document.getElementById(
-      "backgroundMusic"
-    );
+if(
+document
+.getElementById("backgroundMusic")
+.paused
+){
+
+playMusic();
+
+}
+
+clearInterval(handle);
+
+s.answered=false;
+
+let d;
 
 
-  /*
-    Se o navegador tiver bloqueado a música
-    anteriormente, tenta iniciar novamente
-    somente dentro do jogo.
-  */
+if(s.round%30===0){
 
-  if(
-    music &&
-    music.paused
-  ){
+d=
+Math.floor(
+Math.random()*3
+)+8;
 
-    playMusic();
+}
+else if(s.round%10===0){
 
-  }
+d=
+Math.floor(
+Math.random()*3
+)+5;
 
+}
+else{
 
-  clearInterval(handle);
-
-
-  s.answered = false;
-
-
-  let d;
-
-
-  if(s.round % 30 === 0){
-
-    d =
-      Math.floor(
-        Math.random() * 3
-      ) + 8;
-
-  }
-
-  else if(s.round % 10 === 0){
-
-    d =
-      Math.floor(
-        Math.random() * 3
-      ) + 5;
-
-  }
-
-  else{
-
-    d =
-      Math.floor(
-        Math.random() * 4
-      ) + 1;
-
-  }
-
-
-  s.dice = d;
-
-  s.roundPoints = d;
-
-  s.question =
-    pickQuestion();
-
-
-  document
-    .getElementById("dice")
-    .textContent =
-      "🎲 " + d;
-
-
-  document
-    .getElementById("diceResult")
-    .textContent =
-      "Você tirou " +
-      d +
-      " • Esta pergunta vale " +
-      d +
-      (
-        d === 1
-        ? " ponto"
-        : " pontos"
-      );
-
-
-  document
-    .getElementById("question")
-    .textContent =
-      s.question[0];
-
-
-  const answers =
-    document.getElementById(
-      "answers"
-    );
-
-
-  answers.innerHTML = "";
-
-
-  s.question[1]
-    .forEach((a,i)=>{
-
-      const b =
-        document.createElement(
-          "button"
-        );
-
-
-      b.className =
-        "answer";
-
-
-      b.textContent =
-        a;
-
-
-      b.onclick =
-        ()=>answer(i);
-
-
-      answers.appendChild(b);
-
-    });
-
-
-  document
-    .getElementById("rollCard")
-    .classList
-    .add("hidden");
-
-
-  document
-    .getElementById("questionCard")
-    .classList
-    .remove("hidden");
-
-
-  document
-    .getElementById("feedback")
-    .classList
-    .add("hidden");
-
-
-  document
-    .getElementById("rewardBox")
-    .classList
-    .add("hidden");
-
-
-  startTimer();
+d=
+Math.floor(
+Math.random()*4
+)+1;
 
 }
 
 
+s.dice=d;
 
-/* =====================================================
+s.roundPoints=d;
+
+s.question=pickQuestion();
+
+
+document
+.getElementById("dice")
+.textContent="🎲 "+d;
+
+
+document
+.getElementById("diceResult")
+.textContent=
+"Você tirou "+
+d+
+" • Esta pergunta vale "+
+d+
+(d===1?" ponto":" pontos");
+
+
+document
+.getElementById("question")
+.textContent=s.question[0];
+
+
+let answers=
+document.getElementById("answers");
+
+answers.innerHTML="";
+
+
+s.question[1].forEach((a,i)=>{
+
+let b=
+document.createElement("button");
+
+b.className="answer";
+
+b.textContent=a;
+
+b.onclick=()=>answer(i);
+
+answers.appendChild(b);
+
+});
+
+
+document
+.getElementById("rollCard")
+.classList.add("hidden");
+
+document
+.getElementById("questionCard")
+.classList.remove("hidden");
+
+document
+.getElementById("feedback")
+.classList.add("hidden");
+
+document
+.getElementById("rewardBox")
+.classList.add("hidden");
+
+
+startTimer();
+
+}
+
+
+/* =========================================================
    TIMER
-===================================================== */
+========================================================= */
 
 function startTimer(){
 
-  clearInterval(handle);
+clearInterval(handle);
+
+s.timer=5;
+
+document
+.getElementById("time")
+.textContent=5;
+
+document
+.getElementById("progress")
+.style.width="100%";
 
 
-  s.timer = 5;
+handle=setInterval(()=>{
+
+s.timer--;
+
+document
+.getElementById("time")
+.textContent=s.timer;
+
+document
+.getElementById("progress")
+.style.width=
+Math.max(
+0,
+s.timer/5*100
+)+"%";
 
 
-  document
-    .getElementById("time")
-    .textContent = 5;
+if(s.timer<=0){
 
+clearInterval(handle);
 
-  document
-    .getElementById("progress")
-    .style
-    .width = "100%";
+answer(-1);
 
+}
 
-  handle =
-    setInterval(()=>{
-
-      s.timer--;
-
-
-      document
-        .getElementById("time")
-        .textContent =
-          s.timer;
-
-
-      document
-        .getElementById("progress")
-        .style
-        .width =
-          Math.max(
-            0,
-            s.timer / 5 * 100
-          ) + "%";
-
-
-      if(s.timer <= 0){
-
-        clearInterval(handle);
-
-        answer(-1);
-
-      }
-
-    },1000);
+},1000);
 
 }
 
 
-
-/* =====================================================
+/* =========================================================
    RESPOSTA
-===================================================== */
+========================================================= */
 
 function answer(i){
 
-  if(s.answered){
+if(s.answered)return;
 
-    return;
+s.answered=true;
 
-  }
+clearInterval(handle);
 
+let c=s.question[2];
 
-  s.answered = true;
-
-
-  clearInterval(handle);
-
-
-  const c =
-    s.question[2];
+let bs=[
+...document.querySelectorAll(".answer")
+];
 
 
-  const bs = [
-    ...document.querySelectorAll(
-      ".answer"
-    )
-  ];
+if(i>=0&&bs[i]){
 
-
-  if(i >= 0 && bs[i]){
-
-    bs[i]
-      .classList
-      .add(
-        i === c
-        ? "correct"
-        : "wrong"
-      );
-
-  }
-
-
-  if(bs[c]){
-
-    bs[c]
-      .classList
-      .add("correct");
-
-  }
-
-
-  const ok =
-    i === c;
-
-
-  if(ok){
-
-    s.points +=
-      s.roundPoints;
-
-  }
-
-
-  ui();
-
-  save();
-
-
-  const feedback =
-    document.getElementById(
-      "feedback"
-    );
-
-
-  feedback
-    .classList
-    .remove("hidden");
-
-
-  feedback.textContent =
-    ok
-
-    ? "✅ Correto! Você ganhou " +
-      s.roundPoints +
-      " pontos!"
-
-    : "❌ Incorreto ou tempo esgotado. " +
-      "Seus pontos permanecem.";
-
-
-  document
-    .getElementById("rewardBox")
-    .classList
-    .remove("hidden");
+bs[i].classList.add(
+i===c?"correct":"wrong"
+);
 
 }
 
 
+if(bs[c]){
 
-/* =====================================================
+bs[c].classList.add("correct");
+
+}
+
+
+let ok=i===c;
+
+
+if(ok){
+
+s.points+=s.roundPoints;
+
+}
+
+
+ui();
+
+save();
+
+
+let feedback=
+document.getElementById("feedback");
+
+feedback.classList.remove("hidden");
+
+
+feedback.textContent=
+ok
+?"✅ Correto! Você ganhou "+
+s.roundPoints+
+" pontos!"
+:"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
+
+
+document
+.getElementById("rewardBox")
+.classList.remove("hidden");
+
+}
+
+
+/* =========================================================
    CONTINUAR
-===================================================== */
+========================================================= */
 
 function finishQuestion(){
 
-  document
-    .getElementById("questionCard")
-    .classList
-    .add("hidden");
+document
+.getElementById("questionCard")
+.classList.add("hidden");
 
+document
+.getElementById("rollCard")
+.classList.remove("hidden");
 
-  document
-    .getElementById("rollCard")
-    .classList
-    .remove("hidden");
+document
+.getElementById("dice")
+.textContent="🎲";
 
+document
+.getElementById("diceResult")
+.textContent="";
 
-  document
-    .getElementById("dice")
-    .textContent =
-      "🎲";
+s.round++;
 
-
-  document
-    .getElementById("diceResult")
-    .textContent =
-      "";
-
-
-  s.round++;
-
-
-  save();
+save();
 
 }
 
 
-
-/* =====================================================
-   COPIAR INDICAÇÃO
-===================================================== */
+/* =========================================================
+   INDICAÇÃO
+========================================================= */
 
 function copyRef(){
 
-  const link =
-    document
-      .getElementById("refLink")
-      .value;
+let link=
+document
+.getElementById("refLink")
+.value;
 
 
-  if(navigator.clipboard){
+if(navigator.clipboard){
 
-    navigator.clipboard
-      .writeText(link);
-
-  }
-
-
-  document
-    .getElementById("refMsg")
-    .textContent =
-      "Link copiado!";
+navigator.clipboard.writeText(link);
 
 }
 
 
+document
+.getElementById("refMsg")
+.textContent=
+"Link copiado!";
 
-/* =====================================================
-   COMPARTILHAR INDICAÇÃO
-===================================================== */
+}
+
 
 async function shareRef(){
 
-  const link =
-    document
-      .getElementById("refLink")
-      .value;
+let link=
+document
+.getElementById("refLink")
+.value;
 
 
-  if(navigator.share){
+if(navigator.share){
 
-    try{
+await navigator.share({
 
-      await navigator.share({
+title:"QuizUp",
 
-        title:"QuizUp",
+text:"Venha jogar QuizUp comigo!",
 
-        text:
-          "Venha jogar QuizUp comigo!",
+url:link
 
-        url:link
+});
 
-      });
+}
+else{
 
-    }
+copyRef();
 
-    catch(e){
-
-      console.log(e);
-
-    }
-
-  }
-
-  else{
-
-    copyRef();
-
-  }
+}
 
 }
 
 
-
-/* =====================================================
-   CAMPOS DE PAGAMENTO
-===================================================== */
+/* =========================================================
+   PAGAMENTO
+========================================================= */
 
 function payFields(){
 
-  const p =
-    document
-      .getElementById("payMethod")
-      .value === "pix";
+let p=
+document
+.getElementById("payMethod")
+.value==="pix";
 
 
-  document
-    .getElementById("pix")
-    .classList
-    .toggle(
-      "hidden",
-      !p
-    );
+document
+.getElementById("pix")
+.classList.toggle(
+"hidden",
+!p
+);
 
-
-  document
-    .getElementById("paypal")
-    .classList
-    .toggle(
-      "hidden",
-      p
-    );
+document
+.getElementById("paypal")
+.classList.toggle(
+"hidden",
+p
+);
 
 }
 
-
-
-/* =====================================================
-   PONTOS NECESSÁRIOS PARA SAQUE
-===================================================== */
 
 function need(v){
 
-  return v === "10"
-
-    ? 11000
-
-    : v === "5"
-
-    ? 6000
-
-    : 2000;
+return v==="10"
+?11000
+:v==="5"
+?6000
+:2000;
 
 }
 
 
-
-/* =====================================================
+/* =========================================================
    SAQUE
-===================================================== */
+========================================================= */
 
 function withdraw(){
 
-  const v =
-    document
-      .getElementById(
-        "withdrawAmount"
-      )
-      .value;
+let v=
+document
+.getElementById("withdrawAmount")
+.value;
+
+let n=need(v);
+
+let m=
+document
+.getElementById("payMethod")
+.value;
 
 
-  const n =
-    need(v);
+let k=
+(
+m==="pix"
+?
+document.getElementById("pixKey")
+:
+document.getElementById("paypalKey")
+)
+.value.trim();
 
 
-  const m =
-    document
-      .getElementById(
-        "payMethod"
-      )
-      .value;
+let msg=
+document.getElementById("cashMsg");
+
+msg.classList.remove("hidden");
 
 
-  const k =
-    (
-      m === "pix"
+if(!k){
 
-      ?
+msg.textContent=
+"Preencha o dado de pagamento.";
 
-      document
-        .getElementById("pixKey")
-
-      :
-
-      document
-        .getElementById("paypalKey")
-
-    )
-    .value
-    .trim();
-
-
-  const msg =
-    document
-      .getElementById(
-        "cashMsg"
-      );
-
-
-  msg
-    .classList
-    .remove("hidden");
-
-
-  if(!k){
-
-    msg.textContent =
-      "Preencha o dado de pagamento.";
-
-    return;
-
-  }
-
-
-  if(s.points < n){
-
-    msg.textContent =
-      "Pontos insuficientes. Você precisa de " +
-      n +
-      " pontos.";
-
-    return;
-
-  }
-
-
-  let a =
-    JSON.parse(
-      localStorage.getItem(
-        "quizup_withdrawals"
-      ) || "[]"
-    );
-
-
-  a.push({
-
-    email:s.email,
-
-    cpf:s.cpf,
-
-    value:v,
-
-    method:m,
-
-    payment:k,
-
-    date:
-      new Date()
-        .toISOString()
-
-  });
-
-
-  localStorage.setItem(
-    "quizup_withdrawals",
-    JSON.stringify(a)
-  );
-
-
-  msg.textContent =
-    "Solicitação registrada. " +
-    "O pagamento real será conectado posteriormente.";
+return;
 
 }
 
 
+if(s.points<n){
 
-/* =====================================================
+msg.textContent=
+"Pontos insuficientes. Você precisa de "+
+n+
+" pontos.";
+
+return;
+
+}
+
+
+let a=JSON.parse(
+
+localStorage.getItem(
+"quizup_withdrawals"
+)||"[]"
+
+);
+
+
+a.push({
+
+email:s.email,
+
+value:v,
+
+method:m,
+
+date:new Date().toISOString()
+
+});
+
+
+localStorage.setItem(
+"quizup_withdrawals",
+JSON.stringify(a)
+);
+
+
+msg.textContent=
+"Solicitação registrada. O pagamento real será conectado posteriormente.";
+
+}
+
+
+/* =========================================================
    INICIALIZAÇÃO
-===================================================== */
+========================================================= */
+
+/*
+  IMPORTANTE:
+
+  Não inicia música automaticamente.
+
+  Também NÃO abre o jogo automaticamente
+  só porque existe uma conta salva.
+
+  Assim, o usuário precisa entrar pelo Login.
+*/
 
 (function(){
 
-  /*
-    Não inicia música aqui.
-  */
+stopMusic();
 
-  stopMusic();
-
-
-  /*
-    Procura uma conta salva.
-  */
-
-  const k =
-    Object.keys(
-      localStorage
-    )
-    .find(key =>
-
-      key.startsWith(
-        "quizup_"
-      )
-
-      &&
-
-      !key.includes(
-        "withdrawals"
-      )
-
-  );
-
-
-  if(k){
-
-    try{
-
-      s =
-        JSON.parse(
-          localStorage.getItem(k)
-        );
-
-
-      /*
-        Corrige CPF de contas antigas.
-      */
-
-      if(s.cpf){
-
-        s.cpf =
-          normalizarCPF(s.cpf);
-
-      }
-
-
-      /*
-        Garante que contas antigas
-        tenham os campos necessários.
-      */
-
-      if(typeof s.points !== "number"){
-
-        s.points = 0;
-
-      }
-
-
-      if(typeof s.round !== "number"){
-
-        s.round = 1;
-
-      }
-
-
-      if(typeof s.roundPoints !== "number"){
-
-        s.roundPoints = 0;
-
-      }
-
-
-      openGame(false);
-
-
-      /*
-        NÃO chama playMusic() aqui.
-      */
-
-    }
-
-    catch(e){
-
-      console.log(
-        "Erro ao carregar conta:",
-        e
-      );
-
-    }
-
-  }
+authMode("register");
 
 })();
 
