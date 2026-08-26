@@ -17,135 +17,39 @@
 
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:linear-gradient(135deg,#101936,#25105e);
-  color:#fff;
-  min-height:100vh
-}
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#101936,#25105e);color:#fff;min-height:100vh}
 .wrap{max-width:760px;margin:auto;padding:16px}
 .logo{text-align:center;font-size:42px;font-weight:900;margin:10px}
 .sub{text-align:center;opacity:.8;margin-bottom:16px}
-.card{
-  background:rgba(255,255,255,.1);
-  border:1px solid rgba(255,255,255,.15);
-  border-radius:20px;
-  padding:20px;
-  margin:14px 0
-}
+.card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:20px;margin:14px 0}
 .hidden{display:none!important}
-button{
-  border:0;
-  border-radius:12px;
-  padding:13px 16px;
-  font-weight:700;
-  cursor:pointer
-}
+button{border:0;border-radius:12px;padding:13px 16px;font-weight:700;cursor:pointer}
 button:disabled{opacity:.5}
 .primary{background:#ffd43b;color:#171717}
 .light{background:#fff;color:#171717}
 .ghost{background:rgba(255,255,255,.12);color:#fff}
-.top,.row{
-  display:flex;
-  gap:10px;
-  align-items:center;
-  justify-content:space-between;
-  flex-wrap:wrap
-}
-.stat{
-  padding:10px 14px;
-  background:rgba(255,255,255,.1);
-  border-radius:12px
-}
-.nav{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px
-}
-.dice{
-  font-size:90px;
-  text-align:center;
-  line-height:1.1;
-  margin:8px
-}
-.roll{
-  display:block;
-  margin:auto;
-  font-size:18px
-}
-.result{
-  text-align:center;
-  font-size:21px;
-  font-weight:800
-}
-.answers{
-  display:grid;
-  gap:10px
-}
-.answer{
-  background:#fff;
-  color:#111;
-  text-align:left;
-  width:100%
-}
+.top,.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.stat{padding:10px 14px;background:rgba(255,255,255,.1);border-radius:12px}
+.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.dice{font-size:90px;text-align:center;line-height:1.1;margin:8px}
+.roll{display:block;margin:auto;font-size:18px}
+.result{text-align:center;font-size:21px;font-weight:800}
+.answers{display:grid;gap:10px}
+.answer{background:#fff;color:#111;text-align:left;width:100%}
 .answer.correct{outline:4px solid #4ade80}
 .answer.wrong{outline:4px solid #fb7185}
-input,select{
-  width:100%;
-  padding:13px;
-  border:0;
-  border-radius:10px;
-  margin:5px 0 12px;
-  font-size:16px
-}
-.timer{
-  text-align:center;
-  font-size:22px;
-  font-weight:800
-}
-.bar{
-  height:9px;
-  background:rgba(255,255,255,.15);
-  border-radius:20px;
-  overflow:hidden;
-  margin-top:12px
-}
-.bar div{
-  height:100%;
-  background:#ffd43b;
-  width:0;
-  transition:width .2s linear
-}
-.notice{
-  padding:12px;
-  border-radius:12px;
-  background:rgba(255,212,59,.12);
-  border:1px solid rgba(255,212,59,.3)
-}
-.small{
-  font-size:13px;
-  opacity:.75
-}
-.tabs2{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px
-}
-.adbox{
-  width:100%;
-  min-height:60px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  overflow:hidden;
-  margin:12px auto;
-  border-radius:10px
-}
+input,select{width:100%;padding:13px;border:0;border-radius:10px;margin:5px 0 12px;font-size:16px}
+.timer{text-align:center;font-size:22px;font-weight:800}
+.bar{height:9px;background:rgba(255,255,255,.15);border-radius:20px;overflow:hidden;margin-top:12px}
+.bar div{height:100%;background:#ffd43b;width:0;transition:width .2s linear}
+.notice{padding:12px;border-radius:12px;background:rgba(255,212,59,.12);border:1px solid rgba(255,212,59,.3)}
+.small{font-size:13px;opacity:.75}
+.tabs2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.adbox{width:100%;min-height:60px;display:flex;justify-content:center;align-items:center;overflow:hidden;margin:12px auto;border-radius:10px}
 @media(max-width:560px){
-  .nav{grid-template-columns:1fr 1fr}
-  .dice{font-size:75px}
-  .logo{font-size:38px}
+.nav{grid-template-columns:1fr 1fr}
+.dice{font-size:75px}
+.logo{font-size:38px}
 }
 </style>
 </head>
@@ -153,12 +57,8 @@ input,select{
 <body>
 
 <!--
-  ÁUDIO:
-  O arquivo deve estar na MESMA pasta do index.html:
-  92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3
-
-  A música NÃO toca na tela de cadastro/login.
-  Ela começa somente depois de um LOGIN bem-sucedido.
+  MÚSICA
+  O arquivo MP3 deve estar na mesma pasta do index.html.
 -->
 <audio id="backgroundMusic" preload="auto" loop>
   <source src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3" type="audio/mpeg">
@@ -191,6 +91,7 @@ atOptions={
 </div>
 
 <div id="registerBox">
+
 <h2>📝 Cadastro</h2>
 
 <label>E-mail</label>
@@ -204,26 +105,42 @@ atOptions={
 
 <label>CPF</label>
 <input
-  id="rCpf"
-  type="text"
-  inputmode="numeric"
-  maxlength="14"
-  placeholder="000.000.000-00"
->
+id="rCpf"
+type="text"
+inputmode="numeric"
+maxlength="14"
+placeholder="000.000.000-00">
 
-<button class="primary" onclick="register()">Cadastrar</button>
+<button
+class="primary"
+onclick="register()">
+Cadastrar
+</button>
+
 </div>
 
 <div id="loginBox" class="hidden">
+
 <h2>🔐 Login</h2>
 
 <label>E-mail</label>
-<input id="lEmail" type="email" placeholder="Seu e-mail">
+<input
+id="lEmail"
+type="email"
+placeholder="Seu e-mail">
 
 <label>Senha</label>
-<input id="lPass" type="password" placeholder="Sua senha">
+<input
+id="lPass"
+type="password"
+placeholder="Sua senha">
 
-<button class="primary" onclick="login()">Entrar</button>
+<button
+class="primary"
+onclick="login()">
+Entrar
+</button>
+
 </div>
 
 <p class="small">
@@ -231,6 +148,7 @@ Protótipo do QuizUp. Pagamentos reais e dados pessoais precisam de servidor seg
 </p>
 
 </section>
+
 
 <section id="game" class="hidden">
 
@@ -244,29 +162,43 @@ Protótipo do QuizUp. Pagamentos reais e dados pessoais precisam de servidor seg
 🎲 Rodada <span id="round">1</span>
 </div>
 
-<button class="ghost" onclick="logout()">Sair</button>
+<button
+class="ghost"
+onclick="logout()">
+Sair
+</button>
 
 </div>
 
+
 <div class="nav">
 
-<button class="ghost" onclick="tab('quiz')">
+<button
+class="ghost"
+onclick="tab('quiz')">
 🎲 Quiz
 </button>
 
-<button class="ghost" onclick="tab('ref')">
+<button
+class="ghost"
+onclick="tab('ref')">
 🎁 Indicação
 </button>
 
-<button class="ghost" onclick="tab('cash')">
+<button
+class="ghost"
+onclick="tab('cash')">
 💸 Saque
 </button>
 
-<button class="ghost" onclick="tab('premium')">
+<button
+class="ghost"
+onclick="tab('premium')">
 💎 Premium
 </button>
 
 </div>
+
 
 <div id="quizTab">
 
@@ -281,15 +213,18 @@ Jogue o dado
 </div>
 
 <button
-  class="primary roll"
-  onclick="rollDice()"
->
+class="primary roll"
+onclick="rollDice()">
 JOGAR DADO
 </button>
 
-<p id="diceResult" class="result"></p>
+<p
+id="diceResult"
+class="result">
+</p>
 
 </div>
+
 
 <div id="questionCard" class="card hidden">
 
@@ -311,19 +246,22 @@ JOGAR DADO
 
 <div id="answers" class="answers"></div>
 
-<p id="feedback" class="notice hidden"></p>
+<p
+id="feedback"
+class="notice hidden">
+</p>
 
-<div style="
-text-align:center;
-font-size:28px;
-font-weight:900;
-margin-top:16px
-">
+<div
+style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
+
 ⭐ Pontuação:
 <span id="totalScore">0</span>
+
 </div>
 
+
 <!-- ANÚNCIO APÓS A RESPOSTA -->
+
 <div id="answerAd" class="adbox">
 
 <script>
@@ -340,19 +278,20 @@ atOptions={
 
 </div>
 
+
 <div
-  id="rewardBox"
-  class="hidden"
-  style="margin-top:16px"
->
+id="rewardBox"
+class="hidden"
+style="margin-top:16px">
 
 <button
-  id="continueButton"
-  class="primary"
-  style="width:100%"
-  onclick="finishQuestion()"
->
+id="continueButton"
+class="primary"
+style="width:100%"
+onclick="finishQuestion()">
+
 CONTINUAR
+
 </button>
 
 </div>
@@ -360,6 +299,7 @@ CONTINUAR
 </div>
 
 </div>
+
 
 <div id="refTab" class="hidden card">
 
@@ -374,17 +314,22 @@ Ganhe <b>50 pontos</b> quando seu convidado atingir
 
 <input id="refLink" readonly>
 
-<button class="primary" onclick="copyRef()">
+<button
+class="primary"
+onclick="copyRef()">
 Copiar link
 </button>
 
-<button class="light" onclick="shareRef()">
+<button
+class="light"
+onclick="shareRef()">
 Enviar link
 </button>
 
 <p id="refMsg"></p>
 
 </div>
+
 
 <div id="cashTab" class="hidden card">
 
@@ -400,7 +345,10 @@ Enviar link
 
 </div>
 
-<select id="payMethod" onchange="payFields()">
+
+<select
+id="payMethod"
+onchange="payFields()">
 
 <option value="pix">
 Pix
@@ -412,24 +360,25 @@ PayPal
 
 </select>
 
+
 <div id="pix">
 
 <input
-  id="pixKey"
-  placeholder="Chave Pix"
->
+id="pixKey"
+placeholder="Chave Pix">
 
 </div>
+
 
 <div id="paypal" class="hidden">
 
 <input
-  id="paypalKey"
-  type="email"
-  placeholder="E-mail PayPal"
->
+id="paypalKey"
+type="email"
+placeholder="E-mail PayPal">
 
 </div>
+
 
 <select id="withdrawAmount">
 
@@ -447,11 +396,17 @@ R$ 10,00 — 11.000 pontos
 
 </select>
 
-<button class="primary" onclick="withdraw()">
+
+<button
+class="primary"
+onclick="withdraw()">
 Solicitar saque
 </button>
 
-<p id="cashMsg" class="notice hidden"></p>
+<p
+id="cashMsg"
+class="notice hidden">
+</p>
 
 <p class="small">
 Nesta versão o saque é apenas registrado.
@@ -459,6 +414,7 @@ O pagamento real ainda não está conectado.
 </p>
 
 </div>
+
 
 <div id="premiumTab" class="hidden card">
 
@@ -469,10 +425,11 @@ O pagamento real ainda não está conectado.
 </p>
 
 <button
-  class="primary"
-  onclick="alert('O pagamento Premium ainda será conectado.')"
->
+class="primary"
+onclick="alert('O pagamento Premium ainda será conectado.')">
+
 Quero ser Premium
+
 </button>
 
 </div>
@@ -481,7 +438,12 @@ Quero ser Premium
 
 </div>
 
+
 <script>
+
+/* =========================================================
+   PERGUNTAS
+   ========================================================= */
 
 const Q=[
 
@@ -543,8 +505,12 @@ const Q=[
 
 ];
 
-let s={
 
+/* =========================================================
+   ESTADO
+   ========================================================= */
+
+let s={
 email:"",
 password:"",
 name:"",
@@ -558,32 +524,39 @@ question:null,
 timer:5,
 answered:false,
 roundPoints:0
-
 };
 
 let handle=null;
 
 
-/* =========================
+/* =========================================================
    MÚSICA
-   ========================= */
+   ========================================================= */
+
+/*
+  A música NÃO é iniciada aqui.
+
+  Ela só é iniciada depois que o usuário
+  entra no jogo através do botão Login.
+*/
 
 function playMusic(){
 
-const music=document.getElementById("backgroundMusic");
+const music=
+document.getElementById("backgroundMusic");
 
 if(!music)return;
 
 music.volume=0.35;
 
-const promise=music.play();
+music.play().then(()=>{
 
-if(promise!==undefined){
+console.log("🎵 Música iniciada dentro do jogo.");
 
-promise.catch(function(error){
+}).catch(error=>{
 
 console.log(
-"Áudio bloqueado pelo navegador:",
+"Não foi possível iniciar a música:",
 error
 );
 
@@ -591,11 +564,15 @@ error
 
 }
 
-}
+
+/*
+  Para completamente a música.
+*/
 
 function stopMusic(){
 
-const music=document.getElementById("backgroundMusic");
+const music=
+document.getElementById("backgroundMusic");
 
 if(!music)return;
 
@@ -606,15 +583,16 @@ music.currentTime=0;
 }
 
 
-/* =========================
+/* =========================================================
    LOCAL STORAGE
-   ========================= */
+   ========================================================= */
 
 function key(){
 
 return "quizup_"+s.email;
 
 }
+
 
 function save(){
 
@@ -628,50 +606,63 @@ ui();
 }
 
 
-/* =========================
-   CADASTRO / LOGIN
-   ========================= */
+/* =========================================================
+   LOGIN / CADASTRO
+   ========================================================= */
 
 function authMode(m){
 
-document
-.getElementById("registerBox")
-.classList
-.toggle("hidden",m!=="register");
+/*
+  Garante que a música fique parada
+  enquanto estiver no cadastro/login.
+*/
 
-document
-.getElementById("loginBox")
-.classList
-.toggle("hidden",m!=="login");
+stopMusic();
+
+document.getElementById("registerBox")
+.classList.toggle(
+"hidden",
+m!=="register"
+);
+
+document.getElementById("loginBox")
+.classList.toggle(
+"hidden",
+m!=="login"
+);
 
 }
 
 
-/* CADASTRO
-   NÃO inicia música
-*/
+/* =========================================================
+   CADASTRO
+   ========================================================= */
 
 function register(){
 
-let e=document
-.getElementById("rEmail")
-.value
-.trim()
+/*
+  Garantia: cadastro nunca inicia música.
+*/
+
+stopMusic();
+
+let e=
+document.getElementById("rEmail")
+.value.trim()
 .toLowerCase();
 
-let p=document
-.getElementById("rPass")
+let p=
+document.getElementById("rPass")
 .value;
 
-let n=document
-.getElementById("rName")
-.value
-.trim();
+let n=
+document.getElementById("rName")
+.value.trim();
 
-let cpf=document
-.getElementById("rCpf")
-.value
-.trim();
+let cpf=
+document.getElementById("rCpf")
+.value.trim();
+
 
 if(!e||!p||!n||!cpf){
 
@@ -681,6 +672,7 @@ return;
 
 }
 
+
 if(localStorage.getItem("quizup_"+e)){
 
 alert("Essa conta já existe.");
@@ -689,14 +681,23 @@ return;
 
 }
 
+
+/*
+  NOVA CONTA COMEÇA ZERADA.
+*/
+
 s={
 
 email:e,
+
 password:p,
+
 name:n,
+
 cpf:cpf,
 
 points:0,
+
 round:1,
 
 code:
@@ -711,35 +712,47 @@ new URLSearchParams(location.search)
 .get("ref")||"",
 
 dice:0,
+
 question:null,
+
 timer:5,
+
 answered:false,
+
 roundPoints:0
 
 };
 
+
 save();
 
-openGame();
+openGame(true);
 
 }
 
 
-/* LOGIN
-   MÚSICA COMEÇA SOMENTE AQUI
-*/
+/* =========================================================
+   LOGIN
+   ========================================================= */
 
 function login(){
 
-let e=document
-.getElementById("lEmail")
-.value
-.trim()
+/*
+  Enquanto está no login,
+  a música continua desligada.
+*/
+
+stopMusic();
+
+let e=
+document.getElementById("lEmail")
+.value.trim()
 .toLowerCase();
 
-let p=document
-.getElementById("lPass")
+let p=
+document.getElementById("lPass")
 .value;
+
 
 if(!e||!p){
 
@@ -749,9 +762,10 @@ return;
 
 }
 
-let x=localStorage.getItem(
-"quizup_"+e
-);
+
+let x=
+localStorage.getItem("quizup_"+e);
+
 
 if(!x){
 
@@ -761,7 +775,21 @@ return;
 
 }
 
-let a=JSON.parse(x);
+
+let a;
+
+try{
+
+a=JSON.parse(x);
+
+}catch(error){
+
+alert("Não foi possível carregar sua conta.");
+
+return;
+
+}
+
 
 if(a.password!==p){
 
@@ -771,88 +799,110 @@ return;
 
 }
 
+
 s=a;
 
-openGame();
 
 /*
-  O usuário acabou de tocar em ENTRAR.
-  Agora o navegador permite iniciar o áudio.
+  PRIMEIRO abre o jogo.
 */
+
+openGame(true);
+
+
+/*
+  DEPOIS inicia a música.
+  Como esta função foi chamada pelo toque
+  do usuário no botão Entrar, o navegador
+  permite a reprodução.
+*/
+
 playMusic();
 
 }
 
 
-/* =========================
-   ABRIR / FECHAR JOGO
-   ========================= */
+/* =========================================================
+   ABRIR JOGO
+   ========================================================= */
 
-function openGame(){
+function openGame(startMusic=false){
 
-document
-.getElementById("auth")
-.classList
-.add("hidden");
+document.getElementById("auth")
+.classList.add("hidden");
 
-document
-.getElementById("game")
-.classList
-.remove("hidden");
+document.getElementById("game")
+.classList.remove("hidden");
 
 ui();
 
 tab("quiz");
 
+
+/*
+  Música somente dentro do jogo.
+*/
+
+if(startMusic){
+
+playMusic();
+
 }
 
+}
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
 
 function logout(){
 
 clearInterval(handle);
 
-/* PARA A MÚSICA AO SAIR */
+
+/*
+  Para a música ao sair.
+*/
+
 stopMusic();
 
-document
-.getElementById("game")
-.classList
-.add("hidden");
+document.getElementById("game")
+.classList.add("hidden");
 
-document
-.getElementById("auth")
-.classList
-.remove("hidden");
+document.getElementById("auth")
+.classList.remove("hidden");
 
-authMode("login");
+
+/*
+  Volta para cadastro sem música.
+*/
+
+authMode("register");
 
 }
 
 
-/* =========================
-   INTERFACE
-   ========================= */
+/* =========================================================
+   UI
+   ========================================================= */
 
 function ui(){
 
-document
-.getElementById("points")
+document.getElementById("points")
 .textContent=s.points;
 
-document
-.getElementById("round")
+document.getElementById("round")
 .textContent=s.round;
 
-document
-.getElementById("totalScore")
+document.getElementById("totalScore")
 .textContent=s.points;
 
-document
-.getElementById("refCode")
+document.getElementById("refCode")
 .value=s.code||"";
 
-document
-.getElementById("refLink")
+
+document.getElementById("refLink")
 .value=
 location.origin+
 location.pathname+
@@ -862,42 +912,40 @@ encodeURIComponent(s.code||"");
 }
 
 
-/* =========================
+/* =========================================================
    ABAS
-   ========================= */
+   ========================================================= */
 
 function tab(x){
 
 ["quiz","ref","cash","premium"]
 .forEach(a=>{
 
-document
-.getElementById(a+"Tab")
-.classList
-.toggle("hidden",a!==x);
+document.getElementById(a+"Tab")
+.classList.toggle(
+"hidden",
+a!==x
+);
 
 });
 
+
 if(x==="quiz"){
 
-document
-.getElementById("rollCard")
-.classList
-.remove("hidden");
+document.getElementById("rollCard")
+.classList.remove("hidden");
 
-document
-.getElementById("questionCard")
-.classList
-.add("hidden");
+document.getElementById("questionCard")
+.classList.add("hidden");
 
 }
 
 }
 
 
-/* =========================
-   PERGUNTAS
-   ========================= */
+/* =========================================================
+   PERGUNTA
+   ========================================================= */
 
 function pickQuestion(){
 
@@ -910,17 +958,32 @@ Math.random()*Q.length
 }
 
 
-/* =========================
+/* =========================================================
    DADO
-   ========================= */
+   ========================================================= */
 
 function rollDice(){
+
+/*
+  Continua dentro do jogo.
+  Não precisamos mais iniciar a música aqui,
+  porque ela já foi iniciada no login.
+*/
+
+if(
+document.getElementById("backgroundMusic").paused
+){
+
+playMusic();
+
+}
 
 clearInterval(handle);
 
 s.answered=false;
 
 let d;
+
 
 if(s.round%30===0){
 
@@ -930,7 +993,6 @@ Math.random()*3
 )+8;
 
 }
-
 else if(s.round%10===0){
 
 d=
@@ -939,7 +1001,6 @@ Math.random()*3
 )+5;
 
 }
-
 else{
 
 d=
@@ -949,18 +1010,19 @@ Math.random()*4
 
 }
 
+
 s.dice=d;
 
 s.roundPoints=d;
 
 s.question=pickQuestion();
 
-document
-.getElementById("dice")
+
+document.getElementById("dice")
 .textContent="🎲 "+d;
 
-document
-.getElementById("diceResult")
+
+document.getElementById("diceResult")
 .textContent=
 "Você tirou "+
 d+
@@ -968,14 +1030,16 @@ d+
 d+
 (d===1?" ponto":" pontos");
 
-document
-.getElementById("question")
+
+document.getElementById("question")
 .textContent=s.question[0];
+
 
 let answers=
 document.getElementById("answers");
 
 answers.innerHTML="";
+
 
 s.question[1].forEach((a,i)=>{
 
@@ -992,34 +1056,28 @@ answers.appendChild(b);
 
 });
 
-document
-.getElementById("rollCard")
-.classList
-.add("hidden");
 
-document
-.getElementById("questionCard")
-.classList
-.remove("hidden");
+document.getElementById("rollCard")
+.classList.add("hidden");
 
-document
-.getElementById("feedback")
-.classList
-.add("hidden");
+document.getElementById("questionCard")
+.classList.remove("hidden");
 
-document
-.getElementById("rewardBox")
-.classList
-.add("hidden");
+document.getElementById("feedback")
+.classList.add("hidden");
+
+document.getElementById("rewardBox")
+.classList.add("hidden");
+
 
 startTimer();
 
 }
 
 
-/* =========================
+/* =========================================================
    TIMER
-   ========================= */
+   ========================================================= */
 
 function startTimer(){
 
@@ -1027,31 +1085,27 @@ clearInterval(handle);
 
 s.timer=5;
 
-document
-.getElementById("time")
+document.getElementById("time")
 .textContent=5;
 
-document
-.getElementById("progress")
-.style
-.width="100%";
+document.getElementById("progress")
+.style.width="100%";
+
 
 handle=setInterval(()=>{
 
 s.timer--;
 
-document
-.getElementById("time")
+document.getElementById("time")
 .textContent=s.timer;
 
-document
-.getElementById("progress")
-.style
-.width=
+document.getElementById("progress")
+.style.width=
 Math.max(
 0,
 s.timer/5*100
 )+"%";
+
 
 if(s.timer<=0){
 
@@ -1066,9 +1120,9 @@ answer(-1);
 }
 
 
-/* =========================
+/* =========================================================
    RESPOSTA
-   ========================= */
+   ========================================================= */
 
 function answer(i){
 
@@ -1084,27 +1138,25 @@ let bs=[
 ...document.querySelectorAll(".answer")
 ];
 
-if(i>=0 && bs[i]){
 
-bs[i]
-.classList
-.add(
-i===c
-?"correct"
-:"wrong"
+if(i>=0&&bs[i]){
+
+bs[i].classList.add(
+i===c?"correct":"wrong"
 );
 
 }
 
+
 if(bs[c]){
 
-bs[c]
-.classList
-.add("correct");
+bs[c].classList.add("correct");
 
 }
 
+
 let ok=i===c;
+
 
 if(ok){
 
@@ -1112,57 +1164,48 @@ s.points+=s.roundPoints;
 
 }
 
+
 ui();
 
 save();
 
+
 let feedback=
 document.getElementById("feedback");
 
-feedback
-.classList
-.remove("hidden");
+feedback.classList.remove("hidden");
+
 
 feedback.textContent=
-
 ok
-
 ?"✅ Correto! Você ganhou "+
 s.roundPoints+
 " pontos!"
-
 :"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
 
-document
-.getElementById("rewardBox")
-.classList
-.remove("hidden");
+
+document.getElementById("rewardBox")
+.classList.remove("hidden");
 
 }
 
 
-/* =========================
+/* =========================================================
    CONTINUAR
-   ========================= */
+   ========================================================= */
 
 function finishQuestion(){
 
-document
-.getElementById("questionCard")
-.classList
-.add("hidden");
+document.getElementById("questionCard")
+.classList.add("hidden");
 
-document
-.getElementById("rollCard")
-.classList
-.remove("hidden");
+document.getElementById("rollCard")
+.classList.remove("hidden");
 
-document
-.getElementById("dice")
+document.getElementById("dice")
 .textContent="🎲";
 
-document
-.getElementById("diceResult")
+document.getElementById("diceResult")
 .textContent="";
 
 s.round++;
@@ -1172,26 +1215,25 @@ save();
 }
 
 
-/* =========================
+/* =========================================================
    INDICAÇÃO
-   ========================= */
+   ========================================================= */
 
 function copyRef(){
 
 let link=
-document
-.getElementById("refLink")
+document.getElementById("refLink")
 .value;
+
 
 if(navigator.clipboard){
 
-navigator.clipboard
-.writeText(link);
+navigator.clipboard.writeText(link);
 
 }
 
-document
-.getElementById("refMsg")
+
+document.getElementById("refMsg")
 .textContent="Link copiado!";
 
 }
@@ -1200,9 +1242,9 @@ document
 async function shareRef(){
 
 let link=
-document
-.getElementById("refLink")
+document.getElementById("refLink")
 .value;
+
 
 if(navigator.share){
 
@@ -1217,7 +1259,6 @@ url:link
 });
 
 }
-
 else{
 
 copyRef();
@@ -1227,26 +1268,28 @@ copyRef();
 }
 
 
-/* =========================
+/* =========================================================
    PAGAMENTO
-   ========================= */
+   ========================================================= */
 
 function payFields(){
 
 let p=
-document
-.getElementById("payMethod")
+document.getElementById("payMethod")
 .value==="pix";
 
-document
-.getElementById("pix")
-.classList
-.toggle("hidden",!p);
 
-document
-.getElementById("paypal")
-.classList
-.toggle("hidden",p);
+document.getElementById("pix")
+.classList.toggle(
+"hidden",
+!p
+);
+
+document.getElementById("paypal")
+.classList.toggle(
+"hidden",
+p
+);
 
 }
 
@@ -1262,36 +1305,39 @@ return v==="10"
 }
 
 
+/* =========================================================
+   SAQUE
+   ========================================================= */
+
 function withdraw(){
 
 let v=
-document
-.getElementById("withdrawAmount")
+document.getElementById("withdrawAmount")
 .value;
 
 let n=need(v);
 
 let m=
-document
-.getElementById("payMethod")
+document.getElementById("payMethod")
 .value;
 
-let k=
 
-(m==="pix"
+let k=
+(
+m==="pix"
 ?
 document.getElementById("pixKey")
 :
-document.getElementById("paypalKey"))
-.value
-.trim();
+document.getElementById("paypalKey")
+)
+.value.trim();
+
 
 let msg=
 document.getElementById("cashMsg");
 
-msg
-.classList
-.remove("hidden");
+msg.classList.remove("hidden");
+
 
 if(!k){
 
@@ -1301,6 +1347,7 @@ msg.textContent=
 return;
 
 }
+
 
 if(s.points<n){
 
@@ -1313,6 +1360,7 @@ return;
 
 }
 
+
 let a=JSON.parse(
 
 localStorage.getItem(
@@ -1320,6 +1368,7 @@ localStorage.getItem(
 )||"[]"
 
 );
+
 
 a.push({
 
@@ -1329,15 +1378,16 @@ value:v,
 
 method:m,
 
-date:new Date()
-.toISOString()
+date:new Date().toISOString()
 
 });
+
 
 localStorage.setItem(
 "quizup_withdrawals",
 JSON.stringify(a)
 );
+
 
 msg.textContent=
 "Solicitação registrada. O pagamento real será conectado posteriormente.";
@@ -1345,42 +1395,50 @@ msg.textContent=
 }
 
 
-/* =========================
-   RESTAURAR SESSÃO
-   ========================= */
+/* =========================================================
+   INICIALIZAÇÃO
+   ========================================================= */
 
 (function(){
 
+/*
+  IMPORTANTE:
+  Não inicia música aqui.
+
+  Se existir uma conta salva,
+  mostramos o jogo como antes.
+  O navegador pode bloquear música automática
+  sem uma ação do usuário.
+*/
+
 let k=
-Object.keys(localStorage)
-.find(
+Object.keys(localStorage).find(
 
 k=>
-k.startsWith("quizup_")
-&&
+k.startsWith("quizup_") &&
 !k.includes("withdrawals")
 
 );
+
 
 if(k){
 
 try{
 
-s=JSON.parse(
+s=
+JSON.parse(
 localStorage.getItem(k)
 );
 
-openGame();
+openGame(false);
 
 /*
-  NÃO iniciamos música aqui.
-  A música só começa após clicar
-  em ENTRAR no login.
+  Não chama playMusic() aqui.
+  Assim a tela de cadastro/login nunca
+  dispara música automaticamente.
 */
 
-}
-
-catch(e){
+}catch(e){
 
 console.log(e);
 
@@ -1393,4 +1451,4 @@ console.log(e);
 </script>
 
 </body>
-</html>
+  </html>
