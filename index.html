@@ -8,9 +8,9 @@
 <script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0"></script>
 
 <script>
-(function(s){
-  s.dataset.zone='11646165';
-  s.src='https://nap5k.com/tag.min.js';
+(function(quizState){
+  quizState.dataset.zone='11646165';
+  quizState.src='https://nap5k.com/tag.min.js';
 })([document.documentElement, document.body]
   .filter(Boolean).pop()
   .appendChild(document.createElement('script')));
@@ -273,7 +273,7 @@ const Q=[
 ["Qual é a velocidade aproximada da luz no vácuo?",["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],1]
 ];
 
-let s={email:"",password:"",name:"",cpf:"",points:0,balance:0,round:1,code:"",referrer:"",dice:0,question:null,timer:5,answered:false,roundPoints:0,userId:""};
+let quizState={email:"",password:"",name:"",cpf:"",points:0,balance:0,round:1,code:"",referrer:"",dice:0,question:null,timer:5,answered:false,roundPoints:0,userId:""};
 let handle=null;
 let playerColumns=null;
 let withdrawalColumns=null;
@@ -326,7 +326,7 @@ loginBtn.classList.add("light");
 }
 
 async function savePlayer(){
-if(!s.userId)return;
+if(!quizState.userId)return;
 try{
 let columns=await getPlayerColumns(),data={};
 let emailCol=findColumn(columns,["email","Email","e_mail"]);
@@ -335,13 +335,13 @@ let balanceCol=findColumn(columns,["balance","saldo","Balance"]);
 let refCol=findColumn(columns,["referral_code","referralCode","codigo_indicacao","codigo"]);
 let nameCol=findColumn(columns,["name","nome","fullName","nome_completo"]);
 let cpfCol=findColumn(columns,["cpf","CPF"]);
-if(emailCol)data[emailCol]=s.email;
-if(pointsCol)data[pointsCol]=Number(s.points)||0;
-if(balanceCol)data[balanceCol]=Number(s.balance)||0;
-if(refCol)data[refCol]=s.code||"";
-if(nameCol)data[nameCol]=s.name||"";
-if(cpfCol)data[cpfCol]=s.cpf||"";
-await tablesDB.upsertRow({databaseId:APPWRITE_DATABASE_ID,tableId:APPWRITE_PLAYERS_TABLE,rowId:s.userId,data:data});
+if(emailCol)data[emailCol]=quizState.email;
+if(pointsCol)data[pointsCol]=Number(quizState.points)||0;
+if(balanceCol)data[balanceCol]=Number(quizState.balance)||0;
+if(refCol)data[refCol]=quizState.code||"";
+if(nameCol)data[nameCol]=quizState.name||"";
+if(cpfCol)data[cpfCol]=quizState.cpf||"";
+await tablesDB.upsertRow({databaseId:APPWRITE_DATABASE_ID,tableId:APPWRITE_PLAYERS_TABLE,rowId:quizState.userId,data:data});
 }catch(error){console.error("Erro ao salvar jogador:",error);}
 }
 
@@ -355,18 +355,18 @@ let balanceCol=findColumn(columns,["balance","saldo","Balance"]);
 let refCol=findColumn(columns,["referral_code","referralCode","codigo_indicacao","codigo"]);
 let nameCol=findColumn(columns,["name","nome","fullName","nome_completo"]);
 let cpfCol=findColumn(columns,["cpf","CPF"]);
-s.userId=user.$id;
-s.email=(emailCol?d[emailCol]:"")||user.email||"";
-s.points=Number((pointsCol?d[pointsCol]:0)||0);
-s.balance=Number((balanceCol?d[balanceCol]:0)||0);
-s.code=(refCol?d[refCol]:"")||"QU"+Math.random().toString(36).slice(2,8).toUpperCase();
-s.name=(nameCol?d[nameCol]:"")||user.name||"";
-s.cpf=(cpfCol?d[cpfCol]:"")||"";
+quizState.userId=user.$id;
+quizState.email=(emailCol?d[emailCol]:"")||user.email||"";
+quizState.points=Number((pointsCol?d[pointsCol]:0)||0);
+quizState.balance=Number((balanceCol?d[balanceCol]:0)||0);
+quizState.code=(refCol?d[refCol]:"")||"QU"+Math.random().toString(36).slice(2,8).toUpperCase();
+quizState.name=(nameCol?d[nameCol]:"")||user.name||"";
+quizState.cpf=(cpfCol?d[cpfCol]:"")||"";
 return true;
 }catch(error){
 console.log("Jogador ainda não possui linha:",error);
-s.userId=user.$id;s.email=user.email||"";s.name=user.name||"";s.points=0;s.balance=0;
-s.code="QU"+Math.random().toString(36).slice(2,8).toUpperCase();
+quizState.userId=user.$id;quizState.email=user.email||"";quizState.name=user.name||"";quizState.points=0;quizState.balance=0;
+quizState.code="QU"+Math.random().toString(36).slice(2,8).toUpperCase();
 await savePlayer();return true;
 }
 }
@@ -382,8 +382,8 @@ if(p.length<8){alert("A senha precisa ter pelo menos 8 caracteres.");return;}
 button.disabled=true;button.textContent="Cadastrando...";
 try{
 let user=await account.create(Appwrite.ID.unique(),e,p,n);
-await account.createEmailPasswordSession(e,p);
-s={email:e,password:"",name:n,cpf:cpf,points:0,balance:0,round:1,code:"QU"+Math.random().toString(36).slice(2,8).toUpperCase(),referrer:new URLSearchParams(location.search).get("ref")||"",dice:0,question:null,timer:5,answered:false,roundPoints:0,userId:user.$id};
+await account.createEmailPasswordSession({email:e,password:p});
+quizState={email:e,password:"",name:n,cpf:cpf,points:0,balance:0,round:1,code:"QU"+Math.random().toString(36).slice(2,8).toUpperCase(),referrer:new URLSearchParams(location.search).get("ref")||"",dice:0,question:null,timer:5,answered:false,roundPoints:0,userId:user.$id};
 try{await savePlayer();}catch(dbError){console.error("Erro ao salvar players:",dbError);}
 openGame();
 }catch(error){
@@ -462,7 +462,7 @@ if(activeUser){
   Agora não deve existir uma sessão ativa,
   então podemos criar a sessão do e-mail informado.
 */
-await account.createEmailPasswordSession(e,p);
+await account.createEmailPasswordSession({email:e,password:p});
 
 let user=await account.get();
 
@@ -481,7 +481,7 @@ error
 );
 
 alert(
-"Não foi possível entrar.\\n\\n"+
+"Não foi possível entrar.\n\n"+
 (error.message||"Erro desconhecido.")
 );
 
@@ -506,11 +506,11 @@ authMode("login");
 }
 
 function ui(){
-document.getElementById("points").textContent=s.points;
-document.getElementById("round").textContent=s.round;
-document.getElementById("totalScore").textContent=s.points;
-document.getElementById("refCode").value=s.code||"";
-document.getElementById("refLink").value=location.origin+location.pathname+"?ref="+encodeURIComponent(s.code||"");
+document.getElementById("points").textContent=quizState.points;
+document.getElementById("round").textContent=quizState.round;
+document.getElementById("totalScore").textContent=quizState.points;
+document.getElementById("refCode").value=quizState.code||"";
+document.getElementById("refLink").value=location.origin+location.pathname+"?ref="+encodeURIComponent(quizState.code||"");
 }
 
 function tab(x){
@@ -532,17 +532,17 @@ if(promise!==undefined)promise.catch(error=>console.log("Áudio bloqueado pelo n
 function pickQuestion(){return Q[Math.floor(Math.random()*Q.length)];}
 
 function rollDice(){
-playMusic();clearInterval(handle);s.answered=false;
+playMusic();clearInterval(handle);quizState.answered=false;
 let d;
-if(s.round%30===0)d=Math.floor(Math.random()*3)+8;
-else if(s.round%10===0)d=Math.floor(Math.random()*3)+5;
+if(quizState.round%30===0)d=Math.floor(Math.random()*3)+8;
+else if(quizState.round%10===0)d=Math.floor(Math.random()*3)+5;
 else d=Math.floor(Math.random()*4)+1;
-s.dice=d;s.roundPoints=d;s.question=pickQuestion();
+quizState.dice=d;quizState.roundPoints=d;quizState.question=pickQuestion();
 document.getElementById("dice").textContent="🎲 "+d;
 document.getElementById("diceResult").textContent="Você tirou "+d+" • Esta pergunta vale "+d+(d===1?" ponto":" pontos");
-document.getElementById("question").textContent=s.question[0];
+document.getElementById("question").textContent=quizState.question[0];
 let answers=document.getElementById("answers");answers.innerHTML="";
-s.question[1].forEach((a,i)=>{let b=document.createElement("button");b.className="answer";b.textContent=a;b.onclick=()=>answer(i);answers.appendChild(b);});
+quizState.question[1].forEach((a,i)=>{let b=document.createElement("button");b.className="answer";b.textContent=a;b.onclick=()=>answer(i);answers.appendChild(b);});
 document.getElementById("rollCard").classList.add("hidden");
 document.getElementById("questionCard").classList.remove("hidden");
 document.getElementById("feedback").classList.add("hidden");
@@ -551,28 +551,28 @@ startTimer();
 }
 
 function startTimer(){
-clearInterval(handle);s.timer=5;
+clearInterval(handle);quizState.timer=5;
 document.getElementById("time").textContent=5;
 document.getElementById("progress").style.width="100%";
 handle=setInterval(()=>{
-s.timer--;
-document.getElementById("time").textContent=s.timer;
-document.getElementById("progress").style.width=Math.max(0,s.timer/5*100)+"%";
-if(s.timer<=0){clearInterval(handle);answer(-1);}
+quizState.timer--;
+document.getElementById("time").textContent=quizState.timer;
+document.getElementById("progress").style.width=Math.max(0,quizState.timer/5*100)+"%";
+if(quizState.timer<=0){clearInterval(handle);answer(-1);}
 },1000);
 }
 
 async function answer(i){
-if(s.answered)return;
-s.answered=true;clearInterval(handle);
-let c=s.question[2],bs=[...document.querySelectorAll(".answer")];
+if(quizState.answered)return;
+quizState.answered=true;clearInterval(handle);
+let c=quizState.question[2],bs=[...document.querySelectorAll(".answer")];
 if(i>=0&&bs[i])bs[i].classList.add(i===c?"correct":"wrong");
 if(bs[c])bs[c].classList.add("correct");
-let ok=i===c;if(ok)s.points+=s.roundPoints;
+let ok=i===c;if(ok)quizState.points+=quizState.roundPoints;
 ui();
 try{await savePlayer();}catch(error){console.error(error);}
 let feedback=document.getElementById("feedback");feedback.classList.remove("hidden");
-feedback.textContent=ok?"✅ Correto! Você ganhou "+s.roundPoints+" pontos!":"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
+feedback.textContent=ok?"✅ Correto! Você ganhou "+quizState.roundPoints+" pontos!":"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
 document.getElementById("rewardBox").classList.remove("hidden");
 }
 
@@ -581,7 +581,7 @@ document.getElementById("questionCard").classList.add("hidden");
 document.getElementById("rollCard").classList.remove("hidden");
 document.getElementById("dice").textContent="🎲";
 document.getElementById("diceResult").textContent="";
-s.round++;await savePlayer();
+quizState.round++;await savePlayer();
 }
 
 function copyRef(){
@@ -609,7 +609,7 @@ let v=document.getElementById("withdrawAmount").value,n=need(v),m=document.getEl
 let k=(m==="pix"?document.getElementById("pixKey"):document.getElementById("paypalKey")).value.trim();
 let msg=document.getElementById("cashMsg");msg.classList.remove("hidden");
 if(!k){msg.textContent="Preencha o dado de pagamento.";return;}
-if(s.points<n){msg.textContent="Pontos insuficientes. Você precisa de "+n+" pontos.";return;}
+if(quizState.points<n){msg.textContent="Pontos insuficientes. Você precisa de "+n+" pontos.";return;}
 try{
 let columns=await getWithdrawalColumns(),data={};
 let emailCol=findColumn(columns,["email","Email","e_mail"]);
@@ -619,12 +619,12 @@ let keyCol=findColumn(columns,["key","chave","pixKey","paypalKey","payment_key"]
 let dateCol=findColumn(columns,["date","data","created_at","createdAt"]);
 let userCol=findColumn(columns,["userId","user_id","usuario_id"]);
 let statusCol=findColumn(columns,["status","situacao","situação"]);
-if(emailCol)data[emailCol]=s.email;
+if(emailCol)data[emailCol]=quizState.email;
 if(valueCol)data[valueCol]=Number(v);
 if(methodCol)data[methodCol]=m;
 if(keyCol)data[keyCol]=k;
 if(dateCol)data[dateCol]=new Date().toISOString();
-if(userCol)data[userCol]=s.userId;
+if(userCol)data[userCol]=quizState.userId;
 if(statusCol)data[statusCol]="pendente";
 await tablesDB.createRow({databaseId:APPWRITE_DATABASE_ID,tableId:APPWRITE_WITHDRAWALS_TABLE,rowId:Appwrite.ID.unique(),data:data});
 msg.textContent="Solicitação registrada com sucesso.";
