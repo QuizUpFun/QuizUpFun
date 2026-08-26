@@ -5,12 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QuizUp</title>
 
-<script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0"></script>
-
+<!-- MONETAG — IN-PAGE PUSH -->
 <script>
-(function(quizState){
-  quizState.dataset.zone='11646165';
-  quizState.src='https://nap5k.com/tag.min.js';
+(function(adScript){
+  adScript.dataset.zone='11646165';
+  adScript.src='https://nap5k.com/tag.min.js';
 })([document.documentElement, document.body]
   .filter(Boolean).pop()
   .appendChild(document.createElement('script')));
@@ -58,7 +57,6 @@ input,select{width:100%;padding:13px;border:0;border-radius:10px;margin:5px 0 12
 </audio>
 
 <div class="wrap">
-
 <div class="logo">QuizUp</div>
 <div class="sub">🎲 Jogue, responda e acumule pontos</div>
 
@@ -76,64 +74,41 @@ atOptions={
 </div>
 
 <section id="auth" class="card">
-
 <div class="tabs2">
-<button id="registerTabButton" class="primary" onclick="authMode('register')">Cadastro</button>
-<button id="loginTabButton" class="light" onclick="authMode('login')">Login</button>
+<button class="primary" onclick="authMode('register')">Cadastro</button>
+<button class="light" onclick="authMode('login')">Login</button>
 </div>
 
 <div id="registerBox">
 <h2>📝 Cadastro</h2>
-
 <label>E-mail</label>
 <input id="rEmail" type="email" placeholder="Seu e-mail">
-
 <label>Senha</label>
 <input id="rPass" type="password" placeholder="Sua senha">
-
 <label>Nome completo</label>
 <input id="rName" type="text" placeholder="Seu nome completo">
-
 <label>CPF</label>
 <input id="rCpf" type="text" inputmode="numeric" maxlength="14" placeholder="000.000.000-00">
-
-<button id="registerButton" class="primary" onclick="register()">Cadastrar</button>
+<button class="primary" onclick="register()">Cadastrar</button>
 </div>
 
 <div id="loginBox" class="hidden">
-
 <h2>🔐 Login</h2>
-
 <label>E-mail</label>
 <input id="lEmail" type="email" placeholder="Seu e-mail">
-
 <label>Senha</label>
 <input id="lPass" type="password" placeholder="Sua senha">
-
-<button id="loginButton" class="primary" onclick="login()">Entrar</button>
-
+<button class="primary" onclick="login()">Entrar</button>
 </div>
 
-<p class="small">
-Protótipo do QuizUp. Pagamentos reais e dados pessoais precisam de servidor seguro.
-</p>
-
+<p class="small">Protótipo do QuizUp. Pagamentos reais e dados pessoais precisam de servidor seguro.</p>
 </section>
 
 <section id="game" class="hidden">
-
 <div class="top card">
-
-<div class="stat">
-⭐ <span id="points">0</span> pontos
-</div>
-
-<div class="stat">
-🎲 Rodada <span id="round">1</span>
-</div>
-
+<div class="stat">⭐ <span id="points">0</span> pontos</div>
+<div class="stat">🎲 Rodada <span id="round">1</span></div>
 <button class="ghost" onclick="logout()">Sair</button>
-
 </div>
 
 <div class="nav">
@@ -144,7 +119,6 @@ Protótipo do QuizUp. Pagamentos reais e dados pessoais precisam de servidor seg
 </div>
 
 <div id="quizTab">
-
 <div id="rollCard" class="card">
 <h2 style="text-align:center">Jogue o dado</h2>
 <div id="dice" class="dice">🎲</div>
@@ -153,20 +127,12 @@ Protótipo do QuizUp. Pagamentos reais e dados pessoais precisam de servidor seg
 </div>
 
 <div id="questionCard" class="card hidden">
-
-<div class="top">
-<b>Pergunta</b>
-<span class="timer">⏱️ <span id="time">5</span>s</span>
-</div>
-
+<div class="top"><b>Pergunta</b><span class="timer">⏱️ <span id="time">5</span>s</span></div>
 <div class="bar"><div id="progress"></div></div>
 <h2 id="question"></h2>
 <div id="answers" class="answers"></div>
 <p id="feedback" class="notice hidden"></p>
-
-<div style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
-⭐ Pontuação: <span id="totalScore">0</span>
-</div>
+<div style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">⭐ Pontuação: <span id="totalScore">0</span></div>
 
 <div id="answerAd" class="adbox">
 <script>
@@ -182,9 +148,8 @@ atOptions={
 </div>
 
 <div id="rewardBox" class="hidden" style="margin-top:16px">
-<button id="continueButton" class="primary" style="width:100%" onclick="finishQuestion()">CONTINUAR</button>
+<button class="primary" style="width:100%" onclick="finishQuestion()">CONTINUAR</button>
 </div>
-
 </div>
 </div>
 
@@ -200,30 +165,17 @@ atOptions={
 
 <div id="cashTab" class="hidden card">
 <h2>💸 Saque</h2>
-<div class="notice">
-<b>Valores:</b><br>
-2.000 pontos → R$ 1,00<br>
-6.000 pontos → R$ 5,00<br>
-11.000 pontos → R$ 10,00
-</div>
-
+<div class="notice"><b>Valores:</b><br>2.000 pontos → R$ 1,00<br>6.000 pontos → R$ 5,00<br>11.000 pontos → R$ 10,00</div>
 <select id="payMethod" onchange="payFields()">
-<option value="pix">Pix</option>
-<option value="paypal">PayPal</option>
+<option value="pix">Pix</option><option value="paypal">PayPal</option>
 </select>
-
 <div id="pix"><input id="pixKey" placeholder="Chave Pix"></div>
-
-<div id="paypal" class="hidden">
-<input id="paypalKey" type="email" placeholder="E-mail PayPal">
-</div>
-
+<div id="paypal" class="hidden"><input id="paypalKey" type="email" placeholder="E-mail PayPal"></div>
 <select id="withdrawAmount">
 <option value="1">R$ 1,00 — 2.000 pontos</option>
 <option value="5">R$ 5,00 — 6.000 pontos</option>
 <option value="10">R$ 10,00 — 11.000 pontos</option>
 </select>
-
 <button class="primary" onclick="withdraw()">Solicitar saque</button>
 <p id="cashMsg" class="notice hidden"></p>
 <p class="small">Nesta versão o saque é apenas registrado. O pagamento real ainda não está conectado.</p>
@@ -234,25 +186,19 @@ atOptions={
 <p>Área Premium preparada para receber benefícios do QuizUp.</p>
 <button class="primary" onclick="alert('O pagamento Premium ainda será conectado.')">Quero ser Premium</button>
 </div>
-
 </section>
 </div>
 
 <script>
-const APPWRITE_PROJECT_ID="6a8e10e900245502244c";
-const APPWRITE_DATABASE_ID="6a8e11820008abab052e";
-const APPWRITE_PLAYERS_TABLE="players";
-const APPWRITE_WITHDRAWALS_TABLE="saques";
+/*
+  IMPORTANTE:
+  Todo o código do QuizUp fica dentro de uma função privada.
+  Assim a variável de estado NÃO fica no escopo global e não
+  pode entrar em conflito com scripts de publicidade.
+*/
+(function QuizUpApp(){
 
-const appwriteClient=new Appwrite.Client();
-appwriteClient
-.setEndpoint("https://fra.cloud.appwrite.io/v1")
-.setProject(APPWRITE_PROJECT_ID);
-
-const account=new Appwrite.Account(appwriteClient);
-const tablesDB=new Appwrite.TablesDB(appwriteClient);
-
-const Q=[
+const questions=[
 ["Quanto é 2 + 2?",["3","4","5","6"],1],
 ["Qual é a capital do Brasil?",["Brasília","São Paulo","Salvador","Recife"],0],
 ["Qual planeta é conhecido como Planeta Vermelho?",["Terra","Marte","Vênus","Saturno"],1],
@@ -270,252 +216,146 @@ const Q=[
 ["Qual é o maior país do mundo em área?",["China","Canadá","Brasil","Rússia"],3],
 ["Em que ano terminou a Segunda Guerra Mundial?",["1943","1944","1945","1946"],2],
 ["Qual é o elemento químico de número atômico 6?",["Oxigênio","Carbono","Nitrogênio","Ferro"],1],
-["Qual é a velocidade aproximada da luz no vácuo?",["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],1]
+["Qual é a velocidade aproximada da luz no vácuo?",["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],1],
+["Qual é a derivada de x³ − 4x?",["3x² − 4","x² − 4","3x − 4","3x² + 4"],0]
 ];
 
-let quizState={email:"",password:"",name:"",cpf:"",points:0,balance:0,round:1,code:"",referrer:"",dice:0,question:null,timer:5,answered:false,roundPoints:0,userId:""};
-let handle=null;
-let playerColumns=null;
-let withdrawalColumns=null;
+let appState={
+email:"",
+password:"",
+name:"",
+cpf:"",
+points:0,
+round:1,
+code:"",
+referrer:"",
+dice:0,
+question:null,
+timer:5,
+answered:false,
+roundPoints:0
+};
 
-async function getColumns(tableId){
-try{
-let r=await tablesDB.listColumns({databaseId:APPWRITE_DATABASE_ID,tableId:tableId});
-return (r.columns||[]).map(c=>c.key);
-}catch(error){console.error("Erro ao ler colunas:",error);return [];}
+let timerHandle=null;
+
+function storageKey(email){
+return "quizup_"+email;
 }
 
-async function getPlayerColumns(){
-if(playerColumns===null) playerColumns=await getColumns(APPWRITE_PLAYERS_TABLE);
-return playerColumns;
+function saveState(){
+localStorage.setItem(storageKey(appState.email),JSON.stringify(appState));
+updateUI();
 }
 
-async function getWithdrawalColumns(){
-if(withdrawalColumns===null) withdrawalColumns=await getColumns(APPWRITE_WITHDRAWALS_TABLE);
-return withdrawalColumns;
-}
-
-function findColumn(columns,names){
-for(let n of names) if(columns.includes(n)) return n;
-return null;
-}
-
-/* CORREÇÃO: troca Cadastro/Login */
 function authMode(mode){
-const registerBox=document.getElementById("registerBox");
-const loginBox=document.getElementById("loginBox");
-const registerBtn=document.getElementById("registerTabButton");
-const loginBtn=document.getElementById("loginTabButton");
-
-if(mode==="login"){
-registerBox.classList.add("hidden");
-loginBox.classList.remove("hidden");
-registerBtn.classList.remove("primary");
-registerBtn.classList.add("light");
-loginBtn.classList.remove("light");
-loginBtn.classList.add("primary");
-document.getElementById("lEmail").focus();
-}else{
-loginBox.classList.add("hidden");
-registerBox.classList.remove("hidden");
-registerBtn.classList.remove("light");
-registerBtn.classList.add("primary");
-loginBtn.classList.remove("primary");
-loginBtn.classList.add("light");
-}
+document.getElementById("registerBox").classList.toggle("hidden",mode!=="register");
+document.getElementById("loginBox").classList.toggle("hidden",mode!=="login");
 }
 
-async function savePlayer(){
-if(!quizState.userId)return;
-try{
-let columns=await getPlayerColumns(),data={};
-let emailCol=findColumn(columns,["email","Email","e_mail"]);
-let pointsCol=findColumn(columns,["points","pontos","Points"]);
-let balanceCol=findColumn(columns,["balance","saldo","Balance"]);
-let refCol=findColumn(columns,["referral_code","referralCode","codigo_indicacao","codigo"]);
-let nameCol=findColumn(columns,["name","nome","fullName","nome_completo"]);
-let cpfCol=findColumn(columns,["cpf","CPF"]);
-if(emailCol)data[emailCol]=quizState.email;
-if(pointsCol)data[pointsCol]=Number(quizState.points)||0;
-if(balanceCol)data[balanceCol]=Number(quizState.balance)||0;
-if(refCol)data[refCol]=quizState.code||"";
-if(nameCol)data[nameCol]=quizState.name||"";
-if(cpfCol)data[cpfCol]=quizState.cpf||"";
-await tablesDB.upsertRow({databaseId:APPWRITE_DATABASE_ID,tableId:APPWRITE_PLAYERS_TABLE,rowId:quizState.userId,data:data});
-}catch(error){console.error("Erro ao salvar jogador:",error);}
-}
+function register(){
+const email=document.getElementById("rEmail").value.trim().toLowerCase();
+const password=document.getElementById("rPass").value;
+const name=document.getElementById("rName").value.trim();
+const cpf=document.getElementById("rCpf").value.trim();
 
-async function loadPlayer(user){
-try{
-let row=await tablesDB.getRow({databaseId:APPWRITE_DATABASE_ID,tableId:APPWRITE_PLAYERS_TABLE,rowId:user.$id});
-let d=row,columns=await getPlayerColumns();
-let emailCol=findColumn(columns,["email","Email","e_mail"]);
-let pointsCol=findColumn(columns,["points","pontos","Points"]);
-let balanceCol=findColumn(columns,["balance","saldo","Balance"]);
-let refCol=findColumn(columns,["referral_code","referralCode","codigo_indicacao","codigo"]);
-let nameCol=findColumn(columns,["name","nome","fullName","nome_completo"]);
-let cpfCol=findColumn(columns,["cpf","CPF"]);
-quizState.userId=user.$id;
-quizState.email=(emailCol?d[emailCol]:"")||user.email||"";
-quizState.points=Number((pointsCol?d[pointsCol]:0)||0);
-quizState.balance=Number((balanceCol?d[balanceCol]:0)||0);
-quizState.code=(refCol?d[refCol]:"")||"QU"+Math.random().toString(36).slice(2,8).toUpperCase();
-quizState.name=(nameCol?d[nameCol]:"")||user.name||"";
-quizState.cpf=(cpfCol?d[cpfCol]:"")||"";
-return true;
-}catch(error){
-console.log("Jogador ainda não possui linha:",error);
-quizState.userId=user.$id;quizState.email=user.email||"";quizState.name=user.name||"";quizState.points=0;quizState.balance=0;
-quizState.code="QU"+Math.random().toString(36).slice(2,8).toUpperCase();
-await savePlayer();return true;
-}
-}
-
-async function register(){
-let button=document.getElementById("registerButton");
-let e=document.getElementById("rEmail").value.trim().toLowerCase();
-let p=document.getElementById("rPass").value;
-let n=document.getElementById("rName").value.trim();
-let cpf=document.getElementById("rCpf").value.trim();
-if(!e||!p||!n||!cpf){alert("Preencha todos os campos.");return;}
-if(p.length<8){alert("A senha precisa ter pelo menos 8 caracteres.");return;}
-button.disabled=true;button.textContent="Cadastrando...";
-try{
-let user=await account.create(Appwrite.ID.unique(),e,p,n);
-await account.createEmailPasswordSession({email:e,password:p});
-quizState={email:e,password:"",name:n,cpf:cpf,points:0,balance:0,round:1,code:"QU"+Math.random().toString(36).slice(2,8).toUpperCase(),referrer:new URLSearchParams(location.search).get("ref")||"",dice:0,question:null,timer:5,answered:false,roundPoints:0,userId:user.$id};
-try{await savePlayer();}catch(dbError){console.error("Erro ao salvar players:",dbError);}
-openGame();
-}catch(error){
-console.error("ERRO NO CADASTRO APPWRITE:",error);
-alert("Não foi possível cadastrar.\n\n"+(error.message||"Erro desconhecido."));
-button.disabled=false;button.textContent="Cadastrar";
-}
-}
-
-async function login(){
-let button=document.getElementById("loginButton");
-let e=document.getElementById("lEmail").value.trim().toLowerCase();
-let p=document.getElementById("lPass").value;
-
-if(!e||!p){
+if(!email||!password||!name||!cpf){
 alert("Preencha todos os campos.");
 return;
 }
 
-button.disabled=true;
-button.textContent="Entrando...";
-
-try{
-
-/*
-  PRIMEIRO: verifica se já existe uma sessão ativa.
-  Isso evita o erro do Appwrite:
-  "Creation of a session is prohibited when a session is active."
-*/
-let activeUser=null;
-
-try{
-  activeUser=await account.get();
-}catch(sessionError){
-  activeUser=null;
+if(password.length<8){
+alert("A senha precisa ter pelo menos 8 caracteres.");
+return;
 }
 
-if(activeUser){
-
-  /*
-    Se a sessão ativa já pertence ao e-mail informado,
-    não criamos outra sessão. Apenas carregamos o jogador.
-  */
-  if((activeUser.email||"").toLowerCase()===e){
-
-    await loadPlayer(activeUser);
-    openGame();
-
-    button.disabled=false;
-    button.textContent="Entrar";
-    return;
-  }
-
-  /*
-    Se a sessão ativa pertence a outra conta,
-    encerramos a sessão atual antes de fazer o novo login.
-  */
-  try{
-    await account.deleteSession({
-      sessionId:"current"
-    });
-  }catch(deleteError){
-
-    console.error(
-      "Não foi possível encerrar a sessão anterior:",
-      deleteError
-    );
-
-    throw new Error(
-      "Já existe uma sessão ativa. Feche a sessão atual e tente novamente."
-    );
-  }
+if(localStorage.getItem(storageKey(email))){
+alert("Essa conta já existe. Toque em Login.");
+authMode("login");
+document.getElementById("lEmail").value=email;
+return;
 }
 
-/*
-  Agora não deve existir uma sessão ativa,
-  então podemos criar a sessão do e-mail informado.
-*/
-await account.createEmailPasswordSession({email:e,password:p});
+appState={
+email:email,
+password:password,
+name:name,
+cpf:cpf,
+points:0,
+round:1,
+code:"QU"+Math.random().toString(36).slice(2,8).toUpperCase(),
+referrer:new URLSearchParams(location.search).get("ref")||"",
+dice:0,
+question:null,
+timer:5,
+answered:false,
+roundPoints:0
+};
 
-let user=await account.get();
-
-await loadPlayer(user);
-
+saveState();
 openGame();
+}
 
-button.disabled=false;
-button.textContent="Entrar";
+function login(){
+const email=document.getElementById("lEmail").value.trim().toLowerCase();
+const password=document.getElementById("lPass").value;
 
+if(!email||!password){
+alert("Preencha e-mail e senha.");
+return;
+}
+
+const saved=localStorage.getItem(storageKey(email));
+
+if(!saved){
+alert("Conta não encontrada neste navegador. Se você criou a conta em outro aparelho, ela não estará disponível nesta versão.");
+return;
+}
+
+try{
+const accountData=JSON.parse(saved);
+
+if(accountData.password!==password){
+alert("Senha incorreta.");
+return;
+}
+
+appState=accountData;
+openGame();
 }catch(error){
-
-console.error(
-"ERRO NO LOGIN APPWRITE:",
-error
-);
-
-alert(
-"Não foi possível entrar.\n\n"+
-(error.message||"Erro desconhecido.")
-);
-
-button.disabled=false;
-button.textContent="Entrar";
-
+console.error(error);
+alert("Não foi possível carregar a conta.");
 }
 }
 
 function openGame(){
 document.getElementById("auth").classList.add("hidden");
 document.getElementById("game").classList.remove("hidden");
-ui();tab("quiz");
+updateUI();
+tab("quiz");
 }
 
-async function logout(){
-clearInterval(handle);
-try{await account.deleteSession({sessionId:"current"});}catch(error){console.log(error);}
+function logout(){
+clearInterval(timerHandle);
 document.getElementById("game").classList.add("hidden");
 document.getElementById("auth").classList.remove("hidden");
 authMode("login");
 }
 
-function ui(){
-document.getElementById("points").textContent=quizState.points;
-document.getElementById("round").textContent=quizState.round;
-document.getElementById("totalScore").textContent=quizState.points;
-document.getElementById("refCode").value=quizState.code||"";
-document.getElementById("refLink").value=location.origin+location.pathname+"?ref="+encodeURIComponent(quizState.code||"");
+function updateUI(){
+document.getElementById("points").textContent=appState.points;
+document.getElementById("round").textContent=appState.round;
+document.getElementById("totalScore").textContent=appState.points;
+document.getElementById("refCode").value=appState.code||"";
+document.getElementById("refLink").value=
+location.origin+location.pathname+"?ref="+encodeURIComponent(appState.code||"");
 }
 
-function tab(x){
-["quiz","ref","cash","premium"].forEach(a=>document.getElementById(a+"Tab").classList.toggle("hidden",a!==x));
-if(x==="quiz"){
+function tab(name){
+["quiz","ref","cash","premium"].forEach(item=>{
+document.getElementById(item+"Tab").classList.toggle("hidden",item!==name);
+});
+
+if(name==="quiz"){
 document.getElementById("rollCard").classList.remove("hidden");
 document.getElementById("questionCard").classList.add("hidden");
 }
@@ -526,119 +366,200 @@ const music=document.getElementById("backgroundMusic");
 if(!music)return;
 music.volume=0.35;
 const promise=music.play();
-if(promise!==undefined)promise.catch(error=>console.log("Áudio bloqueado pelo navegador:",error));
+if(promise!==undefined){
+promise.catch(error=>console.log("Áudio bloqueado:",error));
+}
 }
 
-function pickQuestion(){return Q[Math.floor(Math.random()*Q.length)];}
+function pickQuestion(){
+return questions[Math.floor(Math.random()*questions.length)];
+}
 
 function rollDice(){
-playMusic();clearInterval(handle);quizState.answered=false;
-let d;
-if(quizState.round%30===0)d=Math.floor(Math.random()*3)+8;
-else if(quizState.round%10===0)d=Math.floor(Math.random()*3)+5;
-else d=Math.floor(Math.random()*4)+1;
-quizState.dice=d;quizState.roundPoints=d;quizState.question=pickQuestion();
-document.getElementById("dice").textContent="🎲 "+d;
-document.getElementById("diceResult").textContent="Você tirou "+d+" • Esta pergunta vale "+d+(d===1?" ponto":" pontos");
-document.getElementById("question").textContent=quizState.question[0];
-let answers=document.getElementById("answers");answers.innerHTML="";
-quizState.question[1].forEach((a,i)=>{let b=document.createElement("button");b.className="answer";b.textContent=a;b.onclick=()=>answer(i);answers.appendChild(b);});
+playMusic();
+clearInterval(timerHandle);
+appState.answered=false;
+
+let diceValue;
+
+if(appState.round%30===0){
+diceValue=Math.floor(Math.random()*3)+8;
+}else if(appState.round%10===0){
+diceValue=Math.floor(Math.random()*3)+5;
+}else{
+diceValue=Math.floor(Math.random()*4)+1;
+}
+
+appState.dice=diceValue;
+appState.roundPoints=diceValue;
+appState.question=pickQuestion();
+
+document.getElementById("dice").textContent="🎲 "+diceValue;
+document.getElementById("diceResult").textContent=
+"Você tirou "+diceValue+" • Esta pergunta vale "+diceValue+(diceValue===1?" ponto":" pontos");
+
+document.getElementById("question").textContent=appState.question[0];
+
+const answers=document.getElementById("answers");
+answers.innerHTML="";
+
+appState.question[1].forEach((answerText,index)=>{
+const button=document.createElement("button");
+button.className="answer";
+button.textContent=answerText;
+button.onclick=()=>answer(index);
+answers.appendChild(button);
+});
+
 document.getElementById("rollCard").classList.add("hidden");
 document.getElementById("questionCard").classList.remove("hidden");
 document.getElementById("feedback").classList.add("hidden");
 document.getElementById("rewardBox").classList.add("hidden");
+
 startTimer();
 }
 
 function startTimer(){
-clearInterval(handle);quizState.timer=5;
-document.getElementById("time").textContent=5;
+clearInterval(timerHandle);
+appState.timer=5;
+document.getElementById("time").textContent="5";
 document.getElementById("progress").style.width="100%";
-handle=setInterval(()=>{
-quizState.timer--;
-document.getElementById("time").textContent=quizState.timer;
-document.getElementById("progress").style.width=Math.max(0,quizState.timer/5*100)+"%";
-if(quizState.timer<=0){clearInterval(handle);answer(-1);}
+
+timerHandle=setInterval(()=>{
+appState.timer--;
+document.getElementById("time").textContent=appState.timer;
+document.getElementById("progress").style.width=Math.max(0,appState.timer/5*100)+"%";
+
+if(appState.timer<=0){
+clearInterval(timerHandle);
+answer(-1);
+}
 },1000);
 }
 
-async function answer(i){
-if(quizState.answered)return;
-quizState.answered=true;clearInterval(handle);
-let c=quizState.question[2],bs=[...document.querySelectorAll(".answer")];
-if(i>=0&&bs[i])bs[i].classList.add(i===c?"correct":"wrong");
-if(bs[c])bs[c].classList.add("correct");
-let ok=i===c;if(ok)quizState.points+=quizState.roundPoints;
-ui();
-try{await savePlayer();}catch(error){console.error(error);}
-let feedback=document.getElementById("feedback");feedback.classList.remove("hidden");
-feedback.textContent=ok?"✅ Correto! Você ganhou "+quizState.roundPoints+" pontos!":"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
+function answer(index){
+if(appState.answered)return;
+
+appState.answered=true;
+clearInterval(timerHandle);
+
+const correctIndex=appState.question[2];
+const buttons=[...document.querySelectorAll(".answer")];
+
+if(index>=0&&buttons[index]){
+buttons[index].classList.add(index===correctIndex?"correct":"wrong");
+}
+
+if(buttons[correctIndex]){
+buttons[correctIndex].classList.add("correct");
+}
+
+const correct=index===correctIndex;
+
+if(correct){
+appState.points+=appState.roundPoints;
+}
+
+saveState();
+
+const feedback=document.getElementById("feedback");
+feedback.classList.remove("hidden");
+feedback.textContent=correct
+?"✅ Correto! Você ganhou "+appState.roundPoints+" pontos!"
+:"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
+
 document.getElementById("rewardBox").classList.remove("hidden");
 }
 
-async function finishQuestion(){
+function finishQuestion(){
 document.getElementById("questionCard").classList.add("hidden");
 document.getElementById("rollCard").classList.remove("hidden");
 document.getElementById("dice").textContent="🎲";
 document.getElementById("diceResult").textContent="";
-quizState.round++;await savePlayer();
+appState.round++;
+saveState();
 }
 
 function copyRef(){
-let link=document.getElementById("refLink").value;
-if(navigator.clipboard)navigator.clipboard.writeText(link);
+const link=document.getElementById("refLink").value;
+if(navigator.clipboard){
+navigator.clipboard.writeText(link).catch(()=>{});
+}
 document.getElementById("refMsg").textContent="Link copiado!";
 }
 
 async function shareRef(){
-let link=document.getElementById("refLink").value;
-if(navigator.share)await navigator.share({title:"QuizUp",text:"Venha jogar QuizUp comigo!",url:link});
-else copyRef();
+const link=document.getElementById("refLink").value;
+if(navigator.share){
+try{
+await navigator.share({title:"QuizUp",text:"Venha jogar QuizUp comigo!",url:link});
+}catch(error){}
+}else{
+copyRef();
+}
 }
 
 function payFields(){
-let p=document.getElementById("payMethod").value==="pix";
-document.getElementById("pix").classList.toggle("hidden",!p);
-document.getElementById("paypal").classList.toggle("hidden",p);
+const isPix=document.getElementById("payMethod").value==="pix";
+document.getElementById("pix").classList.toggle("hidden",!isPix);
+document.getElementById("paypal").classList.toggle("hidden",isPix);
 }
 
-function need(v){return v==="10"?11000:v==="5"?6000:2000;}
+function requiredPoints(value){
+return value==="10"?11000:value==="5"?6000:2000;
+}
 
-async function withdraw(){
-let v=document.getElementById("withdrawAmount").value,n=need(v),m=document.getElementById("payMethod").value;
-let k=(m==="pix"?document.getElementById("pixKey"):document.getElementById("paypalKey")).value.trim();
-let msg=document.getElementById("cashMsg");msg.classList.remove("hidden");
-if(!k){msg.textContent="Preencha o dado de pagamento.";return;}
-if(quizState.points<n){msg.textContent="Pontos insuficientes. Você precisa de "+n+" pontos.";return;}
+function withdraw(){
+const value=document.getElementById("withdrawAmount").value;
+const required=requiredPoints(value);
+const method=document.getElementById("payMethod").value;
+const keyElement=method==="pix"?document.getElementById("pixKey"):document.getElementById("paypalKey");
+const paymentKey=keyElement.value.trim();
+const message=document.getElementById("cashMsg");
+
+message.classList.remove("hidden");
+
+if(!paymentKey){
+message.textContent="Preencha o dado de pagamento.";
+return;
+}
+
+if(appState.points<required){
+message.textContent="Pontos insuficientes. Você precisa de "+required+" pontos.";
+return;
+}
+
+const withdrawals=JSON.parse(localStorage.getItem("quizup_withdrawals")||"[]");
+withdrawals.push({
+email:appState.email,
+value:value,
+method:method,
+date:new Date().toISOString()
+});
+localStorage.setItem("quizup_withdrawals",JSON.stringify(withdrawals));
+
+message.textContent="Solicitação registrada. O pagamento real será conectado posteriormente.";
+}
+
+/* Recupera automaticamente uma conta local neste navegador. */
+(function restoreLocalAccount(){
+const localKey=Object.keys(localStorage).find(
+key=>key.startsWith("quizup_")&&!key.includes("withdrawals")
+);
+
+if(!localKey)return;
+
 try{
-let columns=await getWithdrawalColumns(),data={};
-let emailCol=findColumn(columns,["email","Email","e_mail"]);
-let valueCol=findColumn(columns,["value","valor","amount","valor_saque"]);
-let methodCol=findColumn(columns,["method","metodo","método","payment_method"]);
-let keyCol=findColumn(columns,["key","chave","pixKey","paypalKey","payment_key"]);
-let dateCol=findColumn(columns,["date","data","created_at","createdAt"]);
-let userCol=findColumn(columns,["userId","user_id","usuario_id"]);
-let statusCol=findColumn(columns,["status","situacao","situação"]);
-if(emailCol)data[emailCol]=quizState.email;
-if(valueCol)data[valueCol]=Number(v);
-if(methodCol)data[methodCol]=m;
-if(keyCol)data[keyCol]=k;
-if(dateCol)data[dateCol]=new Date().toISOString();
-if(userCol)data[userCol]=quizState.userId;
-if(statusCol)data[statusCol]="pendente";
-await tablesDB.createRow({databaseId:APPWRITE_DATABASE_ID,tableId:APPWRITE_WITHDRAWALS_TABLE,rowId:Appwrite.ID.unique(),data:data});
-msg.textContent="Solicitação registrada com sucesso.";
+const saved=localStorage.getItem(localKey);
+if(saved){
+appState=JSON.parse(saved);
+openGame();
+}
 }catch(error){
-console.error("Erro no saque:",error);
-msg.textContent="Não foi possível registrar o saque. Verifique as permissões da tabela.";
+console.log("Não foi possível restaurar a conta local:",error);
 }
-}
+})();
 
-(async function(){
-try{
-let user=await account.get();
-if(user){await loadPlayer(user);openGame();}
-}catch(error){console.log("Nenhuma sessão Appwrite ativa.");}
 })();
 </script>
 
