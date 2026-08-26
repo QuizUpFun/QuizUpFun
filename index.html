@@ -17,7 +17,6 @@
 
 <style>
 *{box-sizing:border-box}
-
 body{
   margin:0;
   font-family:Arial,sans-serif;
@@ -25,26 +24,9 @@ body{
   color:#fff;
   min-height:100vh
 }
-
-.wrap{
-  max-width:760px;
-  margin:auto;
-  padding:16px
-}
-
-.logo{
-  text-align:center;
-  font-size:42px;
-  font-weight:900;
-  margin:10px
-}
-
-.sub{
-  text-align:center;
-  opacity:.8;
-  margin-bottom:16px
-}
-
+.wrap{max-width:760px;margin:auto;padding:16px}
+.logo{text-align:center;font-size:42px;font-weight:900;margin:10px}
+.sub{text-align:center;opacity:.8;margin-bottom:16px}
 .card{
   background:rgba(255,255,255,.1);
   border:1px solid rgba(255,255,255,.15);
@@ -52,11 +34,7 @@ body{
   padding:20px;
   margin:14px 0
 }
-
-.hidden{
-  display:none!important
-}
-
+.hidden{display:none!important}
 button{
   border:0;
   border-radius:12px;
@@ -64,26 +42,10 @@ button{
   font-weight:700;
   cursor:pointer
 }
-
-button:disabled{
-  opacity:.5
-}
-
-.primary{
-  background:#ffd43b;
-  color:#171717
-}
-
-.light{
-  background:#fff;
-  color:#171717
-}
-
-.ghost{
-  background:rgba(255,255,255,.12);
-  color:#fff
-}
-
+button:disabled{opacity:.5}
+.primary{background:#ffd43b;color:#171717}
+.light{background:#fff;color:#171717}
+.ghost{background:rgba(255,255,255,.12);color:#fff}
 .top,.row{
   display:flex;
   gap:10px;
@@ -91,58 +53,41 @@ button:disabled{
   justify-content:space-between;
   flex-wrap:wrap
 }
-
 .stat{
   padding:10px 14px;
   background:rgba(255,255,255,.1);
   border-radius:12px
 }
-
 .nav{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:8px
 }
-
 .dice{
   font-size:90px;
   text-align:center;
   line-height:1.1;
   margin:8px
 }
-
 .roll{
   display:block;
   margin:auto;
   font-size:18px
 }
-
 .result{
   text-align:center;
   font-size:21px;
   font-weight:800
 }
-
-.answers{
-  display:grid;
-  gap:10px
-}
-
+.answers{display:grid;gap:10px}
 .answer{
   background:#fff;
   color:#111;
   text-align:left;
   width:100%
 }
-
-.answer.correct{
-  outline:4px solid #4ade80
-}
-
-.answer.wrong{
-  outline:4px solid #fb7185
-}
-
+.answer.correct{outline:4px solid #4ade80}
+.answer.wrong{outline:4px solid #fb7185}
 input,select{
   width:100%;
   padding:13px;
@@ -151,13 +96,11 @@ input,select{
   margin:5px 0 12px;
   font-size:16px
 }
-
 .timer{
   text-align:center;
   font-size:22px;
   font-weight:800
 }
-
 .bar{
   height:9px;
   background:rgba(255,255,255,.15);
@@ -165,32 +108,27 @@ input,select{
   overflow:hidden;
   margin-top:12px
 }
-
 .bar div{
   height:100%;
   background:#ffd43b;
   width:0;
   transition:width .2s linear
 }
-
 .notice{
   padding:12px;
   border-radius:12px;
   background:rgba(255,212,59,.12);
   border:1px solid rgba(255,212,59,.3)
 }
-
 .small{
   font-size:13px;
   opacity:.75
 }
-
 .tabs2{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:8px
 }
-
 .adbox{
   width:100%;
   min-height:60px;
@@ -201,44 +139,17 @@ input,select{
   margin:12px auto;
   border-radius:10px
 }
-
-.auth-buttons{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px
-}
-
-.forgot{
-  width:100%;
-  margin-top:10px;
-  background:#1988c7;
-  color:#fff
-}
-
 @media(max-width:560px){
-
-.nav{
-  grid-template-columns:1fr 1fr
-}
-
-.dice{
-  font-size:75px
-}
-
-.logo{
-  font-size:38px
-}
-
+  .nav{grid-template-columns:1fr 1fr}
+  .dice{font-size:75px}
+  .logo{font-size:38px}
 }
 </style>
 </head>
 
 <body>
 
-<!-- =====================================================
-     MÚSICA
-===================================================== -->
-
+<!-- MÚSICA -->
 <audio id="backgroundMusic" preload="auto" loop>
   <source src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3" type="audio/mpeg">
 </audio>
@@ -246,18 +157,10 @@ input,select{
 <div class="wrap">
 
 <div class="logo">QuizUp</div>
+<div class="sub">🎲 Jogue, responda e acumule pontos</div>
 
-<div class="sub">
-🎲 Jogue, responda e acumule pontos
-</div>
-
-
-<!-- =====================================================
-     ANÚNCIO
-===================================================== -->
-
+<!-- BANNER -->
 <div class="adbox">
-
 <script>
 atOptions={
   'key':'827464848b02582093e6b5d45cb10d0a',
@@ -267,212 +170,91 @@ atOptions={
   'params':{}
 };
 </script>
-
 <script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
-
 </div>
 
-
-<!-- =====================================================
-     AUTENTICAÇÃO
-===================================================== -->
-
+<!-- LOGIN / CADASTRO -->
 <section id="auth" class="card">
 
 <div class="tabs2">
-
-<button
-class="primary"
-onclick="authMode('register')">
+<button class="primary" onclick="authMode('register')">
 Cadastro
 </button>
 
-<button
-class="light"
-onclick="authMode('login')">
+<button class="light" onclick="authMode('login')">
 Login
 </button>
-
 </div>
 
-
-<!-- =====================================================
-     CADASTRO
-===================================================== -->
-
+<!-- CADASTRO -->
 <div id="registerBox">
 
 <h2>📝 Cadastro</h2>
 
 <label>E-mail</label>
-
 <input
 id="rEmail"
 type="email"
-placeholder="Seu e-mail"
-autocomplete="email">
-
+placeholder="Seu e-mail">
 
 <label>Senha</label>
-
 <input
 id="rPass"
 type="password"
-placeholder="Crie uma senha"
-autocomplete="new-password">
-
+placeholder="Sua senha">
 
 <label>Nome completo</label>
-
 <input
 id="rName"
 type="text"
-placeholder="Seu nome completo"
-autocomplete="name">
-
+placeholder="Seu nome completo">
 
 <label>CPF</label>
-
 <input
 id="rCpf"
 type="text"
 inputmode="numeric"
 maxlength="14"
-placeholder="000.000.000-00"
-autocomplete="off"
-oninput="formatCpf(this)">
-
+placeholder="000.000.000-00">
 
 <button
 class="primary"
-style="width:100%"
 onclick="register()">
 Cadastrar
 </button>
 
 </div>
 
-
-<!-- =====================================================
-     LOGIN
-===================================================== -->
-
+<!-- LOGIN -->
 <div id="loginBox" class="hidden">
 
 <h2>🔐 Login</h2>
 
 <label>E-mail</label>
-
 <input
 id="lEmail"
 type="email"
-placeholder="Seu e-mail"
-autocomplete="email">
-
+placeholder="Seu e-mail">
 
 <label>Senha</label>
-
 <input
 id="lPass"
 type="password"
-placeholder="Sua senha"
-autocomplete="current-password">
-
+placeholder="Sua senha">
 
 <button
 class="primary"
-style="width:100%"
 onclick="login()">
 Entrar
 </button>
 
-
-<button
-class="forgot"
-onclick="showForgot()">
-Esqueci minha senha
-</button>
-
 </div>
-
-
-<!-- =====================================================
-     RECUPERAÇÃO DE SENHA
-===================================================== -->
-
-<div id="forgotBox" class="hidden">
-
-<h2>🔑 Recuperar senha</h2>
-
-<p class="small">
-Digite o e-mail e o CPF usados no cadastro.
-</p>
-
-
-<label>E-mail cadastrado</label>
-
-<input
-id="fEmail"
-type="email"
-placeholder="Seu e-mail"
-autocomplete="email">
-
-
-<label>CPF cadastrado</label>
-
-<input
-id="fCpf"
-type="text"
-inputmode="numeric"
-maxlength="14"
-placeholder="000.000.000-00"
-autocomplete="off"
-oninput="formatCpf(this)">
-
-
-<label>Nova senha</label>
-
-<input
-id="fPass"
-type="password"
-placeholder="Digite a nova senha"
-autocomplete="new-password">
-
-
-<button
-class="primary"
-style="width:100%"
-onclick="resetPassword()">
-Alterar senha
-</button>
-
-
-<button
-class="ghost"
-style="width:100%;margin-top:10px"
-onclick="backToLogin()">
-Voltar para o Login
-</button>
-
-</div>
-
-
-<p class="small">
-
-Protótipo do QuizUp.
-Pagamentos reais e dados pessoais precisam de servidor seguro.
-
-</p>
 
 </section>
 
 
-<!-- =====================================================
-     JOGO
-===================================================== -->
-
+<!-- JOGO -->
 <section id="game" class="hidden">
-
 
 <div class="top card">
 
@@ -493,10 +275,7 @@ Sair
 </div>
 
 
-<!-- =====================================================
-     MENU
-===================================================== -->
-
+<!-- NAVEGAÇÃO -->
 <div class="nav">
 
 <button
@@ -526,12 +305,8 @@ onclick="tab('premium')">
 </div>
 
 
-<!-- =====================================================
-     QUIZ
-===================================================== -->
-
+<!-- QUIZ -->
 <div id="quizTab">
-
 
 <div id="rollCard" class="card">
 
@@ -539,18 +314,15 @@ onclick="tab('premium')">
 Jogue o dado
 </h2>
 
-
 <div id="dice" class="dice">
 🎲
 </div>
-
 
 <button
 class="primary roll"
 onclick="rollDice()">
 JOGAR DADO
 </button>
-
 
 <p
 id="diceResult"
@@ -560,6 +332,7 @@ class="result">
 </div>
 
 
+<!-- PERGUNTA -->
 <div id="questionCard" class="card hidden">
 
 <div class="top">
@@ -572,26 +345,18 @@ class="result">
 
 </div>
 
-
 <div class="bar">
 <div id="progress"></div>
 </div>
 
-
 <h2 id="question"></h2>
 
-
-<div
-id="answers"
-class="answers">
-</div>
-
+<div id="answers" class="answers"></div>
 
 <p
 id="feedback"
 class="notice hidden">
 </p>
-
 
 <div
 style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
@@ -602,11 +367,8 @@ style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
 </div>
 
 
-<!-- ANÚNCIO -->
-
-<div
-id="answerAd"
-class="adbox">
+<!-- ANÚNCIO APÓS RESPOSTA -->
+<div id="answerAd" class="adbox">
 
 <script>
 atOptions={
@@ -645,33 +407,19 @@ CONTINUAR
 </div>
 
 
-<!-- =====================================================
-     INDICAÇÃO
-===================================================== -->
-
-<div
-id="refTab"
-class="hidden card">
+<!-- INDICAÇÃO -->
+<div id="refTab" class="hidden card">
 
 <h2>🎁 Indicação</h2>
 
 <p>
-
 Ganhe <b>50 pontos</b> quando seu convidado atingir
 <b>300 pontos</b>.
-
 </p>
 
+<input id="refCode" readonly>
 
-<input
-id="refCode"
-readonly>
-
-
-<input
-id="refLink"
-readonly>
-
+<input id="refLink" readonly>
 
 <button
 class="primary"
@@ -679,33 +427,25 @@ onclick="copyRef()">
 Copiar link
 </button>
 
-
 <button
 class="light"
 onclick="shareRef()">
 Enviar link
 </button>
 
-
 <p id="refMsg"></p>
 
 </div>
 
 
-<!-- =====================================================
-     SAQUE
-===================================================== -->
-
-<div
-id="cashTab"
-class="hidden card">
+<!-- SAQUE -->
+<div id="cashTab" class="hidden card">
 
 <h2>💸 Saque</h2>
 
-
 <div class="notice">
 
-<b>Valores:</b><br><br>
+<b>Valores:</b><br>
 
 2.000 pontos → R$ 1,00<br>
 6.000 pontos → R$ 5,00<br>
@@ -738,9 +478,7 @@ placeholder="Chave Pix">
 </div>
 
 
-<div
-id="paypal"
-class="hidden">
+<div id="paypal" class="hidden">
 
 <input
 id="paypalKey"
@@ -773,39 +511,22 @@ onclick="withdraw()">
 Solicitar saque
 </button>
 
-
 <p
 id="cashMsg"
 class="notice hidden">
 </p>
 
-
-<p class="small">
-
-Nesta versão o saque é apenas registrado.
-O pagamento real ainda não está conectado.
-
-</p>
-
 </div>
 
 
-<!-- =====================================================
-     PREMIUM
-===================================================== -->
-
-<div
-id="premiumTab"
-class="hidden card">
+<!-- PREMIUM -->
+<div id="premiumTab" class="hidden card">
 
 <h2>💎 Premium</h2>
 
 <p>
-
 Área Premium preparada para receber benefícios do QuizUp.
-
 </p>
-
 
 <button
 class="primary"
@@ -826,7 +547,7 @@ Quero ser Premium
 
 /* =========================================================
    PERGUNTAS
-========================================================= */
+   ========================================================= */
 
 const Q=[
 
@@ -881,14 +602,17 @@ const Q=[
 ["Oxigênio","Carbono","Nitrogênio","Ferro"],1],
 
 ["Qual é a velocidade aproximada da luz no vácuo?",
-["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],1]
+["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],1],
+
+["Qual é a derivada de x³ − 4x?",
+["3x² − 4","x² − 4","3x − 4","3x² + 4"],0]
 
 ];
 
 
 /* =========================================================
    ESTADO
-========================================================= */
+   ========================================================= */
 
 let s={
 email:"",
@@ -910,132 +634,8 @@ let handle=null;
 
 
 /* =========================================================
-   CPF
-========================================================= */
-
-/*
-  Remove tudo que não for número.
-*/
-
-function normalizeCpf(value){
-
-return String(value||"")
-.replace(/\D/g,"")
-.slice(0,11);
-
-}
-
-
-/*
-  Mostra o CPF no formato:
-  000.000.000-00
-*/
-
-function formatCpf(input){
-
-let cpf=normalizeCpf(input.value);
-
-let formatted=cpf;
-
-if(cpf.length>3){
-
-formatted=
-cpf.substring(0,3)+
-"."+cpf.substring(3);
-
-}
-
-if(cpf.length>6){
-
-formatted=
-cpf.substring(0,3)+
-"."+
-cpf.substring(3,6)+
-"."+
-cpf.substring(6);
-
-}
-
-if(cpf.length>9){
-
-formatted=
-cpf.substring(0,3)+
-"."+
-cpf.substring(3,6)+
-"."+
-cpf.substring(6,9)+
-"-"+
-cpf.substring(9,11);
-
-}
-
-input.value=formatted;
-
-}
-
-
-/*
-  Verificação básica do CPF.
-*/
-
-function validCpf(value){
-
-let cpf=normalizeCpf(value);
-
-if(cpf.length!==11){
-return false;
-}
-
-if(/^(\d)\1{10}$/.test(cpf)){
-return false;
-}
-
-
-/* Primeiro dígito */
-
-let sum=0;
-
-for(let i=0;i<9;i++){
-
-sum+=Number(cpf[i])*(10-i);
-
-}
-
-let rest=sum%11;
-
-let digit1=rest<2?0:11-rest;
-
-if(digit1!==Number(cpf[9])){
-return false;
-}
-
-
-/* Segundo dígito */
-
-sum=0;
-
-for(let i=0;i<10;i++){
-
-sum+=Number(cpf[i])*(11-i);
-
-}
-
-rest=sum%11;
-
-let digit2=rest<2?0:11-rest;
-
-if(digit2!==Number(cpf[10])){
-return false;
-}
-
-return true;
-
-}
-
-
-/* =========================================================
    MÚSICA
-========================================================= */
+   ========================================================= */
 
 function playMusic(){
 
@@ -1046,13 +646,11 @@ if(!music)return;
 
 music.volume=0.35;
 
-music.play()
-.then(()=>{
+music.play().then(()=>{
 
 console.log("🎵 Música iniciada dentro do jogo.");
 
-})
-.catch(error=>{
+}).catch(error=>{
 
 console.log(
 "Não foi possível iniciar a música:",
@@ -1080,7 +678,7 @@ music.currentTime=0;
 
 /* =========================================================
    LOCAL STORAGE
-========================================================= */
+   ========================================================= */
 
 function key(){
 
@@ -1090,8 +688,6 @@ return "quizup_"+s.email;
 
 
 function save(){
-
-if(!s.email)return;
 
 localStorage.setItem(
 key(),
@@ -1104,70 +700,52 @@ ui();
 
 
 /* =========================================================
-   TROCA DE MODO
-========================================================= */
+   LOGIN / CADASTRO
+   ========================================================= */
 
 function authMode(m){
 
 stopMusic();
 
-document
-.getElementById("registerBox")
+document.getElementById("registerBox")
 .classList.toggle(
 "hidden",
 m!=="register"
 );
 
-document
-.getElementById("loginBox")
+document.getElementById("loginBox")
 .classList.toggle(
 "hidden",
 m!=="login"
 );
-
-document
-.getElementById("forgotBox")
-.classList.add("hidden");
 
 }
 
 
 /* =========================================================
    CADASTRO
-========================================================= */
+   ========================================================= */
 
 function register(){
 
 stopMusic();
 
-
 let e=
-document
-.getElementById("rEmail")
-.value
-.trim()
+document.getElementById("rEmail")
+.value.trim()
 .toLowerCase();
 
-
 let p=
-document
-.getElementById("rPass")
+document.getElementById("rPass")
 .value;
 
-
 let n=
-document
-.getElementById("rName")
-.value
-.trim();
-
+document.getElementById("rName")
+.value.trim();
 
 let cpf=
-normalizeCpf(
-document
-.getElementById("rCpf")
-.value
-);
+document.getElementById("rCpf")
+.value.trim();
 
 
 if(!e||!p||!n||!cpf){
@@ -1179,27 +757,9 @@ return;
 }
 
 
-if(!validCpf(cpf)){
-
-alert("Digite um CPF válido.");
-
-return;
-
-}
-
-
-if(p.length<6){
-
-alert("A senha precisa ter pelo menos 6 caracteres.");
-
-return;
-
-}
-
-
 if(localStorage.getItem("quizup_"+e)){
 
-alert("Essa conta já existe. Faça login.");
+alert("Essa conta já existe.");
 
 return;
 
@@ -1207,53 +767,7 @@ return;
 
 
 /*
-  Verifica se o CPF já está cadastrado
-  em outra conta.
-*/
-
-let cpfExists=false;
-
-Object.keys(localStorage)
-.forEach(k=>{
-
-if(
-k.startsWith("quizup_") &&
-!k.includes("withdrawals")
-){
-
-try{
-
-let account=
-JSON.parse(
-localStorage.getItem(k)
-);
-
-if(
-normalizeCpf(account.cpf)===cpf
-){
-
-cpfExists=true;
-
-}
-
-}catch(e){}
-
-}
-
-});
-
-
-if(cpfExists){
-
-alert("Este CPF já está cadastrado em uma conta.");
-
-return;
-
-}
-
-
-/*
-  NOVA CONTA SEMPRE COMEÇA COM ZERO.
+  NOVA CONTA COMEÇA COM 0 PONTOS
 */
 
 s={
@@ -1303,24 +817,19 @@ openGame(true);
 
 /* =========================================================
    LOGIN
-========================================================= */
+   ========================================================= */
 
 function login(){
 
 stopMusic();
 
-
 let e=
-document
-.getElementById("lEmail")
-.value
-.trim()
+document.getElementById("lEmail")
+.value.trim()
 .toLowerCase();
 
-
 let p=
-document
-.getElementById("lPass")
+document.getElementById("lPass")
 .value;
 
 
@@ -1370,31 +879,9 @@ return;
 }
 
 
-/*
-  Corrige CPF de contas antigas.
-*/
-
-if(a.cpf){
-
-a.cpf=
-normalizeCpf(a.cpf);
-
-}
-
-
 s=a;
 
-
-/*
-  Entra no jogo.
-*/
-
 openGame(true);
-
-
-/*
-  Música depois do clique no botão Entrar.
-*/
 
 playMusic();
 
@@ -1402,221 +889,20 @@ playMusic();
 
 
 /* =========================================================
-   ESQUECI A SENHA
-========================================================= */
-
-function showForgot(){
-
-stopMusic();
-
-document
-.getElementById("registerBox")
-.classList.add("hidden");
-
-document
-.getElementById("loginBox")
-.classList.add("hidden");
-
-document
-.getElementById("forgotBox")
-.classList.remove("hidden");
-
-}
-
-
-/* =========================================================
-   VOLTAR PARA LOGIN
-========================================================= */
-
-function backToLogin(){
-
-stopMusic();
-
-document
-.getElementById("forgotBox")
-.classList.add("hidden");
-
-document
-.getElementById("registerBox")
-.classList.add("hidden");
-
-document
-.getElementById("loginBox")
-.classList.remove("hidden");
-
-}
-
-
-/* =========================================================
-   RECUPERAR SENHA
-========================================================= */
-
-function resetPassword(){
-
-stopMusic();
-
-
-let email=
-document
-.getElementById("fEmail")
-.value
-.trim()
-.toLowerCase();
-
-
-let cpf=
-normalizeCpf(
-document
-.getElementById("fCpf")
-.value
-);
-
-
-let newPass=
-document
-.getElementById("fPass")
-.value;
-
-
-if(!email||!cpf||!newPass){
-
-alert("Preencha todos os campos.");
-
-return;
-
-}
-
-
-if(!validCpf(cpf)){
-
-alert("Digite um CPF válido.");
-
-return;
-
-}
-
-
-if(newPass.length<6){
-
-alert("A nova senha precisa ter pelo menos 6 caracteres.");
-
-return;
-
-}
-
-
-let k="quizup_"+email;
-
-let data=
-localStorage.getItem(k);
-
-
-if(!data){
-
-alert("E-mail não encontrado.");
-
-return;
-
-}
-
-
-let account;
-
-try{
-
-account=JSON.parse(data);
-
-}catch(e){
-
-alert("Não foi possível carregar a conta.");
-
-return;
-
-}
-
-
-/*
-  Comparação normalizada.
-  Isso permite:
-
-  123.456.789-00
-
-  e
-
-  12345678900
-
-  serem reconhecidos como o mesmo CPF.
-*/
-
-let registeredCpf=
-normalizeCpf(account.cpf);
-
-
-if(registeredCpf!==cpf){
-
-alert("CPF não confere com o cadastro.");
-
-return;
-
-}
-
-
-/*
-  Atualiza somente a senha.
-  Pontos e demais dados permanecem.
-*/
-
-account.password=newPass;
-
-account.cpf=registeredCpf;
-
-localStorage.setItem(
-k,
-JSON.stringify(account)
-);
-
-
-alert(
-"Senha alterada com sucesso! Agora faça login."
-);
-
-
-document
-.getElementById("fEmail")
-.value="";
-
-document
-.getElementById("fCpf")
-.value="";
-
-document
-.getElementById("fPass")
-.value="";
-
-
-backToLogin();
-
-}
-
-
-/* =========================================================
    ABRIR JOGO
-========================================================= */
+   ========================================================= */
 
 function openGame(startMusic=false){
 
-document
-.getElementById("auth")
+document.getElementById("auth")
 .classList.add("hidden");
 
-document
-.getElementById("game")
+document.getElementById("game")
 .classList.remove("hidden");
 
 ui();
 
 tab("quiz");
-
 
 if(startMusic){
 
@@ -1629,7 +915,7 @@ playMusic();
 
 /* =========================================================
    LOGOUT
-========================================================= */
+   ========================================================= */
 
 function logout(){
 
@@ -1637,12 +923,10 @@ clearInterval(handle);
 
 stopMusic();
 
-document
-.getElementById("game")
+document.getElementById("game")
 .classList.add("hidden");
 
-document
-.getElementById("auth")
+document.getElementById("auth")
 .classList.remove("hidden");
 
 authMode("register");
@@ -1652,28 +936,23 @@ authMode("register");
 
 /* =========================================================
    UI
-========================================================= */
+   ========================================================= */
 
 function ui(){
 
-document
-.getElementById("points")
+document.getElementById("points")
 .textContent=s.points;
 
-document
-.getElementById("round")
+document.getElementById("round")
 .textContent=s.round;
 
-document
-.getElementById("totalScore")
+document.getElementById("totalScore")
 .textContent=s.points;
 
-document
-.getElementById("refCode")
+document.getElementById("refCode")
 .value=s.code||"";
 
-document
-.getElementById("refLink")
+document.getElementById("refLink")
 .value=
 location.origin+
 location.pathname+
@@ -1685,15 +964,14 @@ encodeURIComponent(s.code||"");
 
 /* =========================================================
    ABAS
-========================================================= */
+   ========================================================= */
 
 function tab(x){
 
 ["quiz","ref","cash","premium"]
 .forEach(a=>{
 
-document
-.getElementById(a+"Tab")
+document.getElementById(a+"Tab")
 .classList.toggle(
 "hidden",
 a!==x
@@ -1704,12 +982,10 @@ a!==x
 
 if(x==="quiz"){
 
-document
-.getElementById("rollCard")
+document.getElementById("rollCard")
 .classList.remove("hidden");
 
-document
-.getElementById("questionCard")
+document.getElementById("questionCard")
 .classList.add("hidden");
 
 }
@@ -1719,7 +995,7 @@ document
 
 /* =========================================================
    PERGUNTA
-========================================================= */
+   ========================================================= */
 
 function pickQuestion(){
 
@@ -1734,14 +1010,12 @@ Math.random()*Q.length
 
 /* =========================================================
    DADO
-========================================================= */
+   ========================================================= */
 
 function rollDice(){
 
 if(
-document
-.getElementById("backgroundMusic")
-.paused
+document.getElementById("backgroundMusic").paused
 ){
 
 playMusic();
@@ -1788,13 +1062,11 @@ s.roundPoints=d;
 s.question=pickQuestion();
 
 
-document
-.getElementById("dice")
+document.getElementById("dice")
 .textContent="🎲 "+d;
 
 
-document
-.getElementById("diceResult")
+document.getElementById("diceResult")
 .textContent=
 "Você tirou "+
 d+
@@ -1803,8 +1075,7 @@ d+
 (d===1?" ponto":" pontos");
 
 
-document
-.getElementById("question")
+document.getElementById("question")
 .textContent=s.question[0];
 
 
@@ -1830,22 +1101,17 @@ answers.appendChild(b);
 });
 
 
-document
-.getElementById("rollCard")
+document.getElementById("rollCard")
 .classList.add("hidden");
 
-document
-.getElementById("questionCard")
+document.getElementById("questionCard")
 .classList.remove("hidden");
 
-document
-.getElementById("feedback")
+document.getElementById("feedback")
 .classList.add("hidden");
 
-document
-.getElementById("rewardBox")
+document.getElementById("rewardBox")
 .classList.add("hidden");
-
 
 startTimer();
 
@@ -1854,7 +1120,7 @@ startTimer();
 
 /* =========================================================
    TIMER
-========================================================= */
+   ========================================================= */
 
 function startTimer(){
 
@@ -1862,12 +1128,10 @@ clearInterval(handle);
 
 s.timer=5;
 
-document
-.getElementById("time")
+document.getElementById("time")
 .textContent=5;
 
-document
-.getElementById("progress")
+document.getElementById("progress")
 .style.width="100%";
 
 
@@ -1875,12 +1139,10 @@ handle=setInterval(()=>{
 
 s.timer--;
 
-document
-.getElementById("time")
+document.getElementById("time")
 .textContent=s.timer;
 
-document
-.getElementById("progress")
+document.getElementById("progress")
 .style.width=
 Math.max(
 0,
@@ -1903,7 +1165,7 @@ answer(-1);
 
 /* =========================================================
    RESPOSTA
-========================================================= */
+   ========================================================= */
 
 function answer(i){
 
@@ -1965,8 +1227,7 @@ s.roundPoints+
 :"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
 
 
-document
-.getElementById("rewardBox")
+document.getElementById("rewardBox")
 .classList.remove("hidden");
 
 }
@@ -1974,24 +1235,20 @@ document
 
 /* =========================================================
    CONTINUAR
-========================================================= */
+   ========================================================= */
 
 function finishQuestion(){
 
-document
-.getElementById("questionCard")
+document.getElementById("questionCard")
 .classList.add("hidden");
 
-document
-.getElementById("rollCard")
+document.getElementById("rollCard")
 .classList.remove("hidden");
 
-document
-.getElementById("dice")
+document.getElementById("dice")
 .textContent="🎲";
 
-document
-.getElementById("diceResult")
+document.getElementById("diceResult")
 .textContent="";
 
 s.round++;
@@ -2003,13 +1260,12 @@ save();
 
 /* =========================================================
    INDICAÇÃO
-========================================================= */
+   ========================================================= */
 
 function copyRef(){
 
 let link=
-document
-.getElementById("refLink")
+document.getElementById("refLink")
 .value;
 
 
@@ -2020,10 +1276,8 @@ navigator.clipboard.writeText(link);
 }
 
 
-document
-.getElementById("refMsg")
-.textContent=
-"Link copiado!";
+document.getElementById("refMsg")
+.textContent="Link copiado!";
 
 }
 
@@ -2031,8 +1285,7 @@ document
 async function shareRef(){
 
 let link=
-document
-.getElementById("refLink")
+document.getElementById("refLink")
 .value;
 
 
@@ -2060,25 +1313,22 @@ copyRef();
 
 /* =========================================================
    PAGAMENTO
-========================================================= */
+   ========================================================= */
 
 function payFields(){
 
 let p=
-document
-.getElementById("payMethod")
+document.getElementById("payMethod")
 .value==="pix";
 
 
-document
-.getElementById("pix")
+document.getElementById("pix")
 .classList.toggle(
 "hidden",
 !p
 );
 
-document
-.getElementById("paypal")
+document.getElementById("paypal")
 .classList.toggle(
 "hidden",
 p
@@ -2100,20 +1350,18 @@ return v==="10"
 
 /* =========================================================
    SAQUE
-========================================================= */
+   ========================================================= */
 
 function withdraw(){
 
 let v=
-document
-.getElementById("withdrawAmount")
+document.getElementById("withdrawAmount")
 .value;
 
 let n=need(v);
 
 let m=
-document
-.getElementById("payMethod")
+document.getElementById("payMethod")
 .value;
 
 
@@ -2185,35 +1433,49 @@ JSON.stringify(a)
 
 
 msg.textContent=
-"Solicitação registrada. O pagamento real será conectado posteriormente.";
+"Solicitação registrada.";
 
 }
 
 
 /* =========================================================
    INICIALIZAÇÃO
-========================================================= */
-
-/*
-  IMPORTANTE:
-
-  Não inicia música automaticamente.
-
-  Também NÃO abre o jogo automaticamente
-  só porque existe uma conta salva.
-
-  Assim, o usuário precisa entrar pelo Login.
-*/
+   ========================================================= */
 
 (function(){
 
-stopMusic();
+let k=
+Object.keys(localStorage).find(
 
-authMode("register");
+k=>
+k.startsWith("quizup_") &&
+!k.includes("withdrawals")
+
+);
+
+
+if(k){
+
+try{
+
+s=
+JSON.parse(
+localStorage.getItem(k)
+);
+
+openGame(false);
+
+}catch(e){
+
+console.log(e);
+
+}
+
+}
 
 })();
 
 </script>
 
 </body>
-  </html>
+</html>
