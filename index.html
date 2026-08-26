@@ -397,28 +397,97 @@ async function login(){
 let button=document.getElementById("loginButton");
 let e=document.getElementById("lEmail").value.trim().toLowerCase();
 let p=document.getElementById("lPass").value;
-if(!e||!p){alert("Preencha todos os campos.");return;}
-button.disabled=true;button.textContent="Entrando...";
-try{
-/*
-  Se já existir uma sessão ativa no navegador,
-  encerramos somente a sessão atual antes de criar
-  a nova sessão com o e-mail e senha informados.
-*/
-try{
-  await account.deleteSession("current");
-}catch(sessionError){
-  console.log("Nenhuma sessão anterior para encerrar:", sessionError);
+
+if(!e||!p){
+alert("Preencha todos os campos.");
+return;
 }
 
+button.disabled=true;
+button.textContent="Entrando...";
+
+try{
+
+/*
+  PRIMEIRO: verifica se já existe uma sessão ativa.
+  Isso evita o erro do Appwrite:
+  "Creation of a session is prohibited when a session is active."
+*/
+let activeUser=null;
+
+try{
+  activeUser=await account.get();
+}catch(sessionError){
+  activeUser=null;
+}
+
+if(activeUser){
+
+  /*
+    Se a sessão ativa já pertence ao e-mail informado,
+    não criamos outra sessão. Apenas carregamos o jogador.
+  */
+  if((activeUser.email||"").toLowerCase()===e){
+
+    await loadPlayer(activeUser);
+    openGame();
+
+    button.disabled=false;
+    button.textContent="Entrar";
+    return;
+  }
+
+  /*
+    Se a sessão ativa pertence a outra conta,
+    encerramos a sessão atual antes de fazer o novo login.
+  */
+  try{
+    await account.deleteSession({
+      sessionId:"current"
+    });
+  }catch(deleteError){
+
+    console.error(
+      "Não foi possível encerrar a sessão anterior:",
+      deleteError
+    );
+
+    throw new Error(
+      "Já existe uma sessão ativa. Feche a sessão atual e tente novamente."
+    );
+  }
+}
+
+/*
+  Agora não deve existir uma sessão ativa,
+  então podemos criar a sessão do e-mail informado.
+*/
 await account.createEmailPasswordSession(e,p);
+
 let user=await account.get();
+
 await loadPlayer(user);
+
 openGame();
+
+button.disabled=false;
+button.textContent="Entrar";
+
 }catch(error){
-console.error("ERRO NO LOGIN APPWRITE:",error);
-alert("Não foi possível entrar.\n\n"+(error.message||"Erro desconhecido."));
-button.disabled=false;button.textContent="Entrar";
+
+console.error(
+"ERRO NO LOGIN APPWRITE:",
+error
+);
+
+alert(
+"Não foi possível entrar.\\n\\n"+
+(error.message||"Erro desconhecido.")
+);
+
+button.disabled=false;
+button.textContent="Entrar";
+
 }
 }
 
