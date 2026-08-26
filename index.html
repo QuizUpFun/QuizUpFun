@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QuizUp</title>
 
+<!-- APPWRITE WEB SDK -->
+<script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0"></script>
+
 <!-- MONETAG — IN-PAGE PUSH -->
 <script>
 (function(s){
@@ -52,13 +55,6 @@ input,select{width:100%;padding:13px;border:0;border-radius:10px;margin:5px 0 12
 
 <body>
 
-<!--
-  ÁUDIO:
-  O arquivo deve estar na MESMA pasta do index.html:
-  92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3
-
-  A música começa somente quando o jogador toca em JOGAR DADO.
--->
 <audio id="backgroundMusic" preload="auto" loop>
   <source src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3" type="audio/mpeg">
 </audio>
@@ -156,7 +152,6 @@ atOptions={
 ⭐ Pontuação: <span id="totalScore">0</span>
 </div>
 
-<!-- ANÚNCIO APÓS A RESPOSTA -->
 <div id="answerAd" class="adbox">
 <script>
 atOptions={
@@ -233,6 +228,30 @@ atOptions={
 
 <script>
 
+/* =========================================================
+   APPWRITE
+   ========================================================= */
+
+const APPWRITE_PROJECT_ID="6a8e10e900245502244c";
+const APPWRITE_DATABASE_ID="6a8e11820008abab052e";
+
+const APPWRITE_PLAYERS_TABLE="players";
+const APPWRITE_WITHDRAWALS_TABLE="saques";
+
+const appwriteClient=new Appwrite.Client();
+
+appwriteClient
+  .setEndpoint("https://cloud.appwrite.io/v1")
+  .setProject(APPWRITE_PROJECT_ID);
+
+const account=new Appwrite.Account(appwriteClient);
+const tablesDB=new Appwrite.TablesDB(appwriteClient);
+
+
+/* =========================================================
+   PERGUNTAS
+   ========================================================= */
+
 const Q=[
 ["Quanto é 2 + 2?",["3","4","5","6"],1],
 ["Qual é a capital do Brasil?",["Brasília","São Paulo","Salvador","Recife"],0],
@@ -255,12 +274,18 @@ const Q=[
 ["Qual é a derivada de x³ − 4x?",["3x² − 4","x² − 4","3x − 4","3x² + 4"],0]
 ];
 
+
+/* =========================================================
+   ESTADO
+   ========================================================= */
+
 let s={
 email:"",
 password:"",
 name:"",
 cpf:"",
 points:0,
+balance:0,
 round:1,
 code:"",
 referrer:"",
@@ -268,26 +293,226 @@ dice:0,
 question:null,
 timer:5,
 answered:false,
-roundPoints:0
+roundPoints:0,
+userId:""
 };
 
 let handle=null;
 
-function key(){
-return "quizup_"+s.email;
+
+/* =========================================================
+   UTILIDADES APPWRITE
+   ========================================================= */
+
+/*
+  Não criamos coluna nenhuma.
+  Primeiro descobrimos as colunas que já existem.
+*/
+
+let playerColumns=null;
+let withdrawalColumns=null;
+
+async function getColumns(tableId){
+
+try{
+
+let r=await tablesDB.listColumns({
+databaseId:APPWRITE_DATABASE_ID,
+tableId:tableId
+});
+
+return (r.columns||[]).map(c=>c.key);
+
+}catch(error){
+
+console.error("Erro ao ler colunas:",error);
+
+return [];
 }
 
-function save(){
-localStorage.setItem(key(),JSON.stringify(s));
-ui();
 }
 
-function authMode(m){
-document.getElementById("registerBox").classList.toggle("hidden",m!=="register");
-document.getElementById("loginBox").classList.toggle("hidden",m!=="login");
+async function getPlayerColumns(){
+
+if(playerColumns===null){
+playerColumns=await getColumns(APPWRITE_PLAYERS_TABLE);
 }
 
-function register(){
+return playerColumns;
+}
+
+async function getWithdrawalColumns(){
+
+if(withdrawalColumns===null){
+withdrawalColumns=await getColumns(APPWRITE_WITHDRAWALS_TABLE);
+}
+
+return withdrawalColumns;
+}
+
+
+/*
+  Procura a coluna existente entre vários nomes possíveis.
+  Só usa uma coluna se ela realmente existir.
+*/
+
+function findColumn(columns,names){
+
+for(let n of names){
+
+if(columns.includes(n)){
+return n;
+}
+
+}
+
+return null;
+}
+
+
+/* =========================================================
+   PLAYER
+   ========================================================= */
+
+async function savePlayer(){
+
+if(!s.userId)return;
+
+try{
+
+let columns=await getPlayerColumns();
+
+let data={};
+
+let emailCol=findColumn(columns,[
+"email","Email","e_mail"
+]);
+
+let pointsCol=findColumn(columns,[
+"points","pontos","Points"
+]);
+
+let balanceCol=findColumn(columns,[
+"balance","saldo","Balance"
+]);
+
+let refCol=findColumn(columns,[
+"referral_code","referralCode","codigo_indicacao","codigo"
+]);
+
+let nameCol=findColumn(columns,[
+"name","nome","fullName","nome_completo"
+]);
+
+let cpfCol=findColumn(columns,[
+"cpf","CPF"
+]);
+
+if(emailCol)data[emailCol]=s.email;
+
+if(pointsCol)data[pointsCol]=Number(s.points)||0;
+
+if(balanceCol)data[balanceCol]=Number(s.balance)||0;
+
+if(refCol)data[refCol]=s.code||"";
+
+if(nameCol)data[nameCol]=s.name||"";
+
+if(cpfCol)data[cpfCol]=s.cpf||"";
+
+await tablesDB.upsertRow({
+databaseId:APPWRITE_DATABASE_ID,
+tableId:APPWRITE_PLAYERS_TABLE,
+rowId:s.userId,
+data:data
+});
+
+}catch(error){
+
+console.error("Erro ao salvar jogador:",error);
+
+}
+
+}
+
+
+/* =========================================================
+   CARREGAR PLAYER
+   ========================================================= */
+
+async function loadPlayer(user){
+
+try{
+
+let row=await tablesDB.getRow({
+databaseId:APPWRITE_DATABASE_ID,
+tableId:APPWRITE_PLAYERS_TABLE,
+rowId:user.$id
+});
+
+let d=row;
+
+let columns=await getPlayerColumns();
+
+let emailCol=findColumn(columns,[
+"email","Email","e_mail"
+]);
+
+let pointsCol=findColumn(columns,[
+"points","pontos","Points"
+]);
+
+let balanceCol=findColumn(columns,[
+"balance","saldo","Balance"
+]);
+
+let refCol=findColumn(columns,[
+"referral_code","referralCode","codigo_indicacao","codigo"
+]);
+
+let nameCol=findColumn(columns,[
+"name","nome","fullName","nome_completo"
+]);
+
+let cpfCol=findColumn(columns,[
+"cpf","CPF"
+]);
+
+s.userId=user.$id;
+s.email=d[emailCol]||user.email||"";
+s.points=Number(d[pointsCol]||0);
+s.balance=Number(d[balanceCol]||0);
+s.code=d[refCol]||"QU"+Math.random().toString(36).slice(2,8).toUpperCase();
+s.name=d[nameCol]||user.name||"";
+s.cpf=d[cpfCol]||"";
+
+return true;
+
+}catch(error){
+
+console.log("Jogador ainda não possui linha:",error);
+
+s.userId=user.$id;
+s.email=user.email||"";
+s.name=user.name||"";
+s.points=0;
+s.balance=0;
+s.code="QU"+Math.random().toString(36).slice(2,8).toUpperCase();
+
+await savePlayer();
+
+return true;
+
+}
+
+}
+
+
+/* =========================================================
+   CADASTRO
+   ========================================================= */
+
+async function register(){
 
 let e=document.getElementById("rEmail").value.trim().toLowerCase();
 let p=document.getElementById("rPass").value;
@@ -295,21 +520,39 @@ let n=document.getElementById("rName").value.trim();
 let cpf=document.getElementById("rCpf").value.trim();
 
 if(!e||!p||!n||!cpf){
+
 alert("Preencha todos os campos.");
+
 return;
+
 }
 
-if(localStorage.getItem("quizup_"+e)){
-alert("Essa conta já existe.");
-return;
-}
+try{
+
+/*
+  A senha fica no sistema de autenticação do Appwrite.
+  Ela não é gravada na tabela players.
+*/
+
+let user=await account.create({
+userId:Appwrite.ID.unique(),
+email:e,
+password:p,
+name:n
+});
+
+await account.createEmailPasswordSession({
+email:e,
+password:p
+});
 
 s={
 email:e,
-password:p,
+password:"",
 name:n,
 cpf:cpf,
 points:0,
+balance:0,
 round:1,
 code:"QU"+Math.random().toString(36).slice(2,8).toUpperCase(),
 referrer:new URLSearchParams(location.search).get("ref")||"",
@@ -317,53 +560,106 @@ dice:0,
 question:null,
 timer:5,
 answered:false,
-roundPoints:0
+roundPoints:0,
+userId:user.$id
 };
 
-save();
+await savePlayer();
+
 openGame();
+
+}catch(error){
+
+console.error(error);
+
+alert(error.message||"Não foi possível criar a conta.");
+
 }
 
-function login(){
+}
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+async function login(){
 
 let e=document.getElementById("lEmail").value.trim().toLowerCase();
 let p=document.getElementById("lPass").value;
 
 if(!e||!p){
+
 alert("Preencha e-mail e senha.");
+
 return;
+
 }
 
-let x=localStorage.getItem("quizup_"+e);
+try{
 
-if(!x){
-alert("Conta não encontrada.");
-return;
-}
+await account.createEmailPasswordSession({
+email:e,
+password:p
+});
 
-let a=JSON.parse(x);
+let user=await account.get();
 
-if(a.password!==p){
-alert("Senha incorreta.");
-return;
-}
+await loadPlayer(user);
 
-s=a;
 openGame();
+
+}catch(error){
+
+console.error(error);
+
+alert(error.message||"Não foi possível entrar.");
+
 }
+
+}
+
+
+/* =========================================================
+   ABRIR JOGO
+   ========================================================= */
 
 function openGame(){
+
 document.getElementById("auth").classList.add("hidden");
 document.getElementById("game").classList.remove("hidden");
+
 ui();
 tab("quiz");
+
 }
 
-function logout(){
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+async function logout(){
+
 clearInterval(handle);
+
+try{
+await account.deleteSession({
+sessionId:"current"
+});
+}catch(error){
+console.log(error);
+}
+
 document.getElementById("game").classList.add("hidden");
 document.getElementById("auth").classList.remove("hidden");
+
 }
+
+
+/* =========================================================
+   UI
+   ========================================================= */
 
 function ui(){
 
@@ -377,19 +673,37 @@ location.origin+
 location.pathname+
 "?ref="+
 encodeURIComponent(s.code||"");
+
 }
+
+
+/* =========================================================
+   ABAS
+   ========================================================= */
 
 function tab(x){
 
 ["quiz","ref","cash","premium"].forEach(a=>{
-document.getElementById(a+"Tab").classList.toggle("hidden",a!==x);
+
+document.getElementById(a+"Tab")
+.classList.toggle("hidden",a!==x);
+
 });
 
 if(x==="quiz"){
+
 document.getElementById("rollCard").classList.remove("hidden");
+
 document.getElementById("questionCard").classList.add("hidden");
+
 }
+
 }
+
+
+/* =========================================================
+   MÚSICA
+   ========================================================= */
 
 function playMusic(){
 
@@ -402,11 +716,21 @@ music.volume=0.35;
 const promise=music.play();
 
 if(promise!==undefined){
+
 promise.catch(function(error){
+
 console.log("Áudio bloqueado pelo navegador:",error);
+
 });
+
 }
+
 }
+
+
+/* =========================================================
+   PERGUNTA
+   ========================================================= */
 
 function pickQuestion(){
 
@@ -414,9 +738,13 @@ return Q[Math.floor(Math.random()*Q.length)];
 
 }
 
+
+/* =========================================================
+   DADO
+   ========================================================= */
+
 function rollDice(){
 
-/* O toque no botão libera a música no celular */
 playMusic();
 
 clearInterval(handle);
@@ -426,17 +754,25 @@ s.answered=false;
 let d;
 
 if(s.round%30===0){
+
 d=Math.floor(Math.random()*3)+8;
+
 }
 else if(s.round%10===0){
+
 d=Math.floor(Math.random()*3)+5;
+
 }
 else{
+
 d=Math.floor(Math.random()*4)+1;
+
 }
 
 s.dice=d;
+
 s.roundPoints=d;
+
 s.question=pickQuestion();
 
 document.getElementById("dice").textContent="🎲 "+d;
@@ -450,6 +786,7 @@ d+
 document.getElementById("question").textContent=s.question[0];
 
 let answers=document.getElementById("answers");
+
 answers.innerHTML="";
 
 s.question[1].forEach((a,i)=>{
@@ -457,6 +794,7 @@ s.question[1].forEach((a,i)=>{
 let b=document.createElement("button");
 
 b.className="answer";
+
 b.textContent=a;
 
 b.onclick=()=>answer(i);
@@ -466,12 +804,21 @@ answers.appendChild(b);
 });
 
 document.getElementById("rollCard").classList.add("hidden");
+
 document.getElementById("questionCard").classList.remove("hidden");
+
 document.getElementById("feedback").classList.add("hidden");
+
 document.getElementById("rewardBox").classList.add("hidden");
 
 startTimer();
+
 }
+
+
+/* =========================================================
+   TIMER
+   ========================================================= */
 
 function startTimer(){
 
@@ -480,6 +827,7 @@ clearInterval(handle);
 s.timer=5;
 
 document.getElementById("time").textContent=5;
+
 document.getElementById("progress").style.width="100%";
 
 handle=setInterval(()=>{
@@ -494,14 +842,21 @@ Math.max(0,s.timer/5*100)+"%";
 if(s.timer<=0){
 
 clearInterval(handle);
+
 answer(-1);
 
 }
 
 },1000);
+
 }
 
-function answer(i){
+
+/* =========================================================
+   RESPOSTA
+   ========================================================= */
+
+async function answer(i){
 
 if(s.answered)return;
 
@@ -514,21 +869,30 @@ let c=s.question[2];
 let bs=[...document.querySelectorAll(".answer")];
 
 if(i>=0 && bs[i]){
-bs[i].classList.add(i===c?"correct":"wrong");
+
+bs[i].classList.add(
+i===c?"correct":"wrong"
+);
+
 }
 
 if(bs[c]){
+
 bs[c].classList.add("correct");
+
 }
 
 let ok=i===c;
 
 if(ok){
+
 s.points+=s.roundPoints;
+
 }
 
 ui();
-save();
+
+await savePlayer();
 
 let feedback=document.getElementById("feedback");
 
@@ -540,31 +904,49 @@ ok
 :"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
 
 document.getElementById("rewardBox").classList.remove("hidden");
+
 }
 
-function finishQuestion(){
+
+/* =========================================================
+   CONTINUAR
+   ========================================================= */
+
+async function finishQuestion(){
 
 document.getElementById("questionCard").classList.add("hidden");
+
 document.getElementById("rollCard").classList.remove("hidden");
 
 document.getElementById("dice").textContent="🎲";
+
 document.getElementById("diceResult").textContent="";
 
 s.round++;
 
-save();
+await savePlayer();
+
 }
+
+
+/* =========================================================
+   INDICAÇÃO
+   ========================================================= */
 
 function copyRef(){
 
 let link=document.getElementById("refLink").value;
 
 if(navigator.clipboard){
+
 navigator.clipboard.writeText(link);
+
 }
 
 document.getElementById("refMsg").textContent="Link copiado!";
+
 }
+
 
 async function shareRef(){
 
@@ -573,24 +955,39 @@ let link=document.getElementById("refLink").value;
 if(navigator.share){
 
 await navigator.share({
+
 title:"QuizUp",
 text:"Venha jogar QuizUp comigo!",
 url:link
+
 });
 
 }
 else{
+
 copyRef();
+
 }
+
 }
+
+
+/* =========================================================
+   PAGAMENTO
+   ========================================================= */
 
 function payFields(){
 
 let p=document.getElementById("payMethod").value==="pix";
 
-document.getElementById("pix").classList.toggle("hidden",!p);
-document.getElementById("paypal").classList.toggle("hidden",p);
+document.getElementById("pix")
+.classList.toggle("hidden",!p);
+
+document.getElementById("paypal")
+.classList.toggle("hidden",p);
+
 }
+
 
 function need(v){
 
@@ -599,12 +996,20 @@ return v==="10"
 :v==="5"
 ?6000
 :2000;
+
 }
 
-function withdraw(){
+
+/* =========================================================
+   REGISTRAR SAQUE NO APPWRITE
+   ========================================================= */
+
+async function withdraw(){
 
 let v=document.getElementById("withdrawAmount").value;
+
 let n=need(v);
+
 let m=document.getElementById("payMethod").value;
 
 let k=
@@ -618,47 +1023,118 @@ let msg=document.getElementById("cashMsg");
 msg.classList.remove("hidden");
 
 if(!k){
+
 msg.textContent="Preencha o dado de pagamento.";
+
 return;
+
 }
 
 if(s.points<n){
-msg.textContent="Pontos insuficientes. Você precisa de "+n+" pontos.";
-return;
-}
-
-let a=JSON.parse(
-localStorage.getItem("quizup_withdrawals")||"[]"
-);
-
-a.push({
-email:s.email,
-value:v,
-method:m,
-date:new Date().toISOString()
-});
-
-localStorage.setItem("quizup_withdrawals",JSON.stringify(a));
 
 msg.textContent=
-"Solicitação registrada. O pagamento real será conectado posteriormente.";
+"Pontos insuficientes. Você precisa de "+n+" pontos.";
+
+return;
+
 }
-
-(function(){
-
-let k=Object.keys(localStorage).find(
-k=>k.startsWith("quizup_")&&!k.includes("withdrawals")
-);
-
-if(k){
 
 try{
-s=JSON.parse(localStorage.getItem(k));
+
+let columns=await getWithdrawalColumns();
+
+let data={};
+
+let emailCol=findColumn(columns,[
+"email","Email","e_mail"
+]);
+
+let valueCol=findColumn(columns,[
+"value","valor","amount","valor_saque"
+]);
+
+let methodCol=findColumn(columns,[
+"method","metodo","método","payment_method"
+]);
+
+let keyCol=findColumn(columns,[
+"key","chave","pixKey","paypalKey","payment_key"
+]);
+
+let dateCol=findColumn(columns,[
+"date","data","created_at","createdAt"
+]);
+
+let userCol=findColumn(columns,[
+"userId","user_id","usuario_id"
+]);
+
+let statusCol=findColumn(columns,[
+"status","situacao","situação"
+]);
+
+if(emailCol)data[emailCol]=s.email;
+
+if(valueCol)data[valueCol]=Number(v);
+
+if(methodCol)data[methodCol]=m;
+
+if(keyCol)data[keyCol]=k;
+
+if(dateCol)data[dateCol]=new Date().toISOString();
+
+if(userCol)data[userCol]=s.userId;
+
+if(statusCol)data[statusCol]="pendente";
+
+await tablesDB.createRow({
+
+databaseId:APPWRITE_DATABASE_ID,
+
+tableId:APPWRITE_WITHDRAWALS_TABLE,
+
+rowId:Appwrite.ID.unique(),
+
+data:data
+
+});
+
+msg.textContent=
+"Solicitação registrada com sucesso.";
+
+}catch(error){
+
+console.error("Erro no saque:",error);
+
+msg.textContent=
+"Não foi possível registrar o saque. Verifique as permissões da tabela.";
+
+}
+
+}
+
+
+/* =========================================================
+   INICIALIZAÇÃO
+   ========================================================= */
+
+(async function(){
+
+try{
+
+let user=await account.get();
+
+if(user){
+
+await loadPlayer(user);
+
 openGame();
+
 }
-catch(e){
-console.log(e);
-}
+
+}catch(error){
+
+console.log("Nenhuma sessão Appwrite ativa.");
 
 }
 
