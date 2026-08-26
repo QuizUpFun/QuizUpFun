@@ -400,6 +400,17 @@ let p=document.getElementById("lPass").value;
 if(!e||!p){alert("Preencha todos os campos.");return;}
 button.disabled=true;button.textContent="Entrando...";
 try{
+/*
+  Se já existir uma sessão ativa no navegador,
+  encerramos somente a sessão atual antes de criar
+  a nova sessão com o e-mail e senha informados.
+*/
+try{
+  await account.deleteSession("current");
+}catch(sessionError){
+  console.log("Nenhuma sessão anterior para encerrar:", sessionError);
+}
+
 await account.createEmailPasswordSession(e,p);
 let user=await account.get();
 await loadPlayer(user);
