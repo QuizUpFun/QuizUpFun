@@ -5,185 +5,133 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QuizUp</title>
 
+<!-- MONETAG — IN-PAGE PUSH -->
+<script>
+(function(s){
+  s.dataset.zone='11646165';
+  s.src='https://nap5k.com/tag.min.js';
+})([document.documentElement, document.body]
+  .filter(Boolean).pop()
+  .appendChild(document.createElement('script')));
+</script>
+
 <style>
 *{box-sizing:border-box}
-
 body{
   margin:0;
   font-family:Arial,sans-serif;
   background:linear-gradient(135deg,#101936,#25105e);
   color:#fff;
-  min-height:100vh;
+  min-height:100vh
 }
-
-.wrap{
-  max-width:760px;
-  margin:auto;
-  padding:16px;
-}
-
-.logo{
-  text-align:center;
-  font-size:42px;
-  font-weight:900;
-  margin:10px;
-}
-
-.sub{
-  text-align:center;
-  opacity:.85;
-  margin-bottom:16px;
-}
-
+.wrap{max-width:760px;margin:auto;padding:16px}
+.logo{text-align:center;font-size:42px;font-weight:900;margin:10px}
+.sub{text-align:center;opacity:.8;margin-bottom:16px}
 .card{
-  background:rgba(255,255,255,.10);
-  border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.15);
   border-radius:20px;
   padding:20px;
-  margin:14px 0;
+  margin:14px 0
 }
-
-.hidden{
-  display:none!important;
-}
-
+.hidden{display:none!important}
 button{
   border:0;
   border-radius:12px;
   padding:13px 16px;
   font-weight:700;
-  cursor:pointer;
-  font-size:16px;
+  cursor:pointer
 }
-
-button:disabled{
-  opacity:.5;
-}
-
-.primary{
-  background:#ffd43b;
-  color:#171717;
-}
-
-.light{
-  background:#fff;
-  color:#171717;
-}
-
-.ghost{
-  background:rgba(255,255,255,.12);
-  color:#fff;
-}
-
-.top{
+button:disabled{opacity:.5}
+.primary{background:#ffd43b;color:#171717}
+.light{background:#fff;color:#171717}
+.ghost{background:rgba(255,255,255,.12);color:#fff}
+.top,.row{
   display:flex;
   gap:10px;
   align-items:center;
   justify-content:space-between;
-  flex-wrap:wrap;
+  flex-wrap:wrap
 }
-
 .stat{
   padding:10px 14px;
-  background:rgba(255,255,255,.10);
-  border-radius:12px;
+  background:rgba(255,255,255,.1);
+  border-radius:12px
 }
-
 .nav{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  margin:10px 0;
+  gap:8px
 }
-
 .dice{
-  font-size:100px;
+  font-size:90px;
   text-align:center;
   line-height:1.1;
-  margin:15px;
+  margin:8px
 }
-
 .roll{
   display:block;
   margin:auto;
-  font-size:18px;
-  padding:16px 28px;
+  font-size:18px
 }
-
 .result{
   text-align:center;
   font-size:21px;
-  font-weight:800;
+  font-weight:800
 }
-
 .answers{
   display:grid;
-  gap:10px;
+  gap:10px
 }
-
 .answer{
   background:#fff;
   color:#111;
   text-align:left;
-  width:100%;
+  width:100%
 }
-
-.answer.correct{
-  outline:4px solid #4ade80;
-}
-
-.answer.wrong{
-  outline:4px solid #fb7185;
-}
-
+.answer.correct{outline:4px solid #4ade80}
+.answer.wrong{outline:4px solid #fb7185}
 input,select{
   width:100%;
   padding:13px;
   border:0;
   border-radius:10px;
   margin:5px 0 12px;
-  font-size:16px;
+  font-size:16px
 }
-
 .timer{
   text-align:center;
   font-size:22px;
-  font-weight:800;
+  font-weight:800
 }
-
 .bar{
   height:9px;
   background:rgba(255,255,255,.15);
   border-radius:20px;
   overflow:hidden;
-  margin-top:12px;
+  margin-top:12px
 }
-
 .bar div{
   height:100%;
   background:#ffd43b;
-  width:100%;
-  transition:width .2s linear;
+  width:0;
+  transition:width .2s linear
 }
-
 .notice{
   padding:12px;
   border-radius:12px;
   background:rgba(255,212,59,.12);
-  border:1px solid rgba(255,212,59,.3);
+  border:1px solid rgba(255,212,59,.3)
 }
-
 .small{
   font-size:13px;
-  opacity:.75;
+  opacity:.75
 }
-
 .tabs2{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:8px;
+  gap:8px
 }
-
 .adbox{
   width:100%;
   min-height:60px;
@@ -192,32 +140,12 @@ input,select{
   align-items:center;
   overflow:hidden;
   margin:12px auto;
-  border-radius:10px;
+  border-radius:10px
 }
-
-.center{
-  text-align:center;
-}
-
-.bigScore{
-  text-align:center;
-  font-size:28px;
-  font-weight:900;
-  margin-top:16px;
-}
-
 @media(max-width:560px){
-  .nav{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .dice{
-    font-size:80px;
-  }
-
-  .logo{
-    font-size:38px;
-  }
+  .nav{grid-template-columns:1fr 1fr}
+  .dice{font-size:75px}
+  .logo{font-size:38px}
 }
 </style>
 </head>
@@ -225,173 +153,86 @@ input,select{
 <body>
 
 <!--
-=========================================================
-MÚSICA
-O MP3 precisa estar na mesma pasta do index.html.
-=========================================================
--->
+  ÁUDIO:
+  O arquivo deve estar na MESMA pasta do index.html:
+  92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3
 
+  A música NÃO toca na tela de cadastro/login.
+  Ela começa somente depois de um LOGIN bem-sucedido.
+-->
 <audio id="backgroundMusic" preload="auto" loop>
-  <source
-    src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
-    type="audio/mpeg">
+  <source src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3" type="audio/mpeg">
 </audio>
 
 <div class="wrap">
 
 <div class="logo">QuizUp</div>
+<div class="sub">🎲 Jogue, responda e acumule pontos</div>
 
-<div class="sub">
-🎲 Jogue, responda e acumule pontos
-</div>
-
-
-<!-- =====================================================
-     ANÚNCIO SUPERIOR
-===================================================== -->
-
+<!-- ADSTERRA / HIGHREVENUE — BANNER -->
 <div class="adbox">
-
 <script>
-try{
-  atOptions={
-    'key':'827464848b02582093e6b5d45cb10d0a',
-    'format':'iframe',
-    'height':50,
-    'width':320,
-    'params':{}
-  };
-}catch(e){}
+atOptions={
+  'key':'827464848b02582093e6b5d45cb10d0a',
+  'format':'iframe',
+  'height':50,
+  'width':320,
+  'params':{}
+};
 </script>
-
-<script
-src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js">
-</script>
-
+<script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
 </div>
-
-
-<!-- =====================================================
-     LOGIN / CADASTRO
-===================================================== -->
 
 <section id="auth" class="card">
 
 <div class="tabs2">
-
-<button
-class="primary"
-type="button"
-onclick="authMode('register')">
-Cadastro
-</button>
-
-<button
-class="light"
-type="button"
-onclick="authMode('login')">
-Login
-</button>
-
+<button class="primary" onclick="authMode('register')">Cadastro</button>
+<button class="light" onclick="authMode('login')">Login</button>
 </div>
 
-
 <div id="registerBox">
-
 <h2>📝 Cadastro</h2>
 
 <label>E-mail</label>
-
-<input
-id="rEmail"
-type="email"
-placeholder="Seu e-mail"
-autocomplete="email">
-
+<input id="rEmail" type="email" placeholder="Seu e-mail">
 
 <label>Senha</label>
-
-<input
-id="rPass"
-type="password"
-placeholder="Sua senha"
-autocomplete="new-password">
-
+<input id="rPass" type="password" placeholder="Sua senha">
 
 <label>Nome completo</label>
-
-<input
-id="rName"
-type="text"
-placeholder="Seu nome completo">
-
+<input id="rName" type="text" placeholder="Seu nome completo">
 
 <label>CPF</label>
-
 <input
-id="rCpf"
-type="text"
-inputmode="numeric"
-maxlength="14"
-placeholder="000.000.000-00">
+  id="rCpf"
+  type="text"
+  inputmode="numeric"
+  maxlength="14"
+  placeholder="000.000.000-00"
+>
 
-
-<button
-class="primary"
-type="button"
-onclick="register()">
-Cadastrar
-</button>
-
+<button class="primary" onclick="register()">Cadastrar</button>
 </div>
 
-
 <div id="loginBox" class="hidden">
-
 <h2>🔐 Login</h2>
 
 <label>E-mail</label>
-
-<input
-id="lEmail"
-type="email"
-placeholder="Seu e-mail"
-autocomplete="email">
-
+<input id="lEmail" type="email" placeholder="Seu e-mail">
 
 <label>Senha</label>
+<input id="lPass" type="password" placeholder="Sua senha">
 
-<input
-id="lPass"
-type="password"
-placeholder="Sua senha"
-autocomplete="current-password">
-
-
-<button
-class="primary"
-type="button"
-onclick="login()">
-Entrar
-</button>
-
+<button class="primary" onclick="login()">Entrar</button>
 </div>
 
 <p class="small">
-Protótipo do QuizUp.
+Protótipo do QuizUp. Pagamentos reais e dados pessoais precisam de servidor seguro.
 </p>
 
 </section>
 
-
-<!-- =====================================================
-     JOGO
-===================================================== -->
-
 <section id="game" class="hidden">
-
-
-<!-- STATUS -->
 
 <div class="top card">
 
@@ -403,63 +244,35 @@ Protótipo do QuizUp.
 🎲 Rodada <span id="round">1</span>
 </div>
 
-<button
-class="ghost"
-type="button"
-onclick="logout()">
-Sair
-</button>
+<button class="ghost" onclick="logout()">Sair</button>
 
 </div>
 
-
-<!-- NAVEGAÇÃO -->
-
 <div class="nav">
 
-<button
-class="ghost"
-type="button"
-onclick="tab('quiz')">
+<button class="ghost" onclick="tab('quiz')">
 🎲 Quiz
 </button>
 
-<button
-class="ghost"
-type="button"
-onclick="tab('ref')">
+<button class="ghost" onclick="tab('ref')">
 🎁 Indicação
 </button>
 
-<button
-class="ghost"
-type="button"
-onclick="tab('cash')">
+<button class="ghost" onclick="tab('cash')">
 💸 Saque
 </button>
 
-<button
-class="ghost"
-type="button"
-onclick="tab('premium')">
+<button class="ghost" onclick="tab('premium')">
 💎 Premium
 </button>
 
 </div>
 
-
-<!-- =====================================================
-     QUIZ
-===================================================== -->
-
 <div id="quizTab">
-
-
-<!-- DADO -->
 
 <div id="rollCard" class="card">
 
-<h2 class="center">
+<h2 style="text-align:center">
 Jogue o dado
 </h2>
 
@@ -468,26 +281,17 @@ Jogue o dado
 </div>
 
 <button
-id="rollButton"
-class="primary roll"
-type="button"
-onclick="rollDice()">
+  class="primary roll"
+  onclick="rollDice()"
+>
 JOGAR DADO
 </button>
 
-<p
-id="diceResult"
-class="result">
-</p>
+<p id="diceResult" class="result"></p>
 
 </div>
 
-
-<!-- PERGUNTA -->
-
-<div
-id="questionCard"
-class="card hidden">
+<div id="questionCard" class="card hidden">
 
 <div class="top">
 
@@ -499,71 +303,56 @@ class="card hidden">
 
 </div>
 
-
 <div class="bar">
 <div id="progress"></div>
 </div>
 
+<h2 id="question"></h2>
 
-<h2 id="question">
-</h2>
+<div id="answers" class="answers"></div>
 
+<p id="feedback" class="notice hidden"></p>
 
-<div
-id="answers"
-class="answers">
-</div>
-
-
-<p
-id="feedback"
-class="notice hidden">
-</p>
-
-
-<div class="bigScore">
+<div style="
+text-align:center;
+font-size:28px;
+font-weight:900;
+margin-top:16px
+">
 ⭐ Pontuação:
 <span id="totalScore">0</span>
 </div>
 
-
-<!-- ANÚNCIO -->
-
+<!-- ANÚNCIO APÓS A RESPOSTA -->
 <div id="answerAd" class="adbox">
 
 <script>
-try{
-  atOptions={
-    'key':'827464848b02582093e6b5d45cb10d0a',
-    'format':'iframe',
-    'height':50,
-    'width':320,
-    'params':{}
-  };
-}catch(e){}
+atOptions={
+  'key':'827464848b02582093e6b5d45cb10d0a',
+  'format':'iframe',
+  'height':50,
+  'width':320,
+  'params':{}
+};
 </script>
 
-<script
-src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js">
-</script>
+<script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
 
 </div>
 
-
 <div
-id="rewardBox"
-class="hidden"
-style="margin-top:16px">
+  id="rewardBox"
+  class="hidden"
+  style="margin-top:16px"
+>
 
 <button
-id="continueButton"
-class="primary"
-type="button"
-style="width:100%"
-onclick="finishQuestion()">
-
+  id="continueButton"
+  class="primary"
+  style="width:100%"
+  onclick="finishQuestion()"
+>
 CONTINUAR
-
 </button>
 
 </div>
@@ -572,14 +361,7 @@ CONTINUAR
 
 </div>
 
-
-<!-- =====================================================
-     INDICAÇÃO
-===================================================== -->
-
-<div
-id="refTab"
-class="hidden card">
+<div id="refTab" class="hidden card">
 
 <h2>🎁 Indicação</h2>
 
@@ -588,25 +370,15 @@ Ganhe <b>50 pontos</b> quando seu convidado atingir
 <b>300 pontos</b>.
 </p>
 
-<input
-id="refCode"
-readonly>
+<input id="refCode" readonly>
 
-<input
-id="refLink"
-readonly>
+<input id="refLink" readonly>
 
-<button
-class="primary"
-type="button"
-onclick="copyRef()">
+<button class="primary" onclick="copyRef()">
 Copiar link
 </button>
 
-<button
-class="light"
-type="button"
-onclick="shareRef()">
+<button class="light" onclick="shareRef()">
 Enviar link
 </button>
 
@@ -614,20 +386,13 @@ Enviar link
 
 </div>
 
-
-<!-- =====================================================
-     SAQUE
-===================================================== -->
-
-<div
-id="cashTab"
-class="hidden card">
+<div id="cashTab" class="hidden card">
 
 <h2>💸 Saque</h2>
 
 <div class="notice">
 
-<b>Valores:</b><br><br>
+<b>Valores:</b><br>
 
 2.000 pontos → R$ 1,00<br>
 6.000 pontos → R$ 5,00<br>
@@ -635,10 +400,7 @@ class="hidden card">
 
 </div>
 
-
-<select
-id="payMethod"
-onchange="payFields()">
+<select id="payMethod" onchange="payFields()">
 
 <option value="pix">
 Pix
@@ -650,27 +412,24 @@ PayPal
 
 </select>
 
-
 <div id="pix">
 
 <input
-id="pixKey"
-placeholder="Chave Pix">
+  id="pixKey"
+  placeholder="Chave Pix"
+>
 
 </div>
 
-
-<div
-id="paypal"
-class="hidden">
+<div id="paypal" class="hidden">
 
 <input
-id="paypalKey"
-type="email"
-placeholder="E-mail PayPal">
+  id="paypalKey"
+  type="email"
+  placeholder="E-mail PayPal"
+>
 
 </div>
-
 
 <select id="withdrawAmount">
 
@@ -688,37 +447,20 @@ R$ 10,00 — 11.000 pontos
 
 </select>
 
-
-<button
-class="primary"
-type="button"
-onclick="withdraw()">
-
+<button class="primary" onclick="withdraw()">
 Solicitar saque
-
 </button>
 
-
-<p
-id="cashMsg"
-class="notice hidden">
-</p>
-
+<p id="cashMsg" class="notice hidden"></p>
 
 <p class="small">
 Nesta versão o saque é apenas registrado.
+O pagamento real ainda não está conectado.
 </p>
 
 </div>
 
-
-<!-- =====================================================
-     PREMIUM
-===================================================== -->
-
-<div
-id="premiumTab"
-class="hidden card">
+<div id="premiumTab" class="hidden card">
 
 <h2>💎 Premium</h2>
 
@@ -727,1405 +469,928 @@ class="hidden card">
 </p>
 
 <button
-class="primary"
-type="button"
-onclick="alert('O pagamento Premium ainda será conectado.')">
-
+  class="primary"
+  onclick="alert('O pagamento Premium ainda será conectado.')"
+>
 Quero ser Premium
-
 </button>
 
 </div>
-
 
 </section>
 
 </div>
 
-
 <script>
 
-/* ========================================================
-   PERGUNTAS
-======================================================== */
+const Q=[
 
-const Q = [
+["Quanto é 2 + 2?",["3","4","5","6"],1],
 
-[
-"Quanto é 2 + 2?",
-["3","4","5","6"],
-1
-],
+["Qual é a capital do Brasil?",
+["Brasília","São Paulo","Salvador","Recife"],0],
 
-[
-"Qual é a capital do Brasil?",
-["Brasília","São Paulo","Salvador","Recife"],
-0
-],
+["Qual planeta é conhecido como Planeta Vermelho?",
+["Terra","Marte","Vênus","Saturno"],1],
 
-[
-"Qual planeta é conhecido como Planeta Vermelho?",
-["Terra","Marte","Vênus","Saturno"],
-1
-],
+["Quantos dias tem uma semana?",
+["5","6","7","8"],2],
 
-[
-"Quantos dias tem uma semana?",
-["5","6","7","8"],
-2
-],
+["Qual animal é conhecido como rei da selva?",
+["Tigre","Elefante","Leão","Urso"],2],
 
-[
-"Qual animal é conhecido como rei da selva?",
-["Tigre","Elefante","Leão","Urso"],
-2
-],
+["Quantos meses tem um ano?",
+["10","11","12","13"],2],
 
-[
-"Quantos meses tem um ano?",
-["10","11","12","13"],
-2
-],
+["Qual é a cor formada pela mistura de azul e amarelo?",
+["Verde","Roxo","Laranja","Rosa"],0],
 
-[
-"Qual é a cor formada pela mistura de azul e amarelo?",
-["Verde","Roxo","Laranja","Rosa"],
-0
-],
+["Qual é o maior planeta do Sistema Solar?",
+["Terra","Marte","Júpiter","Mercúrio"],2],
 
-[
-"Qual é o maior planeta do Sistema Solar?",
-["Terra","Marte","Júpiter","Mercúrio"],
-2
-],
+["Qual é o maior oceano da Terra?",
+["Atlântico","Índico","Pacífico","Ártico"],2],
 
-[
-"Qual é o maior oceano da Terra?",
-["Atlântico","Índico","Pacífico","Ártico"],
-2
-],
+["Quanto é 12 × 8?",
+["86","96","108","112"],1],
 
-[
-"Quanto é 12 × 8?",
-["86","96","108","112"],
-1
-],
+["Quem escreveu Dom Casmurro?",
+["Machado de Assis","José de Alencar","Clarice Lispector","Cecília Meireles"],0],
 
-[
-"Quem escreveu Dom Casmurro?",
-[
-"Machado de Assis",
-"José de Alencar",
-"Clarice Lispector",
-"Cecília Meireles"
-],
-0
-],
+["Qual é o símbolo químico do ouro?",
+["Ag","Fe","Au","Cu"],2],
 
-[
-"Qual é o símbolo químico do ouro?",
-["Ag","Fe","Au","Cu"],
-2
-],
+["Qual destes números é primo?",
+["21","27","29","33"],2],
 
-[
-"Qual destes números é primo?",
-["21","27","29","33"],
-2
-],
+["Qual é a raiz quadrada de 144?",
+["10","11","12","14"],2],
 
-[
-"Qual é a raiz quadrada de 144?",
-["10","11","12","14"],
-2
-],
+["Qual é o maior país do mundo em área?",
+["China","Canadá","Brasil","Rússia"],3],
 
-[
-"Qual é o maior país do mundo em área?",
-["China","Canadá","Brasil","Rússia"],
-3
-],
+["Em que ano terminou a Segunda Guerra Mundial?",
+["1943","1944","1945","1946"],2],
 
-[
-"Em que ano terminou a Segunda Guerra Mundial?",
-["1943","1944","1945","1946"],
-2
-],
+["Qual é o elemento químico de número atômico 6?",
+["Oxigênio","Carbono","Nitrogênio","Ferro"],1],
 
-[
-"Qual é o elemento químico de número atômico 6?",
-["Oxigênio","Carbono","Nitrogênio","Ferro"],
-1
-],
+["Qual é a velocidade aproximada da luz no vácuo?",
+["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],1],
 
-[
-"Qual é a velocidade aproximada da luz no vácuo?",
-[
-"30 mil km/s",
-"300 mil km/s",
-"3 milhões km/s",
-"3 mil km/s"
-],
-1
-],
-
-[
-"Qual é a derivada de x³ − 4x?",
-[
-"3x² − 4",
-"x² − 4",
-"3x − 4",
-"3x² + 4"
-],
-0
-],
-
-[
-"Quantos lados tem um hexágono?",
-["5","6","7","8"],
-1
-],
-
-[
-"Qual é o resultado de 15 + 27?",
-["40","41","42","43"],
-2
-],
-
-[
-"Qual é o planeta mais próximo do Sol?",
-["Terra","Marte","Mercúrio","Vênus"],
-2
-],
-
-[
-"Qual é o idioma oficial do Brasil?",
-["Português","Espanhol","Inglês","Francês"],
-0
-]
+["Qual é a derivada de x³ − 4x?",
+["3x² − 4","x² − 4","3x − 4","3x² + 4"],0]
 
 ];
 
+let s={
 
-/* ========================================================
-   ESTADO
-======================================================== */
+email:"",
+password:"",
+name:"",
+cpf:"",
+points:0,
+round:1,
+code:"",
+referrer:"",
+dice:0,
+question:null,
+timer:5,
+answered:false,
+roundPoints:0
 
-let s = {
-  email:"",
-  password:"",
-  name:"",
-  cpf:"",
-  points:0,
-  round:1,
-  code:"",
-  referrer:"",
-  dice:0,
-  question:null,
-  timer:5,
-  answered:false,
-  roundPoints:0
 };
 
-let handle = null;
+let handle=null;
 
 
-/* ========================================================
-   CHAVE DA CONTA
-======================================================== */
-
-function accountKey(email){
-
-  return "quizup_account_" +
-    String(email || "")
-    .trim()
-    .toLowerCase();
-
-}
-
-
-/* ========================================================
-   SALVAR
-======================================================== */
-
-function save(){
-
-  if(!s.email){
-    return;
-  }
-
-  localStorage.setItem(
-    accountKey(s.email),
-    JSON.stringify(s)
-  );
-
-  ui();
-
-}
-
-
-/* ========================================================
-   ATUALIZAR INTERFACE
-======================================================== */
-
-function ui(){
-
-  const points = document.getElementById("points");
-  const round = document.getElementById("round");
-  const totalScore = document.getElementById("totalScore");
-  const refCode = document.getElementById("refCode");
-  const refLink = document.getElementById("refLink");
-
-  if(points){
-    points.textContent = Number(s.points || 0);
-  }
-
-  if(round){
-    round.textContent = Number(s.round || 1);
-  }
-
-  if(totalScore){
-    totalScore.textContent = Number(s.points || 0);
-  }
-
-  if(refCode){
-    refCode.value = s.code || "";
-  }
-
-  if(refLink){
-
-    refLink.value =
-      location.origin +
-      location.pathname +
-      "?ref=" +
-      encodeURIComponent(s.code || "");
-
-  }
-
-}
-
-
-/* ========================================================
-   CADASTRO / LOGIN
-======================================================== */
-
-function authMode(mode){
-
-  const registerBox =
-    document.getElementById("registerBox");
-
-  const loginBox =
-    document.getElementById("loginBox");
-
-  registerBox.classList.toggle(
-    "hidden",
-    mode !== "register"
-  );
-
-  loginBox.classList.toggle(
-    "hidden",
-    mode !== "login"
-  );
-
-}
-
-
-/* ========================================================
-   CADASTRO
-======================================================== */
-
-function register(){
-
-  try{
-
-    const e =
-      document.getElementById("rEmail")
-      .value
-      .trim()
-      .toLowerCase();
-
-    const p =
-      document.getElementById("rPass")
-      .value;
-
-    const n =
-      document.getElementById("rName")
-      .value
-      .trim();
-
-    const cpf =
-      document.getElementById("rCpf")
-      .value
-      .trim();
-
-
-    if(!e || !p || !n || !cpf){
-
-      alert("Preencha todos os campos.");
-
-      return;
-    }
-
-
-    if(localStorage.getItem(accountKey(e))){
-
-      alert("Essa conta já existe. Use Login.");
-
-      return;
-    }
-
-
-    s = {
-
-      email:e,
-      password:p,
-      name:n,
-      cpf:cpf,
-
-      /* PONTOS ZERADOS */
-      points:0,
-
-      /* COMEÇA NA RODADA 1 */
-      round:1,
-
-      code:
-        "QU" +
-        Math.random()
-        .toString(36)
-        .slice(2,8)
-        .toUpperCase(),
-
-      referrer:
-        new URLSearchParams(location.search)
-        .get("ref") || "",
-
-      dice:0,
-      question:null,
-      timer:5,
-      answered:false,
-      roundPoints:0
-
-    };
-
-
-    save();
-
-    openGame();
-
-  }
-  catch(error){
-
-    console.error(error);
-
-    alert(
-      "Erro no cadastro: " +
-      error.message
-    );
-
-  }
-
-}
-
-
-/* ========================================================
-   LOGIN
-======================================================== */
-
-function login(){
-
-  try{
-
-    const e =
-      document.getElementById("lEmail")
-      .value
-      .trim()
-      .toLowerCase();
-
-    const p =
-      document.getElementById("lPass")
-      .value;
-
-
-    if(!e || !p){
-
-      alert("Preencha e-mail e senha.");
-
-      return;
-    }
-
-
-    const raw =
-      localStorage.getItem(accountKey(e));
-
-
-    if(!raw){
-
-      alert("Conta não encontrada.");
-
-      return;
-    }
-
-
-    const account =
-      JSON.parse(raw);
-
-
-    if(account.password !== p){
-
-      alert("Senha incorreta.");
-
-      return;
-    }
-
-
-    s = account;
-
-
-    openGame();
-
-  }
-  catch(error){
-
-    console.error(error);
-
-    alert(
-      "Erro no login: " +
-      error.message
-    );
-
-  }
-
-}
-
-
-/* ========================================================
-   ABRIR JOGO
-======================================================== */
-
-function openGame(){
-
-  document
-    .getElementById("auth")
-    .classList.add("hidden");
-
-  document
-    .getElementById("game")
-    .classList.remove("hidden");
-
-  ui();
-
-  tab("quiz");
-
-}
-
-
-/* ========================================================
-   SAIR
-======================================================== */
-
-function logout(){
-
-  clearInterval(handle);
-
-  document
-    .getElementById("game")
-    .classList.add("hidden");
-
-  document
-    .getElementById("auth")
-    .classList.remove("hidden");
-
-  authMode("login");
-
-}
-
-
-/* ========================================================
-   ABAS
-======================================================== */
-
-function tab(name){
-
-  const tabs = [
-    "quiz",
-    "ref",
-    "cash",
-    "premium"
-  ];
-
-
-  tabs.forEach(function(x){
-
-    const element =
-      document.getElementById(x + "Tab");
-
-    if(element){
-
-      element.classList.toggle(
-        "hidden",
-        x !== name
-      );
-
-    }
-
-  });
-
-
-  if(name === "quiz"){
-
-    document
-      .getElementById("rollCard")
-      .classList.remove("hidden");
-
-    document
-      .getElementById("questionCard")
-      .classList.add("hidden");
-
-  }
-
-}
-
-
-/* ========================================================
+/* =========================
    MÚSICA
-======================================================== */
+   ========================= */
 
 function playMusic(){
 
-  const music =
-    document.getElementById("backgroundMusic");
+const music=document.getElementById("backgroundMusic");
 
-  if(!music){
+if(!music)return;
 
-    return;
-  }
+music.volume=0.35;
 
+const promise=music.play();
 
-  music.volume = 0.35;
+if(promise!==undefined){
 
+promise.catch(function(error){
 
-  const promise = music.play();
+console.log(
+"Áudio bloqueado pelo navegador:",
+error
+);
 
+});
 
-  if(promise){
+}
 
-    promise.catch(function(error){
+}
 
-      console.log(
-        "O navegador bloqueou o áudio:",
-        error
-      );
+function stopMusic(){
 
-    });
+const music=document.getElementById("backgroundMusic");
 
-  }
+if(!music)return;
+
+music.pause();
+
+music.currentTime=0;
 
 }
 
 
-/* ========================================================
-   PERGUNTA ALEATÓRIA
-======================================================== */
+/* =========================
+   LOCAL STORAGE
+   ========================= */
+
+function key(){
+
+return "quizup_"+s.email;
+
+}
+
+function save(){
+
+localStorage.setItem(
+key(),
+JSON.stringify(s)
+);
+
+ui();
+
+}
+
+
+/* =========================
+   CADASTRO / LOGIN
+   ========================= */
+
+function authMode(m){
+
+document
+.getElementById("registerBox")
+.classList
+.toggle("hidden",m!=="register");
+
+document
+.getElementById("loginBox")
+.classList
+.toggle("hidden",m!=="login");
+
+}
+
+
+/* CADASTRO
+   NÃO inicia música
+*/
+
+function register(){
+
+let e=document
+.getElementById("rEmail")
+.value
+.trim()
+.toLowerCase();
+
+let p=document
+.getElementById("rPass")
+.value;
+
+let n=document
+.getElementById("rName")
+.value
+.trim();
+
+let cpf=document
+.getElementById("rCpf")
+.value
+.trim();
+
+if(!e||!p||!n||!cpf){
+
+alert("Preencha todos os campos.");
+
+return;
+
+}
+
+if(localStorage.getItem("quizup_"+e)){
+
+alert("Essa conta já existe.");
+
+return;
+
+}
+
+s={
+
+email:e,
+password:p,
+name:n,
+cpf:cpf,
+
+points:0,
+round:1,
+
+code:
+"QU"+
+Math.random()
+.toString(36)
+.slice(2,8)
+.toUpperCase(),
+
+referrer:
+new URLSearchParams(location.search)
+.get("ref")||"",
+
+dice:0,
+question:null,
+timer:5,
+answered:false,
+roundPoints:0
+
+};
+
+save();
+
+openGame();
+
+}
+
+
+/* LOGIN
+   MÚSICA COMEÇA SOMENTE AQUI
+*/
+
+function login(){
+
+let e=document
+.getElementById("lEmail")
+.value
+.trim()
+.toLowerCase();
+
+let p=document
+.getElementById("lPass")
+.value;
+
+if(!e||!p){
+
+alert("Preencha e-mail e senha.");
+
+return;
+
+}
+
+let x=localStorage.getItem(
+"quizup_"+e
+);
+
+if(!x){
+
+alert("Conta não encontrada.");
+
+return;
+
+}
+
+let a=JSON.parse(x);
+
+if(a.password!==p){
+
+alert("Senha incorreta.");
+
+return;
+
+}
+
+s=a;
+
+openGame();
+
+/*
+  O usuário acabou de tocar em ENTRAR.
+  Agora o navegador permite iniciar o áudio.
+*/
+playMusic();
+
+}
+
+
+/* =========================
+   ABRIR / FECHAR JOGO
+   ========================= */
+
+function openGame(){
+
+document
+.getElementById("auth")
+.classList
+.add("hidden");
+
+document
+.getElementById("game")
+.classList
+.remove("hidden");
+
+ui();
+
+tab("quiz");
+
+}
+
+
+function logout(){
+
+clearInterval(handle);
+
+/* PARA A MÚSICA AO SAIR */
+stopMusic();
+
+document
+.getElementById("game")
+.classList
+.add("hidden");
+
+document
+.getElementById("auth")
+.classList
+.remove("hidden");
+
+authMode("login");
+
+}
+
+
+/* =========================
+   INTERFACE
+   ========================= */
+
+function ui(){
+
+document
+.getElementById("points")
+.textContent=s.points;
+
+document
+.getElementById("round")
+.textContent=s.round;
+
+document
+.getElementById("totalScore")
+.textContent=s.points;
+
+document
+.getElementById("refCode")
+.value=s.code||"";
+
+document
+.getElementById("refLink")
+.value=
+location.origin+
+location.pathname+
+"?ref="+
+encodeURIComponent(s.code||"");
+
+}
+
+
+/* =========================
+   ABAS
+   ========================= */
+
+function tab(x){
+
+["quiz","ref","cash","premium"]
+.forEach(a=>{
+
+document
+.getElementById(a+"Tab")
+.classList
+.toggle("hidden",a!==x);
+
+});
+
+if(x==="quiz"){
+
+document
+.getElementById("rollCard")
+.classList
+.remove("hidden");
+
+document
+.getElementById("questionCard")
+.classList
+.add("hidden");
+
+}
+
+}
+
+
+/* =========================
+   PERGUNTAS
+   ========================= */
 
 function pickQuestion(){
 
-  return Q[
-    Math.floor(
-      Math.random() * Q.length
-    )
-  ];
+return Q[
+Math.floor(
+Math.random()*Q.length
+)
+];
 
 }
 
 
-/* ========================================================
-   JOGAR DADO
-======================================================== */
+/* =========================
+   DADO
+   ========================= */
 
 function rollDice(){
 
-  try{
+clearInterval(handle);
 
-    /* LIBERA A MÚSICA APÓS TOQUE DO USUÁRIO */
-    playMusic();
+s.answered=false;
 
+let d;
 
-    clearInterval(handle);
+if(s.round%30===0){
 
+d=
+Math.floor(
+Math.random()*3
+)+8;
 
-    s.answered = false;
+}
 
+else if(s.round%10===0){
 
-    let d;
+d=
+Math.floor(
+Math.random()*3
+)+5;
 
+}
 
-    if(s.round % 30 === 0){
+else{
 
-      d =
-        Math.floor(
-          Math.random() * 3
-        ) + 8;
+d=
+Math.floor(
+Math.random()*4
+)+1;
 
-    }
-    else if(s.round % 10 === 0){
+}
 
-      d =
-        Math.floor(
-          Math.random() * 3
-        ) + 5;
+s.dice=d;
 
-    }
-    else{
+s.roundPoints=d;
 
-      d =
-        Math.floor(
-          Math.random() * 4
-        ) + 1;
+s.question=pickQuestion();
 
-    }
+document
+.getElementById("dice")
+.textContent="🎲 "+d;
 
+document
+.getElementById("diceResult")
+.textContent=
+"Você tirou "+
+d+
+" • Esta pergunta vale "+
+d+
+(d===1?" ponto":" pontos");
 
-    s.dice = d;
+document
+.getElementById("question")
+.textContent=s.question[0];
 
-    s.roundPoints = d;
+let answers=
+document.getElementById("answers");
 
-    s.question = pickQuestion();
+answers.innerHTML="";
 
+s.question[1].forEach((a,i)=>{
 
-    document
-      .getElementById("dice")
-      .textContent = "🎲 " + d;
+let b=
+document.createElement("button");
 
+b.className="answer";
 
-    document
-      .getElementById("diceResult")
-      .textContent =
-        "Você tirou " +
-        d +
-        " • Esta pergunta vale " +
-        d +
-        (d === 1
-          ? " ponto"
-          : " pontos");
+b.textContent=a;
 
+b.onclick=()=>answer(i);
 
-    document
-      .getElementById("question")
-      .textContent =
-        s.question[0];
+answers.appendChild(b);
 
+});
 
-    const answers =
-      document.getElementById("answers");
+document
+.getElementById("rollCard")
+.classList
+.add("hidden");
 
+document
+.getElementById("questionCard")
+.classList
+.remove("hidden");
 
-    answers.innerHTML = "";
+document
+.getElementById("feedback")
+.classList
+.add("hidden");
 
+document
+.getElementById("rewardBox")
+.classList
+.add("hidden");
 
-    s.question[1].forEach(
-      function(text,index){
-
-        const button =
-          document.createElement("button");
-
-        button.type = "button";
-
-        button.className =
-          "answer";
-
-        button.textContent =
-          text;
-
-
-        button.addEventListener(
-          "click",
-          function(){
-
-            answer(index);
-
-          }
-        );
-
-
-        answers.appendChild(button);
-
-      }
-    );
-
-
-    document
-      .getElementById("rollCard")
-      .classList.add("hidden");
-
-
-    document
-      .getElementById("questionCard")
-      .classList.remove("hidden");
-
-
-    document
-      .getElementById("feedback")
-      .classList.add("hidden");
-
-
-    document
-      .getElementById("rewardBox")
-      .classList.add("hidden");
-
-
-    startTimer();
-
-
-    save();
-
-  }
-  catch(error){
-
-    console.error(error);
-
-    alert(
-      "Erro ao iniciar a pergunta: " +
-      error.message
-    );
-
-  }
+startTimer();
 
 }
 
 
-/* ========================================================
-   CRONÔMETRO
-======================================================== */
+/* =========================
+   TIMER
+   ========================= */
 
 function startTimer(){
 
-  clearInterval(handle);
+clearInterval(handle);
 
+s.timer=5;
 
-  s.timer = 5;
+document
+.getElementById("time")
+.textContent=5;
 
+document
+.getElementById("progress")
+.style
+.width="100%";
 
-  document
-    .getElementById("time")
-    .textContent = "5";
+handle=setInterval(()=>{
 
+s.timer--;
 
-  document
-    .getElementById("progress")
-    .style.width = "100%";
+document
+.getElementById("time")
+.textContent=s.timer;
 
+document
+.getElementById("progress")
+.style
+.width=
+Math.max(
+0,
+s.timer/5*100
+)+"%";
 
-  handle =
-    setInterval(
-      function(){
+if(s.timer<=0){
 
-        s.timer--;
+clearInterval(handle);
 
+answer(-1);
 
-        document
-          .getElementById("time")
-          .textContent =
-          Math.max(0,s.timer);
+}
 
-
-        document
-          .getElementById("progress")
-          .style.width =
-          Math.max(
-            0,
-            s.timer / 5 * 100
-          ) + "%";
-
-
-        if(s.timer <= 0){
-
-          clearInterval(handle);
-
-          answer(-1);
-
-        }
-
-      },
-      1000
-    );
+},1000);
 
 }
 
 
-/* ========================================================
-   RESPONDER
-======================================================== */
+/* =========================
+   RESPOSTA
+   ========================= */
 
-function answer(index){
+function answer(i){
 
-  if(s.answered){
+if(s.answered)return;
 
-    return;
-  }
+s.answered=true;
 
+clearInterval(handle);
 
-  if(!s.question){
+let c=s.question[2];
 
-    return;
-  }
+let bs=[
+...document.querySelectorAll(".answer")
+];
 
+if(i>=0 && bs[i]){
 
-  s.answered = true;
+bs[i]
+.classList
+.add(
+i===c
+?"correct"
+:"wrong"
+);
 
+}
 
-  clearInterval(handle);
+if(bs[c]){
 
+bs[c]
+.classList
+.add("correct");
 
-  const correct =
-    s.question[2];
+}
 
+let ok=i===c;
 
-  const buttons =
-    [
-      ...document.querySelectorAll(".answer")
-    ];
+if(ok){
 
+s.points+=s.roundPoints;
 
-  if(index >= 0 && buttons[index]){
+}
 
-    buttons[index]
-      .classList
-      .add(
-        index === correct
-          ? "correct"
-          : "wrong"
-      );
+ui();
 
-  }
+save();
 
+let feedback=
+document.getElementById("feedback");
 
-  if(buttons[correct]){
+feedback
+.classList
+.remove("hidden");
 
-    buttons[correct]
-      .classList
-      .add("correct");
+feedback.textContent=
 
-  }
+ok
 
+?"✅ Correto! Você ganhou "+
+s.roundPoints+
+" pontos!"
 
-  const isCorrect =
-    index === correct;
+:"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
 
-
-  if(isCorrect){
-
-    s.points +=
-      Number(s.roundPoints || 0);
-
-  }
-
-
-  const feedback =
-    document.getElementById("feedback");
-
-
-  feedback.classList.remove("hidden");
-
-
-  if(isCorrect){
-
-    feedback.textContent =
-      "✅ Correto! Você ganhou " +
-      s.roundPoints +
-      " pontos!";
-
-  }
-  else{
-
-    feedback.textContent =
-      "❌ Incorreto ou tempo esgotado. " +
-      "Seus pontos permanecem.";
-
-  }
-
-
-  document
-    .getElementById("rewardBox")
-    .classList
-    .remove("hidden");
-
-
-  ui();
-
-  save();
+document
+.getElementById("rewardBox")
+.classList
+.remove("hidden");
 
 }
 
 
-/* ========================================================
+/* =========================
    CONTINUAR
-======================================================== */
+   ========================= */
 
 function finishQuestion(){
 
-  clearInterval(handle);
+document
+.getElementById("questionCard")
+.classList
+.add("hidden");
 
+document
+.getElementById("rollCard")
+.classList
+.remove("hidden");
 
-  document
-    .getElementById("questionCard")
-    .classList.add("hidden");
+document
+.getElementById("dice")
+.textContent="🎲";
 
+document
+.getElementById("diceResult")
+.textContent="";
 
-  document
-    .getElementById("rollCard")
-    .classList.remove("hidden");
+s.round++;
 
-
-  document
-    .getElementById("dice")
-    .textContent = "🎲";
-
-
-  document
-    .getElementById("diceResult")
-    .textContent = "";
-
-
-  s.round++;
-
-
-  s.question = null;
-
-  s.answered = false;
-
-  s.timer = 5;
-
-  s.roundPoints = 0;
-
-
-  save();
+save();
 
 }
 
 
-/* ========================================================
+/* =========================
    INDICAÇÃO
-======================================================== */
+   ========================= */
 
 function copyRef(){
 
-  const input =
-    document.getElementById("refLink");
+let link=
+document
+.getElementById("refLink")
+.value;
 
+if(navigator.clipboard){
 
-  const link = input.value;
+navigator.clipboard
+.writeText(link);
 
+}
 
-  if(navigator.clipboard){
-
-    navigator.clipboard
-      .writeText(link)
-      .then(function(){
-
-        document
-          .getElementById("refMsg")
-          .textContent =
-          "Link copiado!";
-
-      })
-      .catch(function(){
-
-        input.select();
-
-        document
-          .execCommand("copy");
-
-        document
-          .getElementById("refMsg")
-          .textContent =
-          "Link copiado!";
-
-      });
-
-  }
-  else{
-
-    input.select();
-
-    document
-      .execCommand("copy");
-
-    document
-      .getElementById("refMsg")
-      .textContent =
-      "Link copiado!";
-
-  }
+document
+.getElementById("refMsg")
+.textContent="Link copiado!";
 
 }
 
 
 async function shareRef(){
 
-  const link =
-    document.getElementById("refLink")
-    .value;
+let link=
+document
+.getElementById("refLink")
+.value;
 
+if(navigator.share){
 
-  if(navigator.share){
+await navigator.share({
 
-    try{
+title:"QuizUp",
 
-      await navigator.share({
+text:"Venha jogar QuizUp comigo!",
 
-        title:"QuizUp",
+url:link
 
-        text:
-          "Venha jogar QuizUp comigo!",
+});
 
-        url:link
+}
 
-      });
+else{
 
-    }
-    catch(error){
+copyRef();
 
-      console.log(error);
-
-    }
-
-  }
-  else{
-
-    copyRef();
-
-  }
+}
 
 }
 
 
-/* ========================================================
-   SAQUE
-======================================================== */
+/* =========================
+   PAGAMENTO
+   ========================= */
 
 function payFields(){
 
-  const pix =
-    document
-      .getElementById("payMethod")
-      .value === "pix";
+let p=
+document
+.getElementById("payMethod")
+.value==="pix";
 
+document
+.getElementById("pix")
+.classList
+.toggle("hidden",!p);
 
-  document
-    .getElementById("pix")
-    .classList
-    .toggle(
-      "hidden",
-      !pix
-    );
-
-
-  document
-    .getElementById("paypal")
-    .classList
-    .toggle(
-      "hidden",
-      pix
-    );
+document
+.getElementById("paypal")
+.classList
+.toggle("hidden",p);
 
 }
 
 
-function need(value){
+function need(v){
 
-  if(value === "10"){
-
-    return 11000;
-
-  }
-
-
-  if(value === "5"){
-
-    return 6000;
-
-  }
-
-
-  return 2000;
+return v==="10"
+?11000
+:v==="5"
+?6000
+:2000;
 
 }
 
 
 function withdraw(){
 
-  const value =
-    document
-      .getElementById("withdrawAmount")
-      .value;
+let v=
+document
+.getElementById("withdrawAmount")
+.value;
 
+let n=need(v);
 
-  const required =
-    need(value);
+let m=
+document
+.getElementById("payMethod")
+.value;
 
+let k=
 
-  const method =
-    document
-      .getElementById("payMethod")
-      .value;
+(m==="pix"
+?
+document.getElementById("pixKey")
+:
+document.getElementById("paypalKey"))
+.value
+.trim();
 
+let msg=
+document.getElementById("cashMsg");
 
-  const input =
-    method === "pix"
-      ? document.getElementById("pixKey")
-      : document.getElementById("paypalKey");
+msg
+.classList
+.remove("hidden");
 
+if(!k){
 
-  const paymentKey =
-    input.value.trim();
+msg.textContent=
+"Preencha o dado de pagamento.";
 
-
-  const message =
-    document.getElementById("cashMsg");
-
-
-  message.classList.remove("hidden");
-
-
-  if(!paymentKey){
-
-    message.textContent =
-      "Preencha o dado de pagamento.";
-
-    return;
-
-  }
-
-
-  if(s.points < required){
-
-    message.textContent =
-      "Pontos insuficientes. Você precisa de " +
-      required +
-      " pontos.";
-
-    return;
-
-  }
-
-
-  const withdrawals =
-    JSON.parse(
-      localStorage.getItem(
-        "quizup_withdrawals"
-      ) || "[]"
-    );
-
-
-  withdrawals.push({
-
-    email:s.email,
-
-    value:value,
-
-    method:method,
-
-    date:new Date().toISOString()
-
-  });
-
-
-  localStorage.setItem(
-    "quizup_withdrawals",
-    JSON.stringify(withdrawals)
-  );
-
-
-  message.textContent =
-    "Solicitação registrada. O pagamento real ainda não está conectado.";
+return;
 
 }
 
+if(s.points<n){
 
-/* ========================================================
-   ZERAR PONTOS UMA ÚNICA VEZ
-======================================================== */
+msg.textContent=
+"Pontos insuficientes. Você precisa de "+
+n+
+" pontos.";
 
-function resetOldPointsOnce(){
-
-  const flag =
-    "quizup_points_reset_2026_08_26";
-
-
-  if(
-    localStorage.getItem(flag)
-  ){
-
-    return;
-
-  }
-
-
-  const keys =
-    Object.keys(localStorage);
-
-
-  keys.forEach(function(k){
-
-    if(
-      k.startsWith("quizup_account_")
-    ){
-
-      try{
-
-        const account =
-          JSON.parse(
-            localStorage.getItem(k)
-          );
-
-
-        account.points = 0;
-
-        account.round = 1;
-
-        account.dice = 0;
-
-        account.question = null;
-
-        account.timer = 5;
-
-        account.answered = false;
-
-        account.roundPoints = 0;
-
-
-        localStorage.setItem(
-          k,
-          JSON.stringify(account)
-        );
-
-      }
-      catch(error){
-
-        console.log(
-          "Não foi possível resetar:",
-          k
-        );
-
-      }
-
-    }
-
-  });
-
-
-  localStorage.setItem(flag,"1");
+return;
 
 }
 
+let a=JSON.parse(
 
-/* ========================================================
-   INICIALIZAÇÃO
-======================================================== */
+localStorage.getItem(
+"quizup_withdrawals"
+)||"[]"
 
-function init(){
-
-  try{
-
-    /*
-      Primeiro zera os pontos antigos.
-      Isso acontece somente uma vez.
-    */
-    resetOldPointsOnce();
-
-
-    /*
-      Procura uma conta salva.
-    */
-
-    const keys =
-      Object.keys(localStorage)
-      .filter(function(k){
-
-        return k.startsWith(
-          "quizup_account_"
-        );
-
-      });
-
-
-    if(keys.length > 0){
-
-      const raw =
-        localStorage.getItem(keys[0]);
-
-
-      if(raw){
-
-        const account =
-          JSON.parse(raw);
-
-
-        if(
-          account &&
-          account.email
-        ){
-
-          s = account;
-
-          openGame();
-
-          return;
-
-        }
-
-      }
-
-    }
-
-
-    /*
-      Caso não exista conta,
-      mostra cadastro.
-    */
-
-    document
-      .getElementById("auth")
-      .classList
-      .remove("hidden");
-
-
-    document
-      .getElementById("game")
-      .classList
-      .add("hidden");
-
-
-    authMode("register");
-
-  }
-  catch(error){
-
-    console.error(
-      "Erro na inicialização:",
-      error
-    );
-
-    document
-      .getElementById("auth")
-      .classList
-      .remove("hidden");
-
-  }
-
-}
-
-
-/* ========================================================
-   INICIAR
-======================================================== */
-
-document.addEventListener(
-  "DOMContentLoaded",
-  init
 );
+
+a.push({
+
+email:s.email,
+
+value:v,
+
+method:m,
+
+date:new Date()
+.toISOString()
+
+});
+
+localStorage.setItem(
+"quizup_withdrawals",
+JSON.stringify(a)
+);
+
+msg.textContent=
+"Solicitação registrada. O pagamento real será conectado posteriormente.";
+
+}
+
+
+/* =========================
+   RESTAURAR SESSÃO
+   ========================= */
+
+(function(){
+
+let k=
+Object.keys(localStorage)
+.find(
+
+k=>
+k.startsWith("quizup_")
+&&
+!k.includes("withdrawals")
+
+);
+
+if(k){
+
+try{
+
+s=JSON.parse(
+localStorage.getItem(k)
+);
+
+openGame();
+
+/*
+  NÃO iniciamos música aqui.
+  A música só começa após clicar
+  em ENTRAR no login.
+*/
+
+}
+
+catch(e){
+
+console.log(e);
+
+}
+
+}
+
+})();
 
 </script>
 
 </body>
-  </html>
+</html>
