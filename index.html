@@ -49,11 +49,7 @@ input,select{width:100%;padding:13px;border:0;border-radius:10px;margin:5px 0 12
 .small{font-size:13px;opacity:.75}
 .tabs2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .adbox{width:100%;min-height:60px;display:flex;justify-content:center;align-items:center;overflow:hidden;margin:12px auto;border-radius:10px}
-@media(max-width:560px){
-  .nav{grid-template-columns:1fr 1fr}
-  .dice{font-size:75px}
-  .logo{font-size:38px}
-}
+@media(max-width:560px){.nav{grid-template-columns:1fr 1fr}.dice{font-size:75px}.logo{font-size:38px}}
 </style>
 </head>
 
@@ -104,7 +100,7 @@ atOptions={
 <label>CPF</label>
 <input id="rCpf" type="text" inputmode="numeric" maxlength="14" placeholder="000.000.000-00">
 
-<button class="primary" onclick="register()">Cadastrar</button>
+<button id="registerButton" class="primary" onclick="register()">Cadastrar</button>
 </div>
 
 <div id="loginBox" class="hidden">
@@ -117,7 +113,7 @@ atOptions={
 <label>Senha</label>
 <input id="lPass" type="password" placeholder="Sua senha">
 
-<button class="primary" onclick="login()">Entrar</button>
+<button id="loginButton" class="primary" onclick="login()">Entrar</button>
 
 </div>
 
@@ -146,8 +142,11 @@ Protótipo do QuizUp. Pagamentos reais e dados pessoais precisam de servidor seg
 <div class="nav">
 
 <button class="ghost" onclick="tab('quiz')">🎲 Quiz</button>
+
 <button class="ghost" onclick="tab('ref')">🎁 Indicação</button>
+
 <button class="ghost" onclick="tab('cash')">💸 Saque</button>
+
 <button class="ghost" onclick="tab('premium')">💎 Premium</button>
 
 </div>
@@ -156,13 +155,9 @@ Protótipo do QuizUp. Pagamentos reais e dados pessoais precisam de servidor seg
 
 <div id="rollCard" class="card">
 
-<h2 style="text-align:center">
-Jogue o dado
-</h2>
+<h2 style="text-align:center">Jogue o dado</h2>
 
-<div id="dice" class="dice">
-🎲
-</div>
+<div id="dice" class="dice">🎲</div>
 
 <button class="primary roll" onclick="rollDice()">
 JOGAR DADO
@@ -267,20 +262,18 @@ Enviar link
 <b>Valores:</b><br>
 
 2.000 pontos → R$ 1,00<br>
+
 6.000 pontos → R$ 5,00<br>
+
 11.000 pontos → R$ 10,00
 
 </div>
 
 <select id="payMethod" onchange="payFields()">
 
-<option value="pix">
-Pix
-</option>
+<option value="pix">Pix</option>
 
-<option value="paypal">
-PayPal
-</option>
+<option value="paypal">PayPal</option>
 
 </select>
 
@@ -357,9 +350,11 @@ Quero ser Premium
    ========================================================= */
 
 const APPWRITE_PROJECT_ID="6a8e10e900245502244c";
+
 const APPWRITE_DATABASE_ID="6a8e11820008abab052e";
 
 const APPWRITE_PLAYERS_TABLE="players";
+
 const APPWRITE_WITHDRAWALS_TABLE="saques";
 
 const appwriteClient=new Appwrite.Client();
@@ -370,28 +365,7 @@ appwriteClient
 
 const account=new Appwrite.Account(appwriteClient);
 
-/*
-  CORREÇÃO:
-  TablesDB é inicializado com segurança.
-  Se houver algum problema com a parte do banco,
-  o cadastro/login continuam funcionando.
-*/
-
-let tablesDB=null;
-
-try{
-
-  if(Appwrite.TablesDB){
-
-    tablesDB=new Appwrite.TablesDB(appwriteClient);
-
-  }
-
-}catch(error){
-
-  console.error("TablesDB não pôde ser inicializado:",error);
-
-}
+const tablesDB=new Appwrite.TablesDB(appwriteClient);
 
 
 /* =========================================================
@@ -468,26 +442,22 @@ userId:""
 let handle=null;
 
 let playerColumns=null;
+
 let withdrawalColumns=null;
 
 
 /* =========================================================
-   APPWRITE — COLUNAS
+   COLUNAS APPWRITE
    ========================================================= */
 
 async function getColumns(tableId){
-
-if(!tablesDB){
-
-return [];
-
-}
 
 try{
 
 let r=await tablesDB.listColumns({
 
 databaseId:APPWRITE_DATABASE_ID,
+
 tableId:tableId
 
 });
@@ -509,7 +479,9 @@ async function getPlayerColumns(){
 
 if(playerColumns===null){
 
-playerColumns=await getColumns(APPWRITE_PLAYERS_TABLE);
+playerColumns=await getColumns(
+APPWRITE_PLAYERS_TABLE
+);
 
 }
 
@@ -522,7 +494,9 @@ async function getWithdrawalColumns(){
 
 if(withdrawalColumns===null){
 
-withdrawalColumns=await getColumns(APPWRITE_WITHDRAWALS_TABLE);
+withdrawalColumns=await getColumns(
+APPWRITE_WITHDRAWALS_TABLE
+);
 
 }
 
@@ -560,14 +534,6 @@ return;
 
 }
 
-if(!tablesDB){
-
-console.warn("TablesDB indisponível. Jogador não salvo na tabela.");
-
-return;
-
-}
-
 try{
 
 let columns=await getPlayerColumns();
@@ -575,27 +541,40 @@ let columns=await getPlayerColumns();
 let data={};
 
 let emailCol=findColumn(columns,[
-"email","Email","e_mail"
+"email",
+"Email",
+"e_mail"
 ]);
 
 let pointsCol=findColumn(columns,[
-"points","pontos","Points"
+"points",
+"pontos",
+"Points"
 ]);
 
 let balanceCol=findColumn(columns,[
-"balance","saldo","Balance"
+"balance",
+"saldo",
+"Balance"
 ]);
 
 let refCol=findColumn(columns,[
-"referral_code","referralCode","codigo_indicacao","codigo"
+"referral_code",
+"referralCode",
+"codigo_indicacao",
+"codigo"
 ]);
 
 let nameCol=findColumn(columns,[
-"name","nome","fullName","nome_completo"
+"name",
+"nome",
+"fullName",
+"nome_completo"
 ]);
 
 let cpfCol=findColumn(columns,[
-"cpf","CPF"
+"cpf",
+"CPF"
 ]);
 
 
@@ -636,19 +615,6 @@ data[cpfCol]=s.cpf||"";
 }
 
 
-/*
-  Se não houver nenhuma coluna compatível,
-  não tenta enviar objeto vazio.
-*/
-
-if(Object.keys(data).length===0){
-
-console.warn("Nenhuma coluna compatível encontrada em players.");
-
-return;
-
-}
-
 await tablesDB.upsertRow({
 
 databaseId:APPWRITE_DATABASE_ID,
@@ -663,7 +629,10 @@ data:data
 
 }catch(error){
 
-console.error("Erro ao salvar jogador:",error);
+console.error(
+"Erro ao salvar jogador:",
+error
+);
 
 }
 
@@ -675,19 +644,6 @@ console.error("Erro ao salvar jogador:",error);
    ========================================================= */
 
 async function loadPlayer(user){
-
-if(!tablesDB){
-
-s.userId=user.$id;
-s.email=user.email||"";
-s.name=user.name||"";
-s.points=0;
-s.balance=0;
-s.code="QU"+Math.random().toString(36).slice(2,8).toUpperCase();
-
-return true;
-
-}
 
 try{
 
@@ -706,54 +662,85 @@ let d=row;
 let columns=await getPlayerColumns();
 
 let emailCol=findColumn(columns,[
-"email","Email","e_mail"
+"email",
+"Email",
+"e_mail"
 ]);
 
 let pointsCol=findColumn(columns,[
-"points","pontos","Points"
+"points",
+"pontos",
+"Points"
 ]);
 
 let balanceCol=findColumn(columns,[
-"balance","saldo","Balance"
+"balance",
+"saldo",
+"Balance"
 ]);
 
 let refCol=findColumn(columns,[
-"referral_code","referralCode","codigo_indicacao","codigo"
+"referral_code",
+"referralCode",
+"codigo_indicacao",
+"codigo"
 ]);
 
 let nameCol=findColumn(columns,[
-"name","nome","fullName","nome_completo"
+"name",
+"nome",
+"fullName",
+"nome_completo"
 ]);
 
 let cpfCol=findColumn(columns,[
-"cpf","CPF"
+"cpf",
+"CPF"
 ]);
 
 
 s.userId=user.$id;
 
-s.email=(emailCol?d[emailCol]:"")||user.email||"";
+s.email=
+(emailCol?d[emailCol]:"")||
+user.email||
+"";
 
-s.points=Number(
+s.points=
+Number(
 (pointsCol?d[pointsCol]:0)||0
 );
 
-s.balance=Number(
+s.balance=
+Number(
 (balanceCol?d[balanceCol]:0)||0
 );
 
-s.code=(refCol?d[refCol]:"")||
-"QU"+Math.random().toString(36).slice(2,8).toUpperCase();
+s.code=
+(refCol?d[refCol]:"")||
+"QU"+
+Math.random()
+.toString(36)
+.slice(2,8)
+.toUpperCase();
 
-s.name=(nameCol?d[nameCol]:"")||user.name||"";
+s.name=
+(nameCol?d[nameCol]:"")||
+user.name||
+"";
 
-s.cpf=(cpfCol?d[cpfCol]:"")||"";
+s.cpf=
+(cpfCol?d[cpfCol]:"")||
+"";
 
 return true;
 
 }catch(error){
 
-console.log("Jogador ainda não possui linha:",error);
+console.log(
+"Jogador ainda não possui linha:",
+error
+);
 
 s.userId=user.$id;
 
@@ -765,7 +752,12 @@ s.points=0;
 
 s.balance=0;
 
-s.code="QU"+Math.random().toString(36).slice(2,8).toUpperCase();
+s.code=
+"QU"+
+Math.random()
+.toString(36)
+.slice(2,8)
+.toUpperCase();
 
 await savePlayer();
 
@@ -782,13 +774,25 @@ return true;
 
 async function register(){
 
-let e=document.getElementById("rEmail").value.trim().toLowerCase();
+let button=document.getElementById(
+"registerButton"
+);
 
-let p=document.getElementById("rPass").value;
+let e=document.getElementById(
+"rEmail"
+).value.trim().toLowerCase();
 
-let n=document.getElementById("rName").value.trim();
+let p=document.getElementById(
+"rPass"
+).value;
 
-let cpf=document.getElementById("rCpf").value.trim();
+let n=document.getElementById(
+"rName"
+).value.trim();
+
+let cpf=document.getElementById(
+"rCpf"
+).value.trim();
 
 
 if(!e||!p||!n||!cpf){
@@ -802,47 +806,55 @@ return;
 
 if(p.length<8){
 
-alert("A senha precisa ter pelo menos 8 caracteres.");
+alert(
+"A senha precisa ter pelo menos 8 caracteres."
+);
 
 return;
 
 }
 
 
+button.disabled=true;
+
+button.textContent="Cadastrando...";
+
+
 try{
 
 /*
-  1. CRIA A CONTA NO APPWRITE
+  IMPORTANTE:
+  Usamos os métodos do SDK diretamente.
 */
 
-let user=await account.create({
+let user=await account.create(
 
-userId:Appwrite.ID.unique(),
+Appwrite.ID.unique(),
 
-email:e,
+e,
 
-password:p,
+p,
 
-name:n
+n
 
-});
+);
 
 
 /*
-  2. CRIA A SESSÃO
+  CRIA A SESSÃO
 */
 
-await account.createEmailPasswordSession({
+await account.createEmailPasswordSession(
 
-email:e,
+e,
 
-password:p
+p
 
-});
+);
 
 
 /*
-  3. MONTA O JOGADOR
+  MONTA O JOGADOR
 */
 
 s={
@@ -861,9 +873,16 @@ balance:0,
 
 round:1,
 
-code:"QU"+Math.random().toString(36).slice(2,8).toUpperCase(),
+code:
+"QU"+
+Math.random()
+.toString(36)
+.slice(2,8)
+.toUpperCase(),
 
-referrer:new URLSearchParams(location.search).get("ref")||"",
+referrer:
+new URLSearchParams(location.search)
+.get("ref")||"",
 
 dice:0,
 
@@ -881,10 +900,9 @@ userId:user.$id
 
 
 /*
-  4. SALVA NO BANCO.
-  
-  Se a tabela players tiver problema,
-  isso NÃO impede a entrada no jogo.
+  TENTA SALVAR NA TABELA players.
+  Se houver problema de permissão na tabela,
+  o jogador continua entrando no jogo.
 */
 
 try{
@@ -894,7 +912,7 @@ await savePlayer();
 }catch(dbError){
 
 console.error(
-"Erro ao salvar jogador no banco:",
+"Erro ao salvar players:",
 dbError
 );
 
@@ -902,7 +920,7 @@ dbError
 
 
 /*
-  5. ENTRA NO QUIZ
+  ENTRA NO QUIZ
 */
 
 openGame();
@@ -915,15 +933,18 @@ console.error(
 error
 );
 
-
-let mensagem=error.message||
-"Não foi possível criar a conta.";
-
+let mensagem=
+error.message||
+"Erro desconhecido.";
 
 alert(
 "Não foi possível cadastrar.\n\n"+
 mensagem
 );
+
+button.disabled=false;
+
+button.textContent="Cadastrar";
 
 }
 
@@ -931,34 +952,47 @@ mensagem
 
 
 /* =========================================================
-   LOGIN
+   LOGIN — CORRIGIDO
    ========================================================= */
 
 async function login(){
 
-let e=document.getElementById("lEmail").value.trim().toLowerCase();
+let button=document.getElementById(
+"loginButton"
+);
 
-let p=document.getElementById("lPass").value;
+let e=document.getElementById(
+"lEmail"
+).value.trim().toLowerCase();
+
+let p=document.getElementById(
+"lPass"
+).value;
 
 
 if(!e||!p){
 
-alert("Preencha e-mail e senha.");
+alert("Preencha todos os campos.");
 
 return;
 
 }
 
 
+button.disabled=true;
+
+button.textContent="Entrando...";
+
+
 try{
 
-await account.createEmailPasswordSession({
+await account.createEmailPasswordSession(
 
-email:e,
+e,
 
-password:p
+p
 
-});
+);
 
 
 let user=await account.get();
@@ -966,17 +1000,26 @@ let user=await account.get();
 
 await loadPlayer(user);
 
+
 openGame();
 
 
 }catch(error){
 
-console.error(error);
+console.error(
+"ERRO NO LOGIN APPWRITE:",
+error
+);
 
 alert(
-error.message||
-"Não foi possível entrar."
+"Não foi possível entrar.\n\n"+
+(error.message||
+"Erro desconhecido.")
 );
+
+button.disabled=false;
+
+button.textContent="Entrar";
 
 }
 
@@ -989,11 +1032,13 @@ error.message||
 
 function openGame(){
 
-document.getElementById("auth")
-.classList.add("hidden");
+document.getElementById(
+"auth"
+).classList.add("hidden");
 
-document.getElementById("game")
-.classList.remove("hidden");
+document.getElementById(
+"game"
+).classList.remove("hidden");
 
 ui();
 
@@ -1024,11 +1069,14 @@ console.log(error);
 
 }
 
-document.getElementById("game")
-.classList.add("hidden");
 
-document.getElementById("auth")
-.classList.remove("hidden");
+document.getElementById(
+"game"
+).classList.add("hidden");
+
+document.getElementById(
+"auth"
+).classList.remove("hidden");
 
 }
 
@@ -1039,20 +1087,32 @@ document.getElementById("auth")
 
 function ui(){
 
-document.getElementById("points").textContent=s.points;
+document.getElementById(
+"points"
+).textContent=s.points;
 
-document.getElementById("round").textContent=s.round;
+document.getElementById(
+"round"
+).textContent=s.round;
 
-document.getElementById("totalScore").textContent=s.points;
+document.getElementById(
+"totalScore"
+).textContent=s.points;
 
-document.getElementById("refCode").value=s.code||"";
+document.getElementById(
+"refCode"
+).value=s.code||"";
 
-document.getElementById("refLink").value=
 
+document.getElementById(
+"refLink"
+).value=
 location.origin+
 location.pathname+
 "?ref="+
-encodeURIComponent(s.code||"");
+encodeURIComponent(
+s.code||""
+);
 
 }
 
@@ -1063,21 +1123,29 @@ encodeURIComponent(s.code||"");
 
 function tab(x){
 
-["quiz","ref","cash","premium"].forEach(a=>{
+["quiz","ref","cash","premium"]
+.forEach(a=>{
 
-document.getElementById(a+"Tab")
-.classList.toggle("hidden",a!==x);
+document.getElementById(
+a+"Tab"
+)
+.classList.toggle(
+"hidden",
+a!==x
+);
 
 });
 
 
 if(x==="quiz"){
 
-document.getElementById("rollCard")
-.classList.remove("hidden");
+document.getElementById(
+"rollCard"
+).classList.remove("hidden");
 
-document.getElementById("questionCard")
-.classList.add("hidden");
+document.getElementById(
+"questionCard"
+).classList.add("hidden");
 
 }
 
@@ -1091,13 +1159,11 @@ document.getElementById("questionCard")
 function playMusic(){
 
 const music=
-document.getElementById("backgroundMusic");
+document.getElementById(
+"backgroundMusic"
+);
 
-if(!music){
-
-return;
-
-}
+if(!music)return;
 
 music.volume=0.35;
 
@@ -1126,7 +1192,9 @@ error
 function pickQuestion(){
 
 return Q[
-Math.floor(Math.random()*Q.length)
+Math.floor(
+Math.random()*Q.length
+)
 ];
 
 }
@@ -1149,19 +1217,26 @@ let d;
 
 if(s.round%30===0){
 
-d=Math.floor(Math.random()*3)+8;
+d=
+Math.floor(
+Math.random()*3
+)+8;
 
 }
-
 else if(s.round%10===0){
 
-d=Math.floor(Math.random()*3)+5;
+d=
+Math.floor(
+Math.random()*3
+)+5;
 
 }
-
 else{
 
-d=Math.floor(Math.random()*4)+1;
+d=
+Math.floor(
+Math.random()*4
+)+1;
 
 }
 
@@ -1173,31 +1248,42 @@ s.roundPoints=d;
 s.question=pickQuestion();
 
 
-document.getElementById("dice").textContent=
+document.getElementById(
+"dice"
+).textContent=
 "🎲 "+d;
 
 
-document.getElementById("diceResult").textContent=
-
-"Você tirou "+d+
+document.getElementById(
+"diceResult"
+).textContent=
+"Você tirou "+
+d+
 " • Esta pergunta vale "+
 d+
 (d===1?" ponto":" pontos");
 
 
-document.getElementById("question").textContent=
+document.getElementById(
+"question"
+).textContent=
 s.question[0];
 
 
 let answers=
-document.getElementById("answers");
+document.getElementById(
+"answers"
+);
 
 answers.innerHTML="";
 
 
 s.question[1].forEach((a,i)=>{
 
-let b=document.createElement("button");
+let b=
+document.createElement(
+"button"
+);
 
 b.className="answer";
 
@@ -1210,17 +1296,22 @@ answers.appendChild(b);
 });
 
 
-document.getElementById("rollCard")
-.classList.add("hidden");
+document.getElementById(
+"rollCard"
+).classList.add("hidden");
 
-document.getElementById("questionCard")
-.classList.remove("hidden");
+document.getElementById(
+"questionCard"
+).classList.remove("hidden");
 
-document.getElementById("feedback")
-.classList.add("hidden");
+document.getElementById(
+"feedback"
+).classList.add("hidden");
 
-document.getElementById("rewardBox")
-.classList.add("hidden");
+document.getElementById(
+"rewardBox"
+).classList.add("hidden");
+
 
 startTimer();
 
@@ -1237,23 +1328,30 @@ clearInterval(handle);
 
 s.timer=5;
 
-document.getElementById("time")
-.textContent=5;
+document.getElementById(
+"time"
+).textContent=5;
 
-document.getElementById("progress")
-.style.width="100%";
+document.getElementById(
+"progress"
+).style.width="100%";
 
 
 handle=setInterval(()=>{
 
 s.timer--;
 
-document.getElementById("time")
-.textContent=s.timer;
+document.getElementById(
+"time"
+).textContent=s.timer;
 
-document.getElementById("progress")
-.style.width=
-Math.max(0,s.timer/5*100)+"%";
+document.getElementById(
+"progress"
+).style.width=
+Math.max(
+0,
+s.timer/5*100
+)+"%";
 
 
 if(s.timer<=0){
@@ -1275,11 +1373,7 @@ answer(-1);
 
 async function answer(i){
 
-if(s.answered){
-
-return;
-
-}
+if(s.answered)return;
 
 s.answered=true;
 
@@ -1288,7 +1382,9 @@ clearInterval(handle);
 let c=s.question[2];
 
 let bs=[
-...document.querySelectorAll(".answer")
+...document.querySelectorAll(
+".answer"
+)
 ];
 
 
@@ -1303,7 +1399,9 @@ i===c?"correct":"wrong"
 
 if(bs[c]){
 
-bs[c].classList.add("correct");
+bs[c].classList.add(
+"correct"
+);
 
 }
 
@@ -1320,28 +1418,41 @@ s.points+=s.roundPoints;
 
 ui();
 
+
+try{
+
 await savePlayer();
+
+}catch(error){
+
+console.error(error);
+
+}
 
 
 let feedback=
-document.getElementById("feedback");
+document.getElementById(
+"feedback"
+);
 
-feedback.classList.remove("hidden");
+feedback.classList.remove(
+"hidden"
+);
 
 
 feedback.textContent=
-
 ok
-
 ?"✅ Correto! Você ganhou "+
 s.roundPoints+
 " pontos!"
-
 :"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
 
 
-document.getElementById("rewardBox")
-.classList.remove("hidden");
+document.getElementById(
+"rewardBox"
+).classList.remove(
+"hidden"
+);
 
 }
 
@@ -1352,17 +1463,25 @@ document.getElementById("rewardBox")
 
 async function finishQuestion(){
 
-document.getElementById("questionCard")
-.classList.add("hidden");
+document.getElementById(
+"questionCard"
+).classList.add(
+"hidden"
+);
 
-document.getElementById("rollCard")
-.classList.remove("hidden");
+document.getElementById(
+"rollCard"
+).classList.remove(
+"hidden"
+);
 
-document.getElementById("dice")
-.textContent="🎲";
+document.getElementById(
+"dice"
+).textContent="🎲";
 
-document.getElementById("diceResult")
-.textContent="";
+document.getElementById(
+"diceResult"
+).textContent="";
 
 s.round++;
 
@@ -1378,18 +1497,24 @@ await savePlayer();
 function copyRef(){
 
 let link=
-document.getElementById("refLink").value;
+document.getElementById(
+"refLink"
+).value;
 
 
 if(navigator.clipboard){
 
-navigator.clipboard.writeText(link);
+navigator.clipboard.writeText(
+link
+);
 
 }
 
 
-document.getElementById("refMsg")
-.textContent="Link copiado!";
+document.getElementById(
+"refMsg"
+).textContent=
+"Link copiado!";
 
 }
 
@@ -1397,7 +1522,9 @@ document.getElementById("refMsg")
 async function shareRef(){
 
 let link=
-document.getElementById("refLink").value;
+document.getElementById(
+"refLink"
+).value;
 
 
 if(navigator.share){
@@ -1406,7 +1533,8 @@ await navigator.share({
 
 title:"QuizUp",
 
-text:"Venha jogar QuizUp comigo!",
+text:
+"Venha jogar QuizUp comigo!",
 
 url:link
 
@@ -1429,14 +1557,27 @@ copyRef();
 function payFields(){
 
 let p=
-document.getElementById("payMethod").value==="pix";
+document.getElementById(
+"payMethod"
+).value==="pix";
 
 
-document.getElementById("pix")
-.classList.toggle("hidden",!p);
+document.getElementById(
+"pix"
+)
+.classList.toggle(
+"hidden",
+!p
+);
 
-document.getElementById("paypal")
-.classList.toggle("hidden",p);
+
+document.getElementById(
+"paypal"
+)
+.classList.toggle(
+"hidden",
+p
+);
 
 }
 
@@ -1444,47 +1585,56 @@ document.getElementById("paypal")
 function need(v){
 
 return v==="10"
-
 ?11000
-
 :v==="5"
-
 ?6000
-
 :2000;
 
 }
 
 
 /* =========================================================
-   REGISTRAR SAQUE NO APPWRITE
+   SAQUE
    ========================================================= */
 
 async function withdraw(){
 
 let v=
-document.getElementById("withdrawAmount").value;
+document.getElementById(
+"withdrawAmount"
+).value;
 
 let n=need(v);
 
 let m=
-document.getElementById("payMethod").value;
+document.getElementById(
+"payMethod"
+).value;
 
 
 let k=
-
-(m==="pix"
-
-?document.getElementById("pixKey")
-
-:document.getElementById("paypalKey"))
+(
+m==="pix"
+?
+document.getElementById(
+"pixKey"
+)
+:
+document.getElementById(
+"paypalKey"
+)
+)
 .value.trim();
 
 
 let msg=
-document.getElementById("cashMsg");
+document.getElementById(
+"cashMsg"
+);
 
-msg.classList.remove("hidden");
+msg.classList.remove(
+"hidden"
+);
 
 
 if(!k){
@@ -1509,16 +1659,6 @@ return;
 }
 
 
-if(!tablesDB){
-
-msg.textContent=
-"Não foi possível conectar ao banco.";
-
-return;
-
-}
-
-
 try{
 
 let columns=
@@ -1528,107 +1668,120 @@ let data={};
 
 
 let emailCol=
-findColumn(columns,[
-"email","Email","e_mail"
-]);
+findColumn(
+columns,
+[
+"email",
+"Email",
+"e_mail"
+]
+);
 
 
 let valueCol=
-findColumn(columns,[
-"value","valor","amount","valor_saque"
-]);
+findColumn(
+columns,
+[
+"value",
+"valor",
+"amount",
+"valor_saque"
+]
+);
 
 
 let methodCol=
-findColumn(columns,[
-"method","metodo","método","payment_method"
-]);
+findColumn(
+columns,
+[
+"method",
+"metodo",
+"método",
+"payment_method"
+]
+);
 
 
 let keyCol=
-findColumn(columns,[
-"key","chave","pixKey","paypalKey","payment_key"
-]);
+findColumn(
+columns,
+[
+"key",
+"chave",
+"pixKey",
+"paypalKey",
+"payment_key"
+]
+);
 
 
 let dateCol=
-findColumn(columns,[
-"date","data","created_at","createdAt"
-]);
+findColumn(
+columns,
+[
+"date",
+"data",
+"created_at",
+"createdAt"
+]
+);
 
 
 let userCol=
-findColumn(columns,[
-"userId","user_id","usuario_id"
-]);
+findColumn(
+columns,
+[
+"userId",
+"user_id",
+"usuario_id"
+]
+);
 
 
 let statusCol=
-findColumn(columns,[
-"status","situacao","situação"
-]);
+findColumn(
+columns,
+[
+"status",
+"situacao",
+"situação"
+]
+);
 
 
-if(emailCol){
-
+if(emailCol)
 data[emailCol]=s.email;
 
-}
-
-if(valueCol){
-
+if(valueCol)
 data[valueCol]=Number(v);
 
-}
-
-if(methodCol){
-
+if(methodCol)
 data[methodCol]=m;
 
-}
-
-if(keyCol){
-
+if(keyCol)
 data[keyCol]=k;
 
-}
+if(dateCol)
+data[dateCol]=
+new Date().toISOString();
 
-if(dateCol){
-
-data[dateCol]=new Date().toISOString();
-
-}
-
-if(userCol){
-
+if(userCol)
 data[userCol]=s.userId;
 
-}
-
-if(statusCol){
-
+if(statusCol)
 data[statusCol]="pendente";
-
-}
-
-
-if(Object.keys(data).length===0){
-
-msg.textContent=
-"Nenhuma coluna compatível encontrada na tabela saques.";
-
-return;
-
-}
 
 
 await tablesDB.createRow({
 
-databaseId:APPWRITE_DATABASE_ID,
+databaseId:
+APPWRITE_DATABASE_ID,
 
-tableId:APPWRITE_WITHDRAWALS_TABLE,
+tableId:
+APPWRITE_WITHDRAWALS_TABLE,
 
-rowId:Appwrite.ID.unique(),
+rowId:
+Appwrite.ID.unique(),
 
 data:data
 
@@ -1646,7 +1799,6 @@ console.error(
 error
 );
 
-
 msg.textContent=
 "Não foi possível registrar o saque. Verifique as permissões da tabela.";
 
@@ -1663,7 +1815,9 @@ msg.textContent=
 
 try{
 
-let user=await account.get();
+let user=
+await account.get();
+
 
 if(user){
 
