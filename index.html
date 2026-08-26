@@ -17,6 +17,7 @@
 
 <style>
 *{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:Arial,sans-serif;
@@ -24,9 +25,26 @@ body{
   color:#fff;
   min-height:100vh
 }
-.wrap{max-width:760px;margin:auto;padding:16px}
-.logo{text-align:center;font-size:42px;font-weight:900;margin:10px}
-.sub{text-align:center;opacity:.8;margin-bottom:16px}
+
+.wrap{
+  max-width:760px;
+  margin:auto;
+  padding:16px
+}
+
+.logo{
+  text-align:center;
+  font-size:42px;
+  font-weight:900;
+  margin:10px
+}
+
+.sub{
+  text-align:center;
+  opacity:.8;
+  margin-bottom:16px
+}
+
 .card{
   background:rgba(255,255,255,.1);
   border:1px solid rgba(255,255,255,.15);
@@ -34,7 +52,11 @@ body{
   padding:20px;
   margin:14px 0
 }
-.hidden{display:none!important}
+
+.hidden{
+  display:none!important
+}
+
 button{
   border:0;
   border-radius:12px;
@@ -42,10 +64,26 @@ button{
   font-weight:700;
   cursor:pointer
 }
-button:disabled{opacity:.5}
-.primary{background:#ffd43b;color:#171717}
-.light{background:#fff;color:#171717}
-.ghost{background:rgba(255,255,255,.12);color:#fff}
+
+button:disabled{
+  opacity:.5
+}
+
+.primary{
+  background:#ffd43b;
+  color:#171717
+}
+
+.light{
+  background:#fff;
+  color:#171717
+}
+
+.ghost{
+  background:rgba(255,255,255,.12);
+  color:#fff
+}
+
 .top,.row{
   display:flex;
   gap:10px;
@@ -53,41 +91,58 @@ button:disabled{opacity:.5}
   justify-content:space-between;
   flex-wrap:wrap
 }
+
 .stat{
   padding:10px 14px;
   background:rgba(255,255,255,.1);
   border-radius:12px
 }
+
 .nav{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:8px
 }
+
 .dice{
   font-size:90px;
   text-align:center;
   line-height:1.1;
   margin:8px
 }
+
 .roll{
   display:block;
   margin:auto;
   font-size:18px
 }
+
 .result{
   text-align:center;
   font-size:21px;
   font-weight:800
 }
-.answers{display:grid;gap:10px}
+
+.answers{
+  display:grid;
+  gap:10px
+}
+
 .answer{
   background:#fff;
   color:#111;
   text-align:left;
   width:100%
 }
-.answer.correct{outline:4px solid #4ade80}
-.answer.wrong{outline:4px solid #fb7185}
+
+.answer.correct{
+  outline:4px solid #4ade80
+}
+
+.answer.wrong{
+  outline:4px solid #fb7185
+}
+
 input,select{
   width:100%;
   padding:13px;
@@ -96,11 +151,13 @@ input,select{
   margin:5px 0 12px;
   font-size:16px
 }
+
 .timer{
   text-align:center;
   font-size:22px;
   font-weight:800
 }
+
 .bar{
   height:9px;
   background:rgba(255,255,255,.15);
@@ -108,27 +165,32 @@ input,select{
   overflow:hidden;
   margin-top:12px
 }
+
 .bar div{
   height:100%;
   background:#ffd43b;
   width:0;
   transition:width .2s linear
 }
+
 .notice{
   padding:12px;
   border-radius:12px;
   background:rgba(255,212,59,.12);
   border:1px solid rgba(255,212,59,.3)
 }
+
 .small{
   font-size:13px;
   opacity:.75
 }
+
 .tabs2{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:8px
 }
+
 .adbox{
   width:100%;
   min-height:60px;
@@ -139,10 +201,32 @@ input,select{
   margin:12px auto;
   border-radius:10px
 }
+
+.linkButton{
+  background:none;
+  border:0;
+  color:#ffd43b;
+  padding:8px 0;
+  margin-top:2px;
+  font-size:14px;
+  text-decoration:underline;
+  cursor:pointer
+}
+
 @media(max-width:560px){
-  .nav{grid-template-columns:1fr 1fr}
-  .dice{font-size:75px}
-  .logo{font-size:38px}
+
+  .nav{
+    grid-template-columns:1fr 1fr
+  }
+
+  .dice{
+    font-size:75px
+  }
+
+  .logo{
+    font-size:38px
+  }
+
 }
 </style>
 </head>
@@ -170,21 +254,30 @@ atOptions={
   'params':{}
 };
 </script>
+
 <script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
 </div>
+
 
 <!-- LOGIN / CADASTRO -->
 <section id="auth" class="card">
 
 <div class="tabs2">
-<button class="primary" onclick="authMode('register')">
+
+<button
+class="primary"
+onclick="authMode('register')">
 Cadastro
 </button>
 
-<button class="light" onclick="authMode('login')">
+<button
+class="light"
+onclick="authMode('login')">
 Login
 </button>
+
 </div>
+
 
 <!-- CADASTRO -->
 <div id="registerBox">
@@ -192,38 +285,52 @@ Login
 <h2>📝 Cadastro</h2>
 
 <label>E-mail</label>
+
 <input
 id="rEmail"
 type="email"
+autocomplete="email"
 placeholder="Seu e-mail">
 
+
 <label>Senha</label>
+
 <input
 id="rPass"
 type="password"
+autocomplete="new-password"
 placeholder="Sua senha">
 
+
 <label>Nome completo</label>
+
 <input
 id="rName"
 type="text"
+autocomplete="name"
 placeholder="Seu nome completo">
 
+
 <label>CPF</label>
+
 <input
 id="rCpf"
 type="text"
 inputmode="numeric"
 maxlength="14"
-placeholder="000.000.000-00">
+placeholder="000.000.000-00"
+oninput="formatCpf(this)">
+
 
 <button
 class="primary"
+style="width:100%"
 onclick="register()">
 Cadastrar
 </button>
 
 </div>
+
 
 <!-- LOGIN -->
 <div id="loginBox" class="hidden">
@@ -231,21 +338,126 @@ Cadastrar
 <h2>🔐 Login</h2>
 
 <label>E-mail</label>
+
 <input
 id="lEmail"
 type="email"
+autocomplete="email"
 placeholder="Seu e-mail">
 
+
 <label>Senha</label>
+
 <input
 id="lPass"
 type="password"
+autocomplete="current-password"
 placeholder="Sua senha">
+
 
 <button
 class="primary"
+style="width:100%"
 onclick="login()">
 Entrar
+</button>
+
+
+<div style="text-align:center">
+
+<button
+class="linkButton"
+onclick="showRecovery()">
+Esqueceu a senha?
+</button>
+
+</div>
+
+</div>
+
+
+<!-- RECUPERAÇÃO DE SENHA -->
+<div id="recoveryBox" class="hidden">
+
+<h2>🔑 Recuperar senha</h2>
+
+<p class="small">
+Informe o e-mail e o CPF cadastrados para confirmar sua conta.
+</p>
+
+<label>E-mail</label>
+
+<input
+id="fEmail"
+type="email"
+autocomplete="email"
+placeholder="Seu e-mail">
+
+
+<label>CPF</label>
+
+<input
+id="fCpf"
+type="text"
+inputmode="numeric"
+maxlength="14"
+placeholder="000.000.000-00"
+oninput="formatCpf(this)">
+
+
+<button
+class="primary"
+style="width:100%"
+onclick="verifyRecovery()">
+Continuar
+</button>
+
+
+<div style="text-align:center">
+
+<button
+class="linkButton"
+onclick="authMode('login')">
+Voltar para o login
+</button>
+
+</div>
+
+</div>
+
+
+<!-- NOVA SENHA -->
+<div id="newPasswordBox" class="hidden">
+
+<h2>🔐 Nova senha</h2>
+
+<p class="small">
+Digite sua nova senha.
+</p>
+
+<label>Nova senha</label>
+
+<input
+id="newPass"
+type="password"
+autocomplete="new-password"
+placeholder="Nova senha">
+
+
+<label>Confirmar nova senha</label>
+
+<input
+id="newPass2"
+type="password"
+autocomplete="new-password"
+placeholder="Digite novamente">
+
+
+<button
+class="primary"
+style="width:100%"
+onclick="resetPassword()">
+Salvar nova senha
 </button>
 
 </div>
@@ -417,9 +629,13 @@ Ganhe <b>50 pontos</b> quando seu convidado atingir
 <b>300 pontos</b>.
 </p>
 
-<input id="refCode" readonly>
+<input
+id="refCode"
+readonly>
 
-<input id="refLink" readonly>
+<input
+id="refLink"
+readonly>
 
 <button
 class="primary"
@@ -632,6 +848,265 @@ roundPoints:0
 
 let handle=null;
 
+let recoveryEmail="";
+
+
+/* =========================================================
+   CPF
+   ========================================================= */
+
+/*
+  Remove pontos, traços e qualquer outro caractere.
+  Assim:
+  123.456.789-00
+  e
+  12345678900
+  viram o mesmo CPF.
+*/
+
+function normalizeCpf(value){
+
+return String(value||"")
+.replace(/\D/g,"")
+.slice(0,11);
+
+}
+
+
+/*
+  Formata visualmente o CPF.
+*/
+
+function formatCpf(input){
+
+let value=
+normalizeCpf(input.value);
+
+if(value.length>9){
+
+value=
+value.replace(
+/(\d{3})(\d{3})(\d{3})(\d{0,2})/,
+"$1.$2.$3-$4"
+);
+
+}
+else if(value.length>6){
+
+value=
+value.replace(
+/(\d{3})(\d{3})(\d{0,3})/,
+"$1.$2.$3"
+);
+
+}
+else if(value.length>3){
+
+value=
+value.replace(
+/(\d{3})(\d{0,3})/,
+"$1.$2"
+);
+
+}
+
+input.value=value;
+
+}
+
+
+/*
+  Validação básica do CPF.
+*/
+
+function validCpf(value){
+
+let cpf=normalizeCpf(value);
+
+if(cpf.length!==11){
+
+return false;
+
+}
+
+
+/*
+  Impede sequências como:
+  00000000000
+  11111111111
+  etc.
+*/
+
+if(/^(\d)\1{10}$/.test(cpf)){
+
+return false;
+
+}
+
+
+/* Primeiro dígito */
+
+let sum=0;
+
+for(let i=0;i<9;i++){
+
+sum+=
+Number(cpf.charAt(i))*
+(10-i);
+
+}
+
+let rest=
+(sum*10)%11;
+
+if(rest===10){
+
+rest=0;
+
+}
+
+if(rest!==Number(cpf.charAt(9))){
+
+return false;
+
+}
+
+
+/* Segundo dígito */
+
+sum=0;
+
+for(let i=0;i<10;i++){
+
+sum+=
+Number(cpf.charAt(i))*
+(11-i);
+
+}
+
+rest=
+(sum*10)%11;
+
+if(rest===10){
+
+rest=0;
+
+}
+
+if(rest!==Number(cpf.charAt(10))){
+
+return false;
+
+}
+
+return true;
+
+}
+
+
+/* =========================================================
+   ENCONTRAR CPF CADASTRADO
+   ========================================================= */
+
+function findAccountByCpf(cpf){
+
+let wanted=
+normalizeCpf(cpf);
+
+if(!wanted){
+
+return null;
+
+}
+
+
+let keys=
+Object.keys(localStorage);
+
+
+for(let k of keys){
+
+if(!k.startsWith("quizup_")){
+
+continue;
+
+}
+
+if(k==="quizup_withdrawals"){
+
+continue;
+
+}
+
+
+try{
+
+let account=
+JSON.parse(
+localStorage.getItem(k)
+);
+
+
+if(
+account &&
+normalizeCpf(account.cpf)===wanted
+){
+
+return account;
+
+}
+
+}catch(error){
+
+console.log(
+"Conta inválida encontrada:",
+error
+);
+
+}
+
+}
+
+return null;
+
+}
+
+
+/* =========================================================
+   ENCONTRAR CONTA POR E-MAIL
+   ========================================================= */
+
+function findAccountByEmail(email){
+
+let e=
+String(email||"")
+.trim()
+.toLowerCase();
+
+
+let x=
+localStorage.getItem("quizup_"+e);
+
+
+if(!x){
+
+return null;
+
+}
+
+
+try{
+
+return JSON.parse(x);
+
+}catch(error){
+
+return null;
+
+}
+
+}
+
 
 /* =========================================================
    MÚSICA
@@ -648,7 +1123,9 @@ music.volume=0.35;
 
 music.play().then(()=>{
 
-console.log("🎵 Música iniciada dentro do jogo.");
+console.log(
+"🎵 Música iniciada dentro do jogo."
+);
 
 }).catch(error=>{
 
@@ -719,6 +1196,221 @@ document.getElementById("loginBox")
 m!=="login"
 );
 
+document.getElementById("recoveryBox")
+.classList.add("hidden");
+
+document.getElementById("newPasswordBox")
+.classList.add("hidden");
+
+}
+
+
+/* =========================================================
+   RECUPERAÇÃO
+   ========================================================= */
+
+function showRecovery(){
+
+stopMusic();
+
+document.getElementById("registerBox")
+.classList.add("hidden");
+
+document.getElementById("loginBox")
+.classList.add("hidden");
+
+document.getElementById("recoveryBox")
+.classList.remove("hidden");
+
+document.getElementById("newPasswordBox")
+.classList.add("hidden");
+
+document.getElementById("fEmail")
+.value="";
+
+document.getElementById("fCpf")
+.value="";
+
+}
+
+
+/* =========================================================
+   VERIFICAR RECUPERAÇÃO
+   ========================================================= */
+
+function verifyRecovery(){
+
+let e=
+document.getElementById("fEmail")
+.value.trim()
+.toLowerCase();
+
+let cpf=
+normalizeCpf(
+document.getElementById("fCpf").value
+);
+
+
+if(!e||!cpf){
+
+alert(
+"Informe o e-mail e o CPF."
+);
+
+return;
+
+}
+
+
+if(!validCpf(cpf)){
+
+alert(
+"Digite um CPF válido."
+);
+
+return;
+
+}
+
+
+let account=
+findAccountByEmail(e);
+
+
+if(!account){
+
+alert(
+"E-mail ou CPF não conferem."
+);
+
+return;
+
+}
+
+
+if(
+normalizeCpf(account.cpf)!==cpf
+){
+
+alert(
+"E-mail ou CPF não conferem."
+);
+
+return;
+
+}
+
+
+/*
+  Guarda somente o e-mail da conta
+  que acabou de ser confirmada.
+*/
+
+recoveryEmail=e;
+
+
+document.getElementById("recoveryBox")
+.classList.add("hidden");
+
+document.getElementById("newPasswordBox")
+.classList.remove("hidden");
+
+}
+
+
+/* =========================================================
+   NOVA SENHA
+   ========================================================= */
+
+function resetPassword(){
+
+let p=
+document.getElementById("newPass")
+.value;
+
+let p2=
+document.getElementById("newPass2")
+.value;
+
+
+if(!p||!p2){
+
+alert(
+"Preencha os dois campos."
+);
+
+return;
+
+}
+
+
+if(p.length<6){
+
+alert(
+"A nova senha deve ter pelo menos 6 caracteres."
+);
+
+return;
+
+}
+
+
+if(p!==p2){
+
+alert(
+"As senhas não conferem."
+);
+
+return;
+
+}
+
+
+let account=
+findAccountByEmail(recoveryEmail);
+
+
+if(!account){
+
+alert(
+"Não foi possível encontrar a conta."
+);
+
+authMode("login");
+
+return;
+
+}
+
+
+account.password=p;
+
+
+localStorage.setItem(
+"quizup_"+recoveryEmail,
+JSON.stringify(account)
+);
+
+
+alert(
+"Senha alterada com sucesso! Faça login com sua nova senha."
+);
+
+
+document.getElementById("newPass")
+.value="";
+
+document.getElementById("newPass2")
+.value="";
+
+recoveryEmail="";
+
+authMode("login");
+
+
+document.getElementById("lEmail")
+.value=account.email;
+
 }
 
 
@@ -744,22 +1436,77 @@ document.getElementById("rName")
 .value.trim();
 
 let cpf=
-document.getElementById("rCpf")
-.value.trim();
+normalizeCpf(
+document.getElementById("rCpf").value
+);
 
 
 if(!e||!p||!n||!cpf){
 
-alert("Preencha todos os campos.");
+alert(
+"Preencha todos os campos."
+);
 
 return;
 
 }
 
 
+if(!validCpf(cpf)){
+
+alert(
+"Digite um CPF válido."
+);
+
+return;
+
+}
+
+
+if(p.length<6){
+
+alert(
+"A senha deve ter pelo menos 6 caracteres."
+);
+
+return;
+
+}
+
+
+/*
+  PRIMEIRA VERIFICAÇÃO:
+  mesmo e-mail.
+*/
+
 if(localStorage.getItem("quizup_"+e)){
 
-alert("Essa conta já existe.");
+alert(
+"Essa conta já existe."
+);
+
+return;
+
+}
+
+
+/*
+  SEGUNDA VERIFICAÇÃO:
+  CPF.
+
+  Isso garante 1 cadastro por CPF
+  dentro deste armazenamento.
+*/
+
+let existingCpf=
+findAccountByCpf(cpf);
+
+
+if(existingCpf){
+
+alert(
+"Este CPF já está cadastrado. Só é permitido 1 cadastro por CPF."
+);
 
 return;
 
@@ -835,7 +1582,9 @@ document.getElementById("lPass")
 
 if(!e||!p){
 
-alert("Preencha e-mail e senha.");
+alert(
+"Preencha e-mail e senha."
+);
 
 return;
 
@@ -848,7 +1597,9 @@ localStorage.getItem("quizup_"+e);
 
 if(!x){
 
-alert("Conta não encontrada.");
+alert(
+"Conta não encontrada."
+);
 
 return;
 
@@ -863,7 +1614,9 @@ a=JSON.parse(x);
 
 }catch(error){
 
-alert("Não foi possível carregar sua conta.");
+alert(
+"Não foi possível carregar sua conta."
+);
 
 return;
 
@@ -872,7 +1625,9 @@ return;
 
 if(a.password!==p){
 
-alert("Senha incorreta.");
+alert(
+"Senha incorreta."
+);
 
 return;
 
@@ -1444,12 +2199,17 @@ msg.textContent=
 
 (function(){
 
+/*
+  Procura uma conta salva.
+  Não considera a lista de saques.
+*/
+
 let k=
 Object.keys(localStorage).find(
 
 k=>
 k.startsWith("quizup_") &&
-!k.includes("withdrawals")
+k!=="quizup_withdrawals"
 
 );
 
@@ -1478,4 +2238,4 @@ console.log(e);
 </script>
 
 </body>
-</html>
+            </html>
