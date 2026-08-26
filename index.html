@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QuizUp</title>
 
-<!-- MONETAG — IN-PAGE PUSH -->
+<!-- APPWRITE -->
+<script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0"></script>
+
+<!-- MONETAG -->
 <script>
 (function(s){
   s.dataset.zone='11646165';
@@ -17,93 +20,292 @@
 
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#101936,#25105e);color:#fff;min-height:100vh}
-.wrap{max-width:760px;margin:auto;padding:16px}
-.logo{text-align:center;font-size:42px;font-weight:900;margin:10px}
-.sub{text-align:center;opacity:.8;margin-bottom:16px}
-.card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:20px;margin:14px 0}
-.hidden{display:none!important}
-button{border:0;border-radius:12px;padding:13px 16px;font-weight:700;cursor:pointer}
-button:disabled{opacity:.5}
-.primary{background:#ffd43b;color:#171717}
-.light{background:#fff;color:#171717}
-.ghost{background:rgba(255,255,255,.12);color:#fff}
-.top,.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-.stat{padding:10px 14px;background:rgba(255,255,255,.1);border-radius:12px}
-.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.dice{font-size:90px;text-align:center;line-height:1.1;margin:8px}
-.roll{display:block;margin:auto;font-size:18px}
-.result{text-align:center;font-size:21px;font-weight:800}
-.answers{display:grid;gap:10px}
-.answer{background:#fff;color:#111;text-align:left;width:100%}
-.answer.correct{outline:4px solid #4ade80}
-.answer.wrong{outline:4px solid #fb7185}
-input,select{width:100%;padding:13px;border:0;border-radius:10px;margin:5px 0 12px;font-size:16px}
-.timer{text-align:center;font-size:22px;font-weight:800}
-.bar{height:9px;background:rgba(255,255,255,.15);border-radius:20px;overflow:hidden;margin-top:12px}
-.bar div{height:100%;background:#ffd43b;width:0;transition:width .2s linear}
-.notice{padding:12px;border-radius:12px;background:rgba(255,212,59,.12);border:1px solid rgba(255,212,59,.3)}
-.small{font-size:13px;opacity:.75}
-.tabs2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.adbox{width:100%;min-height:60px;display:flex;justify-content:center;align-items:center;overflow:hidden;margin:12px auto;border-radius:10px}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:linear-gradient(135deg,#101936,#25105e);
+color:#fff;
+min-height:100vh
+}
+
+.wrap{
+max-width:760px;
+margin:auto;
+padding:16px
+}
+
+.logo{
+text-align:center;
+font-size:42px;
+font-weight:900;
+margin:10px
+}
+
+.sub{
+text-align:center;
+opacity:.8;
+margin-bottom:16px
+}
+
+.card{
+background:rgba(255,255,255,.1);
+border:1px solid rgba(255,255,255,.15);
+border-radius:20px;
+padding:20px;
+margin:14px 0
+}
+
+.hidden{
+display:none!important
+}
+
+button{
+border:0;
+border-radius:12px;
+padding:13px 16px;
+font-weight:700;
+cursor:pointer
+}
+
+button:disabled{
+opacity:.5
+}
+
+.primary{
+background:#ffd43b;
+color:#171717
+}
+
+.light{
+background:#fff;
+color:#171717
+}
+
+.ghost{
+background:rgba(255,255,255,.12);
+color:#fff
+}
+
+.top,.row{
+display:flex;
+gap:10px;
+align-items:center;
+justify-content:space-between;
+flex-wrap:wrap
+}
+
+.stat{
+padding:10px 14px;
+background:rgba(255,255,255,.1);
+border-radius:12px
+}
+
+.nav{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:8px
+}
+
+.dice{
+font-size:90px;
+text-align:center;
+line-height:1.1;
+margin:8px
+}
+
+.roll{
+display:block;
+margin:auto;
+font-size:18px
+}
+
+.result{
+text-align:center;
+font-size:21px;
+font-weight:800
+}
+
+.answers{
+display:grid;
+gap:10px
+}
+
+.answer{
+background:#fff;
+color:#111;
+text-align:left;
+width:100%
+}
+
+.answer.correct{
+outline:4px solid #4ade80
+}
+
+.answer.wrong{
+outline:4px solid #fb7185
+}
+
+input,select{
+width:100%;
+padding:13px;
+border:0;
+border-radius:10px;
+margin:5px 0 12px;
+font-size:16px
+}
+
+.timer{
+text-align:center;
+font-size:22px;
+font-weight:800
+}
+
+.bar{
+height:9px;
+background:rgba(255,255,255,.15);
+border-radius:20px;
+overflow:hidden;
+margin-top:12px
+}
+
+.bar div{
+height:100%;
+background:#ffd43b;
+width:0;
+transition:width .2s linear
+}
+
+.notice{
+padding:12px;
+border-radius:12px;
+background:rgba(255,212,59,.12);
+border:1px solid rgba(255,212,59,.3)
+}
+
+.small{
+font-size:13px;
+opacity:.75
+}
+
+.tabs2{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px
+}
+
+.adbox{
+width:100%;
+min-height:60px;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+margin:12px auto;
+border-radius:10px
+}
+
 @media(max-width:560px){
-.nav{grid-template-columns:1fr 1fr}
-.dice{font-size:75px}
-.logo{font-size:38px}
+.nav{
+grid-template-columns:1fr 1fr
+}
+
+.dice{
+font-size:75px
+}
+
+.logo{
+font-size:38px
+}
 }
 </style>
 </head>
 
 <body>
 
-<!--
-  MÚSICA
-  O arquivo MP3 deve estar na mesma pasta do index.html.
--->
 <audio id="backgroundMusic" preload="auto" loop>
-  <source src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3" type="audio/mpeg">
+<source src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3" type="audio/mpeg">
 </audio>
 
 <div class="wrap">
 
 <div class="logo">QuizUp</div>
-<div class="sub">🎲 Jogue, responda e acumule pontos</div>
 
-<!-- ADSTERRA / HIGHREVENUE — BANNER -->
+<div class="sub">
+🎲 Jogue, responda e acumule pontos
+</div>
+
+<!-- BANNER -->
 <div class="adbox">
+
 <script>
 atOptions={
-  'key':'827464848b02582093e6b5d45cb10d0a',
-  'format':'iframe',
-  'height':50,
-  'width':320,
-  'params':{}
+'key':'827464848b02582093e6b5d45cb10d0a',
+'format':'iframe',
+'height':50,
+'width':320,
+'params':{}
 };
 </script>
+
 <script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
+
 </div>
+
+
+<!-- =====================================================
+     LOGIN / CADASTRO
+===================================================== -->
 
 <section id="auth" class="card">
 
 <div class="tabs2">
-<button class="primary" onclick="authMode('register')">Cadastro</button>
-<button class="light" onclick="authMode('login')">Login</button>
+
+<button
+class="primary"
+onclick="authMode('register')">
+Cadastro
+</button>
+
+<button
+class="light"
+onclick="authMode('login')">
+Login
+</button>
+
 </div>
+
 
 <div id="registerBox">
 
 <h2>📝 Cadastro</h2>
 
 <label>E-mail</label>
-<input id="rEmail" type="email" placeholder="Seu e-mail">
+
+<input
+id="rEmail"
+type="email"
+placeholder="Seu e-mail">
+
 
 <label>Senha</label>
-<input id="rPass" type="password" placeholder="Sua senha">
+
+<input
+id="rPass"
+type="password"
+placeholder="Sua senha">
+
 
 <label>Nome completo</label>
-<input id="rName" type="text" placeholder="Seu nome completo">
+
+<input
+id="rName"
+type="text"
+placeholder="Seu nome completo">
+
 
 <label>CPF</label>
+
 <input
 id="rCpf"
 type="text"
@@ -111,37 +313,48 @@ inputmode="numeric"
 maxlength="14"
 placeholder="000.000.000-00">
 
+
 <button
 class="primary"
 onclick="register()">
+
 Cadastrar
+
 </button>
 
 </div>
+
 
 <div id="loginBox" class="hidden">
 
 <h2>🔐 Login</h2>
 
 <label>E-mail</label>
+
 <input
 id="lEmail"
 type="email"
 placeholder="Seu e-mail">
 
+
 <label>Senha</label>
+
 <input
 id="lPass"
 type="password"
 placeholder="Sua senha">
 
+
 <button
 class="primary"
 onclick="login()">
+
 Entrar
+
 </button>
 
 </div>
+
 
 <p class="small">
 Protótipo do QuizUp. Pagamentos reais e dados pessoais precisam de servidor seguro.
@@ -149,6 +362,10 @@ Protótipo do QuizUp. Pagamentos reais e dados pessoais precisam de servidor seg
 
 </section>
 
+
+<!-- =====================================================
+     JOGO
+===================================================== -->
 
 <section id="game" class="hidden">
 
@@ -200,6 +417,10 @@ onclick="tab('premium')">
 </div>
 
 
+<!-- =====================================================
+     QUIZ
+===================================================== -->
+
 <div id="quizTab">
 
 <div id="rollCard" class="card">
@@ -215,7 +436,9 @@ Jogue o dado
 <button
 class="primary roll"
 onclick="rollDice()">
+
 JOGAR DADO
+
 </button>
 
 <p
@@ -260,17 +483,17 @@ style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
 </div>
 
 
-<!-- ANÚNCIO APÓS A RESPOSTA -->
+<!-- ANÚNCIO -->
 
 <div id="answerAd" class="adbox">
 
 <script>
 atOptions={
-  'key':'827464848b02582093e6b5d45cb10d0a',
-  'format':'iframe',
-  'height':50,
-  'width':320,
-  'params':{}
+'key':'827464848b02582093e6b5d45cb10d0a',
+'format':'iframe',
+'height':50,
+'width':320,
+'params':{}
 };
 </script>
 
@@ -301,6 +524,10 @@ CONTINUAR
 </div>
 
 
+<!-- =====================================================
+     INDICAÇÃO
+===================================================== -->
+
 <div id="refTab" class="hidden card">
 
 <h2>🎁 Indicação</h2>
@@ -317,19 +544,27 @@ Ganhe <b>50 pontos</b> quando seu convidado atingir
 <button
 class="primary"
 onclick="copyRef()">
+
 Copiar link
+
 </button>
 
 <button
 class="light"
 onclick="shareRef()">
+
 Enviar link
+
 </button>
 
 <p id="refMsg"></p>
 
 </div>
 
+
+<!-- =====================================================
+     SAQUE
+===================================================== -->
 
 <div id="cashTab" class="hidden card">
 
@@ -398,23 +633,34 @@ R$ 10,00 — 11.000 pontos
 
 
 <button
+id="withdrawButton"
 class="primary"
 onclick="withdraw()">
+
 Solicitar saque
+
 </button>
+
 
 <p
 id="cashMsg"
 class="notice hidden">
 </p>
 
+
 <p class="small">
-Nesta versão o saque é apenas registrado.
+
+Nesta versão o saque é registrado no Appwrite.
 O pagamento real ainda não está conectado.
+
 </p>
 
 </div>
 
+
+<!-- =====================================================
+     PREMIUM
+===================================================== -->
 
 <div id="premiumTab" class="hidden card">
 
@@ -442,12 +688,44 @@ Quero ser Premium
 <script>
 
 /* =========================================================
+   APPWRITE
+========================================================= */
+
+const APPWRITE_PROJECT_ID =
+"6a8e10e900245502244c";
+
+const APPWRITE_DATABASE_ID =
+"6a8e11820008abab052e";
+
+const APPWRITE_WITHDRAWALS_TABLE =
+"saques";
+
+
+const appwriteClient =
+new Appwrite.Client();
+
+
+appwriteClient
+.setEndpoint("https://fra.cloud.appwrite.io/v1")
+.setProject(APPWRITE_PROJECT_ID);
+
+
+const account =
+new Appwrite.Account(appwriteClient);
+
+
+const tablesDB =
+new Appwrite.TablesDB(appwriteClient);
+
+
+/* =========================================================
    PERGUNTAS
-   ========================================================= */
+========================================================= */
 
 const Q=[
 
-["Quanto é 2 + 2?",["3","4","5","6"],1],
+["Quanto é 2 + 2?",
+["3","4","5","6"],1],
 
 ["Qual é a capital do Brasil?",
 ["Brasília","São Paulo","Salvador","Recife"],0],
@@ -508,9 +786,10 @@ const Q=[
 
 /* =========================================================
    ESTADO
-   ========================================================= */
+========================================================= */
 
 let s={
+
 email:"",
 password:"",
 name:"",
@@ -523,27 +802,25 @@ dice:0,
 question:null,
 timer:5,
 answered:false,
-roundPoints:0
+roundPoints:0,
+userId:""
+
 };
+
 
 let handle=null;
 
 
 /* =========================================================
    MÚSICA
-   ========================================================= */
-
-/*
-  A música NÃO é iniciada aqui.
-
-  Ela só é iniciada depois que o usuário
-  entra no jogo através do botão Login.
-*/
+========================================================= */
 
 function playMusic(){
 
 const music=
-document.getElementById("backgroundMusic");
+document.getElementById(
+"backgroundMusic"
+);
 
 if(!music)return;
 
@@ -551,12 +828,14 @@ music.volume=0.35;
 
 music.play().then(()=>{
 
-console.log("🎵 Música iniciada dentro do jogo.");
+console.log(
+"🎵 Música iniciada dentro do jogo."
+);
 
 }).catch(error=>{
 
 console.log(
-"Não foi possível iniciar a música:",
+"Música bloqueada:",
 error
 );
 
@@ -565,14 +844,12 @@ error
 }
 
 
-/*
-  Para completamente a música.
-*/
-
 function stopMusic(){
 
 const music=
-document.getElementById("backgroundMusic");
+document.getElementById(
+"backgroundMusic"
+);
 
 if(!music)return;
 
@@ -585,7 +862,7 @@ music.currentTime=0;
 
 /* =========================================================
    LOCAL STORAGE
-   ========================================================= */
+========================================================= */
 
 function key(){
 
@@ -607,25 +884,24 @@ ui();
 
 
 /* =========================================================
-   LOGIN / CADASTRO
-   ========================================================= */
+   MODO LOGIN / CADASTRO
+========================================================= */
 
 function authMode(m){
 
-/*
-  Garante que a música fique parada
-  enquanto estiver no cadastro/login.
-*/
-
 stopMusic();
 
-document.getElementById("registerBox")
+document.getElementById(
+"registerBox"
+)
 .classList.toggle(
 "hidden",
 m!=="register"
 );
 
-document.getElementById("loginBox")
+document.getElementById(
+"loginBox"
+)
 .classList.toggle(
 "hidden",
 m!=="login"
@@ -636,13 +912,9 @@ m!=="login"
 
 /* =========================================================
    CADASTRO
-   ========================================================= */
+========================================================= */
 
 function register(){
-
-/*
-  Garantia: cadastro nunca inicia música.
-*/
 
 stopMusic();
 
@@ -666,16 +938,22 @@ document.getElementById("rCpf")
 
 if(!e||!p||!n||!cpf){
 
-alert("Preencha todos os campos.");
+alert(
+"Preencha todos os campos."
+);
 
 return;
 
 }
 
 
-if(localStorage.getItem("quizup_"+e)){
+if(localStorage.getItem(
+"quizup_"+e
+)){
 
-alert("Essa conta já existe.");
+alert(
+"Essa conta já existe."
+);
 
 return;
 
@@ -683,21 +961,17 @@ return;
 
 
 /*
-  NOVA CONTA COMEÇA ZERADA.
+  NOVA CONTA COMEÇA COM ZERO PONTOS.
 */
 
 s={
 
 email:e,
-
 password:p,
-
 name:n,
-
 cpf:cpf,
 
 points:0,
-
 round:1,
 
 code:
@@ -708,18 +982,16 @@ Math.random()
 .toUpperCase(),
 
 referrer:
-new URLSearchParams(location.search)
-.get("ref")||"",
+new URLSearchParams(
+location.search
+).get("ref")||"",
 
 dice:0,
-
 question:null,
-
 timer:5,
-
 answered:false,
-
-roundPoints:0
+roundPoints:0,
+userId:""
 
 };
 
@@ -733,14 +1005,9 @@ openGame(true);
 
 /* =========================================================
    LOGIN
-   ========================================================= */
+========================================================= */
 
 function login(){
-
-/*
-  Enquanto está no login,
-  a música continua desligada.
-*/
 
 stopMusic();
 
@@ -756,7 +1023,9 @@ document.getElementById("lPass")
 
 if(!e||!p){
 
-alert("Preencha e-mail e senha.");
+alert(
+"Preencha e-mail e senha."
+);
 
 return;
 
@@ -764,12 +1033,16 @@ return;
 
 
 let x=
-localStorage.getItem("quizup_"+e);
+localStorage.getItem(
+"quizup_"+e
+);
 
 
 if(!x){
 
-alert("Conta não encontrada.");
+alert(
+"Conta não encontrada."
+);
 
 return;
 
@@ -784,7 +1057,9 @@ a=JSON.parse(x);
 
 }catch(error){
 
-alert("Não foi possível carregar sua conta.");
+alert(
+"Não foi possível carregar sua conta."
+);
 
 return;
 
@@ -793,7 +1068,9 @@ return;
 
 if(a.password!==p){
 
-alert("Senha incorreta.");
+alert(
+"Senha incorreta."
+);
 
 return;
 
@@ -802,46 +1079,31 @@ return;
 
 s=a;
 
-
-/*
-  PRIMEIRO abre o jogo.
-*/
-
 openGame(true);
-
-
-/*
-  DEPOIS inicia a música.
-  Como esta função foi chamada pelo toque
-  do usuário no botão Entrar, o navegador
-  permite a reprodução.
-*/
-
-playMusic();
 
 }
 
 
 /* =========================================================
    ABRIR JOGO
-   ========================================================= */
+========================================================= */
 
 function openGame(startMusic=false){
 
-document.getElementById("auth")
+document.getElementById(
+"auth"
+)
 .classList.add("hidden");
 
-document.getElementById("game")
+document.getElementById(
+"game"
+)
 .classList.remove("hidden");
 
 ui();
 
 tab("quiz");
 
-
-/*
-  Música somente dentro do jogo.
-*/
 
 if(startMusic){
 
@@ -854,29 +1116,23 @@ playMusic();
 
 /* =========================================================
    LOGOUT
-   ========================================================= */
+========================================================= */
 
 function logout(){
 
 clearInterval(handle);
 
-
-/*
-  Para a música ao sair.
-*/
-
 stopMusic();
 
-document.getElementById("game")
+document.getElementById(
+"game"
+)
 .classList.add("hidden");
 
-document.getElementById("auth")
+document.getElementById(
+"auth"
+)
 .classList.remove("hidden");
-
-
-/*
-  Volta para cadastro sem música.
-*/
 
 authMode("register");
 
@@ -885,43 +1141,52 @@ authMode("register");
 
 /* =========================================================
    UI
-   ========================================================= */
+========================================================= */
 
 function ui(){
 
-document.getElementById("points")
-.textContent=s.points;
+document.getElementById(
+"points"
+).textContent=s.points;
 
-document.getElementById("round")
-.textContent=s.round;
+document.getElementById(
+"round"
+).textContent=s.round;
 
-document.getElementById("totalScore")
-.textContent=s.points;
+document.getElementById(
+"totalScore"
+).textContent=s.points;
 
-document.getElementById("refCode")
-.value=s.code||"";
+document.getElementById(
+"refCode"
+).value=s.code||"";
 
 
-document.getElementById("refLink")
-.value=
+document.getElementById(
+"refLink"
+).value=
 location.origin+
 location.pathname+
 "?ref="+
-encodeURIComponent(s.code||"");
+encodeURIComponent(
+s.code||""
+);
 
 }
 
 
 /* =========================================================
    ABAS
-   ========================================================= */
+========================================================= */
 
 function tab(x){
 
 ["quiz","ref","cash","premium"]
 .forEach(a=>{
 
-document.getElementById(a+"Tab")
+document.getElementById(
+a+"Tab"
+)
 .classList.toggle(
 "hidden",
 a!==x
@@ -932,10 +1197,14 @@ a!==x
 
 if(x==="quiz"){
 
-document.getElementById("rollCard")
+document.getElementById(
+"rollCard"
+)
 .classList.remove("hidden");
 
-document.getElementById("questionCard")
+document.getElementById(
+"questionCard"
+)
 .classList.add("hidden");
 
 }
@@ -944,8 +1213,8 @@ document.getElementById("questionCard")
 
 
 /* =========================================================
-   PERGUNTA
-   ========================================================= */
+   PERGUNTAS
+========================================================= */
 
 function pickQuestion(){
 
@@ -960,18 +1229,14 @@ Math.random()*Q.length
 
 /* =========================================================
    DADO
-   ========================================================= */
+========================================================= */
 
 function rollDice(){
 
-/*
-  Continua dentro do jogo.
-  Não precisamos mais iniciar a música aqui,
-  porque ela já foi iniciada no login.
-*/
-
 if(
-document.getElementById("backgroundMusic").paused
+document.getElementById(
+"backgroundMusic"
+).paused
 ){
 
 playMusic();
@@ -993,6 +1258,7 @@ Math.random()*3
 )+8;
 
 }
+
 else if(s.round%10===0){
 
 d=
@@ -1001,6 +1267,7 @@ Math.random()*3
 )+5;
 
 }
+
 else{
 
 d=
@@ -1015,15 +1282,19 @@ s.dice=d;
 
 s.roundPoints=d;
 
-s.question=pickQuestion();
+s.question=
+pickQuestion();
 
 
-document.getElementById("dice")
-.textContent="🎲 "+d;
+document.getElementById(
+"dice"
+).textContent=
+"🎲 "+d;
 
 
-document.getElementById("diceResult")
-.textContent=
+document.getElementById(
+"diceResult"
+).textContent=
 "Você tirou "+
 d+
 " • Esta pergunta vale "+
@@ -1031,12 +1302,16 @@ d+
 (d===1?" ponto":" pontos");
 
 
-document.getElementById("question")
-.textContent=s.question[0];
+document.getElementById(
+"question"
+).textContent=
+s.question[0];
 
 
 let answers=
-document.getElementById("answers");
+document.getElementById(
+"answers"
+);
 
 answers.innerHTML="";
 
@@ -1044,29 +1319,40 @@ answers.innerHTML="";
 s.question[1].forEach((a,i)=>{
 
 let b=
-document.createElement("button");
+document.createElement(
+"button"
+);
 
 b.className="answer";
 
 b.textContent=a;
 
-b.onclick=()=>answer(i);
+b.onclick=
+()=>answer(i);
 
 answers.appendChild(b);
 
 });
 
 
-document.getElementById("rollCard")
+document.getElementById(
+"rollCard"
+)
 .classList.add("hidden");
 
-document.getElementById("questionCard")
+document.getElementById(
+"questionCard"
+)
 .classList.remove("hidden");
 
-document.getElementById("feedback")
+document.getElementById(
+"feedback"
+)
 .classList.add("hidden");
 
-document.getElementById("rewardBox")
+document.getElementById(
+"rewardBox"
+)
 .classList.add("hidden");
 
 
@@ -1077,7 +1363,7 @@ startTimer();
 
 /* =========================================================
    TIMER
-   ========================================================= */
+========================================================= */
 
 function startTimer(){
 
@@ -1085,22 +1371,27 @@ clearInterval(handle);
 
 s.timer=5;
 
-document.getElementById("time")
-.textContent=5;
+document.getElementById(
+"time"
+).textContent=5;
 
-document.getElementById("progress")
-.style.width="100%";
+document.getElementById(
+"progress"
+).style.width="100%";
 
 
-handle=setInterval(()=>{
+handle=
+setInterval(()=>{
 
 s.timer--;
 
-document.getElementById("time")
-.textContent=s.timer;
+document.getElementById(
+"time"
+).textContent=s.timer;
 
-document.getElementById("progress")
-.style.width=
+document.getElementById(
+"progress"
+).style.width=
 Math.max(
 0,
 s.timer/5*100
@@ -1122,7 +1413,7 @@ answer(-1);
 
 /* =========================================================
    RESPOSTA
-   ========================================================= */
+========================================================= */
 
 function answer(i){
 
@@ -1135,14 +1426,18 @@ clearInterval(handle);
 let c=s.question[2];
 
 let bs=[
-...document.querySelectorAll(".answer")
+...document.querySelectorAll(
+".answer"
+)
 ];
 
 
 if(i>=0&&bs[i]){
 
 bs[i].classList.add(
-i===c?"correct":"wrong"
+i===c
+?"correct"
+:"wrong"
 );
 
 }
@@ -1150,7 +1445,9 @@ i===c?"correct":"wrong"
 
 if(bs[c]){
 
-bs[c].classList.add("correct");
+bs[c].classList.add(
+"correct"
+);
 
 }
 
@@ -1171,9 +1468,13 @@ save();
 
 
 let feedback=
-document.getElementById("feedback");
+document.getElementById(
+"feedback"
+);
 
-feedback.classList.remove("hidden");
+feedback.classList.remove(
+"hidden"
+);
 
 
 feedback.textContent=
@@ -1184,29 +1485,39 @@ s.roundPoints+
 :"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
 
 
-document.getElementById("rewardBox")
-.classList.remove("hidden");
+document.getElementById(
+"rewardBox"
+)
+.classList.remove(
+"hidden"
+);
 
 }
 
 
 /* =========================================================
    CONTINUAR
-   ========================================================= */
+========================================================= */
 
 function finishQuestion(){
 
-document.getElementById("questionCard")
+document.getElementById(
+"questionCard"
+)
 .classList.add("hidden");
 
-document.getElementById("rollCard")
+document.getElementById(
+"rollCard"
+)
 .classList.remove("hidden");
 
-document.getElementById("dice")
-.textContent="🎲";
+document.getElementById(
+"dice"
+).textContent="🎲";
 
-document.getElementById("diceResult")
-.textContent="";
+document.getElementById(
+"diceResult"
+).textContent="";
 
 s.round++;
 
@@ -1217,24 +1528,29 @@ save();
 
 /* =========================================================
    INDICAÇÃO
-   ========================================================= */
+========================================================= */
 
 function copyRef(){
 
 let link=
-document.getElementById("refLink")
-.value;
+document.getElementById(
+"refLink"
+).value;
 
 
 if(navigator.clipboard){
 
-navigator.clipboard.writeText(link);
+navigator.clipboard.writeText(
+link
+);
 
 }
 
 
-document.getElementById("refMsg")
-.textContent="Link copiado!";
+document.getElementById(
+"refMsg"
+).textContent=
+"Link copiado!";
 
 }
 
@@ -1242,8 +1558,9 @@ document.getElementById("refMsg")
 async function shareRef(){
 
 let link=
-document.getElementById("refLink")
-.value;
+document.getElementById(
+"refLink"
+).value;
 
 
 if(navigator.share){
@@ -1259,6 +1576,7 @@ url:link
 });
 
 }
+
 else{
 
 copyRef();
@@ -1270,22 +1588,27 @@ copyRef();
 
 /* =========================================================
    PAGAMENTO
-   ========================================================= */
+========================================================= */
 
 function payFields(){
 
 let p=
-document.getElementById("payMethod")
-.value==="pix";
+document.getElementById(
+"payMethod"
+).value==="pix";
 
 
-document.getElementById("pix")
+document.getElementById(
+"pix"
+)
 .classList.toggle(
 "hidden",
 !p
 );
 
-document.getElementById("paypal")
+document.getElementById(
+"paypal"
+)
 .classList.toggle(
 "hidden",
 p
@@ -1306,118 +1629,459 @@ return v==="10"
 
 
 /* =========================================================
-   SAQUE
-   ========================================================= */
+   APPWRITE - DESCOBRIR COLUNAS
+========================================================= */
 
-function withdraw(){
+async function getWithdrawalColumns(){
 
-let v=
-document.getElementById("withdrawAmount")
-.value;
+try{
 
-let n=need(v);
+const result=
+await tablesDB.listColumns({
 
-let m=
-document.getElementById("payMethod")
-.value;
+databaseId:
+APPWRITE_DATABASE_ID,
 
+tableId:
+APPWRITE_WITHDRAWALS_TABLE
 
-let k=
-(
-m==="pix"
-?
-document.getElementById("pixKey")
-:
-document.getElementById("paypalKey")
-)
-.value.trim();
+});
 
+return result.columns||[];
 
-let msg=
-document.getElementById("cashMsg");
+}catch(error){
 
-msg.classList.remove("hidden");
+console.error(
+"Erro ao buscar colunas:",
+error
+);
 
+return [];
 
-if(!k){
-
-msg.textContent=
-"Preencha o dado de pagamento.";
-
-return;
+}
 
 }
 
 
-if(s.points<n){
+/* =========================================================
+   ENCONTRAR COLUNA
+========================================================= */
 
-msg.textContent=
-"Pontos insuficientes. Você precisa de "+
-n+
-" pontos.";
+function findColumn(columns,names){
 
-return;
+for(const name of names){
+
+const found=
+columns.find(c=>
+c.key===name
+);
+
+if(found){
+
+return found.key;
+
+}
+
+}
+
+return null;
 
 }
 
 
-let a=JSON.parse(
+/* =========================================================
+   SAQUE — APPWRITE
+========================================================= */
 
-localStorage.getItem(
-"quizup_withdrawals"
-)||"[]"
+async function withdraw(){
 
+const button=
+document.getElementById(
+"withdrawButton"
+);
+
+const msg=
+document.getElementById(
+"cashMsg"
 );
 
 
-a.push({
+msg.classList.remove(
+"hidden"
+);
 
-email:s.email,
 
-value:v,
+const value=
+document.getElementById(
+"withdrawAmount"
+).value;
 
-method:m,
 
-date:new Date().toISOString()
+const required=
+need(value);
+
+
+const method=
+document.getElementById(
+"payMethod"
+).value;
+
+
+let paymentField;
+
+
+if(method==="pix"){
+
+paymentField=
+document.getElementById(
+"pixKey"
+);
+
+}else{
+
+paymentField=
+document.getElementById(
+"paypalKey"
+);
+
+}
+
+
+const paymentKey=
+paymentField.value.trim();
+
+
+/* -------------------------
+   VALIDAÇÕES
+------------------------- */
+
+if(!paymentKey){
+
+msg.textContent=
+method==="pix"
+?
+"Digite sua chave Pix."
+:
+"Digite seu e-mail PayPal.";
+
+return;
+
+}
+
+
+if(s.points<required){
+
+msg.textContent=
+"Você precisa de "+
+required+
+" pontos para solicitar este saque.";
+
+return;
+
+}
+
+
+if(!s.userId){
+
+/*
+  Tenta descobrir o usuário
+  atual do Appwrite.
+*/
+
+try{
+
+const user=
+await account.get();
+
+s.userId=
+user.$id;
+
+}catch(error){
+
+console.error(error);
+
+msg.textContent=
+"Não foi possível identificar sua conta.";
+
+return;
+
+}
+
+}
+
+
+button.disabled=true;
+
+button.textContent=
+"Registrando...";
+
+
+try{
+
+
+/* -------------------------
+   PEGA AS COLUNAS
+------------------------- */
+
+const columns=
+await getWithdrawalColumns();
+
+
+if(!columns.length){
+
+throw new Error(
+"Não foi possível acessar as colunas da tabela saques."
+);
+
+}
+
+
+/*
+  Procuramos automaticamente
+  as colunas existentes.
+*/
+
+
+const userColumn=
+findColumn(
+columns,
+[
+"user_id",
+"userId",
+"usuario_id",
+"id_usuario",
+"ID_do_usuario",
+"id_do_usuario",
+"ID do usuário"
+]
+);
+
+
+const pixColumn=
+findColumn(
+columns,
+[
+"pix_key",
+"pixKey",
+"chave_pix"
+]
+);
+
+
+const statusColumn=
+findColumn(
+columns,
+[
+"status",
+"Status"
+]
+);
+
+
+const amountColumn=
+findColumn(
+columns,
+[
+"quantia",
+"valor",
+"amount",
+"value"
+]
+);
+
+
+const createdColumn=
+findColumn(
+columns,
+[
+"criado_em",
+"criadoEm",
+"created_at",
+"createdAt"
+]
+);
+
+
+/* -------------------------
+   CONFERE COLUNAS
+------------------------- */
+
+if(!userColumn){
+
+throw new Error(
+"A coluna de ID do usuário não foi encontrada."
+);
+
+}
+
+if(!pixColumn){
+
+throw new Error(
+"A coluna pix_key não foi encontrada."
+);
+
+}
+
+if(!statusColumn){
+
+throw new Error(
+"A coluna status não foi encontrada."
+);
+
+}
+
+if(!amountColumn){
+
+throw new Error(
+"A coluna quantia não foi encontrada."
+);
+
+}
+
+
+/* -------------------------
+   MONTA DADOS
+------------------------- */
+
+const data={};
+
+
+/*
+  ID do usuário
+*/
+
+data[userColumn]=
+s.userId;
+
+
+/*
+  Pix ou PayPal
+
+  A tabela possui pix_key.
+  Por isso usamos essa coluna
+  para guardar o dado informado.
+*/
+
+data[pixColumn]=
+paymentKey;
+
+
+/*
+  Status inicial
+*/
+
+data[statusColumn]=
+"pendente";
+
+
+/*
+  Valor do saque
+*/
+
+data[amountColumn]=
+Number(value);
+
+
+/*
+  Data
+
+  Só envia se a coluna tiver sido
+  criada manualmente.
+*/
+
+if(createdColumn){
+
+data[createdColumn]=
+new Date().toISOString();
+
+}
+
+
+/* -------------------------
+   CRIA LINHA
+------------------------- */
+
+const row=
+await tablesDB.createRow({
+
+databaseId:
+APPWRITE_DATABASE_ID,
+
+tableId:
+APPWRITE_WITHDRAWALS_TABLE,
+
+rowId:
+Appwrite.ID.unique(),
+
+data:data
 
 });
 
 
-localStorage.setItem(
-"quizup_withdrawals",
-JSON.stringify(a)
+console.log(
+"Saque criado:",
+row
+);
+
+
+/* -------------------------
+   SUCESSO
+------------------------- */
+
+msg.textContent=
+"✅ Solicitação de saque registrada com sucesso!";
+
+
+/*
+  Não descontamos os pontos ainda.
+
+  Primeiro vamos confirmar que
+  o registro está chegando corretamente
+  no Appwrite.
+*/
+
+
+}catch(error){
+
+console.error(
+"ERRO AO REGISTRAR SAQUE:",
+error
 );
 
 
 msg.textContent=
-"Solicitação registrada. O pagamento real será conectado posteriormente.";
+"❌ Não foi possível registrar o saque.\n\n"+
+(
+error.message||
+"Verifique as permissões e as colunas da tabela saques."
+);
+
+}
+
+
+button.disabled=false;
+
+button.textContent=
+"Solicitar saque";
 
 }
 
 
 /* =========================================================
    INICIALIZAÇÃO
-   ========================================================= */
+========================================================= */
 
 (function(){
 
 /*
-  IMPORTANTE:
-  Não inicia música aqui.
-
-  Se existir uma conta salva,
-  mostramos o jogo como antes.
-  O navegador pode bloquear música automática
-  sem uma ação do usuário.
+  NÃO inicia música automaticamente.
 */
 
 let k=
 Object.keys(localStorage).find(
-
 k=>
 k.startsWith("quizup_") &&
 !k.includes("withdrawals")
-
 );
 
 
@@ -1430,13 +2094,27 @@ JSON.parse(
 localStorage.getItem(k)
 );
 
-openGame(false);
 
 /*
-  Não chama playMusic() aqui.
-  Assim a tela de cadastro/login nunca
-  dispara música automaticamente.
+  Mantém compatibilidade
+  com contas antigas.
 */
+
+if(!s.userId){
+
+s.userId="";
+
+}
+
+if(typeof s.points!=="number"){
+
+s.points=0;
+
+}
+
+
+openGame(false);
+
 
 }catch(e){
 
