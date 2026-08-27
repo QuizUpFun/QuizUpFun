@@ -5,12 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QuizUp</title>
 
-<!-- =====================================================
-     APPWRITE WEB SDK
-     ===================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/appwrite@23.0.0"></script>
 
-<!-- MONETAG — IN-PAGE PUSH -->
 <script>
 (function(s){
   s.dataset.zone='11646165';
@@ -21,7 +17,9 @@
 </script>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box
+}
 
 body{
   margin:0;
@@ -89,7 +87,8 @@ button:disabled{
   color:#fff
 }
 
-.top,.row{
+.top,
+.row{
   display:flex;
   gap:10px;
   align-items:center;
@@ -148,7 +147,8 @@ button:disabled{
   outline:4px solid #fb7185
 }
 
-input,select{
+input,
+select{
   width:100%;
   padding:13px;
   border:0;
@@ -235,10 +235,6 @@ input,select{
 
 <body>
 
-<!-- =====================================================
-     MÚSICA
-     ===================================================== -->
-
 <audio id="backgroundMusic" preload="auto" loop>
   <source
     src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
@@ -247,15 +243,16 @@ input,select{
 
 <div class="wrap">
 
-<div class="logo">QuizUp</div>
-
-<div class="sub">
-🎲 Jogue, responda e acumule pontos
+<div class="logo">
+  QuizUp
 </div>
 
-<!-- =====================================================
-     BANNER
-     ===================================================== -->
+<div class="sub">
+  🎲 Jogue, responda e acumule pontos
+</div>
+
+
+<!-- BANNER -->
 
 <div class="adbox">
 
@@ -527,8 +524,6 @@ style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
 </div>
 
 
-<!-- ANÚNCIO -->
-
 <div
 id="answerAd"
 class="adbox">
@@ -546,22 +541,6 @@ atOptions={
 <script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
 
 </div>
-
-
-<div
-id="rewardBox"
-class="hidden"
-style="margin-top:16px">
-
-<button
-id="continueButton"
-class="primary"
-style="width:100%"
-onclick="finishQuestion()">
-
-CONTINUAR
-
-</button>
 
 </div>
 
@@ -648,10 +627,6 @@ class="hidden card">
 
 Cada jogador pode solicitar no máximo
 <b>2 saques por dia</b>.
-
-<br><br>
-
-Saques ficam registrados no Appwrite.
 
 </div>
 
@@ -871,7 +846,6 @@ answered:false,
 roundPoints:0
 };
 
-
 let handle=null;
 
 
@@ -968,7 +942,7 @@ return onlyNumbers(cpf);
 
 
 /* =========================================================
-   VALIDAÇÃO BÁSICA DE CPF
+   CPF
    ========================================================= */
 
 function validCPF(cpf){
@@ -1038,7 +1012,7 @@ ui();
 
 
 /* =========================================================
-   VERIFICAR CPF JÁ CADASTRADO
+   VERIFICAR CPF
    ========================================================= */
 
 function cpfExists(cpf){
@@ -1080,7 +1054,7 @@ return found;
 
 
 /* =========================================================
-   LOGIN / CADASTRO
+   AUTH
    ========================================================= */
 
 function authMode(m){
@@ -1178,10 +1152,6 @@ return;
 
 }
 
-
-/*
- NOVA CONTA COMEÇA COM 0 PONTOS
- */
 
 s={
 
@@ -1299,8 +1269,6 @@ s=a;
 
 openGame(true);
 
-playMusic();
-
 }
 
 
@@ -1328,12 +1296,6 @@ alert("Digite um e-mail válido.");
 return;
 
 }
-
-
-/*
- O Appwrite Recovery precisa de uma plataforma Web
- cadastrada no projeto e do domínio do site autorizado.
- */
 
 try{
 
@@ -1506,6 +1468,11 @@ clearInterval(handle);
 
 s.answered=false;
 
+
+/*
+ O dado define o valor da pergunta.
+ */
+
 let d;
 
 
@@ -1587,11 +1554,10 @@ document.getElementById("rollCard")
 document.getElementById("questionCard")
 .classList.remove("hidden");
 
+
 document.getElementById("feedback")
 .classList.add("hidden");
 
-document.getElementById("rewardBox")
-.classList.add("hidden");
 
 startTimer();
 
@@ -1662,10 +1628,10 @@ let bs=[
 ];
 
 
-if(i>=0&&bs[i]){
+if(i>=0 && bs[i]){
 
 bs[i].classList.add(
-i===c?"correct":"wrong"
+i===c ? "correct" : "wrong"
 );
 
 }
@@ -1680,6 +1646,20 @@ bs[c].classList.add("correct");
 
 let ok=i===c;
 
+
+/*
+ =========================================================
+ REGRA DO JOGO
+
+ ACERTOU:
+ ganha o valor que saiu no dado.
+
+ ERROU:
+ ganha 0.
+
+ Os pontos anteriores permanecem.
+ =========================================================
+ */
 
 if(ok){
 
@@ -1699,25 +1679,60 @@ document.getElementById("feedback");
 feedback.classList.remove("hidden");
 
 
+if(ok){
+
 feedback.textContent=
-ok
-?"✅ Correto! Você ganhou "+
+"✅ Correto! Você ganhou "+
 s.roundPoints+
-" pontos!"
-:"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
+(s.roundPoints===1
+?" ponto!"
+:" pontos!");
+
+}
+else{
+
+feedback.textContent=
+"❌ Incorreto! Você ganhou 0 pontos.";
+
+}
 
 
-document.getElementById("rewardBox")
-.classList.remove("hidden");
+/*
+ Desabilita as respostas para evitar
+ clicar novamente.
+ */
+
+bs.forEach(button=>{
+
+button.disabled=true;
+
+});
+
+
+/*
+ =========================================================
+ PRÓXIMA RODADA AUTOMÁTICA
+
+ Não existe mais botão CONTINUAR.
+ =========================================================
+ */
+
+setTimeout(()=>{
+
+finishQuestion();
+
+},1500);
 
 }
 
 
 /* =========================================================
-   CONTINUAR
+   PRÓXIMA RODADA AUTOMÁTICA
    ========================================================= */
 
 function finishQuestion(){
+
+clearInterval(handle);
 
 document.getElementById("questionCard")
 .classList.add("hidden");
@@ -1731,9 +1746,25 @@ document.getElementById("dice")
 document.getElementById("diceResult")
 .textContent="";
 
+document.getElementById("feedback")
+.classList.add("hidden");
+
+
 s.round++;
 
 save();
+
+
+/*
+ Pequeno intervalo para a transição.
+ Depois o dado é jogado automaticamente.
+ */
+
+setTimeout(()=>{
+
+rollDice();
+
+},500);
 
 }
 
@@ -1833,7 +1864,7 @@ return v==="10"
 
 
 /* =========================================================
-   CONTROLE LOCAL DE SAQUES DO DIA
+   CONTROLE LOCAL DE SAQUES
    ========================================================= */
 
 function withdrawalStorageKey(){
@@ -1900,7 +1931,7 @@ JSON.stringify(list)
 
 
 /* =========================================================
-   CÁLCULO 70 / 30
+   70 / 30
    ========================================================= */
 
 function calculateSplit(gross){
@@ -1943,9 +1974,9 @@ button.textContent="Enviando...";
 
 try{
 
-/* -----------------------------------------------
-   VERIFICAÇÃO DO USUÁRIO
-   ----------------------------------------------- */
+/*
+ USUÁRIO
+ */
 
 if(!s.email){
 
@@ -1956,9 +1987,9 @@ throw new Error(
 }
 
 
-/* -----------------------------------------------
-   VALOR
-   ----------------------------------------------- */
+/*
+ VALOR
+ */
 
 let v=
 document.getElementById("withdrawAmount")
@@ -1971,18 +2002,18 @@ let pointsNeeded=
 need(v);
 
 
-/* -----------------------------------------------
-   MÉTODO
-   ----------------------------------------------- */
+/*
+ MÉTODO
+ */
 
 let method=
 document.getElementById("payMethod")
 .value;
 
 
-/* -----------------------------------------------
-   CHAVE
-   ----------------------------------------------- */
+/*
+ CHAVE
+ */
 
 let paymentKey=
 (
@@ -2005,9 +2036,9 @@ throw new Error(
 }
 
 
-/* -----------------------------------------------
-   PONTOS
-   ----------------------------------------------- */
+/*
+ PONTOS
+ */
 
 if(Number(s.points)<pointsNeeded){
 
@@ -2020,9 +2051,9 @@ pointsNeeded+
 }
 
 
-/* -----------------------------------------------
-   LIMITE DIÁRIO
-   ----------------------------------------------- */
+/*
+ LIMITE DE 2 SAQUES
+ */
 
 let today=
 withdrawalsToday();
@@ -2031,42 +2062,31 @@ withdrawalsToday();
 if(today.length>=2){
 
 throw new Error(
-"Você já realizou 2 solicitações de saque hoje. Tente novamente amanhã."
+"Você já solicitou 2 saques hoje. Tente novamente amanhã."
 );
 
 }
 
 
-/* -----------------------------------------------
-   DIVISÃO
-   ----------------------------------------------- */
+/*
+ DIVISÃO
+ */
 
 let split=
 calculateSplit(gross);
 
 
-/* -----------------------------------------------
-   DATA
-   ----------------------------------------------- */
+/*
+ DATA
+ */
 
 let createdAt=
 new Date().toISOString();
 
 
-/* -----------------------------------------------
-   DADOS DA LINHA
-   -----------------------------------------------
-
-   Usamos somente as colunas que foram confirmadas
-   na tabela:
-
-   ID do usuário.
-   pix_key
-   status
-   quantia
-   criado_em
-
-   ----------------------------------------------- */
+/*
+ DADOS ENVIADOS AO APPWRITE
+ */
 
 let data={
 
@@ -2083,9 +2103,9 @@ let data={
 };
 
 
-/* -----------------------------------------------
-   CRIAR LINHA NO APPWRITE
-   ----------------------------------------------- */
+/*
+ CRIA A SOLICITAÇÃO
+ */
 
 const result=
 await tablesDB.createRow({
@@ -2104,9 +2124,9 @@ data:data
 });
 
 
-/* -----------------------------------------------
-   REGISTRO LOCAL DE CONTROLE
-   ----------------------------------------------- */
+/*
+ SALVA CONTROLE LOCAL
+ */
 
 saveLocalWithdrawal({
 
@@ -2129,9 +2149,9 @@ method:method
 });
 
 
-/* -----------------------------------------------
-   DESCONTAR PONTOS
-   ----------------------------------------------- */
+/*
+ DESCONTA OS PONTOS
+ */
 
 s.points=
 Number(s.points)-
@@ -2140,9 +2160,9 @@ pointsNeeded;
 save();
 
 
-/* -----------------------------------------------
-   RESULTADO
-   ----------------------------------------------- */
+/*
+ RESULTADO
+ */
 
 msg.innerHTML=
 "✅ Solicitação enviada com sucesso!<br><br>"+
@@ -2177,7 +2197,7 @@ text.toLowerCase()
 
 text=
 "O Appwrite recusou a criação da solicitação. "+
-"Verifique as permissões de CREATE da tabela saques.";
+"Verifique a permissão CREATE da tabela saques.";
 
 }
 
@@ -2238,4 +2258,4 @@ console.log(e);
 </script>
 
 </body>
-  </html>
+</html>
