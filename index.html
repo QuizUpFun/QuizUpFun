@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QuizUp</title>
 
+<!-- =====================================================
+     APPWRITE WEB SDK
+     ===================================================== -->
+<script src="https://cdn.jsdelivr.net/npm/appwrite@23.0.0"></script>
+
 <!-- MONETAG — IN-PAGE PUSH -->
 <script>
 (function(s){
@@ -202,15 +207,12 @@ input,select{
   border-radius:10px
 }
 
-.linkButton{
-  background:none;
-  border:0;
-  color:#ffd43b;
-  padding:8px 0;
-  margin-top:2px;
-  font-size:14px;
-  text-decoration:underline;
-  cursor:pointer
+.cash-summary{
+  background:rgba(74,222,128,.10);
+  border:1px solid rgba(74,222,128,.25);
+  padding:14px;
+  border-radius:12px;
+  margin:12px 0
 }
 
 @media(max-width:560px){
@@ -233,18 +235,30 @@ input,select{
 
 <body>
 
-<!-- MÚSICA -->
+<!-- =====================================================
+     MÚSICA
+     ===================================================== -->
+
 <audio id="backgroundMusic" preload="auto" loop>
-  <source src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3" type="audio/mpeg">
+  <source
+    src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
+    type="audio/mpeg">
 </audio>
 
 <div class="wrap">
 
 <div class="logo">QuizUp</div>
-<div class="sub">🎲 Jogue, responda e acumule pontos</div>
 
-<!-- BANNER -->
+<div class="sub">
+🎲 Jogue, responda e acumule pontos
+</div>
+
+<!-- =====================================================
+     BANNER
+     ===================================================== -->
+
 <div class="adbox">
+
 <script>
 atOptions={
   'key':'827464848b02582093e6b5d45cb10d0a',
@@ -256,10 +270,14 @@ atOptions={
 </script>
 
 <script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
+
 </div>
 
 
-<!-- LOGIN / CADASTRO -->
+<!-- =====================================================
+     LOGIN / CADASTRO
+     ===================================================== -->
+
 <section id="auth" class="card">
 
 <div class="tabs2">
@@ -280,6 +298,7 @@ Login
 
 
 <!-- CADASTRO -->
+
 <div id="registerBox">
 
 <h2>📝 Cadastro</h2>
@@ -289,7 +308,6 @@ Login
 <input
 id="rEmail"
 type="email"
-autocomplete="email"
 placeholder="Seu e-mail">
 
 
@@ -298,7 +316,6 @@ placeholder="Seu e-mail">
 <input
 id="rPass"
 type="password"
-autocomplete="new-password"
 placeholder="Sua senha">
 
 
@@ -307,7 +324,6 @@ placeholder="Sua senha">
 <input
 id="rName"
 type="text"
-autocomplete="name"
 placeholder="Seu nome completo">
 
 
@@ -319,12 +335,11 @@ type="text"
 inputmode="numeric"
 maxlength="14"
 placeholder="000.000.000-00"
-oninput="formatCpf(this)">
+oninput="formatCPF(this)">
 
 
 <button
 class="primary"
-style="width:100%"
 onclick="register()">
 Cadastrar
 </button>
@@ -333,6 +348,7 @@ Cadastrar
 
 
 <!-- LOGIN -->
+
 <div id="loginBox" class="hidden">
 
 <h2>🔐 Login</h2>
@@ -342,7 +358,6 @@ Cadastrar
 <input
 id="lEmail"
 type="email"
-autocomplete="email"
 placeholder="Seu e-mail">
 
 
@@ -351,122 +366,40 @@ placeholder="Seu e-mail">
 <input
 id="lPass"
 type="password"
-autocomplete="current-password"
 placeholder="Sua senha">
 
 
 <button
 class="primary"
-style="width:100%"
 onclick="login()">
 Entrar
 </button>
 
 
-<div style="text-align:center">
+<p
+style="margin-top:18px;text-align:center">
 
 <button
-class="linkButton"
-onclick="showRecovery()">
+class="ghost"
+onclick="forgotPassword()">
+
 Esqueceu a senha?
+
 </button>
 
-</div>
-
-</div>
-
-
-<!-- RECUPERAÇÃO DE SENHA -->
-<div id="recoveryBox" class="hidden">
-
-<h2>🔑 Recuperar senha</h2>
-
-<p class="small">
-Informe o e-mail e o CPF cadastrados para confirmar sua conta.
 </p>
-
-<label>E-mail</label>
-
-<input
-id="fEmail"
-type="email"
-autocomplete="email"
-placeholder="Seu e-mail">
-
-
-<label>CPF</label>
-
-<input
-id="fCpf"
-type="text"
-inputmode="numeric"
-maxlength="14"
-placeholder="000.000.000-00"
-oninput="formatCpf(this)">
-
-
-<button
-class="primary"
-style="width:100%"
-onclick="verifyRecovery()">
-Continuar
-</button>
-
-
-<div style="text-align:center">
-
-<button
-class="linkButton"
-onclick="authMode('login')">
-Voltar para o login
-</button>
-
-</div>
-
-</div>
-
-
-<!-- NOVA SENHA -->
-<div id="newPasswordBox" class="hidden">
-
-<h2>🔐 Nova senha</h2>
-
-<p class="small">
-Digite sua nova senha.
-</p>
-
-<label>Nova senha</label>
-
-<input
-id="newPass"
-type="password"
-autocomplete="new-password"
-placeholder="Nova senha">
-
-
-<label>Confirmar nova senha</label>
-
-<input
-id="newPass2"
-type="password"
-autocomplete="new-password"
-placeholder="Digite novamente">
-
-
-<button
-class="primary"
-style="width:100%"
-onclick="resetPassword()">
-Salvar nova senha
-</button>
 
 </div>
 
 </section>
 
 
-<!-- JOGO -->
+<!-- =====================================================
+     JOGO
+     ===================================================== -->
+
 <section id="game" class="hidden">
+
 
 <div class="top card">
 
@@ -488,6 +421,7 @@ Sair
 
 
 <!-- NAVEGAÇÃO -->
+
 <div class="nav">
 
 <button
@@ -517,7 +451,10 @@ onclick="tab('premium')">
 </div>
 
 
-<!-- QUIZ -->
+<!-- =====================================================
+     QUIZ
+     ===================================================== -->
+
 <div id="quizTab">
 
 <div id="rollCard" class="card">
@@ -545,7 +482,10 @@ class="result">
 
 
 <!-- PERGUNTA -->
-<div id="questionCard" class="card hidden">
+
+<div
+id="questionCard"
+class="card hidden">
 
 <div class="top">
 
@@ -557,18 +497,26 @@ class="result">
 
 </div>
 
+
 <div class="bar">
 <div id="progress"></div>
 </div>
 
+
 <h2 id="question"></h2>
 
-<div id="answers" class="answers"></div>
+
+<div
+id="answers"
+class="answers">
+</div>
+
 
 <p
 id="feedback"
 class="notice hidden">
 </p>
+
 
 <div
 style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
@@ -579,8 +527,11 @@ style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
 </div>
 
 
-<!-- ANÚNCIO APÓS RESPOSTA -->
-<div id="answerAd" class="adbox">
+<!-- ANÚNCIO -->
+
+<div
+id="answerAd"
+class="adbox">
 
 <script>
 atOptions={
@@ -619,8 +570,13 @@ CONTINUAR
 </div>
 
 
-<!-- INDICAÇÃO -->
-<div id="refTab" class="hidden card">
+<!-- =====================================================
+     INDICAÇÃO
+     ===================================================== -->
+
+<div
+id="refTab"
+class="hidden card">
 
 <h2>🎁 Indicação</h2>
 
@@ -654,10 +610,16 @@ Enviar link
 </div>
 
 
-<!-- SAQUE -->
-<div id="cashTab" class="hidden card">
+<!-- =====================================================
+     SAQUE
+     ===================================================== -->
+
+<div
+id="cashTab"
+class="hidden card">
 
 <h2>💸 Saque</h2>
+
 
 <div class="notice">
 
@@ -666,6 +628,30 @@ Enviar link
 2.000 pontos → R$ 1,00<br>
 6.000 pontos → R$ 5,00<br>
 11.000 pontos → R$ 10,00
+
+</div>
+
+
+<div class="cash-summary">
+
+<b>Divisão do saque</b><br><br>
+
+70% → jogador<br>
+30% → plataforma
+
+</div>
+
+
+<div class="notice">
+
+<b>Limite:</b><br>
+
+Cada jogador pode solicitar no máximo
+<b>2 saques por dia</b>.
+
+<br><br>
+
+Saques ficam registrados no Appwrite.
 
 </div>
 
@@ -694,7 +680,9 @@ placeholder="Chave Pix">
 </div>
 
 
-<div id="paypal" class="hidden">
+<div
+id="paypal"
+class="hidden">
 
 <input
 id="paypalKey"
@@ -704,7 +692,8 @@ placeholder="E-mail PayPal">
 </div>
 
 
-<select id="withdrawAmount">
+<select
+id="withdrawAmount">
 
 <option value="1">
 R$ 1,00 — 2.000 pontos
@@ -722,10 +711,14 @@ R$ 10,00 — 11.000 pontos
 
 
 <button
+id="withdrawButton"
 class="primary"
 onclick="withdraw()">
+
 Solicitar saque
+
 </button>
+
 
 <p
 id="cashMsg"
@@ -735,8 +728,13 @@ class="notice hidden">
 </div>
 
 
-<!-- PREMIUM -->
-<div id="premiumTab" class="hidden card">
+<!-- =====================================================
+     PREMIUM
+     ===================================================== -->
+
+<div
+id="premiumTab"
+class="hidden card">
 
 <h2>💎 Premium</h2>
 
@@ -760,6 +758,33 @@ Quero ser Premium
 
 
 <script>
+
+/* =========================================================
+   APPWRITE
+   ========================================================= */
+
+const APPWRITE_ENDPOINT =
+"https://fra.cloud.appwrite.io/v1";
+
+const APPWRITE_PROJECT_ID =
+"6a8e10e900245502244c";
+
+const APPWRITE_DATABASE_ID =
+"6a8e11820008abab052e";
+
+const APPWRITE_TABLE_ID =
+"saques";
+
+
+const appwriteClient =
+new Appwrite.Client()
+.setEndpoint(APPWRITE_ENDPOINT)
+.setProject(APPWRITE_PROJECT_ID);
+
+
+const tablesDB =
+new Appwrite.TablesDB(appwriteClient);
+
 
 /* =========================================================
    PERGUNTAS
@@ -846,266 +871,8 @@ answered:false,
 roundPoints:0
 };
 
+
 let handle=null;
-
-let recoveryEmail="";
-
-
-/* =========================================================
-   CPF
-   ========================================================= */
-
-/*
-  Remove pontos, traços e qualquer outro caractere.
-  Assim:
-  123.456.789-00
-  e
-  12345678900
-  viram o mesmo CPF.
-*/
-
-function normalizeCpf(value){
-
-return String(value||"")
-.replace(/\D/g,"")
-.slice(0,11);
-
-}
-
-
-/*
-  Formata visualmente o CPF.
-*/
-
-function formatCpf(input){
-
-let value=
-normalizeCpf(input.value);
-
-if(value.length>9){
-
-value=
-value.replace(
-/(\d{3})(\d{3})(\d{3})(\d{0,2})/,
-"$1.$2.$3-$4"
-);
-
-}
-else if(value.length>6){
-
-value=
-value.replace(
-/(\d{3})(\d{3})(\d{0,3})/,
-"$1.$2.$3"
-);
-
-}
-else if(value.length>3){
-
-value=
-value.replace(
-/(\d{3})(\d{0,3})/,
-"$1.$2"
-);
-
-}
-
-input.value=value;
-
-}
-
-
-/*
-  Validação básica do CPF.
-*/
-
-function validCpf(value){
-
-let cpf=normalizeCpf(value);
-
-if(cpf.length!==11){
-
-return false;
-
-}
-
-
-/*
-  Impede sequências como:
-  00000000000
-  11111111111
-  etc.
-*/
-
-if(/^(\d)\1{10}$/.test(cpf)){
-
-return false;
-
-}
-
-
-/* Primeiro dígito */
-
-let sum=0;
-
-for(let i=0;i<9;i++){
-
-sum+=
-Number(cpf.charAt(i))*
-(10-i);
-
-}
-
-let rest=
-(sum*10)%11;
-
-if(rest===10){
-
-rest=0;
-
-}
-
-if(rest!==Number(cpf.charAt(9))){
-
-return false;
-
-}
-
-
-/* Segundo dígito */
-
-sum=0;
-
-for(let i=0;i<10;i++){
-
-sum+=
-Number(cpf.charAt(i))*
-(11-i);
-
-}
-
-rest=
-(sum*10)%11;
-
-if(rest===10){
-
-rest=0;
-
-}
-
-if(rest!==Number(cpf.charAt(10))){
-
-return false;
-
-}
-
-return true;
-
-}
-
-
-/* =========================================================
-   ENCONTRAR CPF CADASTRADO
-   ========================================================= */
-
-function findAccountByCpf(cpf){
-
-let wanted=
-normalizeCpf(cpf);
-
-if(!wanted){
-
-return null;
-
-}
-
-
-let keys=
-Object.keys(localStorage);
-
-
-for(let k of keys){
-
-if(!k.startsWith("quizup_")){
-
-continue;
-
-}
-
-if(k==="quizup_withdrawals"){
-
-continue;
-
-}
-
-
-try{
-
-let account=
-JSON.parse(
-localStorage.getItem(k)
-);
-
-
-if(
-account &&
-normalizeCpf(account.cpf)===wanted
-){
-
-return account;
-
-}
-
-}catch(error){
-
-console.log(
-"Conta inválida encontrada:",
-error
-);
-
-}
-
-}
-
-return null;
-
-}
-
-
-/* =========================================================
-   ENCONTRAR CONTA POR E-MAIL
-   ========================================================= */
-
-function findAccountByEmail(email){
-
-let e=
-String(email||"")
-.trim()
-.toLowerCase();
-
-
-let x=
-localStorage.getItem("quizup_"+e);
-
-
-if(!x){
-
-return null;
-
-}
-
-
-try{
-
-return JSON.parse(x);
-
-}catch(error){
-
-return null;
-
-}
-
-}
 
 
 /* =========================================================
@@ -1119,21 +886,10 @@ document.getElementById("backgroundMusic");
 
 if(!music)return;
 
-music.volume=0.35;
+music.volume=.35;
 
-music.play().then(()=>{
-
-console.log(
-"🎵 Música iniciada dentro do jogo."
-);
-
-}).catch(error=>{
-
-console.log(
-"Não foi possível iniciar a música:",
-error
-);
-
+music.play().catch(error=>{
+console.log("Música aguardando interação.");
 });
 
 }
@@ -1154,6 +910,109 @@ music.currentTime=0;
 
 
 /* =========================================================
+   CPF
+   ========================================================= */
+
+function onlyNumbers(value){
+
+return String(value||"")
+.replace(/\D/g,"");
+
+}
+
+
+function formatCPF(input){
+
+let v=
+onlyNumbers(input.value)
+.slice(0,11);
+
+if(v.length>9){
+
+v=
+v.replace(
+/(\d{3})(\d{3})(\d{3})(\d{0,2})/,
+"$1.$2.$3-$4"
+);
+
+}
+else if(v.length>6){
+
+v=
+v.replace(
+/(\d{3})(\d{3})(\d{0,3})/,
+"$1.$2.$3"
+);
+
+}
+else if(v.length>3){
+
+v=
+v.replace(
+/(\d{3})(\d{0,3})/,
+"$1.$2"
+);
+
+}
+
+input.value=v;
+
+}
+
+
+function cleanCPF(cpf){
+
+return onlyNumbers(cpf);
+
+}
+
+
+/* =========================================================
+   VALIDAÇÃO BÁSICA DE CPF
+   ========================================================= */
+
+function validCPF(cpf){
+
+cpf=cleanCPF(cpf);
+
+if(cpf.length!==11)return false;
+
+if(/^(\d)\1{10}$/.test(cpf))return false;
+
+let sum=0;
+
+for(let i=0;i<9;i++){
+
+sum+=Number(cpf[i])*(10-i);
+
+}
+
+let d1=
+(sum*10)%11;
+
+if(d1===10)d1=0;
+
+if(d1!==Number(cpf[9]))return false;
+
+sum=0;
+
+for(let i=0;i<10;i++){
+
+sum+=Number(cpf[i])*(11-i);
+
+}
+
+let d2=
+(sum*10)%11;
+
+if(d2===10)d2=0;
+
+return d2===Number(cpf[10]);
+
+}
+
+
+/* =========================================================
    LOCAL STORAGE
    ========================================================= */
 
@@ -1166,12 +1025,56 @@ return "quizup_"+s.email;
 
 function save(){
 
+if(!s.email)return;
+
 localStorage.setItem(
 key(),
 JSON.stringify(s)
 );
 
 ui();
+
+}
+
+
+/* =========================================================
+   VERIFICAR CPF JÁ CADASTRADO
+   ========================================================= */
+
+function cpfExists(cpf){
+
+cpf=cleanCPF(cpf);
+
+let found=false;
+
+Object.keys(localStorage)
+.forEach(k=>{
+
+if(!k.startsWith("quizup_"))return;
+
+if(k.includes("withdrawals"))return;
+
+try{
+
+let account=
+JSON.parse(
+localStorage.getItem(k)
+);
+
+if(
+account &&
+cleanCPF(account.cpf)===cpf
+){
+
+found=true;
+
+}
+
+}catch(e){}
+
+});
+
+return found;
 
 }
 
@@ -1196,221 +1099,6 @@ document.getElementById("loginBox")
 m!=="login"
 );
 
-document.getElementById("recoveryBox")
-.classList.add("hidden");
-
-document.getElementById("newPasswordBox")
-.classList.add("hidden");
-
-}
-
-
-/* =========================================================
-   RECUPERAÇÃO
-   ========================================================= */
-
-function showRecovery(){
-
-stopMusic();
-
-document.getElementById("registerBox")
-.classList.add("hidden");
-
-document.getElementById("loginBox")
-.classList.add("hidden");
-
-document.getElementById("recoveryBox")
-.classList.remove("hidden");
-
-document.getElementById("newPasswordBox")
-.classList.add("hidden");
-
-document.getElementById("fEmail")
-.value="";
-
-document.getElementById("fCpf")
-.value="";
-
-}
-
-
-/* =========================================================
-   VERIFICAR RECUPERAÇÃO
-   ========================================================= */
-
-function verifyRecovery(){
-
-let e=
-document.getElementById("fEmail")
-.value.trim()
-.toLowerCase();
-
-let cpf=
-normalizeCpf(
-document.getElementById("fCpf").value
-);
-
-
-if(!e||!cpf){
-
-alert(
-"Informe o e-mail e o CPF."
-);
-
-return;
-
-}
-
-
-if(!validCpf(cpf)){
-
-alert(
-"Digite um CPF válido."
-);
-
-return;
-
-}
-
-
-let account=
-findAccountByEmail(e);
-
-
-if(!account){
-
-alert(
-"E-mail ou CPF não conferem."
-);
-
-return;
-
-}
-
-
-if(
-normalizeCpf(account.cpf)!==cpf
-){
-
-alert(
-"E-mail ou CPF não conferem."
-);
-
-return;
-
-}
-
-
-/*
-  Guarda somente o e-mail da conta
-  que acabou de ser confirmada.
-*/
-
-recoveryEmail=e;
-
-
-document.getElementById("recoveryBox")
-.classList.add("hidden");
-
-document.getElementById("newPasswordBox")
-.classList.remove("hidden");
-
-}
-
-
-/* =========================================================
-   NOVA SENHA
-   ========================================================= */
-
-function resetPassword(){
-
-let p=
-document.getElementById("newPass")
-.value;
-
-let p2=
-document.getElementById("newPass2")
-.value;
-
-
-if(!p||!p2){
-
-alert(
-"Preencha os dois campos."
-);
-
-return;
-
-}
-
-
-if(p.length<6){
-
-alert(
-"A nova senha deve ter pelo menos 6 caracteres."
-);
-
-return;
-
-}
-
-
-if(p!==p2){
-
-alert(
-"As senhas não conferem."
-);
-
-return;
-
-}
-
-
-let account=
-findAccountByEmail(recoveryEmail);
-
-
-if(!account){
-
-alert(
-"Não foi possível encontrar a conta."
-);
-
-authMode("login");
-
-return;
-
-}
-
-
-account.password=p;
-
-
-localStorage.setItem(
-"quizup_"+recoveryEmail,
-JSON.stringify(account)
-);
-
-
-alert(
-"Senha alterada com sucesso! Faça login com sua nova senha."
-);
-
-
-document.getElementById("newPass")
-.value="";
-
-document.getElementById("newPass2")
-.value="";
-
-recoveryEmail="";
-
-authMode("login");
-
-
-document.getElementById("lEmail")
-.value=account.email;
-
 }
 
 
@@ -1424,7 +1112,8 @@ stopMusic();
 
 let e=
 document.getElementById("rEmail")
-.value.trim()
+.value
+.trim()
 .toLowerCase();
 
 let p=
@@ -1433,57 +1122,57 @@ document.getElementById("rPass")
 
 let n=
 document.getElementById("rName")
-.value.trim();
+.value
+.trim();
 
 let cpf=
-normalizeCpf(
-document.getElementById("rCpf").value
+cleanCPF(
+document.getElementById("rCpf")
+.value
 );
 
 
 if(!e||!p||!n||!cpf){
 
-alert(
-"Preencha todos os campos."
-);
+alert("Preencha todos os campos.");
 
 return;
 
 }
 
 
-if(!validCpf(cpf)){
+if(cpf.length!==11){
 
-alert(
-"Digite um CPF válido."
-);
+alert("Digite um CPF válido.");
 
 return;
 
 }
 
 
-if(p.length<6){
+if(!validCPF(cpf)){
 
-alert(
-"A senha deve ter pelo menos 6 caracteres."
-);
+alert("CPF inválido.");
 
 return;
 
 }
 
 
-/*
-  PRIMEIRA VERIFICAÇÃO:
-  mesmo e-mail.
-*/
+if(cpfExists(cpf)){
+
+alert(
+"Este CPF já possui uma conta no QuizUp."
+);
+
+return;
+
+}
+
 
 if(localStorage.getItem("quizup_"+e)){
 
-alert(
-"Essa conta já existe."
-);
+alert("Essa conta já existe.");
 
 return;
 
@@ -1491,31 +1180,8 @@ return;
 
 
 /*
-  SEGUNDA VERIFICAÇÃO:
-  CPF.
-
-  Isso garante 1 cadastro por CPF
-  dentro deste armazenamento.
-*/
-
-let existingCpf=
-findAccountByCpf(cpf);
-
-
-if(existingCpf){
-
-alert(
-"Este CPF já está cadastrado. Só é permitido 1 cadastro por CPF."
-);
-
-return;
-
-}
-
-
-/*
-  NOVA CONTA COMEÇA COM 0 PONTOS
-*/
+ NOVA CONTA COMEÇA COM 0 PONTOS
+ */
 
 s={
 
@@ -1572,7 +1238,8 @@ stopMusic();
 
 let e=
 document.getElementById("lEmail")
-.value.trim()
+.value
+.trim()
 .toLowerCase();
 
 let p=
@@ -1582,9 +1249,7 @@ document.getElementById("lPass")
 
 if(!e||!p){
 
-alert(
-"Preencha e-mail e senha."
-);
+alert("Preencha e-mail e senha.");
 
 return;
 
@@ -1597,9 +1262,7 @@ localStorage.getItem("quizup_"+e);
 
 if(!x){
 
-alert(
-"Conta não encontrada."
-);
+alert("Conta não encontrada.");
 
 return;
 
@@ -1625,9 +1288,7 @@ return;
 
 if(a.password!==p){
 
-alert(
-"Senha incorreta."
-);
+alert("Senha incorreta.");
 
 return;
 
@@ -1639,6 +1300,70 @@ s=a;
 openGame(true);
 
 playMusic();
+
+}
+
+
+/* =========================================================
+   ESQUECEU A SENHA
+   ========================================================= */
+
+async function forgotPassword(){
+
+let email=
+prompt(
+"Digite o e-mail da sua conta:"
+);
+
+if(!email)return;
+
+email=
+email.trim()
+.toLowerCase();
+
+if(!email){
+
+alert("Digite um e-mail válido.");
+
+return;
+
+}
+
+
+/*
+ O Appwrite Recovery precisa de uma plataforma Web
+ cadastrada no projeto e do domínio do site autorizado.
+ */
+
+try{
+
+const account=
+new Appwrite.Account(appwriteClient);
+
+const recoveryUrl=
+location.origin+
+location.pathname+
+"?recovery=1";
+
+await account.createRecovery({
+email:email,
+url:recoveryUrl
+});
+
+alert(
+"Se o e-mail estiver cadastrado, o Appwrite enviará as instruções de recuperação."
+);
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"Não foi possível enviar a recuperação pelo Appwrite.\n\n"+
+(error.message||"Verifique a plataforma Web do Appwrite.")
+);
+
+}
 
 }
 
@@ -2046,6 +1771,8 @@ document.getElementById("refLink")
 
 if(navigator.share){
 
+try{
+
 await navigator.share({
 
 title:"QuizUp",
@@ -2055,6 +1782,8 @@ text:"Venha jogar QuizUp comigo!",
 url:link
 
 });
+
+}catch(e){}
 
 }
 else{
@@ -2104,91 +1833,367 @@ return v==="10"
 
 
 /* =========================================================
-   SAQUE
+   CONTROLE LOCAL DE SAQUES DO DIA
    ========================================================= */
 
-function withdraw(){
+function withdrawalStorageKey(){
+
+return "quizup_withdrawals_"+
+cleanCPF(s.cpf);
+
+}
+
+
+function getLocalWithdrawals(){
+
+try{
+
+return JSON.parse(
+localStorage.getItem(
+withdrawalStorageKey()
+)||"[]"
+);
+
+}catch(e){
+
+return [];
+
+}
+
+}
+
+
+function todayKey(){
+
+let d=new Date();
+
+return d.getFullYear()+"-"+
+String(d.getMonth()+1).padStart(2,"0")+"-"+
+String(d.getDate()).padStart(2,"0");
+
+}
+
+
+function withdrawalsToday(){
+
+let today=todayKey();
+
+return getLocalWithdrawals()
+.filter(x=>x.day===today);
+
+}
+
+
+function saveLocalWithdrawal(data){
+
+let list=
+getLocalWithdrawals();
+
+list.push(data);
+
+localStorage.setItem(
+withdrawalStorageKey(),
+JSON.stringify(list)
+);
+
+}
+
+
+/* =========================================================
+   CÁLCULO 70 / 30
+   ========================================================= */
+
+function calculateSplit(gross){
+
+gross=Number(gross);
+
+return {
+
+gross:gross,
+
+player:
+Number((gross*0.70).toFixed(2)),
+
+platform:
+Number((gross*0.30).toFixed(2))
+
+};
+
+}
+
+
+/* =========================================================
+   SAQUE — APPWRITE
+   ========================================================= */
+
+async function withdraw(){
+
+const button=
+document.getElementById("withdrawButton");
+
+const msg=
+document.getElementById("cashMsg");
+
+msg.classList.remove("hidden");
+
+button.disabled=true;
+
+button.textContent="Enviando...";
+
+
+try{
+
+/* -----------------------------------------------
+   VERIFICAÇÃO DO USUÁRIO
+   ----------------------------------------------- */
+
+if(!s.email){
+
+throw new Error(
+"Usuário não identificado."
+);
+
+}
+
+
+/* -----------------------------------------------
+   VALOR
+   ----------------------------------------------- */
 
 let v=
 document.getElementById("withdrawAmount")
 .value;
 
-let n=need(v);
+let gross=
+Number(v);
 
-let m=
+let pointsNeeded=
+need(v);
+
+
+/* -----------------------------------------------
+   MÉTODO
+   ----------------------------------------------- */
+
+let method=
 document.getElementById("payMethod")
 .value;
 
 
-let k=
+/* -----------------------------------------------
+   CHAVE
+   ----------------------------------------------- */
+
+let paymentKey=
 (
-m==="pix"
+method==="pix"
 ?
 document.getElementById("pixKey")
 :
 document.getElementById("paypalKey")
 )
-.value.trim();
+.value
+.trim();
 
 
-let msg=
-document.getElementById("cashMsg");
+if(!paymentKey){
 
-msg.classList.remove("hidden");
-
-
-if(!k){
-
-msg.textContent=
-"Preencha o dado de pagamento.";
-
-return;
-
-}
-
-
-if(s.points<n){
-
-msg.textContent=
-"Pontos insuficientes. Você precisa de "+
-n+
-" pontos.";
-
-return;
-
-}
-
-
-let a=JSON.parse(
-
-localStorage.getItem(
-"quizup_withdrawals"
-)||"[]"
-
+throw new Error(
+"Preencha o dado de pagamento."
 );
 
+}
 
-a.push({
 
-email:s.email,
+/* -----------------------------------------------
+   PONTOS
+   ----------------------------------------------- */
 
-value:v,
+if(Number(s.points)<pointsNeeded){
 
-method:m,
+throw new Error(
+"Pontos insuficientes. Você precisa de "+
+pointsNeeded+
+" pontos."
+);
 
-date:new Date().toISOString()
+}
+
+
+/* -----------------------------------------------
+   LIMITE DIÁRIO
+   ----------------------------------------------- */
+
+let today=
+withdrawalsToday();
+
+
+if(today.length>=2){
+
+throw new Error(
+"Você já realizou 2 solicitações de saque hoje. Tente novamente amanhã."
+);
+
+}
+
+
+/* -----------------------------------------------
+   DIVISÃO
+   ----------------------------------------------- */
+
+let split=
+calculateSplit(gross);
+
+
+/* -----------------------------------------------
+   DATA
+   ----------------------------------------------- */
+
+let createdAt=
+new Date().toISOString();
+
+
+/* -----------------------------------------------
+   DADOS DA LINHA
+   -----------------------------------------------
+
+   Usamos somente as colunas que foram confirmadas
+   na tabela:
+
+   ID do usuário.
+   pix_key
+   status
+   quantia
+   criado_em
+
+   ----------------------------------------------- */
+
+let data={
+
+"ID do usuário.":s.email,
+
+"pix_key":paymentKey,
+
+"status":"pendente",
+
+"quantia":gross,
+
+"criado_em":createdAt
+
+};
+
+
+/* -----------------------------------------------
+   CRIAR LINHA NO APPWRITE
+   ----------------------------------------------- */
+
+const result=
+await tablesDB.createRow({
+
+databaseId:
+APPWRITE_DATABASE_ID,
+
+tableId:
+APPWRITE_TABLE_ID,
+
+rowId:
+Appwrite.ID.unique(),
+
+data:data
 
 });
 
 
-localStorage.setItem(
-"quizup_withdrawals",
-JSON.stringify(a)
+/* -----------------------------------------------
+   REGISTRO LOCAL DE CONTROLE
+   ----------------------------------------------- */
+
+saveLocalWithdrawal({
+
+day:todayKey(),
+
+date:createdAt,
+
+rowId:result.$id,
+
+email:s.email,
+
+gross:gross,
+
+player:split.player,
+
+platform:split.platform,
+
+method:method
+
+});
+
+
+/* -----------------------------------------------
+   DESCONTAR PONTOS
+   ----------------------------------------------- */
+
+s.points=
+Number(s.points)-
+pointsNeeded;
+
+save();
+
+
+/* -----------------------------------------------
+   RESULTADO
+   ----------------------------------------------- */
+
+msg.innerHTML=
+"✅ Solicitação enviada com sucesso!<br><br>"+
+"Valor solicitado: <b>R$ "+
+gross.toFixed(2).replace(".",",")+
+"</b><br>"+
+"Jogador recebe: <b>R$ "+
+split.player.toFixed(2).replace(".",",")+
+"</b><br>"+
+"Plataforma: <b>R$ "+
+split.platform.toFixed(2).replace(".",",")+
+"</b><br><br>"+
+"Status: <b>Pendente</b>";
+
+
+}catch(error){
+
+console.error(
+"Erro no saque:",
+error
 );
 
+let text=
+error?.message||
+"Não foi possível registrar o saque.";
 
-msg.textContent=
-"Solicitação registrada.";
+
+if(
+text.toLowerCase()
+.includes("permission")
+){
+
+text=
+"O Appwrite recusou a criação da solicitação. "+
+"Verifique as permissões de CREATE da tabela saques.";
+
+}
+
+
+msg.innerHTML=
+"❌ "+
+text;
+
+}finally{
+
+button.disabled=false;
+
+button.textContent=
+"Solicitar saque";
+
+}
 
 }
 
@@ -2199,17 +2204,12 @@ msg.textContent=
 
 (function(){
 
-/*
-  Procura uma conta salva.
-  Não considera a lista de saques.
-*/
-
 let k=
 Object.keys(localStorage).find(
 
 k=>
 k.startsWith("quizup_") &&
-k!=="quizup_withdrawals"
+!k.includes("withdrawals")
 
 );
 
@@ -2238,4 +2238,4 @@ console.log(e);
 </script>
 
 </body>
-            </html>
+  </html>
