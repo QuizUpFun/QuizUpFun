@@ -21,26 +21,19 @@ export default async ({ req, res, log, error }) => {
     };
 
     async function listarTabela(tableId) {
-      const result = await tablesDB.listRows({
+      const resultado = await tablesDB.listRows({
         databaseId: DATABASE_ID,
         tableId: tableId,
-        queries: [
-          Query.limit(100)
-        ]
+        queries: [Query.limit(100)]
       });
 
-      return result.rows || [];
+      return resultado.rows || [];
     }
 
     const jogadores = await listarTabela(TABLES.jogadores);
-
     const parceiros = await listarTabela(TABLES.parceiros);
-
     const saques = await listarTabela(TABLES.saques);
-
-    const movimentacoes = await listarTabela(
-      TABLES.movimentacoes
-    );
+    const movimentacoes = await listarTabela(TABLES.movimentacoes);
 
     const saquesPorJogador = {};
 
@@ -64,72 +57,49 @@ export default async ({ req, res, log, error }) => {
 
       saquesPorJogador[usuario].total++;
 
-      const status =
-        String(saque.status || "")
-          .toLowerCase()
-          .trim();
+      const status = String(saque.status || "")
+        .toLowerCase()
+        .trim();
 
       if (status === "pendente") {
         saquesPorJogador[usuario].pendentes++;
       }
 
-      if (
-        status === "aprovado" ||
-        status === "aprovada"
-      ) {
+      if (status === "aprovado" || status === "aprovada") {
         saquesPorJogador[usuario].aprovados++;
       }
 
-      if (
-        status === "cancelado" ||
-        status === "cancelada"
-      ) {
+      if (status === "cancelado" || status === "cancelada") {
         saquesPorJogador[usuario].cancelados++;
       }
     }
 
     const resumo = {
       jogadores: jogadores.length,
-
       parceiros: parceiros.length,
-
       saques: saques.length,
+      movimentacoesParceiros: movimentacoes.length,
 
-      movimentacoesParceiros:
-        movimentacoes.length,
+      saquesPendentes: saques.filter(
+        s => String(s.status || "").toLowerCase() === "pendente"
+      ).length,
 
-      saquesPendentes:
-        saques.filter(
-          s =>
-            String(s.status || "")
-              .toLowerCase() === "pendente"
-        ).length,
+      saquesAprovados: saques.filter(
+        s =>
+          ["aprovado", "aprovada"].includes(
+            String(s.status || "").toLowerCase()
+          )
+      ).length,
 
-      saquesAprovados:
-        saques.filter(
-          s =>
-            ["aprovado", "aprovada"]
-              .includes(
-                String(s.status || "")
-                  .toLowerCase()
-              )
-        ).length,
-
-      saquesCancelados:
-        saques.filter(
-          s =>
-            ["cancelado", "cancelada"]
-              .includes(
-                String(s.status || "")
-                  .toLowerCase()
-              )
-        ).length
+      saquesCancelados: saques.filter(
+        s =>
+          ["cancelado", "cancelada"].includes(
+            String(s.status || "").toLowerCase()
+          )
+      ).length
     };
 
-    if (
-      req.method === "POST" &&
-      req.path === "/aprovar"
-    ) {
+    if (req.method === "POST" && req.path === "/aprovar") {
       const body =
         typeof req.body === "string"
           ? JSON.parse(req.body || "{}")
@@ -147,15 +117,14 @@ export default async ({ req, res, log, error }) => {
         );
       }
 
-      const atualizado =
-        await tablesDB.updateRow({
-          databaseId: DATABASE_ID,
-          tableId: TABLES.saques,
-          rowId: rowId,
-          data: {
-            status: "aprovado"
-          }
-        });
+      const atualizado = await tablesDB.updateRow({
+        databaseId: DATABASE_ID,
+        tableId: TABLES.saques,
+        rowId: rowId,
+        data: {
+          status: "aprovado"
+        }
+      });
 
       log(`Saque ${rowId} aprovado.`);
 
@@ -166,10 +135,7 @@ export default async ({ req, res, log, error }) => {
       });
     }
 
-    if (
-      req.method === "POST" &&
-      req.path === "/cancelar"
-    ) {
+    if (req.method === "POST" && req.path === "/cancelar") {
       const body =
         typeof req.body === "string"
           ? JSON.parse(req.body || "{}")
@@ -187,15 +153,14 @@ export default async ({ req, res, log, error }) => {
         );
       }
 
-      const atualizado =
-        await tablesDB.updateRow({
-          databaseId: DATABASE_ID,
-          tableId: TABLES.saques,
-          rowId: rowId,
-          data: {
-            status: "cancelado"
-          }
-        });
+      const atualizado = await tablesDB.updateRow({
+        databaseId: DATABASE_ID,
+        tableId: TABLES.saques,
+        rowId: rowId,
+        data: {
+          status: "cancelado"
+        }
+      });
 
       log(`Saque ${rowId} cancelado.`);
 
@@ -208,9 +173,7 @@ export default async ({ req, res, log, error }) => {
 
     return res.json({
       ok: true,
-
-      message:
-        "QuizUp Admin funcionando!",
+      message: "QuizUp Admin funcionando!",
 
       resumo,
 
@@ -218,25 +181,19 @@ export default async ({ req, res, log, error }) => {
         jogadores,
         parceiros,
         saques,
-        movimentacoesParceiros:
-          movimentacoes
+        movimentacoesParceiros: movimentacoes
       },
 
       saquesPorJogador
     });
 
   } catch (e) {
-    error(
-      e?.message ||
-      "Erro interno no QuizUp Admin."
-    );
+    error(e?.message || "Erro interno no QuizUp Admin.");
 
     return res.json(
       {
         ok: false,
-        message:
-          e?.message ||
-          "Erro interno no QuizUp Admin."
+        message: e?.message || "Erro interno no QuizUp Admin."
       },
       500
     );
