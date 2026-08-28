@@ -1,4 +1,4 @@
-import { Client, TablesDB, Query } from "node-appwrite";
+import { Client, Databases, Query } from "node-appwrite";
 
 export default async ({ req, res, log, error }) => {
   try {
@@ -9,31 +9,40 @@ export default async ({ req, res, log, error }) => {
       .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
       .setKey(process.env.APPWRITE_FUNCTION_API_KEY);
 
-    const tablesDB = new TablesDB(client);
+    const databases = new Databases(client);
 
     const DATABASE_ID = "6a8e11820008abab052e";
 
-    const TABLES = {
+    const COLLECTIONS = {
       jogadores: "jogadores",
       parceiros: "parceiros",
       saques: "saques",
       movimentacoes: "movimentacoes_parceiros"
     };
 
-    async function listarTabela(tableId) {
-      const resultado = await tablesDB.listRows({
-        databaseId: DATABASE_ID,
-        tableId: tableId,
-        queries: [Query.limit(100)]
-      });
+    async function listarColecao(collectionId) {
+      const resultado = await databases.listDocuments(
+        DATABASE_ID,
+        collectionId,
+        [
+          Query.limit(100)
+        ]
+      );
 
-      return resultado.rows || [];
+      return resultado.documents || [];
     }
 
-    const jogadores = await listarTabela(TABLES.jogadores);
-    const parceiros = await listarTabela(TABLES.parceiros);
-    const saques = await listarTabela(TABLES.saques);
-    const movimentacoes = await listarTabela(TABLES.movimentacoes);
+    const jogadores =
+      await listarColecao(COLLECTIONS.jogadores);
+
+    const parceiros =
+      await listarColecao(COLLECTIONS.parceiros);
+
+    const saques =
+      await listarColecao(COLLECTIONS.saques);
+
+    const movimentacoes =
+      await listarColecao(COLLECTIONS.movimentacoes);
 
     const saquesPorJogador = {};
 
@@ -57,49 +66,73 @@ export default async ({ req, res, log, error }) => {
 
       saquesPorJogador[usuario].total++;
 
-      const status = String(saque.status || "")
-        .toLowerCase()
-        .trim();
+      const status =
+        String(saque.status || "")
+          .toLowerCase()
+          .trim();
 
       if (status === "pendente") {
         saquesPorJogador[usuario].pendentes++;
       }
 
-      if (status === "aprovado" || status === "aprovada") {
+      if (
+        status === "aprovado" ||
+        status === "aprovada"
+      ) {
         saquesPorJogador[usuario].aprovados++;
       }
 
-      if (status === "cancelado" || status === "cancelada") {
+      if (
+        status === "cancelado" ||
+        status === "cancelada"
+      ) {
         saquesPorJogador[usuario].cancelados++;
       }
     }
 
     const resumo = {
       jogadores: jogadores.length,
+
       parceiros: parceiros.length,
+
       saques: saques.length,
-      movimentacoesParceiros: movimentacoes.length,
 
-      saquesPendentes: saques.filter(
-        s => String(s.status || "").toLowerCase() === "pendente"
-      ).length,
+      movimentacoesParceiros:
+        movimentacoes.length,
 
-      saquesAprovados: saques.filter(
-        s =>
-          ["aprovado", "aprovada"].includes(
-            String(s.status || "").toLowerCase()
-          )
-      ).length,
+      saquesPendentes:
+        saques.filter(
+          s =>
+            String(s.status || "")
+              .toLowerCase()
+              .trim() === "pendente"
+        ).length,
 
-      saquesCancelados: saques.filter(
-        s =>
-          ["cancelado", "cancelada"].includes(
-            String(s.status || "").toLowerCase()
-          )
-      ).length
+      saquesAprovados:
+        saques.filter(
+          s =>
+            ["aprovado", "aprovada"].includes(
+              String(s.status || "")
+                .toLowerCase()
+                .trim()
+            )
+        ).length,
+
+      saquesCancelados:
+        saques.filter(
+          s =>
+            ["cancelado", "cancelada"].includes(
+              String(s.status || "")
+                .toLowerCase()
+                .trim()
+            )
+        ).length
     };
 
-    if (req.method === "POST" && req.path === "/aprovar") {
+    if (
+      req.method === "POST" &&
+      req.path === "/aprovar"
+    ) {
       const body =
         typeof req.body === "string"
           ? JSON.parse(req.body || "{}")
@@ -117,14 +150,15 @@ export default async ({ req, res, log, error }) => {
         );
       }
 
-      const atualizado = await tablesDB.updateRow({
-        databaseId: DATABASE_ID,
-        tableId: TABLES.saques,
-        rowId: rowId,
-        data: {
-          status: "aprovado"
-        }
-      });
+      const atualizado =
+        await databases.updateDocument(
+          DATABASE_ID,
+          COLLECTIONS.saques,
+          rowId,
+          {
+            status: "aprovado"
+          }
+        );
 
       log(`Saque ${rowId} aprovado.`);
 
@@ -135,7 +169,10 @@ export default async ({ req, res, log, error }) => {
       });
     }
 
-    if (req.method === "POST" && req.path === "/cancelar") {
+    if (
+      req.method === "POST" &&
+      req.path === "/cancelar"
+    ) {
       const body =
         typeof req.body === "string"
           ? JSON.parse(req.body || "{}")
@@ -153,14 +190,15 @@ export default async ({ req, res, log, error }) => {
         );
       }
 
-      const atualizado = await tablesDB.updateRow({
-        databaseId: DATABASE_ID,
-        tableId: TABLES.saques,
-        rowId: rowId,
-        data: {
-          status: "cancelado"
-        }
-      });
+      const atualizado =
+        await databases.updateDocument(
+          DATABASE_ID,
+          COLLECTIONS.saques,
+          rowId,
+          {
+            status: "cancelado"
+          }
+        );
 
       log(`Saque ${rowId} cancelado.`);
 
@@ -173,7 +211,9 @@ export default async ({ req, res, log, error }) => {
 
     return res.json({
       ok: true,
-      message: "QuizUp Admin funcionando!",
+
+      message:
+        "QuizUp Admin funcionando!",
 
       resumo,
 
@@ -181,19 +221,25 @@ export default async ({ req, res, log, error }) => {
         jogadores,
         parceiros,
         saques,
-        movimentacoesParceiros: movimentacoes
+        movimentacoesParceiros:
+          movimentacoes
       },
 
       saquesPorJogador
     });
 
   } catch (e) {
-    error(e?.message || "Erro interno no QuizUp Admin.");
+    error(
+      e?.message ||
+      "Erro interno no QuizUp Admin."
+    );
 
     return res.json(
       {
         ok: false,
-        message: e?.message || "Erro interno no QuizUp Admin."
+        message:
+          e?.message ||
+          "Erro interno no QuizUp Admin."
       },
       500
     );
