@@ -224,19 +224,13 @@
 
 <body>
 
-  <!-- =========================
-       LOGIN
-  ========================== -->
-
+  <!-- LOGIN -->
   <div id="loginScreen" class="login">
-
     <div class="login-box">
 
       <h1>QuizUp Admin</h1>
 
-      <p>
-        Acesso exclusivo do administrador
-      </p>
+      <p>Acesso exclusivo do administrador</p>
 
       <input
         id="email"
@@ -252,50 +246,34 @@
         autocomplete="current-password"
       >
 
-      <button
-        id="loginButton"
-        class="primary"
-        onclick="login()"
-      >
+      <button id="loginButton" class="primary" type="button">
         Entrar
       </button>
 
       <div id="loginMessage"></div>
 
     </div>
-
   </div>
 
 
-  <!-- =========================
-       PAINEL ADMIN
-  ========================== -->
-
+  <!-- PAINEL -->
   <div id="adminScreen" class="hidden">
 
     <header>
-
       <h1>QuizUp Admin</h1>
 
       <small id="adminUser"></small>
 
-      <button
-        class="logout"
-        onclick="logout()"
-      >
+      <button id="logoutButton" class="logout" type="button">
         Sair
       </button>
-
     </header>
-
 
     <main class="container">
 
       <div id="globalMessage"></div>
 
-
       <!-- RESUMO -->
-
       <div class="cards">
 
         <div class="card">
@@ -332,7 +310,6 @@
 
 
       <!-- SAQUES -->
-
       <section class="section">
 
         <h2>💸 Saques</h2>
@@ -342,7 +319,6 @@
           <table>
 
             <thead>
-
               <tr>
                 <th>ID</th>
                 <th>Usuário</th>
@@ -352,17 +328,14 @@
                 <th>Status</th>
                 <th>Ações</th>
               </tr>
-
             </thead>
 
             <tbody id="saquesBody">
-
               <tr>
                 <td colspan="7" class="loading">
                   Carregando...
                 </td>
               </tr>
-
             </tbody>
 
           </table>
@@ -373,7 +346,6 @@
 
 
       <!-- JOGADORES -->
-
       <section class="section">
 
         <h2>👥 Jogadores</h2>
@@ -383,7 +355,6 @@
           <table>
 
             <thead>
-
               <tr>
                 <th>ID</th>
                 <th>E-mail</th>
@@ -391,17 +362,14 @@
                 <th>Pontos</th>
                 <th>Saldo</th>
               </tr>
-
             </thead>
 
             <tbody id="jogadoresBody">
-
               <tr>
                 <td colspan="5" class="loading">
                   Carregando...
                 </td>
               </tr>
-
             </tbody>
 
           </table>
@@ -412,7 +380,6 @@
 
 
       <!-- PARCEIROS -->
-
       <section class="section">
 
         <h2>🤝 Parceiros</h2>
@@ -422,24 +389,20 @@
           <table>
 
             <thead>
-
               <tr>
                 <th>ID</th>
                 <th>Nome</th>
                 <th>E-mail</th>
                 <th>Dados</th>
               </tr>
-
             </thead>
 
             <tbody id="parceirosBody">
-
               <tr>
                 <td colspan="4" class="loading">
                   Carregando...
                 </td>
               </tr>
-
             </tbody>
 
           </table>
@@ -450,7 +413,6 @@
 
 
       <!-- MOVIMENTAÇÕES -->
-
       <section class="section">
 
         <h2>📊 Movimentações de parceiros</h2>
@@ -460,7 +422,6 @@
           <table>
 
             <thead>
-
               <tr>
                 <th>ID</th>
                 <th>Parceiro</th>
@@ -469,17 +430,14 @@
                 <th>Valor</th>
                 <th>Descrição</th>
               </tr>
-
             </thead>
 
             <tbody id="movimentacoesBody">
-
               <tr>
                 <td colspan="6" class="loading">
                   Carregando...
                 </td>
               </tr>
-
             </tbody>
 
           </table>
@@ -493,24 +451,15 @@
   </div>
 
 
-  <!-- =========================
-       APPWRITE
-  ========================== -->
+  <!-- APPWRITE SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0"></script>
 
-  <script type="module">
-
-    import {
-      Client,
-      Account,
-      TablesDB,
-      Query
-    } from "https://cdn.jsdelivr.net/npm/appwrite@17.0.0/+esm";
-
+  <script>
 
     /*
-    ==========================================
+    =====================================================
     CONFIGURAÇÃO
-    ==========================================
+    =====================================================
     */
 
     const APPWRITE_ENDPOINT =
@@ -526,88 +475,95 @@
       "6a8f41f3d20f03789eb0";
 
     const TABLES = {
-
-      jogadores:
-        "jogadores",
-
-      parceiros:
-        "parceiros",
-
-      saques:
-        "saques",
-
-      movimentacoes:
-        "movimentacoes_parceiros"
-
+      jogadores: "jogadores",
+      parceiros: "parceiros",
+      saques: "saques",
+      movimentacoes: "movimentacoes_parceiros"
     };
 
 
     /*
-    ==========================================
-    CLIENTE APPWRITE
-    ==========================================
+    =====================================================
+    APPWRITE
+    =====================================================
     */
 
-    const client = new Client()
+    const client = new Appwrite.Client();
+
+    client
       .setEndpoint(APPWRITE_ENDPOINT)
       .setProject(PROJECT_ID);
 
-
     const account =
-      new Account(client);
-
+      new Appwrite.Account(client);
 
     const tablesDB =
-      new TablesDB(client);
+      new Appwrite.TablesDB(client);
 
 
     /*
-    ==========================================
+    =====================================================
     ELEMENTOS
-    ==========================================
+    =====================================================
     */
 
     const loginScreen =
-      document.getElementById(
-        "loginScreen"
-      );
+      document.getElementById("loginScreen");
 
     const adminScreen =
-      document.getElementById(
-        "adminScreen"
-      );
+      document.getElementById("adminScreen");
+
+    const loginButton =
+      document.getElementById("loginButton");
+
+    const logoutButton =
+      document.getElementById("logoutButton");
 
     const loginMessage =
-      document.getElementById(
-        "loginMessage"
-      );
+      document.getElementById("loginMessage");
 
     const globalMessage =
-      document.getElementById(
-        "globalMessage"
-      );
+      document.getElementById("globalMessage");
 
 
     /*
-    ==========================================
-    MENSAGEM DE LOGIN
-    ==========================================
+    =====================================================
+    SEGURANÇA
+    =====================================================
     */
 
-    function mostrarLoginErro(texto) {
+    function escapeHTML(valor) {
 
-      loginMessage.innerHTML =
-        `<div class="message error">
-          ${escapeHTML(texto)}
-        </div>`;
+      return String(valor ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
     }
 
 
     /*
-    ==========================================
+    =====================================================
+    MENSAGEM DE LOGIN
+    =====================================================
+    */
+
+    function mostrarLoginErro(texto) {
+
+      loginMessage.innerHTML =
+        '<div class="message error">' +
+        escapeHTML(texto) +
+        '</div>';
+
+    }
+
+
+    /*
+    =====================================================
     MENSAGEM DO PAINEL
-    ==========================================
+    =====================================================
     */
 
     function mostrarMensagem(
@@ -616,13 +572,11 @@
     ) {
 
       globalMessage.innerHTML =
-        `<div class="message ${
-          sucesso
-            ? "success-msg"
-            : "error"
-        }">
-          ${escapeHTML(texto)}
-        </div>`;
+        '<div class="message ' +
+        (sucesso ? "success-msg" : "error") +
+        '">' +
+        escapeHTML(texto) +
+        '</div>';
 
       setTimeout(() => {
 
@@ -634,12 +588,12 @@
 
 
     /*
-    ==========================================
+    =====================================================
     LOGIN
-    ==========================================
+    =====================================================
     */
 
-    window.login = async function() {
+    async function login() {
 
       const email =
         document
@@ -652,6 +606,7 @@
           .getElementById("password")
           .value;
 
+      loginMessage.innerHTML = "";
 
       if (!email || !password) {
 
@@ -660,58 +615,49 @@
         );
 
         return;
+
       }
 
-
-      const button =
-        document.getElementById(
-          "loginButton"
-        );
-
-
-      button.disabled = true;
-      button.textContent = "Entrando...";
-
-
-      loginMessage.innerHTML = "";
-
+      loginButton.disabled = true;
+      loginButton.textContent = "Entrando...";
 
       try {
 
-        await account
-          .createEmailPasswordSession({
-            email,
-            password
-          });
-
+        await account.createEmailPasswordSession({
+          email: email,
+          password: password
+        });
 
         await verificarAdministrador();
 
-
       } catch (error) {
 
-        console.error(error);
-
-        mostrarLoginErro(
-          error?.message ||
-          "Não foi possível entrar."
+        console.error(
+          "Erro no login:",
+          error
         );
 
+        mostrarLoginErro(
+          error &&
+          error.message
+            ? error.message
+            : "Não foi possível entrar."
+        );
 
       } finally {
 
-        button.disabled = false;
-        button.textContent = "Entrar";
+        loginButton.disabled = false;
+        loginButton.textContent = "Entrar";
 
       }
 
-    };
+    }
 
 
     /*
-    ==========================================
+    =====================================================
     VERIFICAR ADMINISTRADOR
-    ==========================================
+    =====================================================
     */
 
     async function verificarAdministrador() {
@@ -719,15 +665,19 @@
       const usuario =
         await account.get();
 
+      if (usuario.$id !== ADMIN_USER_ID) {
 
-      if (
-        usuario.$id !==
-        ADMIN_USER_ID
-      ) {
+        try {
 
-        await account.deleteSession({
-          sessionId: "current"
-        });
+          await account.deleteSession({
+            sessionId: "current"
+          });
+
+        } catch (e) {
+
+          console.error(e);
+
+        }
 
         throw new Error(
           "Esta conta não tem autorização para acessar o painel Admin."
@@ -735,12 +685,10 @@
 
       }
 
-
       document.getElementById(
         "adminUser"
       ).textContent =
         usuario.email;
-
 
       loginScreen.classList.add(
         "hidden"
@@ -750,16 +698,15 @@
         "hidden"
       );
 
-
       await carregarPainel();
 
     }
 
 
     /*
-    ==========================================
-    VERIFICAR SESSÃO EXISTENTE
-    ==========================================
+    =====================================================
+    SESSÃO EXISTENTE
+    =====================================================
     */
 
     async function verificarSessaoExistente() {
@@ -769,17 +716,12 @@
         const usuario =
           await account.get();
 
-
-        if (
-          usuario.$id ===
-          ADMIN_USER_ID
-        ) {
+        if (usuario.$id === ADMIN_USER_ID) {
 
           document.getElementById(
             "adminUser"
           ).textContent =
             usuario.email;
-
 
           loginScreen.classList.add(
             "hidden"
@@ -789,15 +731,15 @@
             "hidden"
           );
 
-
           await carregarPainel();
 
         }
 
       } catch (error) {
 
-        // Sem sessão.
-        // Continua na tela de login.
+        console.log(
+          "Nenhuma sessão administrativa ativa."
+        );
 
       }
 
@@ -805,12 +747,12 @@
 
 
     /*
-    ==========================================
-    SAIR
-    ==========================================
+    =====================================================
+    LOGOUT
+    =====================================================
     */
 
-    window.logout = async function() {
+    async function logout() {
 
       try {
 
@@ -824,7 +766,6 @@
 
       }
 
-
       adminScreen.classList.add(
         "hidden"
       );
@@ -833,13 +774,23 @@
         "hidden"
       );
 
-    };
+      document.getElementById(
+        "email"
+      ).value = "";
+
+      document.getElementById(
+        "password"
+      ).value = "";
+
+      loginMessage.innerHTML = "";
+
+    }
 
 
     /*
-    ==========================================
+    =====================================================
     LISTAR TABELA
-    ==========================================
+    =====================================================
     */
 
     async function listarTabela(
@@ -856,11 +807,10 @@
             tableId,
 
           queries: [
-            Query.limit(100)
+            Appwrite.Query.limit(100)
           ]
 
         });
-
 
       return resultado.rows || [];
 
@@ -868,9 +818,9 @@
 
 
     /*
-    ==========================================
+    =====================================================
     CARREGAR PAINEL
-    ==========================================
+    =====================================================
     */
 
     async function carregarPainel() {
@@ -878,7 +828,6 @@
       mostrarMensagem(
         "Carregando dados do QuizUp..."
       );
-
 
       try {
 
@@ -907,46 +856,44 @@
 
         ]);
 
-
         atualizarResumo(
           jogadores,
           parceiros,
           saques
         );
 
-
         mostrarJogadores(
           jogadores
         );
-
 
         mostrarSaques(
           saques
         );
 
-
         mostrarParceiros(
           parceiros
         );
-
 
         mostrarMovimentacoes(
           movimentacoes
         );
 
-
         globalMessage.innerHTML = "";
-
 
       } catch (error) {
 
-        console.error(error);
+        console.error(
+          "Erro ao carregar painel:",
+          error
+        );
 
         mostrarMensagem(
           "Erro ao carregar o banco: " +
           (
-            error?.message ||
-            "erro desconhecido"
+            error &&
+            error.message
+              ? error.message
+              : "erro desconhecido"
           ),
           false
         );
@@ -957,10 +904,21 @@
 
 
     /*
-    ==========================================
+    =====================================================
     RESUMO
-    ==========================================
+    =====================================================
     */
+
+    function normalizarStatus(status) {
+
+      return String(
+        status || ""
+      )
+        .toLowerCase()
+        .trim();
+
+    }
+
 
     function atualizarResumo(
       jogadores,
@@ -976,7 +934,6 @@
             ) === "pendente"
         );
 
-
       const aprovados =
         saques.filter(
           s =>
@@ -989,7 +946,6 @@
               )
             )
         );
-
 
       const cancelados =
         saques.filter(
@@ -1004,36 +960,30 @@
             )
         );
 
-
       document.getElementById(
         "totalJogadores"
       ).textContent =
         jogadores.length;
-
 
       document.getElementById(
         "totalParceiros"
       ).textContent =
         parceiros.length;
 
-
       document.getElementById(
         "totalSaques"
       ).textContent =
         saques.length;
-
 
       document.getElementById(
         "totalPendentes"
       ).textContent =
         pendentes.length;
 
-
       document.getElementById(
         "totalAprovados"
       ).textContent =
         aprovados.length;
-
 
       document.getElementById(
         "totalCancelados"
@@ -1044,65 +994,9 @@
 
 
     /*
-    ==========================================
-    STATUS
-    ==========================================
-    */
-
-    function normalizarStatus(
-      status
-    ) {
-
-      return String(
-        status || ""
-      )
-        .toLowerCase()
-        .trim();
-
-    }
-
-
-    /*
-    ==========================================
-    SEGURANÇA HTML
-    ==========================================
-    */
-
-    function escapeHTML(
-      valor
-    ) {
-
-      return String(
-        valor ?? ""
-      )
-        .replace(
-          /&/g,
-          "&amp;"
-        )
-        .replace(
-          /</g,
-          "&lt;"
-        )
-        .replace(
-          />/g,
-          "&gt;"
-        )
-        .replace(
-          /"/g,
-          "&quot;"
-        )
-        .replace(
-          /'/g,
-          "&#039;"
-        );
-
-    }
-
-
-    /*
-    ==========================================
+    =====================================================
     JOGADORES
-    ==========================================
+    =====================================================
     */
 
     function mostrarJogadores(
@@ -1114,20 +1008,18 @@
           "jogadoresBody"
         );
 
-
       if (!jogadores.length) {
 
         body.innerHTML =
-          `<tr>
-            <td colspan="5">
-              Nenhum jogador encontrado.
-            </td>
-          </tr>`;
+          '<tr>' +
+          '<td colspan="5">' +
+          'Nenhum jogador encontrado.' +
+          '</td>' +
+          '</tr>';
 
         return;
 
       }
-
 
       body.innerHTML =
         jogadores
@@ -1138,17 +1030,14 @@
               jogador.name ||
               "-";
 
-
             const email =
               jogador.email ||
               jogador["E-mail"] ||
               "-";
 
-
             const pontos =
               jogador.pontos ??
               0;
-
 
             const saldo =
               jogador.equilibrio ??
@@ -1156,40 +1045,13 @@
               jogador.saldo ??
               0;
 
-
             return `
               <tr>
-
-                <td>
-                  ${escapeHTML(
-                    jogador.$id
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHTML(
-                    email
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHTML(
-                    nome
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHTML(
-                    pontos
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHTML(
-                    saldo
-                  )}
-                </td>
-
+                <td>${escapeHTML(jogador.$id)}</td>
+                <td>${escapeHTML(email)}</td>
+                <td>${escapeHTML(nome)}</td>
+                <td>${escapeHTML(pontos)}</td>
+                <td>${escapeHTML(saldo)}</td>
               </tr>
             `;
 
@@ -1200,9 +1062,9 @@
 
 
     /*
-    ==========================================
+    =====================================================
     SAQUES
-    ==========================================
+    =====================================================
     */
 
     function mostrarSaques(
@@ -1214,20 +1076,18 @@
           "saquesBody"
         );
 
-
       if (!saques.length) {
 
         body.innerHTML =
-          `<tr>
-            <td colspan="7">
-              Nenhum saque encontrado.
-            </td>
-          </tr>`;
+          '<tr>' +
+          '<td colspan="7">' +
+          'Nenhum saque encontrado.' +
+          '</td>' +
+          '</tr>';
 
         return;
 
       }
-
 
       body.innerHTML =
         saques
@@ -1238,7 +1098,6 @@
                 saque.status
               );
 
-
             const usuario =
               saque["ID do usuário."] ||
               saque["ID do usuário"] ||
@@ -1246,13 +1105,11 @@
               saque.userId ||
               "-";
 
-
             const email =
               saque.email ||
               saque["e-mail"] ||
               saque["E-mail"] ||
               "-";
-
 
             const valor =
               saque.quantia ??
@@ -1260,37 +1117,30 @@
               saque.valor ??
               0;
 
-
             const pix =
               saque.pix_key ||
               saque.pix ||
               "-";
 
-
             let acoes = "-";
 
-
-            if (
-              status === "pendente"
-            ) {
+            if (status === "pendente") {
 
               acoes = `
                 <div class="actions">
 
                   <button
                     class="success"
-                    onclick="aprovarSaque('${escapeHTML(
-                      saque.$id
-                    )}')"
+                    type="button"
+                    data-aprovar="${escapeHTML(saque.$id)}"
                   >
                     Aprovar
                   </button>
 
                   <button
                     class="danger"
-                    onclick="cancelarSaque('${escapeHTML(
-                      saque.$id
-                    )}')"
+                    type="button"
+                    data-cancelar="${escapeHTML(saque.$id)}"
                   >
                     Cancelar
                   </button>
@@ -1300,51 +1150,24 @@
 
             }
 
-
             return `
               <tr>
 
-                <td>
-                  ${escapeHTML(
-                    saque.$id
-                  )}
+                <td>${escapeHTML(saque.$id)}</td>
+
+                <td>${escapeHTML(usuario)}</td>
+
+                <td>${escapeHTML(email)}</td>
+
+                <td>R$ ${escapeHTML(valor)}</td>
+
+                <td>${escapeHTML(pix)}</td>
+
+                <td class="status ${escapeHTML(status)}">
+                  ${escapeHTML(status || "-")}
                 </td>
 
-                <td>
-                  ${escapeHTML(
-                    usuario
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHTML(
-                    email
-                  )}
-                </td>
-
-                <td>
-                  R$ ${escapeHTML(
-                    valor
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHTML(
-                    pix
-                  )}
-                </td>
-
-                <td class="status ${escapeHTML(
-                  status
-                )}">
-                  ${escapeHTML(
-                    status || "-"
-                  )}
-                </td>
-
-                <td>
-                  ${acoes}
-                </td>
+                <td>${acoes}</td>
 
               </tr>
             `;
@@ -1352,145 +1175,165 @@
           })
           .join("");
 
+      document
+        .querySelectorAll("[data-aprovar]")
+        .forEach(button => {
+
+          button.addEventListener(
+            "click",
+            () => aprovarSaque(
+              button.dataset.aprovar
+            )
+          );
+
+        });
+
+      document
+        .querySelectorAll("[data-cancelar]")
+        .forEach(button => {
+
+          button.addEventListener(
+            "click",
+            () => cancelarSaque(
+              button.dataset.cancelar
+            )
+          );
+
+        });
+
     }
 
 
     /*
-    ==========================================
+    =====================================================
     APROVAR SAQUE
-    ==========================================
+    =====================================================
     */
 
-    window.aprovarSaque =
-      async function(rowId) {
+    async function aprovarSaque(
+      rowId
+    ) {
 
-        if (
-          !confirm(
-            "Tem certeza que deseja APROVAR este saque?"
-          )
-        ) {
+      if (
+        !confirm(
+          "Tem certeza que deseja APROVAR este saque?"
+        )
+      ) {
+        return;
+      }
 
-          return;
+      try {
 
-        }
+        await tablesDB.updateRow({
 
+          databaseId:
+            DATABASE_ID,
 
-        try {
+          tableId:
+            TABLES.saques,
 
-          await tablesDB.updateRow({
+          rowId:
+            rowId,
 
-            databaseId:
-              DATABASE_ID,
+          data: {
+            status: "aprovado"
+          }
 
-            tableId:
-              TABLES.saques,
+        });
 
-            rowId:
-              rowId,
+        mostrarMensagem(
+          "Saque aprovado com sucesso."
+        );
 
-            data: {
-              status: "aprovado"
-            }
+        await carregarPainel();
 
-          });
+      } catch (error) {
 
+        console.error(error);
 
-          mostrarMensagem(
-            "Saque aprovado com sucesso."
-          );
+        mostrarMensagem(
+          "Não foi possível aprovar o saque: " +
+          (
+            error &&
+            error.message
+              ? error.message
+              : "erro desconhecido"
+          ),
+          false
+        );
 
+      }
 
-          await carregarPainel();
-
-
-        } catch (error) {
-
-          console.error(error);
-
-          mostrarMensagem(
-            "Não foi possível aprovar o saque: " +
-            (
-              error?.message ||
-              "erro desconhecido"
-            ),
-            false
-          );
-
-        }
-
-      };
+    }
 
 
     /*
-    ==========================================
+    =====================================================
     CANCELAR SAQUE
-    ==========================================
+    =====================================================
     */
 
-    window.cancelarSaque =
-      async function(rowId) {
+    async function cancelarSaque(
+      rowId
+    ) {
 
-        if (
-          !confirm(
-            "Tem certeza que deseja CANCELAR este saque?"
-          )
-        ) {
+      if (
+        !confirm(
+          "Tem certeza que deseja CANCELAR este saque?"
+        )
+      ) {
+        return;
+      }
 
-          return;
+      try {
 
-        }
+        await tablesDB.updateRow({
 
+          databaseId:
+            DATABASE_ID,
 
-        try {
+          tableId:
+            TABLES.saques,
 
-          await tablesDB.updateRow({
+          rowId:
+            rowId,
 
-            databaseId:
-              DATABASE_ID,
+          data: {
+            status: "cancelado"
+          }
 
-            tableId:
-              TABLES.saques,
+        });
 
-            rowId:
-              rowId,
+        mostrarMensagem(
+          "Saque cancelado com sucesso."
+        );
 
-            data: {
-              status: "cancelado"
-            }
+        await carregarPainel();
 
-          });
+      } catch (error) {
 
+        console.error(error);
 
-          mostrarMensagem(
-            "Saque cancelado com sucesso."
-          );
+        mostrarMensagem(
+          "Não foi possível cancelar o saque: " +
+          (
+            error &&
+            error.message
+              ? error.message
+              : "erro desconhecido"
+          ),
+          false
+        );
 
+      }
 
-          await carregarPainel();
-
-
-        } catch (error) {
-
-          console.error(error);
-
-          mostrarMensagem(
-            "Não foi possível cancelar o saque: " +
-            (
-              error?.message ||
-              "erro desconhecido"
-            ),
-            false
-          );
-
-        }
-
-      };
+    }
 
 
     /*
-    ==========================================
+    =====================================================
     PARCEIROS
-    ==========================================
+    =====================================================
     */
 
     function mostrarParceiros(
@@ -1502,20 +1345,18 @@
           "parceirosBody"
         );
 
-
       if (!parceiros.length) {
 
         body.innerHTML =
-          `<tr>
-            <td colspan="4">
-              Nenhum parceiro encontrado.
-            </td>
-          </tr>`;
+          '<tr>' +
+          '<td colspan="4">' +
+          'Nenhum parceiro encontrado.' +
+          '</td>' +
+          '</tr>';
 
         return;
 
       }
-
 
       body.innerHTML =
         parceiros
@@ -1526,39 +1367,29 @@
               parceiro.name ||
               "-";
 
-
             const email =
               parceiro.email ||
               parceiro["E-mail"] ||
               "-";
 
-
             return `
               <tr>
 
                 <td>
-                  ${escapeHTML(
-                    parceiro.$id
-                  )}
+                  ${escapeHTML(parceiro.$id)}
+                </td>
+
+                <td>
+                  ${escapeHTML(nome)}
+                </td>
+
+                <td>
+                  ${escapeHTML(email)}
                 </td>
 
                 <td>
                   ${escapeHTML(
-                    nome
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHTML(
-                    email
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHTML(
-                    JSON.stringify(
-                      parceiro
-                    )
+                    JSON.stringify(parceiro)
                   )}
                 </td>
 
@@ -1572,9 +1403,9 @@
 
 
     /*
-    ==========================================
+    =====================================================
     MOVIMENTAÇÕES
-    ==========================================
+    =====================================================
     */
 
     function mostrarMovimentacoes(
@@ -1586,20 +1417,18 @@
           "movimentacoesBody"
         );
 
-
       if (!movimentacoes.length) {
 
         body.innerHTML =
-          `<tr>
-            <td colspan="6">
-              Nenhuma movimentação encontrada.
-            </td>
-          </tr>`;
+          '<tr>' +
+          '<td colspan="6">' +
+          'Nenhuma movimentação encontrada.' +
+          '</td>' +
+          '</tr>';
 
         return;
 
       }
-
 
       body.innerHTML =
         movimentacoes
@@ -1609,9 +1438,7 @@
               <tr>
 
                 <td>
-                  ${escapeHTML(
-                    mov.$id
-                  )}
+                  ${escapeHTML(mov.$id)}
                 </td>
 
                 <td>
@@ -1654,9 +1481,40 @@
 
 
     /*
-    ==========================================
+    =====================================================
+    EVENTOS
+    =====================================================
+    */
+
+    loginButton.addEventListener(
+      "click",
+      login
+    );
+
+    logoutButton.addEventListener(
+      "click",
+      logout
+    );
+
+
+    document
+      .getElementById("password")
+      .addEventListener(
+        "keydown",
+        event => {
+
+          if (event.key === "Enter") {
+            login();
+          }
+
+        }
+      );
+
+
+    /*
+    =====================================================
     INICIAR
-    ==========================================
+    =====================================================
     */
 
     verificarSessaoExistente();
@@ -1664,4 +1522,4 @@
   </script>
 
 </body>
-        </html>
+</html>
