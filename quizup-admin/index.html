@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizUp Admin</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #222;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 18px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    header small {
+      opacity: .8;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .login {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-box {
+      background: white;
+      width: 100%;
+      max-width: 420px;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.10);
+      text-align: center;
+    }
+
+    .login-box h1 {
+      margin-top: 0;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      margin: 8px 0;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .primary {
+      width: 100%;
+      background: #111827;
+      color: white;
+      margin-top: 10px;
+    }
+
+    .danger {
+      background: #dc2626;
+      color: white;
+    }
+
+    .success {
+      background: #16a34a;
+      color: white;
+    }
+
+    .logout {
+      background: #374151;
+      color: white;
+      float: right;
+      margin-top: -32px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.06);
+    }
+
+    .card strong {
+      display: block;
+      font-size: 28px;
+      margin-top: 8px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.06);
+    }
+
+    .section h2 {
+      margin-top: 0;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+
+    th,
+    td {
+      padding: 11px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #f9fafb;
+    }
+
+    .status {
+      font-weight: bold;
+    }
+
+    .pendente {
+      color: #d97706;
+    }
+
+    .aprovado {
+      color: #16a34a;
+    }
+
+    .cancelado {
+      color: #dc2626;
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .message {
+      padding: 12px;
+      border-radius: 10px;
+      margin: 10px 0;
+      background: #eef2ff;
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .success-msg {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 12px;
+      }
+
+      .card {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOGIN -->
+  <div id="loginScreen" class="login">
+    <div class="login-box">
+      <h1>QuizUp Admin</h1>
+
+      <p>
+        Acesso exclusivo do administrador
+      </p>
+
+      <input
+        id="email"
+        type="email"
+        placeholder="E-mail"
+        autocomplete="email"
+      >
+
+      <input
+        id="password"
+        type="password"
+        placeholder="Senha"
+        autocomplete="current-password"
+      >
+
+      <button
+        id="loginButton"
+        class="primary"
+        onclick="login()"
+      >
+        Entrar
+      </button>
+
+      <div id="loginMessage"></div>
+    </div>
+  </div>
+
+
+  <!-- PAINEL -->
+  <div id="adminScreen" class="hidden">
+
+    <header>
+      <h1>QuizUp Admin</h1>
+      <small id="adminUser"></small>
+
+      <button
+        class="logout"
+        onclick="logout()"
+      >
+        Sair
+      </button>
+    </header>
+
+    <main class="container">
+
+      <div id="globalMessage"></div>
+
+      <!-- RESUMO -->
+      <div class="cards">
+
+        <div class="card">
+          Jogadores
+          <strong id="totalJogadores">0</strong>
+        </div>
+
+        <div class="card">
+          Parceiros
+          <strong id="totalParceiros">0</strong>
+        </div>
+
+        <div class="card">
+          Saques
+          <strong id="totalSaques">0</strong>
+        </div>
+
+        <div class="card">
+          Pendentes
+          <strong id="totalPendentes">0</strong>
+        </div>
+
+        <div class="card">
+          Aprovados
+          <strong id="totalAprovados">0</strong>
+        </div>
+
+        <div class="card">
+          Cancelados
+          <strong id="totalCancelados">0</strong>
+        </div>
+
+      </div>
+
+
+      <!-- SAQUES -->
+      <section class="section">
+
+        <h2>💸 Saques</h2>
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Usuário</th>
+                <th>E-mail</th>
+                <th>Valor</th>
+                <th>Pix</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+
+            <tbody id="saquesBody">
+              <tr>
+                <td colspan="7" class="loading">
+                  Carregando...
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <!-- JOGADORES -->
+      <section class="section">
+
+        <h2>👥 Jogadores</h2>
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>E-mail</th>
+                <th>Nome</th>
+                <th>Pontos</th>
+                <th>Saldo</th>
+              </tr>
+            </thead>
+
+            <tbody id="jogadoresBody">
+              <tr>
+                <td colspan="5" class="loading">
+                  Carregando...
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <!-- PARCEIROS -->
+      <section class="section">
+
+        <h2>🤝 Parceiros</h2>
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Dados</th>
+              </tr>
+            </thead>
+
+            <tbody id="parceirosBody">
+              <tr>
+                <td colspan="4" class="loading">
+                  Carregando...
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <!-- MOVIMENTAÇÕES -->
+      <section class="section">
+
+        <h2>📊 Movimentações de parceiros</h2>
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Parceiro</th>
+                <th>Tipo</th>
+                <th>Pontos</th>
+                <th>Valor</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+
+            <tbody id="movimentacoesBody">
+              <tr>
+                <td colspan="6" class="loading">
+                  Carregando...
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+
+  <!-- APPWRITE WEB SDK -->
+  <script type="module">
+
+    import {
+      Client,
+      Account,
+      Teams,
+      TablesDB,
+      Query
+    } from "https://cdn.jsdelivr.net/npm/appwrite@17.0.0/+esm";
+
+
+    /*
+    ========================================================
+    CONFIGURAÇÃO DO QUIZUP
+    ========================================================
+    */
+
+    const APPWRITE_ENDPOINT =
+      "https://fra.cloud.appwrite.io/v1";
+
+    const PROJECT_ID =
+      "COLOQUE_AQUI_O_ID_DO_PROJETO_QUIZUP";
+
+    const DATABASE_ID =
+      "6a8e11820008abab052e";
+
+    const TEAM_ID =
+      "6a93229d000eaf3acf55";
+
+    const ADMIN_USER_ID =
+      "6a8f41f3d20f03789eb0";
+
+    const TABLES = {
+      jogadores: "jogadores",
+      parceiros: "parceiros",
+      saques: "saques",
+      movimentacoes: "movimentacoes_parceiros"
+    };
+
+
+    /*
+    ========================================================
+    APPWRITE
+    ========================================================
+    */
+
+    const client = new Client()
+      .setEndpoint(APPWRITE_ENDPOINT)
+      .setProject(PROJECT_ID);
+
+    const account = new Account(client);
+
+    const teams = new Teams(client);
+
+    const tablesDB = new TablesDB(client);
+
+
+    /*
+    ========================================================
+    ELEMENTOS
+    ========================================================
+    */
+
+    const loginScreen =
+      document.getElementById("loginScreen");
+
+    const adminScreen =
+      document.getElementById("adminScreen");
+
+    const loginMessage =
+      document.getElementById("loginMessage");
+
+    const globalMessage =
+      document.getElementById("globalMessage");
+
+
+    /*
+    ========================================================
+    MENSAGENS
+    ========================================================
+    */
+
+    function mostrarLoginErro(texto) {
+
+      loginMessage.innerHTML =
+        `<div class="message error">${texto}</div>`;
+
+    }
+
+
+    function mostrarMensagem(texto, sucesso = true) {
+
+      globalMessage.innerHTML =
+        `<div class="message ${sucesso ? "success-msg" : "error"}">
+          ${texto}
+        </div>`;
+
+      setTimeout(() => {
+        globalMessage.innerHTML = "";
+      }, 5000);
+
+    }
+
+
+    /*
+    ========================================================
+    LOGIN
+    ========================================================
+    */
+
+    window.login = async function () {
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+      if (!email || !password) {
+
+        mostrarLoginErro(
+          "Digite seu e-mail e sua senha."
+        );
+
+        return;
+      }
+
+      const button =
+        document.getElementById("loginButton");
+
+      button.disabled = true;
+      button.textContent = "Entrando...";
+
+      loginMessage.innerHTML = "";
+
+      try {
+
+        await account.createEmailPasswordSession({
+          email,
+          password
+        });
+
+        await verificarAdministrador();
+
+      } catch (error) {
+
+        console.error(error);
+
+        mostrarLoginErro(
+          error?.message ||
+          "Não foi possível entrar."
+        );
+
+      } finally {
+
+        button.disabled = false;
+        button.textContent = "Entrar";
+
+      }
+
+    };
+
+
+    /*
+    ========================================================
+    VERIFICAR ADMINISTRADOR
+    ========================================================
+    */
+
+    async function verificarAdministrador() {
+
+      const usuario =
+        await account.get();
+
+      /*
+      Segurança principal:
+      conferir o ID da conta.
+      */
+
+      if (usuario.$id !== ADMIN_USER_ID) {
+
+        await account.deleteSession({
+          sessionId: "current"
+        });
+
+        throw new Error(
+          "Esta conta não tem autorização para acessar o painel Admin."
+        );
+
+      }
+
+
+      /*
+      Conferir também a equipe.
+      */
+
+      try {
+
+        const memberships =
+          await teams.listMemberships({
+            teamId: TEAM_ID
+          });
+
+        const souMembro =
+          (memberships.memberships || []).some(
+            membership =>
+              membership.userId === ADMIN_USER_ID
+          );
+
+        if (!souMembro) {
+
+          await account.deleteSession({
+            sessionId: "current"
+          });
+
+          throw new Error(
+            "Sua conta não está vinculada à equipe Administrador do QuizUp."
+          );
+
+        }
+
+      } catch (teamError) {
+
+        console.error(
+          "Erro ao verificar equipe:",
+          teamError
+        );
+
+        /*
+        Se a conta já foi validada pelo ID,
+        não bloquearemos o painel apenas por
+        uma falha secundária na consulta da equipe.
+        */
+
+      }
+
+
+      document.getElementById("adminUser").textContent =
+        usuario.email;
+
+      loginScreen.classList.add("hidden");
+      adminScreen.classList.remove("hidden");
+
+      await carregarPainel();
+
+    }
+
+
+    /*
+    ========================================================
+    VERIFICAR SESSÃO AO ABRIR
+    ========================================================
+    */
+
+    async function verificarSessaoExistente() {
+
+      try {
+
+        const usuario =
+          await account.get();
+
+        if (usuario.$id === ADMIN_USER_ID) {
+
+          document.getElementById("adminUser").textContent =
+            usuario.email;
+
+          loginScreen.classList.add("hidden");
+          adminScreen.classList.remove("hidden");
+
+          await carregarPainel();
+
+        }
+
+      } catch (error) {
+
+        /*
+        Não existe sessão.
+        Permanece na tela de login.
+        */
+
+      }
+
+    }
+
+
+    /*
+    ========================================================
+    LOGOUT
+    ========================================================
+    */
+
+    window.logout = async function () {
+
+      try {
+
+        await account.deleteSession({
+          sessionId: "current"
+        });
+
+      } catch (error) {
+
+        console.error(error);
+
+      }
+
+      adminScreen.classList.add("hidden");
+      loginScreen.classList.remove("hidden");
+
+    };
+
+
+    /*
+    ========================================================
+    LISTAR TABELA
+    ========================================================
+    */
+
+    async function listarTabela(tableId) {
+
+      const resultado =
+        await tablesDB.listRows({
+          databaseId: DATABASE_ID,
+          tableId: tableId,
+          queries: [
+            Query.limit(100)
+          ]
+        });
+
+      return resultado.rows || [];
+
+    }
+
+
+    /*
+    ========================================================
+    CARREGAR PAINEL
+    ========================================================
+    */
+
+    async function carregarPainel() {
+
+      mostrarMensagem(
+        "Carregando dados do QuizUp..."
+      );
+
+      try {
+
+        const [
+          jogadores,
+          parceiros,
+          saques,
+          movimentacoes
+        ] = await Promise.all([
+
+          listarTabela(TABLES.jogadores),
+
+          listarTabela(TABLES.parceiros),
+
+          listarTabela(TABLES.saques),
+
+          listarTabela(TABLES.movimentacoes)
+
+        ]);
+
+
+        atualizarResumo(
+          jogadores,
+          parceiros,
+          saques,
+          movimentacoes
+        );
+
+        mostrarJogadores(jogadores);
+
+        mostrarSaques(saques);
+
+        mostrarParceiros(parceiros);
+
+        mostrarMovimentacoes(
+          movimentacoes
+        );
+
+
+        globalMessage.innerHTML = "";
+
+      } catch (error) {
+
+        console.error(error);
+
+        mostrarMensagem(
+          "Erro ao carregar o banco: " +
+          (error?.message || "erro desconhecido"),
+          false
+        );
+
+      }
+
+    }
+
+
+    /*
+    ========================================================
+    RESUMO
+    ========================================================
+    */
+
+    function atualizarResumo(
+      jogadores,
+      parceiros,
+      saques
+    ) {
+
+      const pendentes =
+        saques.filter(
+          s =>
+            normalizarStatus(s.status)
+            === "pendente"
+        );
+
+      const aprovados =
+        saques.filter(
+          s =>
+            ["aprovado", "aprovada"]
+              .includes(
+                normalizarStatus(s.status)
+              )
+        );
+
+      const cancelados =
+        saques.filter(
+          s =>
+            ["cancelado", "cancelada"]
+              .includes(
+                normalizarStatus(s.status)
+              )
+        );
+
+
+      document.getElementById(
+        "totalJogadores"
+      ).textContent = jogadores.length;
+
+
+      document.getElementById(
+        "totalParceiros"
+      ).textContent = parceiros.length;
+
+
+      document.getElementById(
+        "totalSaques"
+      ).textContent = saques.length;
+
+
+      document.getElementById(
+        "totalPendentes"
+      ).textContent = pendentes.length;
+
+
+      document.getElementById(
+        "totalAprovados"
+      ).textContent = aprovados.length;
+
+
+      document.getElementById(
+        "totalCancelados"
+      ).textContent = cancelados.length;
+
+    }
+
+
+    /*
+    ========================================================
+    STATUS
+    ========================================================
+    */
+
+    function normalizarStatus(status) {
+
+      return String(status || "")
+        .toLowerCase()
+        .trim();
+
+    }
+
+
+    /*
+    ========================================================
+    ESCAPAR HTML
+    ========================================================
+    */
+
+    function escapeHTML(valor) {
+
+      return String(valor ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    /*
+    ========================================================
+    JOGADORES
+    ========================================================
+    */
+
+    function mostrarJogadores(jogadores) {
+
+      const body =
+        document.getElementById(
+          "jogadoresBody"
+        );
+
+      if (!jogadores.length) {
+
+        body.innerHTML =
+          `<tr>
+            <td colspan="5">
+              Nenhum jogador encontrado.
+            </td>
+          </tr>`;
+
+        return;
+
+      }
+
+
+      body.innerHTML =
+        jogadores.map(jogador => {
+
+          const nome =
+            jogador.nome ||
+            jogador.name ||
+            "-";
+
+          const email =
+            jogador.email ||
+            jogador["E-mail"] ||
+            "-";
+
+          const pontos =
+            jogador.pontos ??
+            jogador.Pontos ??
+            0;
+
+          const saldo =
+            jogador.equilibrio ??
+            jogador.equilíbrio ??
+            jogador.saldo ??
+            jogador["equilíbrio"] ??
+            0;
+
+
+          return `
+            <tr>
+
+              <td>
+                ${escapeHTML(jogador.$id)}
+              </td>
+
+              <td>
+                ${escapeHTML(email)}
+              </td>
+
+              <td>
+                ${escapeHTML(nome)}
+              </td>
+
+              <td>
+                ${escapeHTML(pontos)}
+              </td>
+
+              <td>
+                ${escapeHTML(saldo)}
+              </td>
+
+            </tr>
+          `;
+
+        }).join("");
+
+    }
+
+
+    /*
+    ========================================================
+    SAQUES
+    ========================================================
+    */
+
+    function mostrarSaques(saques) {
+
+      const body =
+        document.getElementById(
+          "saquesBody"
+        );
+
+
+      if (!saques.length) {
+
+        body.innerHTML =
+          `<tr>
+            <td colspan="7">
+              Nenhum saque encontrado.
+            </td>
+          </tr>`;
+
+        return;
+
+      }
+
+
+      body.innerHTML =
+        saques.map(saque => {
+
+          const status =
+            normalizarStatus(
+              saque.status
+            );
+
+          const usuario =
+            saque["ID do usuário."] ||
+            saque["ID do usuário"] ||
+            saque.usuario ||
+            saque.userId ||
+            "-";
+
+          const email =
+            saque.email ||
+            saque["e-mail"] ||
+            saque["E-mail"] ||
+            "-";
+
+          const valor =
+            saque.quantia ??
+            saque.valor_jogador ??
+            saque.valor ??
+            0;
+
+          const pix =
+            saque.pix_key ||
+            saque.pix ||
+            "-";
+
+
+          let acoes = "";
+
+          if (status === "pendente") {
+
+            acoes = `
+              <div class="actions">
+
+                <button
+                  class="success"
+                  onclick="aprovarSaque('${escapeHTML(saque.$id)}')"
+                >
+                  Aprovar
+                </button>
+
+                <button
+                  class="danger"
+                  onclick="cancelarSaque('${escapeHTML(saque.$id)}')"
+                >
+                  Cancelar
+                </button>
+
+              </div>
+            `;
+
+          } else {
+
+            acoes = "-";
+
+          }
+
+
+          return `
+            <tr>
+
+              <td>
+                ${escapeHTML(saque.$id)}
+              </td>
+
+              <td>
+                ${escapeHTML(usuario)}
+              </td>
+
+              <td>
+                ${escapeHTML(email)}
+              </td>
+
+              <td>
+                R$ ${escapeHTML(valor)}
+              </td>
+
+              <td>
+                ${escapeHTML(pix)}
+              </td>
+
+              <td class="status ${escapeHTML(status)}">
+                ${escapeHTML(status || "-")}
+              </td>
+
+              <td>
+                ${acoes}
+              </td>
+
+            </tr>
+          `;
+
+        }).join("");
+
+    }
+
+
+    /*
+    ========================================================
+    APROVAR SAQUE
+    ========================================================
+    */
+
+    window.aprovarSaque =
+      async function(rowId) {
+
+      if (
+        !confirm(
+          "Tem certeza que deseja APROVAR este saque?"
+        )
+      ) {
+        return;
+      }
+
+
+      try {
+
+        await tablesDB.updateRow({
+
+          databaseId: DATABASE_ID,
+
+          tableId: TABLES.saques,
+
+          rowId: rowId,
+
+          data: {
+            status: "aprovado"
+          }
+
+        });
+
+
+        mostrarMensagem(
+          "Saque aprovado com sucesso."
+        );
+
+        await carregarPainel();
+
+      } catch (error) {
+
+        console.error(error);
+
+        mostrarMensagem(
+          "Não foi possível aprovar o saque: " +
+          (error?.message || "erro desconhecido"),
+          false
+        );
+
+      }
+
+    };
+
+
+    /*
+    ========================================================
+    CANCELAR SAQUE
+    ========================================================
+    */
+
+    window.cancelarSaque =
+      async function(rowId) {
+
+      if (
+        !confirm(
+          "Tem certeza que deseja CANCELAR este saque?"
+        )
+      ) {
+        return;
+      }
+
+
+      try {
+
+        await tablesDB.updateRow({
+
+          databaseId: DATABASE_ID,
+
+          tableId: TABLES.saques,
+
+          rowId: rowId,
+
+          data: {
+            status: "cancelado"
+          }
+
+        });
+
+
+        mostrarMensagem(
+          "Saque cancelado com sucesso."
+        );
+
+        await carregarPainel();
+
+      } catch (error) {
+
+        console.error(error);
+
+        mostrarMensagem(
+          "Não foi possível cancelar o saque: " +
+          (error?.message || "erro desconhecido"),
+          false
+        );
+
+      }
+
+    };
+
+
+    /*
+    ========================================================
+    PARCEIROS
+    ========================================================
+    */
+
+    function mostrarParceiros(parceiros) {
+
+      const body =
+        document.getElementById(
+          "parceirosBody"
+        );
+
+
+      if (!parceiros.length) {
+
+        body.innerHTML =
+          `<tr>
+            <td colspan="4">
+              Nenhum parceiro encontrado.
+            </td>
+          </tr>`;
+
+        return;
+
+      }
+
+
+      body.innerHTML =
+        parceiros.map(parceiro => {
+
+          const nome =
+            parceiro.nome ||
+            parceiro.name ||
+            "-";
+
+          const email =
+            parceiro.email ||
+            parceiro["E-mail"] ||
+            "-";
+
+
+          return `
+            <tr>
+
+              <td>
+                ${escapeHTML(parceiro.$id)}
+              </td>
+
+              <td>
+                ${escapeHTML(nome)}
+              </td>
+
+              <td>
+                ${escapeHTML(email)}
+              </td>
+
+              <td>
+                ${escapeHTML(
+                  JSON.stringify(parceiro)
+                )}
+              </td>
+
+            </tr>
+          `;
+
+        }).join("");
+
+    }
+
+
+    /*
+    ========================================================
+    MOVIMENTAÇÕES
+    ========================================================
+    */
+
+    function mostrarMovimentacoes(
+      movimentacoes
+    ) {
+
+      const body =
+        document.getElementById(
+          "movimentacoesBody"
+        );
+
+
+      if (!movimentacoes.length) {
+
+        body.innerHTML =
+          `<tr>
+            <td colspan="6">
+              Nenhuma movimentação encontrada.
+            </td>
+          </tr>`;
+
+        return;
+
+      }
+
+
+      body.innerHTML =
+        movimentacoes.map(mov => {
+
+          return `
+            <tr>
+
+              <td>
+                ${escapeHTML(mov.$id)}
+              </td>
+
+              <td>
+                ${escapeHTML(
+                  mov.parceiro_id || "-"
+                )}
+              </td>
+
+              <td>
+                ${escapeHTML(
+                  mov.tipo || "-"
+                )}
+              </td>
+
+              <td>
+                ${escapeHTML(
+                  mov.pontos ?? 0
+                )}
+              </td>
+
+              <td>
+                ${escapeHTML(
+                  mov.valor ?? 0
+                )}
+              </td>
+
+              <td>
+                ${escapeHTML(
+                  mov.descricao || "-"
+                )}
+              </td>
+
+            </tr>
+          `;
+
+        }).join("");
+
+    }
+
+
+    /*
+    ========================================================
+    INICIAR
+    ========================================================
+    */
+
+    verificarSessaoExistente();
+
+  </script>
+
+</body>
+</html>
