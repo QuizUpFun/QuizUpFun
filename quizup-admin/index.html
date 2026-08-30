@@ -1,1343 +1,1871 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>QuizUp Admin</title><style>
-*{box-sizing:border-box}
-
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#f4f6f8;
-color:#222;
-}
-
-.hidden{display:none!important}
-
-.login{
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:20px;
-}
-
-.login-box{
-background:#fff;
-width:100%;
-max-width:420px;
-padding:30px;
-border-radius:18px;
-box-shadow:0 8px 30px rgba(0,0,0,.1);
-text-align:center;
-}
-
-input{
-width:100%;
-padding:13px;
-margin:8px 0;
-border:1px solid #ddd;
-border-radius:10px;
-font-size:16px;
-}
-
-button{
-border:0;
-border-radius:10px;
-padding:12px 16px;
-font-size:15px;
-cursor:pointer;
-}
-
-.primary{
-width:100%;
-background:#111827;
-color:white;
-margin-top:10px;
-}
-
-button:disabled{
-opacity:.6;
-cursor:not-allowed;
-}
-
-header{
-background:#111827;
-color:white;
-padding:18px;
-}
-
-header h1{
-margin:0;
-font-size:22px;
-}
-
-.logout{
-float:right;
-margin-top:-32px;
-background:#374151;
-color:white;
-}
-
-.container{
-max-width:1200px;
-margin:auto;
-padding:20px;
-}
-
-.cards{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
-gap:15px;
-margin-bottom:25px;
-}
-
-.card{
-background:white;
-padding:20px;
-border-radius:15px;
-box-shadow:0 3px 12px rgba(0,0,0,.06);
-}
-
-.card strong{
-display:block;
-font-size:28px;
-margin-top:8px;
-}
-
-.section{
-background:white;
-border-radius:15px;
-padding:20px;
-margin-bottom:20px;
-box-shadow:0 3px 12px rgba(0,0,0,.06);
-}
-
-.table-wrap{
-overflow-x:auto;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-min-width:700px;
-}
-
-th,td{
-padding:11px;
-border-bottom:1px solid #eee;
-text-align:left;
-}
-
-th{
-background:#f9fafb;
-}
-
-.status{
-font-weight:bold;
-}
-
-.pendente{color:#d97706}
-.aprovado,.aprovada{color:#16a34a}
-.cancelado,.cancelada{color:#dc2626}
-
-.success{
-background:#16a34a;
-color:white;
-}
-
-.danger{
-background:#dc2626;
-color:white;
-}
-
-.actions{
-display:flex;
-gap:6px;
-flex-wrap:wrap;
-}
-
-.message{
-padding:12px;
-border-radius:10px;
-margin:10px 0;
-background:#eef2ff;
-}
-
-.error{
-background:#fee2e2;
-color:#991b1b;
-}
-
-.success-msg{
-background:#dcfce7;
-color:#166534;
-}
-
-.debug{
-margin-top:15px;
-font-size:13px;
-word-break:break-word;
-text-align:left;
-background:#f3f4f6;
-padding:12px;
-border-radius:10px;
-}
-
-.loading{
-text-align:center;
-padding:20px;
-}
-
-@media(max-width:600px){
-.container{padding:12px}
-}
-</style></head><body><!-- LOGIN --><div id="loginScreen" class="login"><div class="login-box"><h1>QuizUp Admin</h1><p>Acesso exclusivo do administrador</p><input
-id="email"
-type="email"
-placeholder="E-mail"
-autocomplete="email"
-
-«»
-
-<input
-id="password"
-type="password"
-placeholder="Senha"
-autocomplete="current-password"
-
-«»
-
-<button
-id="loginButton"
-class="primary"
-onclick="login()"
-
-«»
-
-Entrar
-</button>
-
-<div id="loginMessage"></div><div class="debug"><b>ID do administrador:</b><br>
-6a8f41f10032758d44de
-
-<br><br>
-
-<b>Projeto:</b><br>
-6a8e10e900245502244c
-
-</div></div>
-</div><!-- PAINEL --><div id="adminScreen" class="hidden"><header><h1>QuizUp Admin</h1><small id="adminUser"></small>
-
-<button
-class="logout"
-onclick="logout()"
-
-«»
-
-Sair
-</button>
-
-</header><main class="container"><div id="globalMessage"></div><div class="cards"><div class="card">
-Jogadores
-<strong id="totalJogadores">0</strong>
-</div><div class="card">
-Parceiros
-<strong id="totalParceiros">0</strong>
-</div><div class="card">
-Saques
-<strong id="totalSaques">0</strong>
-</div><div class="card">
-Pendentes
-<strong id="totalPendentes">0</strong>
-</div><div class="card">
-Aprovados
-<strong id="totalAprovados">0</strong>
-</div><div class="card">
-Cancelados
-<strong id="totalCancelados">0</strong>
-</div></div><!-- SAQUES --><section class="section"><h2>💸 Saques</h2><div class="table-wrap"><table><thead>
-<tr>
-<th>ID</th>
-<th>Usuário</th>
-<th>E-mail</th>
-<th>Valor</th>
-<th>Pix</th>
-<th>Status</th>
-<th>Ações</th>
-</tr>
-</thead><tbody id="saquesBody"><tr>
-<td colspan="7" class="loading">
-Carregando...
-</td>
-</tr></tbody></table></div></section><!-- JOGADORES --><section class="section"><h2>👥 Jogadores</h2><div class="table-wrap"><table><thead>
-<tr>
-<th>ID</th>
-<th>E-mail</th>
-<th>Nome</th>
-<th>Pontos</th>
-<th>Saldo</th>
-</tr>
-</thead><tbody id="jogadoresBody"><tr>
-<td colspan="5" class="loading">
-Carregando...
-</td>
-</tr></tbody></table></div></section><!-- PARCEIROS --><section class="section"><h2>🤝 Parceiros</h2><div class="table-wrap"><table><thead>
-<tr>
-<th>ID</th>
-<th>Nome</th>
-<th>E-mail</th>
-<th>Dados</th>
-</tr>
-</thead><tbody id="parceirosBody"><tr>
-<td colspan="4" class="loading">
-Carregando...
-</td>
-</tr></tbody></table></div></section><!-- MOVIMENTAÇÕES --><section class="section"><h2>📊 Movimentações de parceiros</h2><div class="table-wrap"><table><thead>
-<tr>
-<th>ID</th>
-<th>Parceiro</th>
-<th>Tipo</th>
-<th>Pontos</th>
-<th>Valor</th>
-<th>Descrição</th>
-</tr>
-</thead><tbody id="movimentacoesBody"><tr>
-<td colspan="6" class="loading">
-Carregando...
-</td>
-</tr></tbody></table></div></section></main></div><script type="module">
-
-import {
-Client,
-Account,
-TablesDB,
-Query
-}
-from "https://cdn.jsdelivr.net/npm/appwrite@17.0.0/+esm";
-
-
-/* =====================================================
-CONFIGURAÇÃO APPWRITE
-===================================================== */
-
-const ENDPOINT =
-"https://fra.cloud.appwrite.io/v1";
-
-const PROJECT_ID =
-"6a8e10e900245502244c";
-
-const DATABASE_ID =
-"6a8e11820008abab052e";
-
-const ADMIN_USER_ID =
-"6a8f41f10032758d44de";
-
-
-const TABLES={
-jogadores:"jogadores",
-parceiros:"parceiros",
-saques:"saques",
-movimentacoes:"movimentacoes_parceiros"
-};
-
-
-/* =====================================================
-CLIENTE
-===================================================== */
-
-const client =
-new Client()
-.setEndpoint(ENDPOINT)
-.setProject(PROJECT_ID);
-
-const account =
-new Account(client);
-
-const tablesDB =
-new TablesDB(client);
-
-
-/* =====================================================
-ELEMENTOS
-===================================================== */
-
-const loginScreen =
-document.getElementById("loginScreen");
-
-const adminScreen =
-document.getElementById("adminScreen");
-
-const loginMessage =
-document.getElementById("loginMessage");
-
-const globalMessage =
-document.getElementById("globalMessage");
-
-
-/* =====================================================
-ESCAPAR HTML
-===================================================== */
-
-function escapeHTML(valor){
-
-return String(valor ?? "")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
-
-}
-
-
-/* =====================================================
-MENSAGEM LOGIN
-===================================================== */
-
-function mostrarLoginErro(texto){
-
-loginMessage.innerHTML=
-`
-<div class="message error">
-${escapeHTML(texto)}
-</div>
-`;
-
-}
-
-
-/* =====================================================
-MENSAGEM PAINEL
-===================================================== */
-
-function mostrarMensagem(texto,ok=true){
-
-globalMessage.innerHTML=
-`
-<div class="message ${ok?"success-msg":"error"}">
-${escapeHTML(texto)}
-</div>
-`;
-
-}
-
-
-/* =====================================================
-LOGIN
-===================================================== */
-
-window.login=async function(){
-
-const email=
-document
-.getElementById("email")
-.value
-.trim();
-
-const password=
-document
-.getElementById("password")
-.value;
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>QuizUp Admin</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #222;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 18px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    header small {
+      opacity: .8;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .login {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-box {
+      background: white;
+      width: 100%;
+      max-width: 420px;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.10);
+      text-align: center;
+    }
+
+    .login-box h1 {
+      margin-top: 0;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      margin: 8px 0;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .primary {
+      width: 100%;
+      background: #111827;
+      color: white;
+      margin-top: 10px;
+    }
+
+    .danger {
+      background: #dc2626;
+      color: white;
+    }
+
+    .success {
+      background: #16a34a;
+      color: white;
+    }
+
+    .logout {
+      background: #374151;
+      color: white;
+      float: right;
+      margin-top: -32px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.06);
+    }
+
+    .card strong {
+      display: block;
+      font-size: 28px;
+      margin-top: 8px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.06);
+    }
+
+    .section h2 {
+      margin-top: 0;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+
+    th,
+    td {
+      padding: 11px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #f9fafb;
+    }
+
+    .status {
+      font-weight: bold;
+    }
+
+    .pendente {
+      color: #d97706;
+    }
+
+    .aprovado,
+    .aprovada {
+      color: #16a34a;
+    }
+
+    .cancelado,
+    .cancelada {
+      color: #dc2626;
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .message {
+      padding: 12px;
+      border-radius: 10px;
+      margin: 10px 0;
+      background: #eef2ff;
+      word-break: break-word;
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .success-msg {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .info-box {
+      margin-top: 15px;
+      padding: 10px;
+      background: #f3f4f6;
+      border-radius: 10px;
+      font-size: 12px;
+      color: #555;
+      word-break: break-all;
+    }
+
+    @media (max-width: 600px) {
+
+      .container {
+        padding: 12px;
+      }
+
+      .card {
+        padding: 15px;
+      }
+
+      .login-box {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =====================================================
+       LOGIN
+  ====================================================== -->
+
+  <div id="loginScreen" class="login">
+
+    <div class="login-box">
+
+      <h1>QuizUp Admin</h1>
+
+      <p>
+        Acesso exclusivo do administrador
+      </p>
+
+      <input
+        id="email"
+        type="email"
+        placeholder="E-mail"
+        autocomplete="email"
+      >
+
+      <input
+        id="password"
+        type="password"
+        placeholder="Senha"
+        autocomplete="current-password"
+      >
+
+      <button
+        id="loginButton"
+        class="primary"
+        onclick="login()"
+      >
+        Entrar
+      </button>
+
+      <div id="loginMessage"></div>
+
+      <div class="info-box">
+        <strong>ID do administrador:</strong><br>
+        6a8f41f10032758d44de
+        <br><br>
+
+        <strong>Projeto:</strong><br>
+        6a8e10e900245502244c
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       PAINEL ADMIN
+  ====================================================== -->
+
+  <div id="adminScreen" class="hidden">
+
+    <header>
+
+      <h1>QuizUp Admin</h1>
+
+      <small id="adminUser"></small>
 
-if(!email || !password){
-
-mostrarLoginErro(
-"Digite seu e-mail e sua senha."
-);
-
-return;
+      <button
+        class="logout"
+        onclick="logout()"
+      >
+        Sair
+      </button>
 
-}
+    </header>
 
 
-const button=
-document.getElementById(
-"loginButton"
-);
+    <main class="container">
 
-button.disabled=true;
-button.textContent="Entrando...";
+      <div id="globalMessage"></div>
 
-loginMessage.innerHTML="";
 
+      <!-- =================================================
+           RESUMO
+      ================================================== -->
 
-try{
+      <div class="cards">
 
-/* ETAPA 1 */
+        <div class="card">
+          Jogadores
+          <strong id="totalJogadores">0</strong>
+        </div>
 
-mostrarLoginErro(
-"1/4 Conectando ao Appwrite..."
-);
+        <div class="card">
+          Parceiros
+          <strong id="totalParceiros">0</strong>
+        </div>
 
+        <div class="card">
+          Saques
+          <strong id="totalSaques">0</strong>
+        </div>
 
-/* ETAPA 2 */
+        <div class="card">
+          Pendentes
+          <strong id="totalPendentes">0</strong>
+        </div>
 
-await account.createEmailPasswordSession({
-email:email,
-password:password
-});
+        <div class="card">
+          Aprovados
+          <strong id="totalAprovados">0</strong>
+        </div>
 
+        <div class="card">
+          Cancelados
+          <strong id="totalCancelados">0</strong>
+        </div>
 
-/* LOGIN OK */
+      </div>
 
-mostrarLoginErro(
-"2/4 Login realizado. Verificando usuário..."
-);
 
+      <!-- =================================================
+           SAQUES
+      ================================================== -->
 
-/* ETAPA 3 */
+      <section class="section">
 
-const usuario=
-await account.get();
+        <h2>💸 Saques</h2>
 
+        <div class="table-wrap">
 
-console.log(
-"USUÁRIO APPWRITE:",
-usuario
-);
+          <table>
 
+            <thead>
 
-/* MOSTRAR ID REAL */
+              <tr>
+                <th>ID</th>
+                <th>Usuário</th>
+                <th>E-mail</th>
+                <th>Valor</th>
+                <th>Pix</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
 
-mostrarLoginErro(
-"3/4 ID encontrado: " +
-usuario.$id
-);
+            </thead>
 
+            <tbody id="saquesBody">
 
-/* VERIFICAR ADMIN */
+              <tr>
 
-if(
-usuario.$id !==
-ADMIN_USER_ID
-){
+                <td
+                  colspan="7"
+                  class="loading"
+                >
+                  Carregando...
+                </td>
 
-await account.deleteSession({
-sessionId:"current"
-});
+              </tr>
 
-throw new Error(
-"ID da conta diferente. ID encontrado: " +
-usuario.$id
-);
+            </tbody>
 
-}
+          </table>
 
+        </div>
 
-/* ETAPA 4 */
+      </section>
 
-mostrarLoginErro(
-"4/4 Administrador confirmado. Abrindo painel..."
-);
 
+      <!-- =================================================
+           JOGADORES
+      ================================================== -->
 
-/* ABRIR */
+      <section class="section">
 
-document
-.getElementById("adminUser")
-.textContent=
-usuario.email || email;
+        <h2>👥 Jogadores</h2>
 
-loginScreen
-.classList
-.add("hidden");
+        <div class="table-wrap">
 
-adminScreen
-.classList
-.remove("hidden");
+          <table>
 
+            <thead>
 
-loginMessage.innerHTML="";
+              <tr>
+                <th>ID</th>
+                <th>E-mail</th>
+                <th>Nome</th>
+                <th>Pontos</th>
+                <th>Saldo</th>
+              </tr>
 
+            </thead>
 
-/* CARREGAR */
+            <tbody id="jogadoresBody">
 
-await carregarPainel();
+              <tr>
 
+                <td
+                  colspan="5"
+                  class="loading"
+                >
+                  Carregando...
+                </td>
 
-}catch(error){
+              </tr>
 
-console.error(
-"ERRO COMPLETO:",
-error
-);
+            </tbody>
 
+          </table>
 
-mostrarLoginErro(
-"ERRO: " +
-(error?.message ||
-"erro desconhecido")
-);
+        </div>
 
-}finally{
+      </section>
 
-button.disabled=false;
-button.textContent="Entrar";
 
-}
+      <!-- =================================================
+           PARCEIROS
+      ================================================== -->
 
-};
+      <section class="section">
 
+        <h2>🤝 Parceiros</h2>
 
-/* =====================================================
-VERIFICAR SESSÃO
-===================================================== */
+        <div class="table-wrap">
 
-async function verificarSessao(){
+          <table>
 
-try{
+            <thead>
 
-const usuario=
-await account.get();
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Dados</th>
+              </tr>
 
-if(
-usuario.$id ===
-ADMIN_USER_ID
-){
+            </thead>
 
-document
-.getElementById("adminUser")
-.textContent=
-usuario.email || "";
+            <tbody id="parceirosBody">
 
-loginScreen
-.classList
-.add("hidden");
+              <tr>
 
-adminScreen
-.classList
-.remove("hidden");
+                <td
+                  colspan="4"
+                  class="loading"
+                >
+                  Carregando...
+                </td>
 
-await carregarPainel();
+              </tr>
 
-}
+            </tbody>
 
-}catch(error){
+          </table>
 
-console.log(
-"Nenhuma sessão ativa."
-);
+        </div>
 
-}
+      </section>
 
-}
 
+      <!-- =================================================
+           MOVIMENTAÇÕES
+      ================================================== -->
 
-/* =====================================================
-LOGOUT
-===================================================== */
+      <section class="section">
 
-window.logout=async function(){
+        <h2>📊 Movimentações de parceiros</h2>
 
-try{
+        <div class="table-wrap">
 
-await account.deleteSession({
-sessionId:"current"
-});
+          <table>
 
-}catch(error){
+            <thead>
 
-console.error(error);
+              <tr>
+                <th>ID</th>
+                <th>Parceiro</th>
+                <th>Tipo</th>
+                <th>Pontos</th>
+                <th>Valor</th>
+                <th>Descrição</th>
+              </tr>
 
-}
+            </thead>
 
-adminScreen
-.classList
-.add("hidden");
+            <tbody id="movimentacoesBody">
 
-loginScreen
-.classList
-.remove("hidden");
+              <tr>
 
-};
+                <td
+                  colspan="6"
+                  class="loading"
+                >
+                  Carregando...
+                </td>
 
+              </tr>
 
-/* =====================================================
-LISTAR TABELA
-===================================================== */
+            </tbody>
 
-async function listarTabela(
-tableId
-){
+          </table>
 
-const resultado=
-await tablesDB.listRows({
+        </div>
 
-databaseId:
-DATABASE_ID,
+      </section>
 
-tableId:
-tableId,
+    </main>
 
-queries:[
-Query.limit(100)
-]
+  </div>
 
-});
 
-return resultado.rows || [];
+  <!-- =====================================================
+       APPWRITE
+  ====================================================== -->
 
-}
+  <script type="module">
 
+    import {
+      Client,
+      Account,
+      TablesDB,
+      Query
+    } from "https://cdn.jsdelivr.net/npm/appwrite@17.0.0/+esm";
 
-/* =====================================================
-CARREGAR PAINEL
-===================================================== */
 
-async function carregarPainel(){
+    /* =====================================================
+       CONFIGURAÇÃO
+    ====================================================== */
 
-mostrarMensagem(
-"Carregando dados do QuizUp..."
-);
+    const APPWRITE_ENDPOINT =
+      "https://fra.cloud.appwrite.io/v1";
 
+    const PROJECT_ID =
+      "6a8e10e900245502244c";
 
-try{
+    const DATABASE_ID =
+      "6a8e11820008abab052e";
 
-const [
-jogadores,
-parceiros,
-saques,
-movimentacoes
-]=await Promise.all([
+    const ADMIN_USER_ID =
+      "6a8f41f10032758d44de";
 
-listarTabela(
-TABLES.jogadores
-),
 
-listarTabela(
-TABLES.parceiros
-),
+    const TABLES = {
 
-listarTabela(
-TABLES.saques
-),
+      jogadores:
+        "jogadores",
 
-listarTabela(
-TABLES.movimentacoes
-)
+      parceiros:
+        "parceiros",
 
-]);
+      saques:
+        "saques",
 
+      movimentacoes:
+        "movimentacoes_parceiros"
 
-atualizarResumo(
-jogadores,
-parceiros,
-saques
-);
+    };
 
-mostrarJogadores(
-jogadores
-);
 
-mostrarSaques(
-saques
-);
+    /* =====================================================
+       CLIENTE APPWRITE
+    ====================================================== */
 
-mostrarParceiros(
-parceiros
-);
+    const client =
+      new Client();
 
-mostrarMovimentacoes(
-movimentacoes
-);
+    client
+      .setEndpoint(
+        APPWRITE_ENDPOINT
+      )
+      .setProject(
+        PROJECT_ID
+      );
 
-globalMessage.innerHTML="";
 
+    const account =
+      new Account(client);
 
-}catch(error){
 
-console.error(
-"ERRO AO CARREGAR BANCO:",
-error
-);
+    const tablesDB =
+      new TablesDB(client);
 
-mostrarMensagem(
-"Login funcionou, mas houve erro ao acessar as tabelas: " +
-(error?.message || "erro desconhecido"),
-false
-);
 
-}
+    /* =====================================================
+       ELEMENTOS
+    ====================================================== */
 
-}
+    const loginScreen =
+      document.getElementById(
+        "loginScreen"
+      );
 
+    const adminScreen =
+      document.getElementById(
+        "adminScreen"
+      );
 
-/* =====================================================
-RESUMO
-===================================================== */
+    const loginMessage =
+      document.getElementById(
+        "loginMessage"
+      );
 
-function atualizarResumo(
-jogadores,
-parceiros,
-saques
-){
+    const globalMessage =
+      document.getElementById(
+        "globalMessage"
+      );
 
-const pendentes=
-saques.filter(
-s =>
-String(s.status||"")
-.toLowerCase()
-.trim()==="pendente"
-);
 
-const aprovados=
-saques.filter(
-s =>
-[
-"aprovado",
-"aprovada"
-]
-.includes(
-String(s.status||"")
-.toLowerCase()
-.trim()
-)
-);
+    /* =====================================================
+       ESCAPAR HTML
+    ====================================================== */
 
-const cancelados=
-saques.filter(
-s =>
-[
-"cancelado",
-"cancelada"
-]
-.includes(
-String(s.status||"")
-.toLowerCase()
-.trim()
-)
-);
+    function escapeHTML(valor) {
 
+      return String(
+        valor ?? ""
+      )
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+        .replace(
+          /</g,
+          "&lt;"
+        )
+        .replace(
+          />/g,
+          "&gt;"
+        )
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+        .replace(
+          /'/g,
+          "&#039;"
+        );
 
-document.getElementById(
-"totalJogadores"
-).textContent=
-jogadores.length;
+    }
 
-document.getElementById(
-"totalParceiros"
-).textContent=
-parceiros.length;
 
-document.getElementById(
-"totalSaques"
-).textContent=
-saques.length;
+    /* =====================================================
+       MENSAGEM LOGIN
+    ====================================================== */
 
-document.getElementById(
-"totalPendentes"
-).textContent=
-pendentes.length;
+    function mostrarLoginErro(
+      texto
+    ) {
 
-document.getElementById(
-"totalAprovados"
-).textContent=
-aprovados.length;
+      loginMessage.innerHTML =
+        `
+        <div class="message error">
+          ${escapeHTML(texto)}
+        </div>
+        `;
 
-document.getElementById(
-"totalCancelados"
-).textContent=
-cancelados.length;
+    }
 
-}
 
+    /* =====================================================
+       MENSAGEM PAINEL
+    ====================================================== */
 
-/* =====================================================
-JOGADORES
-===================================================== */
+    function mostrarMensagem(
+      texto,
+      sucesso = true
+    ) {
 
-function mostrarJogadores(
-jogadores
-){
+      globalMessage.innerHTML =
+        `
+        <div class="message ${
+          sucesso
+            ? "success-msg"
+            : "error"
+        }">
+          ${escapeHTML(texto)}
+        </div>
+        `;
 
-const body=
-document.getElementById(
-"jogadoresBody"
-);
+      setTimeout(
+        () => {
+          globalMessage.innerHTML = "";
+        },
+        5000
+      );
 
+    }
 
-if(!jogadores.length){
 
-body.innerHTML=
-`
-<tr>
-<td colspan="5">
-Nenhum jogador encontrado.
-</td>
-</tr>
-`;
+    /* =====================================================
+       LOGIN
+    ====================================================== */
 
-return;
+    window.login =
+      async function () {
 
-}
+        const email =
+          document
+            .getElementById(
+              "email"
+            )
+            .value
+            .trim();
 
+        const password =
+          document
+            .getElementById(
+              "password"
+            )
+            .value;
 
-body.innerHTML=
-jogadores.map(
-jogador=>{
 
-const nome=
-jogador.nome ||
-jogador.name ||
-"-";
+        if (
+          !email ||
+          !password
+        ) {
 
-const email=
-jogador.email ||
-jogador["E-mail"] ||
-"-";
+          mostrarLoginErro(
+            "Digite seu e-mail e sua senha."
+          );
 
-const pontos=
-jogador.pontos ??
-jogador.Pontos ??
-0;
+          return;
 
-const saldo=
-jogador.equilibrio ??
-jogador["equilíbrio"] ??
-jogador.saldo ??
-0;
+        }
 
 
-return`
-<tr>
+        const button =
+          document.getElementById(
+            "loginButton"
+          );
 
-<td>
-${escapeHTML(jogador.$id)}
-</td>
 
-<td>
-${escapeHTML(email)}
-</td>
+        button.disabled =
+          true;
 
-<td>
-${escapeHTML(nome)}
-</td>
+        button.textContent =
+          "Entrando...";
 
-<td>
-${escapeHTML(pontos)}
-</td>
+        loginMessage.innerHTML =
+          "";
 
-<td>
-${escapeHTML(saldo)}
-</td>
 
-</tr>
-`;
+        try {
 
-}
-).join("");
+          /*
+           * Primeiro cria a sessão.
+           */
 
-}
+          await account
+            .createEmailPasswordSession({
+              email:
+                email,
 
+              password:
+                password
+            });
 
-/* =====================================================
-SAQUES
-===================================================== */
 
-function mostrarSaques(
-saques
-){
+          /*
+           * Depois verifica
+           * quem está logado.
+           */
 
-const body=
-document.getElementById(
-"saquesBody"
-);
+          const usuario =
+            await account.get();
 
 
-if(!saques.length){
+          console.log(
+            "USUÁRIO LOGADO:",
+            usuario
+          );
 
-body.innerHTML=
-`
-<tr>
-<td colspan="7">
-Nenhum saque encontrado.
-</td>
-</tr>
-`;
 
-return;
+          /*
+           * Segurança:
+           * somente o ID configurado
+           * pode abrir o painel.
+           */
 
-}
+          if (
+            usuario.$id !==
+            ADMIN_USER_ID
+          ) {
 
+            await account
+              .deleteSession({
+                sessionId:
+                  "current"
+              });
 
-body.innerHTML=
-saques.map(
-saque=>{
+            throw new Error(
+              "Esta conta não é o administrador autorizado."
+            );
 
-const status=
-String(
-saque.status || ""
-)
-.toLowerCase()
-.trim();
+          }
 
 
-const usuario=
-saque["ID do usuário."] ||
-saque["ID do usuário"] ||
-saque.usuario ||
-saque.userId ||
-"-";
+          /*
+           * Login autorizado.
+           */
 
+          document
+            .getElementById(
+              "adminUser"
+            )
+            .textContent =
+              usuario.email;
 
-const email=
-saque.email ||
-saque["e-mail"] ||
-saque["E-mail"] ||
-"-";
 
+          loginScreen
+            .classList
+            .add(
+              "hidden"
+            );
 
-const valor=
-saque.quantia ??
-saque.valor_jogador ??
-saque.valor ??
-0;
 
+          adminScreen
+            .classList
+            .remove(
+              "hidden"
+            );
 
-const pix=
-saque.pix_key ||
-saque.pix ||
-"-";
 
+          /*
+           * Agora carrega
+           * os dados do painel.
+           */
 
-let acoes="-";
+          await carregarPainel();
 
 
-if(status==="pendente"){
+        } catch (error) {
 
-acoes=`
-<div class="actions">
+          console.error(
+            "ERRO NO LOGIN:",
+            error
+          );
 
-<button
-class="success"
-onclick="aprovarSaque('${escapeHTML(saque.$id)}')"
->
-Aprovar
-</button>
 
-<button
-class="danger"
-onclick="cancelarSaque('${escapeHTML(saque.$id)}')"
->
-Cancelar
-</button>
+          mostrarLoginErro(
+            error?.message ||
+            "Não foi possível entrar no painel."
+          );
 
-</div>
-`;
 
-}
+        } finally {
 
+          button.disabled =
+            false;
 
-return`
-<tr>
+          button.textContent =
+            "Entrar";
 
-<td>
-${escapeHTML(saque.$id)}
-</td>
+        }
 
-<td>
-${escapeHTML(usuario)}
-</td>
+      };
 
-<td>
-${escapeHTML(email)}
-</td>
 
-<td>
-R$ ${escapeHTML(valor)}
-</td>
+    /* =====================================================
+       VERIFICAR SESSÃO EXISTENTE
+    ====================================================== */
 
-<td>
-${escapeHTML(pix)}
-</td>
+    async function verificarSessaoExistente() {
 
-<td class="status ${escapeHTML(status)}">
-${escapeHTML(status || "-")}
-</td>
+      try {
 
-<td>
-${acoes}
-</td>
+        const usuario =
+          await account.get();
 
-</tr>
-`;
 
-}
-).join("");
+        console.log(
+          "SESSÃO EXISTENTE:",
+          usuario
+        );
 
-}
 
+        if (
+          usuario.$id !==
+          ADMIN_USER_ID
+        ) {
 
-/* =====================================================
-APROVAR SAQUE
-===================================================== */
+          await account
+            .deleteSession({
+              sessionId:
+                "current"
+            });
 
-window.aprovarSaque=
-async function(rowId){
+          return;
 
-if(
-!confirm(
-"Tem certeza que deseja APROVAR este saque?"
-)
-)return;
+        }
 
 
-try{
+        document
+          .getElementById(
+            "adminUser"
+          )
+          .textContent =
+            usuario.email;
 
-await tablesDB.updateRow({
 
-databaseId:
-DATABASE_ID,
+        loginScreen
+          .classList
+          .add(
+            "hidden"
+          );
 
-tableId:
-TABLES.saques,
 
-rowId:
-rowId,
+        adminScreen
+          .classList
+          .remove(
+            "hidden"
+          );
 
-data:{
-status:"aprovado"
-}
 
-});
+        await carregarPainel();
 
-mostrarMensagem(
-"Saque aprovado com sucesso."
-);
 
-await carregarPainel();
+      } catch (error) {
 
-}catch(error){
+        console.log(
+          "Nenhuma sessão administrativa ativa."
+        );
 
-console.error(error);
+      }
 
-mostrarMensagem(
-"Erro ao aprovar saque: "+
-(error?.message||"erro desconhecido"),
-false
-);
+    }
 
-}
 
-};
+    /* =====================================================
+       LOGOUT
+    ====================================================== */
 
+    window.logout =
+      async function () {
 
-/* =====================================================
-CANCELAR SAQUE
-===================================================== */
+        try {
 
-window.cancelarSaque=
-async function(rowId){
+          await account
+            .deleteSession({
+              sessionId:
+                "current"
+            });
 
-if(
-!confirm(
-"Tem certeza que deseja CANCELAR este saque?"
-)
-)return;
+        } catch (error) {
 
+          console.error(
+            "Erro ao sair:",
+            error
+          );
 
-try{
+        }
 
-await tablesDB.updateRow({
 
-databaseId:
-DATABASE_ID,
+        adminScreen
+          .classList
+          .add(
+            "hidden"
+          );
 
-tableId:
-TABLES.saques,
 
-rowId:
-rowId,
+        loginScreen
+          .classList
+          .remove(
+            "hidden"
+          );
 
-data:{
-status:"cancelado"
-}
 
-});
+        document
+          .getElementById(
+            "password"
+          )
+          .value =
+            "";
 
-mostrarMensagem(
-"Saque cancelado com sucesso."
-);
+      };
 
-await carregarPainel();
 
-}catch(error){
+    /* =====================================================
+       LISTAR TABELA
+    ====================================================== */
 
-console.error(error);
+    async function listarTabela(
+      tableId
+    ) {
 
-mostrarMensagem(
-"Erro ao cancelar saque: "+
-(error?.message||"erro desconhecido"),
-false
-);
+      const resultado =
+        await tablesDB
+          .listRows({
 
-}
+            databaseId:
+              DATABASE_ID,
 
-};
+            tableId:
+              tableId,
 
+            queries: [
+              Query.limit(100)
+            ]
 
-/* =====================================================
-PARCEIROS
-===================================================== */
+          });
 
-function mostrarParceiros(
-parceiros
-){
 
-const body=
-document.getElementById(
-"parceirosBody"
-);
+      return (
+        resultado.rows ||
+        []
+      );
 
+    }
 
-if(!parceiros.length){
 
-body.innerHTML=
-`
-<tr>
-<td colspan="4">
-Nenhum parceiro encontrado.
-</td>
-</tr>
-`;
+    /* =====================================================
+       CARREGAR PAINEL
+    ====================================================== */
 
-return;
+    async function carregarPainel() {
 
-}
+      mostrarMensagem(
+        "Carregando dados do QuizUp..."
+      );
 
 
-body.innerHTML=
-parceiros.map(
-parceiro=>{
+      try {
 
-const nome=
-parceiro.nome ||
-parceiro.name ||
-"-";
+        const resultado =
+          await Promise.all([
 
-const email=
-parceiro.email ||
-parceiro["E-mail"] ||
-"-";
+            listarTabela(
+              TABLES.jogadores
+            ),
 
+            listarTabela(
+              TABLES.parceiros
+            ),
 
-return`
-<tr>
+            listarTabela(
+              TABLES.saques
+            ),
 
-<td>
-${escapeHTML(parceiro.$id)}
-</td>
+            listarTabela(
+              TABLES.movimentacoes
+            )
 
-<td>
-${escapeHTML(nome)}
-</td>
+          ]);
 
-<td>
-${escapeHTML(email)}
-</td>
 
-<td>
-${escapeHTML(
-JSON.stringify(parceiro)
-)}
-</td>
+        const jogadores =
+          resultado[0];
 
-</tr>
-`;
+        const parceiros =
+          resultado[1];
 
-}
-).join("");
+        const saques =
+          resultado[2];
 
-}
+        const movimentacoes =
+          resultado[3];
 
 
-/* =====================================================
-MOVIMENTAÇÕES
-===================================================== */
+        atualizarResumo(
+          jogadores,
+          parceiros,
+          saques
+        );
 
-function mostrarMovimentacoes(
-movimentacoes
-){
 
-const body=
-document.getElementById(
-"movimentacoesBody"
-);
+        mostrarJogadores(
+          jogadores
+        );
 
 
-if(!movimentacoes.length){
+        mostrarSaques(
+          saques
+        );
 
-body.innerHTML=
-`
-<tr>
-<td colspan="6">
-Nenhuma movimentação encontrada.
-</td>
-</tr>
-`;
 
-return;
+        mostrarParceiros(
+          parceiros
+        );
 
-}
 
+        mostrarMovimentacoes(
+          movimentacoes
+        );
 
-body.innerHTML=
-movimentacoes.map(
-mov=>{
 
-return`
-<tr>
+        globalMessage.innerHTML =
+          "";
 
-<td>
-${escapeHTML(mov.$id)}
-</td>
 
-<td>
-${escapeHTML(
-mov.parceiro_id || "-"
-)}
-</td>
+      } catch (error) {
 
-<td>
-${escapeHTML(
-mov.tipo || "-"
-)}
-</td>
+        console.error(
+          "ERRO AO CARREGAR PAINEL:",
+          error
+        );
 
-<td>
-${escapeHTML(
-mov.pontos ?? 0
-)}
-</td>
 
-<td>
-${escapeHTML(
-mov.valor ?? 0
-)}
-</td>
+        mostrarMensagem(
+          "Erro ao carregar o banco: " +
+          (
+            error?.message ||
+            "erro desconhecido"
+          ),
+          false
+        );
 
-<td>
-${escapeHTML(
-mov.descricao || "-"
-)}
-</td>
+      }
 
-</tr>
-`;
+    }
 
-}
-).join("");
 
-}
+    /* =====================================================
+       RESUMO
+    ====================================================== */
 
+    function atualizarResumo(
+      jogadores,
+      parceiros,
+      saques
+    ) {
 
-/* =====================================================
-INICIAR
-===================================================== */
+      const pendentes =
+        saques.filter(
+          saque =>
+            normalizarStatus(
+              saque.status
+            ) ===
+            "pendente"
+        );
 
-verificarSessao();
 
-</script></body>
-             </html>
+      const aprovados =
+        saques.filter(
+          saque =>
+            [
+              "aprovado",
+              "aprovada"
+            ].includes(
+              normalizarStatus(
+                saque.status
+              )
+            )
+        );
+
+
+      const cancelados =
+        saques.filter(
+          saque =>
+            [
+              "cancelado",
+              "cancelada"
+            ].includes(
+              normalizarStatus(
+                saque.status
+              )
+            )
+        );
+
+
+      document
+        .getElementById(
+          "totalJogadores"
+        )
+        .textContent =
+          jogadores.length;
+
+
+      document
+        .getElementById(
+          "totalParceiros"
+        )
+        .textContent =
+          parceiros.length;
+
+
+      document
+        .getElementById(
+          "totalSaques"
+        )
+        .textContent =
+          saques.length;
+
+
+      document
+        .getElementById(
+          "totalPendentes"
+        )
+        .textContent =
+          pendentes.length;
+
+
+      document
+        .getElementById(
+          "totalAprovados"
+        )
+        .textContent =
+          aprovados.length;
+
+
+      document
+        .getElementById(
+          "totalCancelados"
+        )
+        .textContent =
+          cancelados.length;
+
+    }
+
+
+    /* =====================================================
+       STATUS
+    ====================================================== */
+
+    function normalizarStatus(
+      status
+    ) {
+
+      return String(
+        status || ""
+      )
+        .toLowerCase()
+        .trim();
+
+    }
+
+
+    /* =====================================================
+       JOGADORES
+    ====================================================== */
+
+    function mostrarJogadores(
+      jogadores
+    ) {
+
+      const body =
+        document.getElementById(
+          "jogadoresBody"
+        );
+
+
+      if (
+        !jogadores.length
+      ) {
+
+        body.innerHTML =
+          `
+          <tr>
+            <td colspan="5">
+              Nenhum jogador encontrado.
+            </td>
+          </tr>
+          `;
+
+        return;
+
+      }
+
+
+      body.innerHTML =
+        jogadores
+          .map(
+            jogador => {
+
+              const nome =
+                jogador.nome ||
+                jogador.name ||
+                "-";
+
+
+              const email =
+                jogador.email ||
+                jogador["E-mail"] ||
+                "-";
+
+
+              const pontos =
+                jogador.pontos ??
+                jogador.Pontos ??
+                0;
+
+
+              const saldo =
+                jogador.equilibrio ??
+                jogador["equilíbrio"] ??
+                jogador.saldo ??
+                0;
+
+
+              return `
+                <tr>
+
+                  <td>
+                    ${escapeHTML(
+                      jogador.$id
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(
+                      email
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(
+                      nome
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(
+                      pontos
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(
+                      saldo
+                    )}
+                  </td>
+
+                </tr>
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+
+
+    /* =====================================================
+       SAQUES
+    ====================================================== */
+
+    function mostrarSaques(
+      saques
+    ) {
+
+      const body =
+        document.getElementById(
+          "saquesBody"
+        );
+
+
+      if (
+        !saques.length
+      ) {
+
+        body.innerHTML =
+          `
+          <tr>
+            <td colspan="7">
+              Nenhum saque encontrado.
+            </td>
+          </tr>
+          `;
+
+        return;
+
+      }
+
+
+      body.innerHTML =
+        saques
+          .map(
+            saque => {
+
+              const status =
+                normalizarStatus(
+                  saque.status
+                );
+
+
+              const usuario =
+                saque["ID do usuário."] ||
+                saque["ID do usuário"] ||
+                saque.usuario ||
+                saque.userId ||
+                "-";
+
+
+              const email =
+                saque.email ||
+                saque["e-mail"] ||
+                saque["E-mail"] ||
+                "-";
+
+
+              const valor =
+                saque.quantia ??
+                saque.valor_jogador ??
+                saque.valor ??
+                0;
+
+
+              const pix =
+                saque.pix_key ||
+                saque.pix ||
+                "-";
+
+
+              let acoes =
+                "-";
+
+
+              if (
+                status ===
+                "pendente"
+              ) {
+
+                acoes =
+                  `
+                  <div class="actions">
+
+                    <button
+                      class="success"
+                      onclick="aprovarSaque('${escapeHTML(
+                        saque.$id
+                      )}')"
+                    >
+                      Aprovar
+                    </button>
+
+                    <button
+                      class="danger"
+                      onclick="cancelarSaque('${escapeHTML(
+                        saque.$id
+                      )}')"
+                    >
+                      Cancelar
+                    </button>
+
+                  </div>
+                  `;
+
+              }
+
+
+              return `
+                <tr>
+
+                  <td>
+                    ${escapeHTML(
+                      saque.$id
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(
+                      usuario
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(
+                      email
+                    )}
+                  </td>
+
+                  <td>
+                    R$ ${escapeHTML(
+                      valor
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(
+                      pix
+                    )}
+                  </td>
+
+                  <td
+                    class="status ${escapeHTML(
+                      status
+                    )}"
+                  >
+                    ${escapeHTML(
+                      status || "-"
+                    )}
+                  </td>
+
+                  <td>
+                    ${acoes}
+                  </td>
+
+                </tr>
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+
+
+    /* =====================================================
+       APROVAR SAQUE
+    ====================================================== */
+
+    window.aprovarSaque =
+      async function (
+        rowId
+      ) {
+
+        if (
+          !confirm(
+            "Tem certeza que deseja APROVAR este saque?"
+          )
+        ) {
+
+          return;
+
+        }
+
+
+        try {
+
+          await tablesDB
+            .updateRow({
+
+              databaseId:
+                DATABASE_ID,
+
+              tableId:
+                TABLES.saques,
+
+              rowId:
+                rowId,
+
+              data: {
+                status:
+                  "aprovado"
+              }
+
+            });
+
+
+          mostrarMensagem(
+            "Saque aprovado com sucesso."
+          );
+
+
+          await carregarPainel();
+
+
+        } catch (error) {
+
+          console.error(
+            "ERRO AO APROVAR:",
+            error
+          );
+
+
+          mostrarMensagem(
+            "Não foi possível aprovar o saque: " +
+            (
+              error?.message ||
+              "erro desconhecido"
+            ),
+            false
+          );
+
+        }
+
+      };
+
+
+    /* =====================================================
+       CANCELAR SAQUE
+    ====================================================== */
+
+    window.cancelarSaque =
+      async function (
+        rowId
+      ) {
+
+        if (
+          !confirm(
+            "Tem certeza que deseja CANCELAR este saque?"
+          )
+        ) {
+
+          return;
+
+        }
+
+
+        try {
+
+          await tablesDB
+            .updateRow({
+
+              databaseId:
+                DATABASE_ID,
+
+              tableId:
+                TABLES.saques,
+
+              rowId:
+                rowId,
+
+              data: {
+                status:
+                  "cancelado"
+              }
+
+            });
+
+
+          mostrarMensagem(
+            "Saque cancelado com sucesso."
+          );
+
+
+          await carregarPainel();
+
+
+        } catch (error) {
+
+          console.error(
+            "ERRO AO CANCELAR:",
+            error
+          );
+
+
+          mostrarMensagem(
+            "Não foi possível cancelar o saque: " +
+            (
+              error?.message ||
+              "erro desconhecido"
+            ),
+            false
+          );
+
+        }
+
+      };
+
+
+    /* =====================================================
+       PARCEIROS
+    ====================================================== */
+
+    function mostrarParceiros(
+      parceiros
+    ) {
+
+      const body =
+        document.getElementById(
+          "parceirosBody"
+        );
+
+
+      if (
+        !parceiros.length
+      ) {
+
+        body.innerHTML =
+          `
+          <tr>
+            <td colspan="4">
+              Nenhum parceiro encontrado.
+            </td>
+          </tr>
+          `;
+
+        return;
+
+      }
+
+
+      body.innerHTML =
+        parceiros
+          .map(
+            parceiro => {
+
+              const nome =
+                parceiro.nome ||
+                parceiro.name ||
+                "-";
+
+
+              const email =
+                parceiro.email ||
+                parceiro["E-mail"] ||
+                "-";
+
+
+              return `
+                <tr>
+
+                  <td>
+                    ${escapeHTML(
+                      parceiro.$id
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(
+                      nome
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(
+                      email
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(
+                      JSON.stringify(
+                        parceiro
+                      )
+                    )}
+                  </td>
+
+                </tr>
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+
+
+    /* =====================================================
+       MOVIMENTAÇÕES
+    ====================================================== */
+
+    function mostrarMovimentacoes(
+      movimentacoes
+    ) {
+
+      const body =
+        document.getElementById(
+          "movimentacoesBody"
+        );
+
+
+      if (
+        !movimentacoes.length
+      ) {
+
+        body.innerHTML =
+          `
+          <tr>
+            <td colspan="6">
+              Nenhuma movimentação encontrada.
+            </td>
+          </tr>
+          `;
+
+        return;
+
+      }
+
+
+      body.innerHTML =
+        movimentacoes
+          .map(
+            mov => {
+
+              return `
+                <tr>
+
+                  <td>
+                    ${escapeHTML(
+                      mov.$id
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(
+                      mov.parceiro_id ||
+                      "-"
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(
+                      mov.tipo ||
+                      "-"
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(
+                      mov.pontos ??
+                      0
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(
+                      mov.valor ??
+                      0
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(
+                      mov.descricao ||
+                      "-"
+                    )}
+                  </td>
+
+                </tr>
+              `;
+
+            }
+          )
+          .join("");
+
+    }
+
+
+    /* =====================================================
+       INICIAR
+    ====================================================== */
+
+    verificarSessaoExistente();
+
+  </script>
+
+</body>
+
+</html>
