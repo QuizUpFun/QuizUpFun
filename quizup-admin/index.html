@@ -1,284 +1,283 @@
 <!DOCTYPE html><html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0"><title>QuizUp Admin</title><style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuizUp Admin</title><style>
 *{box-sizing:border-box}
 
 body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#f4f6f8;
-color:#222
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f4f6f8;
+  color:#222;
 }
 
-.hidden{
-display:none!important
-}
-
-header{
-background:#111827;
-color:#fff;
-padding:18px;
-position:sticky;
-top:0;
-z-index:10
-}
-
-header h1{
-margin:0;
-font-size:22px
-}
-
-header small{
-opacity:.8
-}
-
-.container{
-max-width:1200px;
-margin:auto;
-padding:20px
-}
+.hidden{display:none!important}
 
 .login{
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:20px
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
 }
 
 .login-box{
-background:#fff;
-width:100%;
-max-width:430px;
-padding:30px;
-border-radius:18px;
-box-shadow:0 8px 30px rgba(0,0,0,.1);
-text-align:center
+  background:#fff;
+  width:100%;
+  max-width:430px;
+  padding:30px;
+  border-radius:18px;
+  box-shadow:0 8px 30px rgba(0,0,0,.12);
+  text-align:center;
 }
 
 .login-box h1{
-margin-top:0
+  margin-top:0;
+  color:#111827;
 }
 
 input{
-width:100%;
-padding:13px;
-margin:8px 0;
-border:1px solid #ddd;
-border-radius:10px;
-font-size:16px
+  width:100%;
+  padding:14px;
+  margin:8px 0;
+  border:1px solid #d1d5db;
+  border-radius:10px;
+  font-size:16px;
 }
 
 button{
-border:0;
-border-radius:10px;
-padding:12px 16px;
-font-size:15px;
-cursor:pointer
+  border:0;
+  border-radius:10px;
+  padding:13px 16px;
+  font-size:15px;
+  cursor:pointer;
 }
 
 button:disabled{
-opacity:.6;
-cursor:not-allowed
+  opacity:.6;
+  cursor:not-allowed;
 }
 
 .primary{
-width:100%;
-background:#111827;
-color:#fff;
-margin-top:10px
-}
-
-.danger{
-background:#dc2626;
-color:#fff
+  width:100%;
+  background:#111827;
+  color:#fff;
+  margin-top:10px;
 }
 
 .success{
-background:#16a34a;
-color:#fff
+  background:#16a34a;
+  color:#fff;
+}
+
+.danger{
+  background:#dc2626;
+  color:#fff;
+}
+
+header{
+  background:#111827;
+  color:#fff;
+  padding:18px;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+header h1{
+  margin:0;
+  font-size:22px;
+}
+
+header small{
+  opacity:.8;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:20px;
 }
 
 .logout{
-background:#374151;
-color:#fff;
-float:right;
-margin-top:-32px
+  background:#374151;
+  color:#fff;
+  float:right;
+  margin-top:-32px;
 }
 
 .cards{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:15px;
-margin-bottom:25px
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:15px;
+  margin-bottom:25px;
 }
 
 .card{
-background:#fff;
-padding:20px;
-border-radius:15px;
-box-shadow:0 3px 12px rgba(0,0,0,.06)
+  background:#fff;
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 3px 12px rgba(0,0,0,.06);
 }
 
 .card strong{
-display:block;
-font-size:28px;
-margin-top:8px
+  display:block;
+  font-size:28px;
+  margin-top:8px;
 }
 
 .section{
-background:#fff;
-border-radius:15px;
-padding:20px;
-margin-bottom:20px;
-box-shadow:0 3px 12px rgba(0,0,0,.06)
+  background:#fff;
+  border-radius:15px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 3px 12px rgba(0,0,0,.06);
 }
 
 .section h2{
-margin-top:0
+  margin-top:0;
 }
 
 .table-wrap{
-overflow-x:auto
+  overflow-x:auto;
 }
 
 table{
-width:100%;
-border-collapse:collapse;
-min-width:700px
+  width:100%;
+  border-collapse:collapse;
+  min-width:700px;
 }
 
 th,td{
-padding:11px;
-border-bottom:1px solid #eee;
-text-align:left;
-vertical-align:middle
+  padding:11px;
+  border-bottom:1px solid #eee;
+  text-align:left;
+  vertical-align:middle;
 }
 
 th{
-background:#f9fafb
+  background:#f9fafb;
 }
 
 .status{
-font-weight:bold
+  font-weight:bold;
 }
 
 .pendente{
-color:#d97706
+  color:#d97706;
 }
 
 .aprovado,
 .aprovada{
-color:#16a34a
+  color:#16a34a;
 }
 
 .cancelado,
 .cancelada{
-color:#dc2626
+  color:#dc2626;
 }
 
 .actions{
-display:flex;
-gap:6px;
-flex-wrap:wrap
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
 }
 
 .message{
-padding:12px;
-border-radius:10px;
-margin:10px 0;
-background:#eef2ff;
-word-break:break-word
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+  word-break:break-word;
 }
 
 .error{
-background:#fee2e2;
-color:#991b1b
+  background:#fee2e2;
+  color:#991b1b;
 }
 
 .success-msg{
-background:#dcfce7;
-color:#166534
+  background:#dcfce7;
+  color:#166534;
 }
 
 .info-msg{
-background:#e0f2fe;
-color:#075985
+  background:#e0f2fe;
+  color:#075985;
 }
 
 .debug{
-margin-top:15px;
-font-size:12px;
-word-break:break-word;
-text-align:left;
-background:#f3f4f6;
-padding:12px;
-border-radius:10px
+  margin-top:15px;
+  font-size:12px;
+  word-break:break-word;
+  text-align:left;
+  background:#f3f4f6;
+  padding:12px;
+  border-radius:10px;
 }
 
 .loading{
-text-align:center;
-padding:20px
+  text-align:center;
+  padding:20px;
 }
 
 @media(max-width:600px){
-
-.container{
-padding:12px
-}
-
-.card{
-padding:15px
-}
-
+  .container{padding:12px}
+  .card{padding:15px}
+  .login-box{padding:22px}
 }
 </style></head><body><!-- =====================================================
      LOGIN
-===================================================== --><div id="loginScreen" class="login"><div class="login-box"><h1>QuizUp Admin</h1><p>Acesso exclusivo do administrador</p><input
-id="email"
-type="email"
-placeholder="E-mail"
-autocomplete="username"
+===================================================== --><div id="loginScreen" class="login">  <div class="login-box"><h1>QuizUp Admin</h1>
 
-«»
+<p>Acesso exclusivo do administrador</p>
 
 <input
-id="password"
-type="password"
-placeholder="Senha"
-autocomplete="current-password"
+  id="email"
+  type="email"
+  placeholder="E-mail"
+  autocomplete="username"
+>
 
-«»
+<input
+  id="password"
+  type="password"
+  placeholder="Senha"
+  autocomplete="current-password"
+>
 
 <button
-id="loginButton"
-class="primary"
-type="button"
-
-«»
-
-Entrar
+  id="loginButton"
+  class="primary"
+  type="button"
+>
+  Entrar
 </button>
 
-<div id="loginMessage"></div><div class="debug"><b>ID do administrador:</b><br>
-6a8f41f10032758d44de
+<div id="loginMessage"></div>
 
-<br><br>
+<div class="debug">
 
-<b>Projeto:</b><br>
-6a8e10e900245502244c
+  <b>ID do administrador:</b><br>
+  6a8f41f10032758d44de
 
-<br><br>
+  <br><br>
 
-<b>Endpoint:</b><br>
-https://fra.cloud.appwrite.io/v1
+  <b>Projeto:</b><br>
+  6a8e10e900245502244c
 
-</div></div></div><!-- =====================================================
-     PAINEL
-===================================================== --><div id="adminScreen" class="hidden"><header><h1>QuizUp Admin</h1><small id="adminUser">
-Administrador
-</small><button
+  <br><br>
+
+  <b>Endpoint:</b><br>
+  https://fra.cloud.appwrite.io/v1
+
+</div>
+
+  </div></div><!-- =====================================================
+     PAINEL ADMIN
+===================================================== --><div id="adminScreen" class="hidden"><header>  <h1>QuizUp Admin</h1><small id="adminUser"></small>
+
+<button
 id="logoutButton"
 class="logout"
 type="button"
@@ -286,31 +285,26 @@ type="button"
 «»
 
 Sair
-</button>
 
-</header><main class="container"><div id="globalMessage"></div><!-- =====================================================
-     RESUMO
-===================================================== --><div class="cards"><div class="card">
-Jogadores
-<strong id="totalJogadores">0</strong>
-</div><div class="card">
-Parceiros
-<strong id="totalParceiros">0</strong>
-</div><div class="card">
-Saques
-<strong id="totalSaques">0</strong>
-</div><div class="card">
-Pendentes
-<strong id="totalPendentes">0</strong>
-</div><div class="card">
-Aprovados
-<strong id="totalAprovados">0</strong>
-</div><div class="card">
-Cancelados
-<strong id="totalCancelados">0</strong>
-</div></div><!-- =====================================================
-     SAQUES
-===================================================== --><section class="section"><h2>💸 Saques</h2><div class="table-wrap"><table><thead><tr>
+  </button></header><main class="container"><div id="globalMessage"></div><!-- RESUMO --><div class="cards">  <div class="card">
+    Jogadores
+    <strong id="totalJogadores">0</strong>
+  </div>  <div class="card">
+    Parceiros
+    <strong id="totalParceiros">0</strong>
+  </div>  <div class="card">
+    Saques
+    <strong id="totalSaques">0</strong>
+  </div>  <div class="card">
+    Pendentes
+    <strong id="totalPendentes">0</strong>
+  </div>  <div class="card">
+    Aprovados
+    <strong id="totalAprovados">0</strong>
+  </div>  <div class="card">
+    Cancelados
+    <strong id="totalCancelados">0</strong>
+  </div></div><!-- SAQUES --><section class="section"><h2>💸 Saques</h2><div class="table-wrap"><table><thead><tr>
 <th>ID</th>
 <th>Usuário</th>
 <th>E-mail</th>
@@ -322,9 +316,7 @@ Cancelados
 <td colspan="7" class="loading">
 Aguardando login...
 </td>
-</tr></tbody></table></div></section><!-- =====================================================
-     JOGADORES
-===================================================== --><section class="section"><h2>👥 Jogadores</h2><div class="table-wrap"><table><thead><tr>
+</tr></tbody></table></div></section><!-- JOGADORES --><section class="section"><h2>👥 Jogadores</h2><div class="table-wrap"><table><thead><tr>
 <th>ID</th>
 <th>E-mail</th>
 <th>Nome</th>
@@ -334,9 +326,7 @@ Aguardando login...
 <td colspan="5" class="loading">
 Aguardando login...
 </td>
-</tr></tbody></table></div></section><!-- =====================================================
-     PARCEIROS
-===================================================== --><section class="section"><h2>🤝 Parceiros</h2><div class="table-wrap"><table><thead><tr>
+</tr></tbody></table></div></section><!-- PARCEIROS --><section class="section"><h2>🤝 Parceiros</h2><div class="table-wrap"><table><thead><tr>
 <th>ID</th>
 <th>Nome</th>
 <th>E-mail</th>
@@ -345,9 +335,7 @@ Aguardando login...
 <td colspan="4" class="loading">
 Aguardando login...
 </td>
-</tr></tbody></table></div></section><!-- =====================================================
-     MOVIMENTAÇÕES
-===================================================== --><section class="section"><h2>📊 Movimentações de parceiros</h2><div class="table-wrap"><table><thead><tr>
+</tr></tbody></table></div></section><!-- MOVIMENTAÇÕES --><section class="section"><h2>📊 Movimentações de parceiros</h2><div class="table-wrap"><table><thead><tr>
 <th>ID</th>
 <th>Parceiro</th>
 <th>Tipo</th>
@@ -359,169 +347,120 @@ Aguardando login...
 Aguardando login...
 </td>
 </tr></tbody></table></div></section></main></div><!-- =====================================================
-     APPWRITE SDK
+     APPWRITE
 ===================================================== --><script type="module">
 
 import {
-Client,
-Account,
-TablesDB,
-Query
-}
-from
-'https://cdn.jsdelivr.net/npm/appwrite@17.0.0/+esm';
+  Client,
+  Account,
+  TablesDB,
+  Query
+} from "https://cdn.jsdelivr.net/npm/appwrite@17.0.0/+esm";
 
 
-/* =====================================================
-   CONFIGURAÇÃO
-===================================================== */
+/* CONFIGURAÇÃO */
 
 const ENDPOINT =
-'https://fra.cloud.appwrite.io/v1';
+  "https://fra.cloud.appwrite.io/v1";
 
 const PROJECT_ID =
-'6a8e10e900245502244c';
+  "6a8e10e900245502244c";
 
 const DATABASE_ID =
-'6a8e11820008abab052e';
+  "6a8e11820008abab052e";
 
 const ADMIN_USER_ID =
-'6a8f41f10032758d44de';
+  "6a8f41f10032758d44de";
 
 
 const TABLES = {
 
-jogadores:
-'jogadores',
+  jogadores:"jogadores",
 
-parceiros:
-'parceiros',
+  parceiros:"parceiros",
 
-saques:
-'saques',
+  saques:"saques",
 
-movimentacoes:
-'movimentacoes_parceiros'
+  movimentacoes:"movimentacoes_parceiros"
 
 };
 
 
-/* =====================================================
-   APPWRITE
-===================================================== */
+/* APPWRITE */
 
 const client =
-new Client()
-.setEndpoint(ENDPOINT)
-.setProject(PROJECT_ID);
+  new Client()
+    .setEndpoint(ENDPOINT)
+    .setProject(PROJECT_ID);
 
 
 const account =
-new Account(client);
+  new Account(client);
 
 
 const tablesDB =
-new TablesDB(client);
+  new TablesDB(client);
 
 
-console.log(
-'APPWRITE INICIADO',
-{
-endpoint:ENDPOINT,
-project:PROJECT_ID
-}
-);
+/* ATALHO */
+
+const $ = id =>
+  document.getElementById(id);
 
 
-/* =====================================================
-   ATALHO
-===================================================== */
-
-const $ =
-id =>
-document.getElementById(id);
-
-
-/* =====================================================
-   ESCAPAR HTML
-===================================================== */
+/* ESCAPAR HTML */
 
 function esc(value){
 
-return String(value ?? '')
-.replace(/&/g,'&amp;')
-.replace(/</g,'&lt;')
-.replace(/>/g,'&gt;')
-.replace(/"/g,'&quot;')
-.replace(/'/g,'&#039;');
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 
 }
 
 
-/* =====================================================
-   MENSAGEM LOGIN
-===================================================== */
+/* MENSAGEM LOGIN */
 
-function loginMsg(
-text,
-error=true
-){
+function loginMsg(text,error=true){
 
-$('loginMessage').innerHTML =
-
-'<div class="message '+
-(error ? 'error' : 'info-msg')+
-'">'+
-
-esc(text)+
-
-'</div>';
+  $("loginMessage").innerHTML =
+    `<div class="message ${error ? "error" : "info-msg"}">
+      ${esc(text)}
+    </div>`;
 
 }
 
 
-/* =====================================================
-   MENSAGEM PAINEL
-===================================================== */
+/* MENSAGEM PAINEL */
 
-function globalMsg(
-text,
-ok=true
-){
+function globalMsg(text,ok=true){
 
-$('globalMessage').innerHTML =
-
-'<div class="message '+
-(ok ? 'success-msg' : 'error')+
-'">'+
-
-esc(text)+
-
-'</div>';
+  $("globalMessage").innerHTML =
+    `<div class="message ${ok ? "success-msg" : "error"}">
+      ${esc(text)}
+    </div>`;
 
 }
 
 
-/* =====================================================
-   APAGAR SESSÃO
-===================================================== */
+/* APAGAR SESSÃO */
 
 async function delSession(){
 
-try{
+  try{
 
-await account.deleteSession({
-sessionId:'current'
-});
+    await account.deleteSession({
+      sessionId:"current"
+    });
 
-}catch(error){
+  }catch(error){
 
-console.log(
-'Não foi possível apagar sessão:',
-error
-);
+    console.log("Sessão inexistente ou já encerrada.");
 
-}
+  }
 
 }
 
@@ -532,171 +471,180 @@ error
 
 async function login(){
 
-const email =
-$('email').value.trim();
+  const email =
+    $("email").value.trim();
 
-const password =
-$('password').value;
+  const password =
+    $("password").value;
 
-const button =
-$('loginButton');
-
-
-if(!email){
-
-loginMsg(
-'Digite seu e-mail.'
-);
-
-return;
-
-}
+  const button =
+    $("loginButton");
 
 
-if(!password){
+  if(!email){
 
-loginMsg(
-'Digite sua senha.'
-);
+    loginMsg("Digite seu e-mail.");
 
-return;
+    return;
 
-}
+  }
 
 
-button.disabled =
-true;
+  if(!password){
 
-button.textContent =
-'Entrando...';
+    loginMsg("Digite sua senha.");
 
-$('loginMessage').innerHTML =
-'';
+    return;
 
-
-try{
-
-/*
-========================================================
-ETAPA 1
-CRIAR SESSÃO
-
-IMPORTANTE:
-NÃO usamos account.get() depois daqui.
-========================================================
-*/
-
-loginMsg(
-'Criando sessão no Appwrite...',
-false
-);
+  }
 
 
-const session =
-await account.createEmailPasswordSession({
-email:email,
-password:password
-});
+  button.disabled = true;
+
+  button.textContent = "Entrando...";
+
+  $("loginMessage").innerHTML = "";
 
 
-console.log(
-'SESSÃO CRIADA:',
-session
-);
+  try{
+
+    /*
+      Se existir uma sessão antiga,
+      encerra antes de criar uma nova.
+    */
+
+    await delSession();
 
 
-/*
-========================================================
-ETAPA 2
-COMO A SESSÃO FOI CRIADA COM SUCESSO,
-ABRIMOS O PAINEL.
-
-NÃO CHAMAMOS account.get().
-========================================================
-*/
-
-loginMsg(
-'Login realizado com sucesso. Abrindo painel...',
-false
-);
+    loginMsg(
+      "Autenticando...",
+      false
+    );
 
 
-$('adminUser').textContent =
-email;
+    /*
+      LOGIN POR E-MAIL E SENHA
+    */
+
+    await account.createEmailPasswordSession(
+      email,
+      password
+    );
 
 
-$('loginScreen')
-.classList
-.add('hidden');
+    loginMsg(
+      "Login realizado. Verificando administrador...",
+      false
+    );
 
 
-$('adminScreen')
-.classList
-.remove('hidden');
+    /*
+      PEGAR CONTA AUTENTICADA
+    */
+
+    const user =
+      await account.get();
 
 
-$('loginMessage').innerHTML =
-'';
+    console.log(
+      "USUÁRIO AUTENTICADO:",
+      user
+    );
 
 
-globalMsg(
-'Login confirmado. Carregando dados...'
-);
+    /*
+      CONFERIR ID DO ADMINISTRADOR
+    */
+
+    if(user.$id !== ADMIN_USER_ID){
+
+      await delSession();
+
+      throw new Error(
+        "Esta conta não é o administrador autorizado. ID encontrado: " +
+        user.$id
+      );
+
+    }
 
 
-/*
-========================================================
-ETAPA 3
-CARREGAR TABELAS
-========================================================
-*/
+    /*
+      LOGIN CONFIRMADO
+    */
 
-await carregarPainel();
+    $("adminUser").textContent =
+      user.email || email;
 
 
-}catch(error){
-
-console.error(
-'ERRO REAL DO LOGIN:',
-error
-);
+    $("loginScreen")
+      .classList
+      .add("hidden");
 
 
-const codigo =
-error?.code ||
-'sem código';
-
-const tipo =
-error?.type ||
-'sem tipo';
-
-const mensagem =
-error?.message ||
-String(error);
+    $("adminScreen")
+      .classList
+      .remove("hidden");
 
 
-await delSession();
+    $("loginMessage").innerHTML = "";
 
 
-loginMsg(
-'ERRO REAL DO LOGIN: '+
-mensagem+
-' | Código: '+
-codigo+
-' | Tipo: '+
-tipo
-);
+    globalMsg(
+      "Login confirmado. Carregando painel..."
+    );
 
 
-}finally{
+    await carregarPainel();
 
-button.disabled =
-false;
 
-button.textContent =
-'Entrar';
+  }catch(error){
 
-}
+    console.error(
+      "ERRO REAL DO LOGIN:",
+      error
+    );
+
+
+    let mensagem =
+      error?.message ||
+      "Erro desconhecido";
+
+
+    /*
+      Mostrar também o código Appwrite
+    */
+
+    if(error?.code){
+
+      mensagem +=
+        " | Código: " +
+        error.code;
+
+    }
+
+
+    if(error?.type){
+
+      mensagem +=
+        " | Tipo: " +
+        error.type;
+
+    }
+
+
+    loginMsg(
+      mensagem,
+      true
+    );
+
+
+  }finally{
+
+    button.disabled = false;
+
+    button.textContent = "Entrar";
+
+  }
 
 }
 
@@ -707,24 +655,19 @@ button.textContent =
 
 async function logout(){
 
-await delSession();
+  await delSession();
 
+  $("adminScreen")
+    .classList
+    .add("hidden");
 
-$('adminScreen')
-.classList
-.add('hidden');
+  $("loginScreen")
+    .classList
+    .remove("hidden");
 
+  $("password").value = "";
 
-$('loginScreen')
-.classList
-.remove('hidden');
-
-
-$('password').value =
-'';
-
-$('loginMessage').innerHTML =
-'';
+  $("loginMessage").innerHTML = "";
 
 }
 
@@ -735,36 +678,21 @@ $('loginMessage').innerHTML =
 
 async function list(tableId){
 
-console.log(
-'Consultando tabela:',
-tableId
-);
+  const response =
+    await tablesDB.listRows({
+
+      databaseId:DATABASE_ID,
+
+      tableId:tableId,
+
+      queries:[
+        Query.limit(100)
+      ]
+
+    });
 
 
-const response =
-await tablesDB.listRows({
-
-databaseId:
-DATABASE_ID,
-
-tableId:
-tableId,
-
-queries:[
-Query.limit(100)
-]
-
-});
-
-
-console.log(
-'Resposta da tabela:',
-tableId,
-response
-);
-
-
-return response.rows || [];
+  return response.rows || [];
 
 }
 
@@ -775,592 +703,540 @@ return response.rows || [];
 
 async function carregarPainel(){
 
-globalMsg(
-'Carregando dados do QuizUp...'
-);
+  globalMsg(
+    "Carregando dados..."
+  );
 
 
-const resultados =
-await Promise.allSettled([
+  const resultados =
+    await Promise.allSettled([
 
-list(TABLES.jogadores),
+      list(TABLES.jogadores),
 
-list(TABLES.parceiros),
+      list(TABLES.parceiros),
 
-list(TABLES.saques),
+      list(TABLES.saques),
 
-list(TABLES.movimentacoes)
+      list(TABLES.movimentacoes)
 
-]);
-
-
-const jogadoresData =
-resultados[0].status === 'fulfilled'
-?
-resultados[0].value
-:
-[];
+    ]);
 
 
-const parceirosData =
-resultados[1].status === 'fulfilled'
-?
-resultados[1].value
-:
-[];
+  const jogadoresData =
+    resultados[0].status === "fulfilled"
+      ? resultados[0].value
+      : [];
 
 
-const saquesData =
-resultados[2].status === 'fulfilled'
-?
-resultados[2].value
-:
-[];
+  const parceirosData =
+    resultados[1].status === "fulfilled"
+      ? resultados[1].value
+      : [];
 
 
-const movimentacoesData =
-resultados[3].status === 'fulfilled'
-?
-resultados[3].value
-:
-[];
+  const saquesData =
+    resultados[2].status === "fulfilled"
+      ? resultados[2].value
+      : [];
 
 
-resumo(
-jogadoresData,
-parceirosData,
-saquesData
-);
+  const movimentacoesData =
+    resultados[3].status === "fulfilled"
+      ? resultados[3].value
+      : [];
 
 
-jogadores(
-jogadoresData
-);
+  resumo(
+    jogadoresData,
+    parceirosData,
+    saquesData
+  );
 
 
-saques(
-saquesData
-);
+  jogadores(
+    jogadoresData
+  );
 
 
-parceiros(
-parceirosData
-);
+  saques(
+    saquesData
+  );
 
 
-movs(
-movimentacoesData
-);
+  parceiros(
+    parceirosData
+  );
 
 
-const erros =
-resultados
-.map(
-(result,index) =>
-
-result.status === 'rejected'
-?
-[
-'jogadores',
-'parceiros',
-'saques',
-'movimentações'
-][index]+
-': '+
-(
-result.reason?.message ||
-String(result.reason)
-)
-:
-null
-)
-.filter(Boolean);
+  movs(
+    movimentacoesData
+  );
 
 
-if(erros.length){
+  const erros =
+    resultados
+      .map(
+        (result,index) =>
 
-globalMsg(
-'Login realizado, mas existem erros nas tabelas: '+
-erros.join(' | '),
-false
-);
+          result.status === "rejected"
+            ? [
+                "jogadores",
+                "parceiros",
+                "saques",
+                "movimentações"
+              ][index] +
+              ": " +
+              (
+                result.reason?.message ||
+                result.reason
+              )
+            : null
+      )
+      .filter(Boolean);
 
-}else{
 
-$('globalMessage').innerHTML =
-'';
+  if(erros.length){
 
-}
+    globalMsg(
+      "Painel aberto, mas algumas tabelas deram erro: " +
+      erros.join(" | "),
+      false
+    );
+
+  }else{
+
+    $("globalMessage").innerHTML = "";
+
+  }
 
 }
 
 
-/* =====================================================
-   STATUS
-===================================================== */
+/* STATUS */
 
 function st(value){
 
-return String(value || '')
-.toLowerCase()
-.trim();
+  return String(value || "")
+    .toLowerCase()
+    .trim();
 
 }
 
 
-/* =====================================================
-   RESUMO
-===================================================== */
+/* RESUMO */
 
 function resumo(
-jogadoresData,
-parceirosData,
-saquesData
+  jogadoresData,
+  parceirosData,
+  saquesData
 ){
 
-$('totalJogadores').textContent =
-jogadoresData.length;
+  $("totalJogadores").textContent =
+    jogadoresData.length;
 
-$('totalParceiros').textContent =
-parceirosData.length;
+  $("totalParceiros").textContent =
+    parceirosData.length;
 
-$('totalSaques').textContent =
-saquesData.length;
+  $("totalSaques").textContent =
+    saquesData.length;
 
-$('totalPendentes').textContent =
-saquesData.filter(
-x =>
-st(x.status) === 'pendente'
-).length;
+  $("totalPendentes").textContent =
+    saquesData.filter(
+      x => st(x.status) === "pendente"
+    ).length;
 
-$('totalAprovados').textContent =
-saquesData.filter(
-x =>
-[
-'aprovado',
-'aprovada'
-]
-.includes(
-st(x.status)
-)
-).length;
+  $("totalAprovados").textContent =
+    saquesData.filter(
+      x =>
+        ["aprovado","aprovada"]
+          .includes(st(x.status))
+    ).length;
 
-$('totalCancelados').textContent =
-saquesData.filter(
-x =>
-[
-'cancelado',
-'cancelada'
-]
-.includes(
-st(x.status)
-)
-).length;
+  $("totalCancelados").textContent =
+    saquesData.filter(
+      x =>
+        ["cancelado","cancelada"]
+          .includes(st(x.status))
+    ).length;
 
 }
 
 
-/* =====================================================
-   JOGADORES
-===================================================== */
+/* JOGADORES */
 
 function jogadores(data){
 
-const body =
-$('jogadoresBody');
+  const body =
+    $("jogadoresBody");
 
 
-if(!data.length){
+  if(!data.length){
 
-body.innerHTML =
-'<tr><td colspan="5">'+
-'Nenhum jogador encontrado.'+
-'</td></tr>';
+    body.innerHTML =
+      `<tr>
+        <td colspan="5">
+          Nenhum jogador encontrado.
+        </td>
+      </tr>`;
 
-return;
+    return;
+
+  }
+
+
+  body.innerHTML =
+    data.map(x =>
+
+      `<tr>
+
+        <td>${esc(x.$id)}</td>
+
+        <td>
+          ${esc(
+            x.email ||
+            x["E-mail"] ||
+            "-"
+          )}
+        </td>
+
+        <td>
+          ${esc(
+            x.nome ||
+            x.name ||
+            "-"
+          )}
+        </td>
+
+        <td>
+          ${esc(
+            x.pontos ??
+            x.Pontos ??
+            0
+          )}
+        </td>
+
+        <td>
+          ${esc(
+            x.equilibrio ??
+            x["equilíbrio"] ??
+            x.saldo ??
+            0
+          )}
+        </td>
+
+      </tr>`
+
+    ).join("");
 
 }
 
 
-body.innerHTML =
-data.map(
-x =>
-
-'<tr>'+
-
-'<td>'+
-esc(x.$id)+
-'</td>'+
-
-'<td>'+
-esc(
-x.email ||
-x['E-mail'] ||
-'-'
-)+
-'</td>'+
-
-'<td>'+
-esc(
-x.nome ||
-x.name ||
-'-'
-)+
-'</td>'+
-
-'<td>'+
-esc(
-x.pontos ??
-x.Pontos ??
-0
-)+
-'</td>'+
-
-'<td>'+
-esc(
-x.equilibrio ??
-x['equilíbrio'] ??
-x.saldo ??
-0
-)+
-'</td>'+
-
-'</tr>'
-
-).join('');
-
-}
-
-
-/* =====================================================
-   SAQUES
-===================================================== */
+/* SAQUES */
 
 function saques(data){
 
-const body =
-$('saquesBody');
+  const body =
+    $("saquesBody");
 
 
-if(!data.length){
+  if(!data.length){
 
-body.innerHTML =
-'<tr><td colspan="7">'+
-'Nenhum saque encontrado.'+
-'</td></tr>';
+    body.innerHTML =
+      `<tr>
+        <td colspan="7">
+          Nenhum saque encontrado.
+        </td>
+      </tr>`;
 
-return;
+    return;
 
-}
-
-
-body.innerHTML =
-data.map(
-x => {
-
-const status =
-st(x.status);
-
-const id =
-esc(x.$id);
-
-let actions =
-'-';
+  }
 
 
-if(status === 'pendente'){
+  body.innerHTML =
+    data.map(x => {
 
-actions =
+      const status =
+        st(x.status);
 
-'<div class="actions">'+
-
-'<button '+
-'class="success" '+
-'data-a="ok" '+
-'data-id="'+
-id+
-'">'+
-'Aprovar'+
-'</button>'+
-
-'<button '+
-'class="danger" '+
-'data-a="no" '+
-'data-id="'+
-id+
-'">'+
-'Cancelar'+
-'</button>'+
-
-'</div>';
-
-}
+      const id =
+        esc(x.$id);
 
 
-return
+      let actions = "-";
 
-'<tr>'+
 
-'<td>'+
-id+
-'</td>'+
+      if(status === "pendente"){
 
-'<td>'+
-esc(
-x['ID do usuário.'] ||
-x['ID do usuário'] ||
-x.usuario ||
-x.userId ||
-'-'
-)+
-'</td>'+
+        actions =
 
-'<td>'+
-esc(
-x.email ||
-x['e-mail'] ||
-x['E-mail'] ||
-'-'
-)+
-'</td>'+
+          `<div class="actions">
 
-'<td>R$ '+
-esc(
-x.quantia ??
-x.valor_jogador ??
-x.valor ??
-0
-)+
-'</td>'+
+            <button
+              class="success"
+              data-a="ok"
+              data-id="${id}"
+            >
+              Aprovar
+            </button>
 
-'<td>'+
-esc(
-x.pix_key ||
-x.pix ||
-'-'
-)+
-'</td>'+
+            <button
+              class="danger"
+              data-a="no"
+              data-id="${id}"
+            >
+              Cancelar
+            </button>
 
-'<td class="status '+
-esc(status)+
-'">'+
-esc(status || '-')+
-'</td>'+
+          </div>`;
 
-'<td>'+
-actions+
-'</td>'+
+      }
 
-'</tr>';
 
-}
-).join('');
+      return
+
+        `<tr>
+
+          <td>${id}</td>
+
+          <td>
+            ${esc(
+              x["ID do usuário."] ||
+              x["ID do usuário"] ||
+              x.usuario ||
+              x.userId ||
+              "-"
+            )}
+          </td>
+
+          <td>
+            ${esc(
+              x.email ||
+              x["e-mail"] ||
+              x["E-mail"] ||
+              "-"
+            )}
+          </td>
+
+          <td>
+            R$ ${esc(
+              x.quantia ??
+              x.valor_jogador ??
+              x.valor ??
+              0
+            )}
+          </td>
+
+          <td>
+            ${esc(
+              x.pix_key ||
+              x.pix ||
+              "-"
+            )}
+          </td>
+
+          <td class="status ${esc(status)}">
+            ${esc(status || "-")}
+          </td>
+
+          <td>
+            ${actions}
+          </td>
+
+        </tr>`;
+
+    }).join("");
 
 }
 
 
-/* =====================================================
-   ALTERAR SAQUE
-===================================================== */
+/* ALTERAR SAQUE */
 
 async function alterar(
-id,
-status
+  id,
+  status
 ){
 
-const acao =
-status === 'aprovado'
-?
-'APROVAR'
-:
-'CANCELAR';
+  const acao =
+    status === "aprovado"
+      ? "APROVAR"
+      : "CANCELAR";
 
 
-if(
-!confirm(
-'Tem certeza que deseja '+
-acao+
-' este saque?'
-)
-){
+  if(!confirm(
+    "Tem certeza que deseja " +
+    acao +
+    " este saque?"
+  )){
 
-return;
+    return;
 
-}
+  }
 
 
-try{
+  try{
 
-await tablesDB.updateRow({
+    await tablesDB.updateRow({
 
-databaseId:
-DATABASE_ID,
+      databaseId:DATABASE_ID,
 
-tableId:
-TABLES.saques,
+      tableId:TABLES.saques,
 
-rowId:
-id,
+      rowId:id,
 
-data:{
-status:status
-}
+      data:{
+        status:status
+      }
 
-});
+    });
 
 
-await carregarPainel();
+    await carregarPainel();
 
 
-}catch(error){
+  }catch(error){
 
-console.error(
-'ERRO AO ATUALIZAR SAQUE:',
-error
-);
+    console.error(error);
 
-globalMsg(
-'Erro ao atualizar saque: '+
-(error?.message || error),
-false
-);
+    globalMsg(
+      "Erro ao atualizar saque: " +
+      (
+        error?.message ||
+        error
+      ),
+      false
+    );
 
-}
+  }
 
 }
 
 
-/* =====================================================
-   PARCEIROS
-===================================================== */
+/* PARCEIROS */
 
 function parceiros(data){
 
-const body =
-$('parceirosBody');
+  const body =
+    $("parceirosBody");
 
 
-if(!data.length){
+  if(!data.length){
 
-body.innerHTML =
-'<tr><td colspan="4">'+
-'Nenhum parceiro encontrado.'+
-'</td></tr>';
+    body.innerHTML =
+      `<tr>
+        <td colspan="4">
+          Nenhum parceiro encontrado.
+        </td>
+      </tr>`;
 
-return;
+    return;
+
+  }
+
+
+  body.innerHTML =
+    data.map(x =>
+
+      `<tr>
+
+        <td>${esc(x.$id)}</td>
+
+        <td>
+          ${esc(
+            x.nome ||
+            x.name ||
+            "-"
+          )}
+        </td>
+
+        <td>
+          ${esc(
+            x.email ||
+            x["E-mail"] ||
+            "-"
+          )}
+        </td>
+
+        <td>
+          ${esc(
+            JSON.stringify(x)
+          )}
+        </td>
+
+      </tr>`
+
+    ).join("");
 
 }
 
 
-body.innerHTML =
-data.map(
-x =>
-
-'<tr>'+
-
-'<td>'+
-esc(x.$id)+
-'</td>'+
-
-'<td>'+
-esc(
-x.nome ||
-x.name ||
-'-'
-)+
-'</td>'+
-
-'<td>'+
-esc(
-x.email ||
-x['E-mail'] ||
-'-'
-)+
-'</td>'+
-
-'<td>'+
-esc(
-JSON.stringify(x)
-)+
-'</td>'+
-
-'</tr>'
-
-).join('');
-
-}
-
-
-/* =====================================================
-   MOVIMENTAÇÕES
-===================================================== */
+/* MOVIMENTAÇÕES */
 
 function movs(data){
 
-const body =
-$('movimentacoesBody');
+  const body =
+    $("movimentacoesBody");
 
 
-if(!data.length){
+  if(!data.length){
 
-body.innerHTML =
-'<tr><td colspan="6">'+
-'Nenhuma movimentação encontrada.'+
-'</td></tr>';
+    body.innerHTML =
+      `<tr>
+        <td colspan="6">
+          Nenhuma movimentação encontrada.
+        </td>
+      </tr>`;
 
-return;
+    return;
 
-}
+  }
 
 
-body.innerHTML =
-data.map(
-x =>
+  body.innerHTML =
+    data.map(x =>
 
-'<tr>'+
+      `<tr>
 
-'<td>'+
-esc(x.$id)+
-'</td>'+
+        <td>${esc(x.$id)}</td>
 
-'<td>'+
-esc(
-x.parceiro_id ||
-'-'
-)+
-'</td>'+
+        <td>
+          ${esc(
+            x.parceiro_id ||
+            "-"
+          )}
+        </td>
 
-'<td>'+
-esc(
-x.tipo ||
-'-'
-)+
-'</td>'+
+        <td>
+          ${esc(
+            x.tipo ||
+            "-"
+          )}
+        </td>
 
-'<td>'+
-esc(
-x.pontos ??
-0
-)+
-'</td>'+
+        <td>
+          ${esc(
+            x.pontos ??
+            0
+          )}
+        </td>
 
-'<td>'+
-esc(
-x.valor ??
-0
-)+
-'</td>'+
+        <td>
+          ${esc(
+            x.valor ??
+            0
+          )}
+        </td>
 
-'<td>'+
-esc(
-x.descricao ||
-'-'
-)+
-'</td>'+
+        <td>
+          ${esc(
+            x.descricao ||
+            "-"
+          )}
+        </td>
 
-'</tr>'
+      </tr>`
 
-).join('');
+    ).join("");
 
 }
 
@@ -1369,98 +1245,108 @@ x.descricao ||
    EVENTOS
 ===================================================== */
 
-$('loginButton')
-.addEventListener(
-'click',
-login
-);
+$("loginButton")
+  .addEventListener(
+    "click",
+    login
+  );
 
 
-$('logoutButton')
-.addEventListener(
-'click',
-logout
-);
+$("logoutButton")
+  .addEventListener(
+    "click",
+    logout
+  );
 
 
-$('password')
-.addEventListener(
-'keydown',
-event => {
+$("password")
+  .addEventListener(
+    "keydown",
+    event => {
 
-if(
-event.key === 'Enter'
-){
+      if(event.key === "Enter"){
 
-login();
+        login();
 
-}
+      }
 
-});
+    }
+  );
+
+
+$("email")
+  .addEventListener(
+    "keydown",
+    event => {
+
+      if(event.key === "Enter"){
+
+        login();
+
+      }
+
+    }
+  );
 
 
 document.addEventListener(
-'click',
-event => {
+  "click",
+  event => {
 
-const button =
-event.target.closest(
-'button[data-a]'
+    const button =
+      event.target.closest(
+        "button[data-a]"
+      );
+
+
+    if(!button){
+
+      return;
+
+    }
+
+
+    alterar(
+
+      button.dataset.id,
+
+      button.dataset.a === "ok"
+        ? "aprovado"
+        : "cancelado"
+
+    );
+
+  }
 );
 
 
-if(!button){
-
-return;
-
-}
-
-
-alterar(
-button.dataset.id,
-
-button.dataset.a === 'ok'
-?
-'aprovado'
-:
-'cancelado'
-);
-
-});
-
-
-/* =====================================================
-   ERROS GERAIS
-===================================================== */
+/* ERROS */
 
 window.addEventListener(
-'error',
-event => {
+  "error",
+  event => {
 
-console.error(
-'JS ERROR:',
-event.error ||
-event.message
+    console.error(
+      "JS ERROR:",
+      event.error ||
+      event.message
+    );
+
+  }
 );
-
-});
 
 
 window.addEventListener(
-'unhandledrejection',
-event => {
+  "unhandledrejection",
+  event => {
 
-console.error(
-'PROMISE ERROR:',
-event.reason
-);
+    console.error(
+      "PROMISE ERROR:",
+      event.reason
+    );
 
-});
-
-
-console.log(
-'Painel Admin carregado.'
+  }
 );
 
 </script></body>
-   </html>
+     </html>
