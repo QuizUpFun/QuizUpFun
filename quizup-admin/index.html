@@ -1,2070 +1,1369 @@
 <!DOCTYPE html><html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>QuizUp Admin</title>  <!-- Appwrite Web SDK -->  <script src="https://cdn.jsdelivr.net/npm/appwrite@26.2.0"></script>  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f4f6f9;
-      color: #1f2937;
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    .oculto {
-      display: none !important;
-    }
-
-    /* =========================
-       LOGIN
-    ========================= */
-
-    #telaLogin {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: linear-gradient(135deg, #111827, #2563eb);
-    }
-
-    .login-card {
-      width: 100%;
-      max-width: 430px;
-      background: white;
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 20px 50px rgba(0,0,0,.25);
-      text-align: center;
-    }
-
-    .login-logo {
-      font-size: 48px;
-      margin-bottom: 5px;
-    }
-
-    .login-card h1 {
-      margin: 0;
-      font-size: 28px;
-    }
-
-    .login-card p {
-      color: #6b7280;
-      margin-top: 8px;
-    }
-
-    .login-card label {
-      display: block;
-      text-align: left;
-      margin: 18px 0 7px;
-      font-weight: bold;
-    }
-
-    .login-card input {
-      width: 100%;
-      padding: 14px;
-      border: 1px solid #d1d5db;
-      border-radius: 10px;
-      outline: none;
-    }
-
-    .login-card input:focus {
-      border-color: #2563eb;
-    }
-
-    .btn-principal {
-      width: 100%;
-      margin-top: 20px;
-      padding: 14px;
-      border: 0;
-      border-radius: 10px;
-      background: #2563eb;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .btn-principal:hover {
-      background: #1d4ed8;
-    }
-
-    .btn-principal:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
-
-    #erroLogin {
-      margin-top: 15px;
-      color: #dc2626;
-      font-weight: bold;
-      line-height: 1.4;
-    }
-
-    #statusLogin {
-      margin-top: 12px;
-      color: #6b7280;
-      font-size: 13px;
-    }
-
-    /* =========================
-       PAINEL
-    ========================= */
-
-    #painel {
-      min-height: 100vh;
-    }
-
-    .topo {
-      background: #111827;
-      color: white;
-      padding: 18px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .topo h1 {
-      margin: 0;
-      font-size: 22px;
-    }
-
-    .topo span {
-      color: #d1d5db;
-      font-size: 13px;
-    }
-
-    .btn-sair {
-      border: 1px solid #6b7280;
-      background: transparent;
-      color: white;
-      padding: 9px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1400px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    /* =========================
-       RESUMO
-    ========================= */
-
-    .resumo {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 15px;
-      margin-bottom: 25px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.07);
-    }
-
-    .card .titulo {
-      color: #6b7280;
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-
-    .card .numero {
-      font-size: 26px;
-      font-weight: bold;
-    }
-
-    /* =========================
-       SEÇÕES
-    ========================= */
-
-    .secao {
-      background: white;
-      border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.07);
-    }
-
-    .secao h2 {
-      margin-top: 0;
-      font-size: 20px;
-    }
-
-    .barra {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-
-    .btn {
-      border: 0;
-      padding: 10px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .btn-atualizar {
-      background: #2563eb;
-      color: white;
-    }
-
-    .btn-aprovar {
-      background: #16a34a;
-      color: white;
-    }
-
-    .btn-recusar {
-      background: #dc2626;
-      color: white;
-    }
-
-    .btn-lida {
-      background: #6b7280;
-      color: white;
-    }
-
-    /* =========================
-       TABELAS
-    ========================= */
-
-    .tabela-container {
-      width: 100%;
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 850px;
-    }
-
-    th,
-    td {
-      padding: 11px;
-      border-bottom: 1px solid #e5e7eb;
-      text-align: left;
-      vertical-align: top;
-      font-size: 13px;
-    }
-
-    th {
-      background: #f3f4f6;
-      font-weight: bold;
-    }
-
-    tr:hover td {
-      background: #f9fafb;
-    }
-
-    .status {
-      display: inline-block;
-      padding: 5px 8px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: bold;
-    }
-
-    .pendente {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .aprovado {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .recusado {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .nova {
-      background: #dbeafe;
-      color: #1e40af;
-    }
-
-    .lida {
-      background: #e5e7eb;
-      color: #374151;
-    }
-
-    /* =========================
-       MENSAGENS
-    ========================= */
-
-    .mensagem {
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 15px;
-      margin-bottom: 10px;
-    }
-
-    .mensagem strong {
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    .mensagem-texto {
-      white-space: pre-wrap;
-      margin: 10px 0;
-    }
-
-    /* =========================
-       AVISOS
-    ========================= */
-
-    #aviso {
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      max-width: 350px;
-      padding: 14px 18px;
-      border-radius: 10px;
-      color: white;
-      background: #111827;
-      display: none;
-      z-index: 100;
-      box-shadow: 0 8px 30px rgba(0,0,0,.2);
-    }
-
-    #carregando {
-      text-align: center;
-      padding: 20px;
-      color: #6b7280;
-    }
-
-    /* =========================
-       MOBILE
-    ========================= */
-
-    @media (max-width: 700px) {
-      .topo {
-        align-items: flex-start;
-      }
-
-      .topo h1 {
-        font-size: 18px;
-      }
-
-      .container {
-        padding: 12px;
-      }
-
-      .secao {
-        padding: 15px;
-      }
-
-      .card {
-        padding: 15px;
-      }
-
-      .card .numero {
-        font-size: 22px;
-      }
-
-      .login-card {
-        padding: 24px;
-      }
-    }
-  </style></head><body>  <!-- =====================================================
-       LOGIN ADMIN
-  ====================================================== -->  <section id="telaLogin"><div class="login-card">
-
-  <div class="login-logo">🔐</div>
-
-  <h1>QuizUp Admin</h1>
-
-  <p>
-    Acesso exclusivo do administrador
-  </p>
-
-  <label for="emailAdmin">
-    E-mail
-  </label>
-
-  <input
-    id="emailAdmin"
-    type="email"
-    placeholder="E-mail do administrador"
-    autocomplete="username"
-    value="castrole334@gmail.com"
-  >
-
-  <label for="senhaAdmin">
-    Senha
-  </label>
-
-  <input
-    id="senhaAdmin"
-    type="password"
-    placeholder="Digite sua senha"
-    autocomplete="current-password"
-  >
-
-  <button
-    id="btnEntrar"
-    class="btn-principal"
-    type="button"
-    onclick="entrarAdmin()"
-  >
-    🔐 ENTRAR NO PAINEL
-  </button>
-
-  <div id="statusLogin"></div>
-
-  <div id="erroLogin"></div>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>QuizUp Admin</title><style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#222}
+.hidden{display:none!important}
+
+header{
+  background:#111827;
+  color:#fff;
+  padding:18px;
+  position:sticky;
+  top:0;
+  z-index:10
+}
+header h1{margin:0;font-size:22px}
+header small{opacity:.8}
+
+.container{max-width:1200px;margin:auto;padding:20px}
+
+.login{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px
+}
+
+.login-box{
+  background:#fff;
+  width:100%;
+  max-width:430px;
+  padding:30px;
+  border-radius:18px;
+  box-shadow:0 8px 30px rgba(0,0,0,.1);
+  text-align:center
+}
+
+.login-box h1{margin-top:0}
+
+input{
+  width:100%;
+  padding:13px;
+  margin:8px 0;
+  border:1px solid #ddd;
+  border-radius:10px;
+  font-size:16px
+}
+
+button{
+  border:0;
+  border-radius:10px;
+  padding:12px 16px;
+  font-size:15px;
+  cursor:pointer
+}
+
+button:disabled{opacity:.6;cursor:not-allowed}
+
+.primary{
+  width:100%;
+  background:#111827;
+  color:#fff;
+  margin-top:10px
+}
+
+.danger{background:#dc2626;color:#fff}
+.success{background:#16a34a;color:#fff}
+
+.logout{
+  background:#374151;
+  color:#fff;
+  float:right;
+  margin-top:-32px
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:15px;
+  margin-bottom:25px
+}
+
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 3px 12px rgba(0,0,0,.06)
+}
+
+.card strong{
+  display:block;
+  font-size:28px;
+  margin-top:8px
+}
+
+.section{
+  background:#fff;
+  border-radius:15px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 3px 12px rgba(0,0,0,.06)
+}
+
+.section h2{margin-top:0}
+
+.table-wrap{overflow-x:auto}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:700px
+}
+
+th,td{
+  padding:11px;
+  border-bottom:1px solid #eee;
+  text-align:left;
+  vertical-align:middle
+}
+
+th{background:#f9fafb}
+
+.status{font-weight:bold}
+.pendente{color:#d97706}
+.aprovado,.aprovada{color:#16a34a}
+.cancelado,.cancelada{color:#dc2626}
+
+.actions{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap
+}
+
+.message{
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+  background:#eef2ff;
+  word-break:break-word;
+  text-align:left
+}
+
+.error{background:#fee2e2;color:#991b1b}
+.success-msg{background:#dcfce7;color:#166534}
+.info-msg{background:#e0f2fe;color:#075985}
+
+.debug{
+  margin-top:15px;
+  font-size:12px;
+  word-break:break-word;
+  text-align:left;
+  background:#f3f4f6;
+  padding:12px;
+  border-radius:10px
+}
+
+.loading{text-align:center;padding:20px}
+
+@media(max-width:600px){
+  .container{padding:12px}
+  .card{padding:15px}
+}
+</style></head><body><!-- LOGIN --><div id="loginScreen" class="login">
+  <div class="login-box">
+    <h1>QuizUp Admin</h1>
+    <p>Acesso exclusivo do administrador</p><input
+  id="email"
+  type="email"
+  placeholder="E-mail"
+  autocomplete="username"
+  autocapitalize="none"
+  spellcheck="false"
+>
+
+<input
+  id="password"
+  type="password"
+  placeholder="Senha"
+  autocomplete="current-password"
+>
+
+<button id="loginButton" class="primary" type="button">
+  Entrar
+</button>
+
+<div id="loginMessage"></div>
+
+<div class="debug">
+  <b>ID do administrador:</b><br>
+  6a8f41f10032758d44de
+  <br><br>
+
+  <b>Projeto:</b><br>
+  6a8e10e900245502244c
+  <br><br>
+
+  <b>Endpoint:</b><br>
+  fra.cloud.appwrite.io
+  <br><br>
+
+  <b>Versão do painel:</b><br>
+  LOGIN-CORRIGIDO-2026-09-01
 </div>
 
-  </section>  <!-- =====================================================
-       PAINEL
-  ====================================================== -->  <section id="painel" class="oculto"><header class="topo">
-
-  <div>
-    <h1>🎯 QuizUp Admin</h1>
-
-    <span id="usuarioLogado">
-      Painel administrativo
-    </span>
   </div>
-
-  <button
-    class="btn-sair"
-    type="button"
-    onclick="sairAdmin()"
-  >
+</div><!-- PAINEL --><div id="adminScreen" class="hidden"><header>
+  <h1>QuizUp Admin</h1>
+  <small id="adminUser"></small>
+  <button id="logoutButton" class="logout" type="button">
     Sair
   </button>
+</header><main class="container"><div id="globalMessage"></div><div class="cards">  <div class="card">
+    Jogadores
+    <strong id="totalJogadores">0</strong>
+  </div>  <div class="card">
+    Parceiros
+    <strong id="totalParceiros">0</strong>
+  </div>  <div class="card">
+    Saques
+    <strong id="totalSaques">0</strong>
+  </div>  <div class="card">
+    Pendentes
+    <strong id="totalPendentes">0</strong>
+  </div>  <div class="card">
+    Aprovados
+    <strong id="totalAprovados">0</strong>
+  </div>  <div class="card">
+    Cancelados
+    <strong id="totalCancelados">0</strong>
+  </div></div><section class="section"><h2>💸 Saques</h2><div class="table-wrap"><table><thead>
+<tr>
+<th>ID</th>
+<th>Usuário</th>
+<th>E-mail</th>
+<th>Valor</th>
+<th>Pix</th>
+<th>Status</th>
+<th>Ações</th>
+</tr>
+</thead><tbody id="saquesBody">
+<tr>
+<td colspan="7" class="loading">
+Carregando...
+</td>
+</tr>
+</tbody></table></div>
+</section><section class="section"><h2>👥 Jogadores</h2><div class="table-wrap"><table><thead>
+<tr>
+<th>ID</th>
+<th>E-mail</th>
+<th>Nome</th>
+<th>Pontos</th>
+<th>Saldo</th>
+</tr>
+</thead><tbody id="jogadoresBody">
+<tr>
+<td colspan="5" class="loading">
+Carregando...
+</td>
+</tr>
+</tbody></table></div>
+</section><section class="section"><h2>🤝 Parceiros</h2><div class="table-wrap"><table><thead>
+<tr>
+<th>ID</th>
+<th>Nome</th>
+<th>E-mail</th>
+<th>Dados</th>
+</tr>
+</thead><tbody id="parceirosBody">
+<tr>
+<td colspan="4" class="loading">
+Carregando...
+</td>
+</tr>
+</tbody></table></div>
+</section><section class="section"><h2>📊 Movimentações de parceiros</h2><div class="table-wrap"><table><thead>
+<tr>
+<th>ID</th>
+<th>Parceiro</th>
+<th>Tipo</th>
+<th>Pontos</th>
+<th>Valor</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody id="movimentacoesBody">
+<tr>
+<td colspan="6" class="loading">
+Carregando...
+</td>
+</tr>
+</tbody></table></div>
+</section></main>
+</div><!-- APPWRITE SDK --><script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0"></script><script>
+'use strict';
 
-</header>
+/* =========================
+   CONFIGURAÇÃO APPWRITE
+========================= */
 
+const ENDPOINT =
+  'https://fra.cloud.appwrite.io/v1';
 
-<main class="container">
+const PROJECT_ID =
+  '6a8e10e900245502244c';
 
-  <!-- RESUMO -->
+const DATABASE_ID =
+  '6a8e11820008abab052e';
 
-  <section class="resumo">
+const ADMIN_USER_ID =
+  '6a8f41f10032758d44de';
 
-    <div class="card">
-      <div class="titulo">👥 Usuários</div>
-      <div class="numero" id="totalUsuarios">0</div>
-    </div>
+const TABLES = {
+  jogadores: 'jogadores',
+  parceiros: 'parceiros',
+  saques: 'saques',
+  movimentacoes: 'movimentacoes_parceiros'
+};
 
-    <div class="card">
-      <div class="titulo">🟢 Jogadores ativos</div>
-      <div class="numero" id="jogadoresAtivos">0</div>
-    </div>
-
-    <div class="card">
-      <div class="titulo">🎮 Pontos do Quiz</div>
-      <div class="numero" id="pontosQuiz">0</div>
-    </div>
-
-    <div class="card">
-      <div class="titulo">📢 Pontos patrocinados</div>
-      <div class="numero" id="pontosPatrocinados">0</div>
-    </div>
-
-    <div class="card">
-      <div class="titulo">🧮 Pontos totais</div>
-      <div class="numero" id="pontosTotal">0</div>
-    </div>
-
-    <div class="card">
-      <div class="titulo">⏳ Saques pendentes</div>
-      <div class="numero" id="saquesPendentes">0</div>
-    </div>
-
-    <div class="card">
-      <div class="titulo">✅ Saques aprovados</div>
-      <div class="numero" id="saquesAprovados">0</div>
-    </div>
-
-    <div class="card">
-      <div class="titulo">❌ Saques recusados</div>
-      <div class="numero" id="saquesRecusados">0</div>
-    </div>
-
-  </section>
-
-
-  <!-- CONTROLES -->
-
-  <section class="secao">
-
-    <div class="barra">
-
-      <button
-        class="btn btn-atualizar"
-        type="button"
-        onclick="carregarTudo()"
-      >
-        🔄 Atualizar painel
-      </button>
-
-    </div>
-
-    <div id="carregando">
-      Painel conectado.
-    </div>
-
-  </section>
-
-
-  <!-- JOGADORES -->
-
-  <section class="secao">
-
-    <h2>👥 Jogadores</h2>
-
-    <div class="tabela-container">
-
-      <table>
-
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>E-mail</th>
-            <th>Plano</th>
-            <th>🎮 Quiz</th>
-            <th>📢 Patrocinado</th>
-            <th>🧮 Total</th>
-            <th>Saldo</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-
-        <tbody id="tabelaJogadores"></tbody>
-
-      </table>
-
-    </div>
-
-  </section>
-
-
-  <!-- SAQUES -->
-
-  <section class="secao">
-
-    <h2>💰 Solicitações de saque</h2>
-
-    <div class="tabela-container">
-
-      <table>
-
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Jogador</th>
-            <th>Pontos</th>
-            <th>Valor</th>
-            <th>Plataforma</th>
-            <th>Total</th>
-            <th>Pagamento</th>
-            <th>Status</th>
-            <th>Ação</th>
-          </tr>
-        </thead>
-
-        <tbody id="tabelaSaques"></tbody>
-
-      </table>
-
-    </div>
-
-  </section>
+let account = null;
+let tablesDB = null;
 
 
-  <!-- SAC -->
+/* =========================
+   UTILITÁRIOS
+========================= */
 
-  <section class="secao">
+const $ = id => document.getElementById(id);
 
-    <h2>💬 Mensagens do SAC</h2>
+function esc(value){
+  return String(value ?? '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
 
-    <div id="listaMensagens"></div>
+function loginMsg(text, error = true){
+  $('loginMessage').innerHTML =
+    '<div class="message ' +
+    (error ? 'error' : 'info-msg') +
+    '">' +
+    esc(text) +
+    '</div>';
+}
 
-  </section>
-
-</main>
-
-  </section>  <div id="aviso"></div>  <script>
-
-    /* =====================================================
-       CONFIGURAÇÃO APPWRITE
-    ====================================================== */
-
-    const APPWRITE_ENDPOINT =
-      "https://fra.cloud.appwrite.io/v1";
-
-    const APPWRITE_PROJECT_ID =
-      "6a8e10e900245502244c";
-
-    const ADMIN_USER_ID =
-      "6a8f41f10032758d44de";
-
-    /*
-     * API do painel.
-     *
-     * Mantemos vazio porque o painel está no mesmo domínio
-     * do backend quando /api estiver configurado.
-     */
-    const API = "";
+function globalMsg(text, ok = true){
+  $('globalMessage').innerHTML =
+    '<div class="message ' +
+    (ok ? 'success-msg' : 'error') +
+    '">' +
+    esc(text) +
+    '</div>';
+}
 
 
-    /* =====================================================
-       APPWRITE
-    ====================================================== */
+/* =========================
+   INICIAR APPWRITE
+========================= */
 
-    const client =
-      new Appwrite.Client();
+function init(){
+
+  if(!window.Appwrite){
+    loginMsg(
+      'ERRO: o SDK do Appwrite não carregou. Atualize a página e tente novamente.'
+    );
+    return false;
+  }
+
+  try{
+
+    const client = new Appwrite.Client();
 
     client
-      .setEndpoint(APPWRITE_ENDPOINT)
-      .setProject(APPWRITE_PROJECT_ID);
+      .setEndpoint(ENDPOINT)
+      .setProject(PROJECT_ID);
 
-    const account =
-      new Appwrite.Account(client);
+    account = new Appwrite.Account(client);
 
-
-    /* =====================================================
-       UTILITÁRIOS
-    ====================================================== */
-
-    function escaparHTML(valor) {
-
-      return String(valor ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-    }
-
-
-    function numero(valor) {
-
-      return Number(valor || 0)
-        .toLocaleString("pt-BR");
-
-    }
-
-
-    function dinheiro(valor) {
-
-      return Number(valor || 0)
-        .toLocaleString(
-          "pt-BR",
-          {
-            style: "currency",
-            currency: "BRL"
-          }
-        );
-
-    }
-
-
-    function dataFormatada(valor) {
-
-      if (!valor) {
-        return "-";
-      }
-
-      const data =
-        new Date(valor);
-
-      if (
-        Number.isNaN(data.getTime())
-      ) {
-        return escaparHTML(valor);
-      }
-
-      return data.toLocaleString("pt-BR");
-
-    }
-
-
-    function mostrarAviso(
-      mensagem,
-      erro = false
-    ) {
-
-      const aviso =
-        document.getElementById("aviso");
-
-      aviso.textContent =
-        mensagem;
-
-      aviso.style.display =
-        "block";
-
-      aviso.style.background =
-        erro
-          ? "#dc2626"
-          : "#111827";
-
-      setTimeout(() => {
-
-        aviso.style.display =
-          "none";
-
-      }, 3500);
-
-    }
-
-
-    function mostrarErroLogin(
-      mensagem
-    ) {
-
-      document
-        .getElementById("erroLogin")
-        .textContent =
-        mensagem;
-
-    }
-
-
-    function mostrarStatusLogin(
-      mensagem
-    ) {
-
-      document
-        .getElementById("statusLogin")
-        .textContent =
-        mensagem;
-
-    }
-
-
-    /* =====================================================
-       VERIFICA SE O USUÁRIO LOGADO É O ADMIN
-    ====================================================== */
-
-    async function verificarAdministrador() {
-
-      /*
-       * account.get() pergunta ao Appwrite quem está
-       * autenticado na sessão atual.
-       */
-
-      const usuario =
-        await account.get();
-
-
-      console.log(
-        "Usuário autenticado no Appwrite:",
-        usuario
+    if(typeof Appwrite.TablesDB !== 'function'){
+      throw new Error(
+        'TablesDB não está disponível no SDK carregado.'
       );
-
-
-      /*
-       * A segurança principal:
-       * o ID precisa ser exatamente o administrador.
-       */
-
-      if (
-        usuario.$id !== ADMIN_USER_ID
-      ) {
-
-        /*
-         * Remove a sessão do usuário que tentou entrar.
-         */
-
-        try {
-          await account.deleteSession({
-            sessionId: "current"
-          });
-        } catch (_) {}
-
-
-        throw new Error(
-          "Acesso negado. Esta conta não é o administrador."
-        );
-
-      }
-
-
-      return usuario;
-
     }
 
-
-    /* =====================================================
-       MOSTRA PAINEL
-    ====================================================== */
-
-    function mostrarPainel(
-      usuario
-    ) {
-
-      document
-        .getElementById("telaLogin")
-        .classList.add("oculto");
-
-      document
-        .getElementById("painel")
-        .classList.remove("oculto");
-
-      document
-        .getElementById("usuarioLogado")
-        .textContent =
-        usuario.email ||
-        "Administrador";
-
-    }
-
-
-    /* =====================================================
-       ENTRAR NO ADMIN
-    ====================================================== */
-
-    async function entrarAdmin() {
-
-      const email =
-        document
-          .getElementById("emailAdmin")
-          .value
-          .trim();
-
-      const senha =
-        document
-          .getElementById("senhaAdmin")
-          .value;
-
-      const botao =
-        document
-          .getElementById("btnEntrar");
-
-
-      mostrarErroLogin("");
-      mostrarStatusLogin("");
-
-
-      if (!email) {
-
-        mostrarErroLogin(
-          "Digite o e-mail do administrador."
-        );
-
-        return;
-
-      }
-
-
-      if (!senha) {
-
-        mostrarErroLogin(
-          "Digite a senha do administrador."
-        );
-
-        return;
-
-      }
-
-
-      if (senha.length < 8) {
-
-        mostrarErroLogin(
-          "A senha deve ter pelo menos 8 caracteres."
-        );
-
-        return;
-
-      }
-
-
-      botao.disabled = true;
-
-      mostrarStatusLogin(
-        "Autenticando no Appwrite..."
-      );
-
-
-      try {
-
-        /*
-         * Primeiro encerramos uma sessão anterior
-         * deste navegador, se existir.
-         */
-
-        try {
-
-          await account.deleteSession({
-            sessionId: "current"
-          });
-
-        } catch (_) {}
-
-
-        /*
-         * Login real do Appwrite.
-         */
-
-        await account.createEmailPasswordSession({
-          email: email,
-          password: senha
-        });
-
-
-        mostrarStatusLogin(
-          "Login realizado. Verificando administrador..."
-        );
-
-
-        /*
-         * Agora descobrimos quem está logado.
-         */
-
-        const usuario =
-          await verificarAdministrador();
-
-
-        mostrarStatusLogin(
-          "Administrador confirmado."
-        );
-
-
-        mostrarPainel(usuario);
-
-
-        /*
-         * Carrega os dados do painel.
-         */
-
-        await carregarTudo();
-
-
-        mostrarAviso(
-          "Login administrativo realizado."
-        );
-
-
-      } catch (erro) {
-
-        console.error(
-          "Erro completo do login:",
-          erro
-        );
-
-
-        /*
-         * Nunca mostramos senha ou dados sensíveis.
-         */
-
-        const mensagem =
-          traduzirErroAppwrite(erro);
-
-
-        mostrarErroLogin(
-          mensagem
-        );
-
-        mostrarStatusLogin("");
-
-
-        /*
-         * Tenta limpar qualquer sessão criada.
-         */
-
-        try {
-
-          await account.deleteSession({
-            sessionId: "current"
-          });
-
-        } catch (_) {}
-
-      } finally {
-
-        botao.disabled = false;
-
-      }
-
-    }
-
-
-    /* =====================================================
-       TRADUZ ERROS DO APPWRITE
-    ====================================================== */
-
-    function traduzirErroAppwrite(
-      erro
-    ) {
-
-      const codigo =
-        erro?.code;
-
-      const mensagem =
-        String(
-          erro?.message || ""
-        );
-
-
-      if (
-        codigo === 401 ||
-        mensagem.toLowerCase().includes(
-          "invalid credentials"
-        )
-      ) {
-
-        return "E-mail ou senha incorretos.";
-
-      }
-
-
-      if (
-        mensagem.toLowerCase().includes(
-          "missing scopes"
-        )
-      ) {
-
-        return (
-          "O Appwrite recusou a sessão. " +
-          "Verifique a plataforma Web deste painel " +
-          "no projeto QuizUp."
-        );
-
-      }
-
-
-      if (
-        mensagem.toLowerCase().includes(
-          "cors"
-        )
-      ) {
-
-        return (
-          "Erro de CORS. Adicione " +
-          "quizup-admin.onrender.com " +
-          "como plataforma Web no Appwrite."
-        );
-
-      }
-
-
-      if (
-        mensagem.toLowerCase().includes(
-          "rate limit"
-        )
-      ) {
-
-        return (
-          "Muitas tentativas de login. " +
-          "Aguarde alguns minutos e tente novamente."
-        );
-
-      }
-
-
-      if (
-        mensagem.toLowerCase().includes(
-          "user is blocked"
-        )
-      ) {
-
-        return (
-          "Esta conta está bloqueada no Appwrite."
-        );
-
-      }
-
-
-      if (
-        mensagem
-          .toLowerCase()
-          .includes("administrador")
-      ) {
-
-        return mensagem;
-
-      }
-
-
-      return (
-        "Não foi possível entrar. " +
-        "Verifique o e-mail, a senha e a configuração do Appwrite."
-      );
-
-    }
-
-
-    /* =====================================================
-       SAIR
-    ====================================================== */
-
-    async function sairAdmin() {
-
-      try {
-
-        await account.deleteSession({
-          sessionId: "current"
-        });
-
-      } catch (_) {}
-
-
-      document
-        .getElementById("painel")
-        .classList.add("oculto");
-
-      document
-        .getElementById("telaLogin")
-        .classList.remove("oculto");
-
-      document
-        .getElementById("senhaAdmin")
-        .value = "";
-
-      mostrarErroLogin("");
-      mostrarStatusLogin("");
-
-    }
-
-
-    /* =====================================================
-       REQUISIÇÃO DO PAINEL
-    ====================================================== */
-
-    async function requisicaoAdmin(
-      caminho,
-      opcoes = {}
-    ) {
-
-      const configuracao = {
-        ...opcoes,
-        headers: {
-          ...(opcoes.headers || {})
-        }
-      };
-
-
-      const resposta =
-        await fetch(
-          API + caminho,
-          configuracao
-        );
-
-
-      let dados = {};
-
-      try {
-
-        dados =
-          await resposta.json();
-
-      } catch (_) {
-
-        dados = {};
-
-      }
-
-
-      if (
-        resposta.status === 401
-      ) {
-
-        throw new Error(
-          "Sessão administrativa não autorizada."
-        );
-
-      }
-
-
-      if (
-        !resposta.ok
-      ) {
-
-        throw new Error(
-          dados.erro ||
-          dados.message ||
-          "Erro na comunicação com o servidor."
-        );
-
-      }
-
-
-      return dados;
-
-    }
-
-
-    /* =====================================================
-       CARREGAR RESUMO
-    ====================================================== */
-
-    async function carregarResumo() {
-
-      const dados =
-        await requisicaoAdmin(
-          "/api/admin/resumo"
-        );
-
-
-      document
-        .getElementById("totalUsuarios")
-        .textContent =
-        numero(dados.usuarios);
-
-
-      document
-        .getElementById("jogadoresAtivos")
-        .textContent =
-        numero(dados.jogadoresAtivos);
-
-
-      document
-        .getElementById("pontosQuiz")
-        .textContent =
-        numero(dados.pontosQuiz);
-
-
-      document
-        .getElementById("pontosPatrocinados")
-        .textContent =
-        numero(dados.pontosPatrocinados);
-
-
-      document
-        .getElementById("pontosTotal")
-        .textContent =
-        numero(dados.pontosTotal);
-
-
-      document
-        .getElementById("saquesPendentes")
-        .textContent =
-        numero(dados.saquesPendentes);
-
-
-      document
-        .getElementById("saquesAprovados")
-        .textContent =
-        numero(dados.saquesAprovados);
-
-
-      document
-        .getElementById("saquesRecusados")
-        .textContent =
-        numero(dados.saquesRecusados);
-
-    }
-
-
-    /* =====================================================
-       CARREGAR JOGADORES
-    ====================================================== */
-
-    async function carregarJogadores() {
-
-      const dados =
-        await requisicaoAdmin(
-          "/api/admin/jogadores"
-        );
-
-
-      const tabela =
-        document.getElementById(
-          "tabelaJogadores"
-        );
-
-
-      tabela.innerHTML = "";
-
-
-      const jogadores =
-        dados.jogadores || [];
-
-
-      if (
-        jogadores.length === 0
-      ) {
-
-        tabela.innerHTML = `
-          <tr>
-            <td colspan="9">
-              Nenhum jogador cadastrado.
-            </td>
-          </tr>
-        `;
-
-        return;
-
-      }
-
-
-      jogadores.forEach(
-        jogador => {
-
-          const tr =
-            document.createElement("tr");
-
-
-          tr.innerHTML = `
-
-            <td>
-              ${escaparHTML(
-                jogador.idJogador
-              )}
-            </td>
-
-            <td>
-              ${escaparHTML(
-                jogador.nome
-              )}
-            </td>
-
-            <td>
-              ${escaparHTML(
-                jogador.email
-              )}
-            </td>
-
-            <td>
-              ${escaparHTML(
-                jogador.plano
-              )}
-            </td>
-
-            <td>
-              ${numero(
-                jogador.pontosQuiz
-              )}
-            </td>
-
-            <td>
-              ${numero(
-                jogador.pontosPatrocinados
-              )}
-            </td>
-
-            <td>
-              <strong>
-                ${numero(
-                  jogador.pontosTotal
-                )}
-              </strong>
-            </td>
-
-            <td>
-              ${numero(
-                jogador.saldo
-              )}
-            </td>
-
-            <td>
-              ${
-                jogador.ativo
-                  ? `
-                    <span class="status aprovado">
-                      ATIVO
-                    </span>
-                  `
-                  : `
-                    <span class="status recusado">
-                      INATIVO
-                    </span>
-                  `
-              }
-            </td>
-
-          `;
-
-
-          tabela.appendChild(tr);
-
-        }
-      );
-
-    }
-
-
-    /* =====================================================
-       CARREGAR SAQUES
-    ====================================================== */
-
-    async function carregarSaques() {
-
-      const dados =
-        await requisicaoAdmin(
-          "/api/admin/saques"
-        );
-
-
-      const tabela =
-        document.getElementById(
-          "tabelaSaques"
-        );
-
-
-      tabela.innerHTML = "";
-
-
-      const lista =
-        dados.saques || [];
-
-
-      if (
-        lista.length === 0
-      ) {
-
-        tabela.innerHTML = `
-          <tr>
-            <td colspan="9">
-              Nenhuma solicitação de saque.
-            </td>
-          </tr>
-        `;
-
-        return;
-
-      }
-
-
-      lista
-        .slice()
-        .reverse()
-        .forEach(
-          saque => {
-
-            const tr =
-              document.createElement("tr");
-
-
-            let classeStatus =
-              "pendente";
-
-
-            if (
-              saque.status === "APROVADO"
-            ) {
-
-              classeStatus =
-                "aprovado";
-
-            }
-
-
-            if (
-              saque.status === "RECUSADO"
-            ) {
-
-              classeStatus =
-                "recusado";
-
-            }
-
-
-            let botoes = "";
-
-
-            if (
-              saque.status === "PENDENTE"
-            ) {
-
-              botoes = `
-
-                <button
-                  class="btn btn-aprovar"
-                  onclick="aprovarSaque('${escaparHTML(
-                    saque.id
-                  )}')"
-                >
-                  ✅ Aprovar
-                </button>
-
-                <button
-                  class="btn btn-recusar"
-                  onclick="recusarSaque('${escaparHTML(
-                    saque.id
-                  )}')"
-                >
-                  ❌ Recusar
-                </button>
-
-              `;
-
-            } else {
-
-              botoes =
-                "<span>Já analisado</span>";
-
-            }
-
-
-            tr.innerHTML = `
-
-              <td>
-                ${dataFormatada(
-                  saque.data
-                )}
-              </td>
-
-              <td>
-                <strong>
-                  ${escaparHTML(
-                    saque.nome
-                  )}
-                </strong>
-                <br>
-                ${escaparHTML(
-                  saque.idJogador
-                )}
-              </td>
-
-              <td>
-                ${numero(
-                  saque.pontos
-                )}
-              </td>
-
-              <td>
-                ${dinheiro(
-                  saque.valorJogador
-                )}
-              </td>
-
-              <td>
-                ${dinheiro(
-                  saque.valorPlataforma
-                )}
-                <br>
-                ${numero(
-                  saque.percentualPlataforma
-                )}%
-              </td>
-
-              <td>
-                <strong>
-                  ${dinheiro(
-                    saque.custoTotal
-                  )}
-                </strong>
-              </td>
-
-              <td>
-                ${escaparHTML(
-                  String(
-                    saque.tipo || ""
-                  ).toUpperCase()
-                )}
-                <br>
-                ${escaparHTML(
-                  saque.destino
-                )}
-              </td>
-
-              <td>
-                <span
-                  class="status ${classeStatus}"
-                >
-                  ${escaparHTML(
-                    saque.status
-                  )}
-                </span>
-              </td>
-
-              <td>
-                ${botoes}
-              </td>
-
-            `;
-
-
-            tabela.appendChild(tr);
-
-          }
-        );
-
-    }
-
-
-    /* =====================================================
-       APROVAR SAQUE
-    ====================================================== */
-
-    async function aprovarSaque(
-      idSaque
-    ) {
-
-      if (
-        !confirm(
-          "Tem certeza que deseja APROVAR este saque?"
-        )
-      ) {
-
-        return;
-
-      }
-
-
-      try {
-
-        await requisicaoAdmin(
-          "/api/admin/saque/aprovar",
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type":
-                "application/json"
-            },
-
-            body:
-              JSON.stringify({
-                idSaque:
-                  idSaque
-              })
-          }
-        );
-
-
-        mostrarAviso(
-          "Saque aprovado com sucesso."
-        );
-
-
-        await carregarTudo();
-
-      } catch (erro) {
-
-        mostrarAviso(
-          erro.message,
-          true
-        );
-
-      }
-
-    }
-
-
-    /* =====================================================
-       RECUSAR SAQUE
-    ====================================================== */
-
-    async function recusarSaque(
-      idSaque
-    ) {
-
-      const motivo =
-        prompt(
-          "Informe o motivo da recusa:"
-        );
-
-
-      if (
-        motivo === null
-      ) {
-
-        return;
-
-      }
-
-
-      try {
-
-        await requisicaoAdmin(
-          "/api/admin/saque/recusar",
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type":
-                "application/json"
-            },
-
-            body:
-              JSON.stringify({
-
-                idSaque:
-                  idSaque,
-
-                motivo:
-                  motivo.trim() ||
-                  "Solicitação recusada pelo administrador."
-
-              })
-          }
-        );
-
-
-        mostrarAviso(
-          "Saque recusado."
-        );
-
-
-        await carregarTudo();
-
-      } catch (erro) {
-
-        mostrarAviso(
-          erro.message,
-          true
-        );
-
-      }
-
-    }
-
-
-    /* =====================================================
-       CARREGAR MENSAGENS
-    ====================================================== */
-
-    async function carregarMensagens() {
-
-      const dados =
-        await requisicaoAdmin(
-          "/api/admin/mensagens"
-        );
-
-
-      const lista =
-        document.getElementById(
-          "listaMensagens"
-        );
-
-
-      lista.innerHTML = "";
-
-
-      const mensagens =
-        dados.mensagens || [];
-
-
-      if (
-        mensagens.length === 0
-      ) {
-
-        lista.innerHTML =
-          "<p>Nenhuma mensagem no SAC.</p>";
-
-        return;
-
-      }
-
-
-      mensagens
-        .slice()
-        .reverse()
-        .forEach(
-          mensagem => {
-
-            const div =
-              document.createElement("div");
-
-
-            div.className =
-              "mensagem";
-
-
-            const status =
-              mensagem.status === "NOVA"
-                ? `
-                  <span class="status nova">
-                    NOVA
-                  </span>
-                `
-                : `
-                  <span class="status lida">
-                    LIDA
-                  </span>
-                `;
-
-
-            div.innerHTML = `
-
-              <strong>
-                ${escaparHTML(
-                  mensagem.email
-                )}
-              </strong>
-
-              <div>
-                ${status}
-              </div>
-
-              <div class="mensagem-texto">
-                ${escaparHTML(
-                  mensagem.mensagem
-                )}
-              </div>
-
-              <small>
-                ${dataFormatada(
-                  mensagem.data
-                )}
-              </small>
-
-              ${
-                mensagem.status === "NOVA"
-                  ? `
-                    <br><br>
-
-                    <button
-                      class="btn btn-lida"
-                      onclick="marcarMensagemLida('${escaparHTML(
-                        mensagem.id
-                      )}')"
-                    >
-                      ✓ Marcar como lida
-                    </button>
-                  `
-                  : ""
-              }
-
-            `;
-
-
-            lista.appendChild(div);
-
-          }
-        );
-
-    }
-
-
-    /* =====================================================
-       MARCAR MENSAGEM COMO LIDA
-    ====================================================== */
-
-    async function marcarMensagemLida(
-      idMensagem
-    ) {
-
-      try {
-
-        await requisicaoAdmin(
-          "/api/admin/mensagem/lida",
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type":
-                "application/json"
-            },
-
-            body:
-              JSON.stringify({
-                idMensagem:
-                  idMensagem
-              })
-          }
-        );
-
-
-        mostrarAviso(
-          "Mensagem marcada como lida."
-        );
-
-
-        await carregarTudo();
-
-      } catch (erro) {
-
-        mostrarAviso(
-          erro.message,
-          true
-        );
-
-      }
-
-    }
-
-
-    /* =====================================================
-       CARREGAR TUDO
-    ====================================================== */
-
-    async function carregarTudo() {
-
-      const carregando =
-        document.getElementById(
-          "carregando"
-        );
-
-
-      carregando.textContent =
-        "Carregando informações...";
-
-
-      try {
-
-        /*
-         * Confirma novamente a identidade do administrador
-         * antes de consultar os dados.
-         */
-
-        await verificarAdministrador();
-
-
-        await Promise.all([
-          carregarResumo(),
-          carregarJogadores(),
-          carregarSaques(),
-          carregarMensagens()
-        ]);
-
-
-        carregando.textContent =
-          "Dados atualizados.";
-
-
-      } catch (erro) {
-
-        console.error(
-          "Erro ao carregar painel:",
-          erro
-        );
-
-
-        carregando.textContent =
-          "Não foi possível carregar os dados.";
-
-
-        if (
-          String(
-            erro.message || ""
-          ).toLowerCase()
-          .includes("não é o administrador")
-        ) {
-
-          await sairAdmin();
-
-          mostrarErroLogin(
-            erro.message
-          );
-
-          return;
-
-        }
-
-
-        if (
-          String(
-            erro.message || ""
-          ).toLowerCase()
-          .includes("sessão")
-        ) {
-
-          await sairAdmin();
-
-          mostrarErroLogin(
-            "Sua sessão expirou. Entre novamente."
-          );
-
-          return;
-
-        }
-
-
-        mostrarAviso(
-          erro.message ||
-          "Não foi possível carregar os dados.",
-          true
-        );
-
-      }
-
-    }
-
-
-    /* =====================================================
-       ENTER NO LOGIN
-    ====================================================== */
-
-    document
-      .getElementById("senhaAdmin")
-      .addEventListener(
-        "keydown",
-        evento => {
-
-          if (
-            evento.key === "Enter"
-          ) {
-
-            entrarAdmin();
-
-          }
-
-        }
-      );
-
-
-    document
-      .getElementById("emailAdmin")
-      .addEventListener(
-        "keydown",
-        evento => {
-
-          if (
-            evento.key === "Enter"
-          ) {
-
-            entrarAdmin();
-
-          }
-
-        }
-      );
-
-
-    /* =====================================================
-       VERIFICAR SESSÃO AO ABRIR
-    ====================================================== */
-
-    window.addEventListener(
-      "load",
-      async () => {
-
-        try {
-
-          const usuario =
-            await verificarAdministrador();
-
-
-          mostrarPainel(usuario);
-
-
-          await carregarTudo();
-
-
-        } catch (erro) {
-
-          /*
-           * Normalmente significa que não existe
-           * sessão Appwrite neste navegador.
-           */
-
-          console.log(
-            "Nenhuma sessão administrativa ativa."
-          );
-
-        }
-
+    tablesDB = new Appwrite.TablesDB(client);
+
+    console.log(
+      'QuizUp Admin iniciado corretamente.',
+      {
+        project: PROJECT_ID,
+        admin: ADMIN_USER_ID,
+        endpoint: ENDPOINT
       }
     );
 
-  </script></body>
+    return true;
+
+  }catch(error){
+
+    console.error(
+      'ERRO AO INICIAR APPWRITE:',
+      error
+    );
+
+    loginMsg(
+      'Erro ao iniciar o Appwrite: ' +
+      (error.message || error)
+    );
+
+    return false;
+  }
+}
+
+
+/* =========================
+   ENCERRAR SESSÃO
+========================= */
+
+async function delSession(){
+
+  try{
+
+    if(account){
+      await account.deleteSession({
+        sessionId:'current'
+      });
+    }
+
+  }catch(error){
+
+    console.warn(
+      'Não havia sessão para encerrar:',
+      error
+    );
+  }
+}
+
+
+/* =========================
+   LOGIN ADMINISTRADOR
+========================= */
+
+async function login(){
+
+  const email =
+    $('email').value.trim();
+
+  const password =
+    $('password').value;
+
+  const button =
+    $('loginButton');
+
+  if(!email){
+    loginMsg('Digite o e-mail.');
+    return;
+  }
+
+  if(!password){
+    loginMsg('Digite a senha.');
+    return;
+  }
+
+  if(!account){
+
+    if(!init()){
+      return;
+    }
+  }
+
+  button.disabled = true;
+  button.textContent = 'Entrando...';
+
+  $('loginMessage').innerHTML = '';
+
+  try{
+
+    loginMsg(
+      'Conectando ao Appwrite...',
+      false
+    );
+
+    /*
+      IMPORTANTE:
+      Primeiro encerramos somente a sessão
+      atual deste navegador, caso exista.
+    */
+
+    try{
+      await account.deleteSession({
+        sessionId:'current'
+      });
+    }catch(ignore){
+      console.log(
+        'Nenhuma sessão anterior neste navegador.'
+      );
+    }
+
+    /*
+      LOGIN POR E-MAIL E SENHA
+    */
+
+    const session =
+      await account.createEmailPasswordSession({
+        email: email,
+        password: password
+      });
+
+    console.log(
+      'SESSÃO CRIADA:',
+      session
+    );
+
+    loginMsg(
+      'Login realizado. Confirmando administrador...',
+      false
+    );
+
+    /*
+      RECUPERA O USUÁRIO AUTENTICADO
+    */
+
+    const user =
+      await account.get();
+
+    console.log(
+      'USUÁRIO AUTENTICADO:',
+      user
+    );
+
+    /*
+      VERIFICA SE É O ADMINISTRADOR
+    */
+
+    if(user.$id !== ADMIN_USER_ID){
+
+      await delSession();
+
+      throw new Error(
+        'A senha está correta, mas esta conta não é o administrador configurado. ID encontrado: ' +
+        user.$id
+      );
+    }
+
+    /*
+      ABRE O PAINEL
+    */
+
+    $('adminUser').textContent =
+      user.email || email;
+
+    $('loginScreen')
+      .classList
+      .add('hidden');
+
+    $('adminScreen')
+      .classList
+      .remove('hidden');
+
+    $('loginMessage').innerHTML = '';
+
+    await carregarPainel();
+
+  }catch(error){
+
+    console.error(
+      'ERRO REAL DO LOGIN:',
+      error
+    );
+
+    /*
+      MOSTRA O ERRO REAL DO APPWRITE
+      PARA PODERMOS IDENTIFICAR O PROBLEMA.
+    */
+
+    let mensagem =
+      error?.message ||
+      String(error);
+
+    if(error?.code){
+      mensagem +=
+        ' | Código: ' +
+        error.code;
+    }
+
+    if(error?.type){
+      mensagem +=
+        ' | Tipo: ' +
+        error.type;
+    }
+
+    if(
+      $('adminScreen')
+        .classList
+        .contains('hidden')
+    ){
+
+      loginMsg(
+        'Appwrite recusou o login: ' +
+        mensagem
+      );
+
+      await delSession();
+
+    }else{
+
+      globalMsg(
+        'Painel aberto, mas ocorreu um erro: ' +
+        mensagem,
+        false
+      );
+    }
+
+  }finally{
+
+    button.disabled = false;
+    button.textContent = 'Entrar';
+  }
+}
+
+
+/* =========================
+   VERIFICAR SESSÃO
+========================= */
+
+async function sessao(){
+
+  if(!account){
+
+    if(!init()){
+      return;
+    }
+  }
+
+  try{
+
+    const user =
+      await account.get();
+
+    console.log(
+      'SESSÃO ENCONTRADA:',
+      user
+    );
+
+    if(user.$id !== ADMIN_USER_ID){
+
+      await delSession();
+
+      return;
+    }
+
+    $('adminUser').textContent =
+      user.email || '';
+
+    $('loginScreen')
+      .classList
+      .add('hidden');
+
+    $('adminScreen')
+      .classList
+      .remove('hidden');
+
+    await carregarPainel();
+
+  }catch(error){
+
+    console.log(
+      'Nenhuma sessão administrativa ativa.'
+    );
+  }
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+async function logout(){
+
+  await delSession();
+
+  $('adminScreen')
+    .classList
+    .add('hidden');
+
+  $('loginScreen')
+    .classList
+    .remove('hidden');
+
+  $('password').value = '';
+
+  $('loginMessage').innerHTML = '';
+}
+
+
+/* =========================
+   LISTAR TABELAS
+========================= */
+
+async function list(tableId){
+
+  const result =
+    await tablesDB.listRows({
+      databaseId: DATABASE_ID,
+      tableId: tableId,
+      queries: [
+        Appwrite.Query.limit(100)
+      ]
+    });
+
+  return result.rows || [];
+}
+
+
+/* =========================
+   CARREGAR PAINEL
+========================= */
+
+async function carregarPainel(){
+
+  globalMsg(
+    'Carregando dados do QuizUp...'
+  );
+
+  const resultados =
+    await Promise.allSettled([
+
+      list(TABLES.jogadores),
+
+      list(TABLES.parceiros),
+
+      list(TABLES.saques),
+
+      list(TABLES.movimentacoes)
+
+    ]);
+
+  const jogadores =
+    resultados[0].status === 'fulfilled'
+      ? resultados[0].value
+      : [];
+
+  const parceiros =
+    resultados[1].status === 'fulfilled'
+      ? resultados[1].value
+      : [];
+
+  const saques =
+    resultados[2].status === 'fulfilled'
+      ? resultados[2].value
+      : [];
+
+  const movimentacoes =
+    resultados[3].status === 'fulfilled'
+      ? resultados[3].value
+      : [];
+
+  resumo(
+    jogadores,
+    parceiros,
+    saques
+  );
+
+  mostrarJogadores(
+    jogadores
+  );
+
+  mostrarSaques(
+    saques
+  );
+
+  mostrarParceiros(
+    parceiros
+  );
+
+  mostrarMovimentacoes(
+    movimentacoes
+  );
+
+  const erros =
+    resultados
+      .map((resultado,index)=>{
+
+        if(
+          resultado.status ===
+          'rejected'
+        ){
+
+          return [
+            'jogadores',
+            'parceiros',
+            'saques',
+            'movimentações'
+          ][index] +
+          ': ' +
+          (
+            resultado.reason?.message ||
+            resultado.reason
+          );
+        }
+
+        return null;
+
+      })
+      .filter(Boolean);
+
+  if(erros.length){
+
+    globalMsg(
+      'Painel aberto. Tabelas com erro: ' +
+      erros.join(' | '),
+      false
+    );
+
+  }else{
+
+    $('globalMessage')
+      .innerHTML = '';
+  }
+}
+
+
+/* =========================
+   RESUMO
+========================= */
+
+function st(value){
+
+  return String(
+    value || ''
+  )
+  .toLowerCase()
+  .trim();
+}
+
+function resumo(
+  jogadores,
+  parceiros,
+  saques
+){
+
+  $('totalJogadores')
+    .textContent =
+    jogadores.length;
+
+  $('totalParceiros')
+    .textContent =
+    parceiros.length;
+
+  $('totalSaques')
+    .textContent =
+    saques.length;
+
+  $('totalPendentes')
+    .textContent =
+    saques.filter(
+      x =>
+        st(x.status) ===
+        'pendente'
+    ).length;
+
+  $('totalAprovados')
+    .textContent =
+    saques.filter(
+      x =>
+        [
+          'aprovado',
+          'aprovada'
+        ].includes(
+          st(x.status)
+        )
+    ).length;
+
+  $('totalCancelados')
+    .textContent =
+    saques.filter(
+      x =>
+        [
+          'cancelado',
+          'cancelada'
+        ].includes(
+          st(x.status)
+        )
+    ).length;
+}
+
+
+/* =========================
+   JOGADORES
+========================= */
+
+function mostrarJogadores(array){
+
+  const body =
+    $('jogadoresBody');
+
+  if(!array.length){
+
+    body.innerHTML =
+      '<tr>' +
+      '<td colspan="5">' +
+      'Nenhum jogador encontrado.' +
+      '</td>' +
+      '</tr>';
+
+    return;
+  }
+
+  body.innerHTML =
+    array.map(x => {
+
+      return (
+        '<tr>' +
+
+        '<td>' +
+        esc(x.$id) +
+        '</td>' +
+
+        '<td>' +
+        esc(
+          x.email ||
+          x['E-mail'] ||
+          '-'
+        ) +
+        '</td>' +
+
+        '<td>' +
+        esc(
+          x.nome ||
+          x.name ||
+          '-'
+        ) +
+        '</td>' +
+
+        '<td>' +
+        esc(
+          x.pontos ??
+          x.Pontos ??
+          0
+        ) +
+        '</td>' +
+
+        '<td>' +
+        esc(
+          x.equilibrio ??
+          x['equilíbrio'] ??
+          x.saldo ??
+          0
+        ) +
+        '</td>' +
+
+        '</tr>'
+      );
+
+    }).join('');
+}
+
+
+/* =========================
+   SAQUES
+========================= */
+
+function mostrarSaques(array){
+
+  const body =
+    $('saquesBody');
+
+  if(!array.length){
+
+    body.innerHTML =
+      '<tr>' +
+      '<td colspan="7">' +
+      'Nenhum saque encontrado.' +
+      '</td>' +
+      '</tr>';
+
+    return;
+  }
+
+  body.innerHTML =
+    array.map(x => {
+
+      const status =
+        st(x.status);
+
+      const id =
+        esc(x.$id);
+
+      let acoes =
+        '-';
+
+      if(status === 'pendente'){
+
+        acoes =
+          '<div class="actions">' +
+
+          '<button ' +
+          'class="success" ' +
+          'data-a="ok" ' +
+          'data-id="' +
+          id +
+          '">' +
+          'Aprovar' +
+          '</button>' +
+
+          '<button ' +
+          'class="danger" ' +
+          'data-a="no" ' +
+          'data-id="' +
+          id +
+          '">' +
+          'Cancelar' +
+          '</button>' +
+
+          '</div>';
+      }
+
+      return (
+        '<tr>' +
+
+        '<td>' +
+        id +
+        '</td>' +
+
+        '<td>' +
+        esc(
+          x['ID do usuário.'] ||
+          x['ID do usuário'] ||
+          x.usuario ||
+          x.userId ||
+          '-'
+        ) +
+        '</td>' +
+
+        '<td>' +
+        esc(
+          x.email ||
+          x['e-mail'] ||
+          x['E-mail'] ||
+          '-'
+        ) +
+        '</td>' +
+
+        '<td>R$ ' +
+        esc(
+          x.quantia ??
+          x.valor_jogador ??
+          x.valor ??
+          0
+        ) +
+        '</td>' +
+
+        '<td>' +
+        esc(
+          x.pix_key ||
+          x.pix ||
+          '-'
+        ) +
+        '</td>' +
+
+        '<td class="status ' +
+        esc(status) +
+        '">' +
+        esc(status || '-') +
+        '</td>' +
+
+        '<td>' +
+        acoes +
+        '</td>' +
+
+        '</tr>'
+      );
+
+    }).join('');
+}
+
+
+/* =========================
+   ALTERAR SAQUE
+========================= */
+
+async function alterar(
+  id,
+  status
+){
+
+  const confirmar =
+    confirm(
+      'Tem certeza que deseja ' +
+      (
+        status === 'aprovado'
+          ? 'APROVAR'
+          : 'CANCELAR'
+      ) +
+      ' este saque?'
+    );
+
+  if(!confirmar){
+    return;
+  }
+
+  try{
+
+    await tablesDB.updateRow({
+
+      databaseId:
+        DATABASE_ID,
+
+      tableId:
+        TABLES.saques,
+
+      rowId:
+        id,
+
+      data:{
+        status:
+          status
+      }
+
+    });
+
+    await carregarPainel();
+
+  }catch(error){
+
+    globalMsg(
+      'Erro ao atualizar saque: ' +
+      (
+        error.message ||
+        error
+      ),
+      false
+    );
+  }
+}
+
+
+/* =========================
+   PARCEIROS
+========================= */
+
+function mostrarParceiros(array){
+
+  const body =
+    $('parceirosBody');
+
+  if(!array.length){
+
+    body.innerHTML =
+      '<tr>' +
+      '<td colspan="4">' +
+      'Nenhum parceiro encontrado.' +
+      '</td>' +
+      '</tr>';
+
+    return;
+  }
+
+  body.innerHTML =
+    array.map(x => {
+
+      return (
+        '<tr>' +
+
+        '<td>' +
+        esc(x.$id) +
+        '</td>' +
+
+        '<td>' +
+        esc(
+          x.nome ||
+          x.name ||
+          '-'
+        ) +
+        '</td>' +
+
+        '<td>' +
+        esc(
+          x.email ||
+          x['E-mail'] ||
+          '-'
+        ) +
+        '</td>' +
+
+        '<td>' +
+        esc(
+          JSON.stringify(x)
+        ) +
+        '</td>' +
+
+        '</tr>'
+      );
+
+    }).join('');
+}
+
+
+/* =========================
+   MOVIMENTAÇÕES
+========================= */
+
+function mostrarMovimentacoes(array){
+
+  const body =
+    $('movimentacoesBody');
+
+  if(!array.length){
+
+    body.innerHTML =
+      '<tr>' +
+      '<td colspan="6">' +
+      'Nenhuma movimentação encontrada.' +
+      '</td>' +
+      '</tr>';
+
+    return;
+  }
+
+  body.innerHTML =
+    array.map(x => {
+
+      return (
+        '<tr>' +
+
+        '<td>' +
+        esc(x.$id) +
+        '</td>' +
+
+        '<td>' +
+        esc(
+          x.parceiro_id ||
+          '-'
+        ) +
+        '</td>' +
+
+        '<td>' +
+        esc(
+          x.tipo ||
+          '-'
+        ) +
+        '</td>' +
+
+        '<td>' +
+        esc(
+          x.pontos ??
+          0
+        ) +
+        '</td>' +
+
+        '<td>' +
+        esc(
+          x.valor ??
+          0
+        ) +
+        '</td>' +
+
+        '<td>' +
+        esc(
+          x.descricao ||
+          '-'
+        ) +
+        '</td>' +
+
+        '</tr>'
+      );
+
+    }).join('');
+}
+
+
+/* =========================
+   EVENTOS
+========================= */
+
+$('loginButton')
+  .addEventListener(
+    'click',
+    login
+  );
+
+$('logoutButton')
+  .addEventListener(
+    'click',
+    logout
+  );
+
+$('password')
+  .addEventListener(
+    'keydown',
+    event => {
+
+      if(event.key === 'Enter'){
+        login();
+      }
+
+    }
+  );
+
+document.addEventListener(
+  'click',
+  event => {
+
+    const button =
+      event.target.closest(
+        'button[data-a]'
+      );
+
+    if(!button){
+      return;
+    }
+
+    alterar(
+      button.dataset.id,
+      button.dataset.a === 'ok'
+        ? 'aprovado'
+        : 'cancelado'
+    );
+
+  }
+);
+
+
+/* =========================
+   ERROS DO JAVASCRIPT
+========================= */
+
+window.addEventListener(
+  'error',
+  event => {
+
+    console.error(
+      'ERRO JAVASCRIPT:',
+      event.error ||
+      event.message
+    );
+
+  }
+);
+
+window.addEventListener(
+  'unhandledrejection',
+  event => {
+
+    console.error(
+      'PROMISE ERROR:',
+      event.reason
+    );
+
+  }
+);
+
+
+/* =========================
+   INICIALIZAÇÃO
+========================= */
+
+if(init()){
+  sessao();
+}
+
+</script></body>
   </html>
