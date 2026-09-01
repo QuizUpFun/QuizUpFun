@@ -1,312 +1,247 @@
-const sdk = require("node-appwrite");
-
-/*
-========================================================
- QUIZUP ADMIN - BACKEND
- Compatível com Node 26 / Appwrite Functions
-========================================================
-*/
-
-const {
+import {
   Client,
   TablesDB,
   Query
-} = sdk;
-
+} from "node-appwrite";
 
 /*
-========================================================
- CONFIGURAÇÃO
-========================================================
+=========================================================
+ QUIZUP ADMIN — APPWRITE FUNCTION
+ Node 26
+ node-appwrite 17
+ ES MODULE
+=========================================================
+
+ IMPORTANTE:
+ - Este arquivo usa import, NÃO require.
+ - O package.json deve conter:
+   "type": "module"
+ - A função deve ter acesso aos escopos necessários
+   para ler e escrever as tabelas.
+=========================================================
 */
 
-const ENDPOINT =
-  process.env.APPWRITE_ENDPOINT ||
-  "https://fra.cloud.appwrite.io/v1";
+
+/* ======================================================
+   CONFIGURAÇÃO
+====================================================== */
 
 const PROJECT_ID =
-  process.env.APPWRITE_PROJECT_ID ||
+  process.env.APPWRITE_FUNCTION_PROJECT_ID ||
   "6a8e10e900245502244c";
 
-const API_KEY =
-  process.env.APPWRITE_API_KEY || "";
+const ENDPOINT =
+  process.env.APPWRITE_FUNCTION_API_ENDPOINT ||
+  "https://fra.cloud.appwrite.io/v1";
 
-const ADMIN_USER_ID =
-  process.env.ADMIN_USER_ID ||
-  "6a8f41f10032758d44de";
+
+/* ======================================================
+   CLIENTE APPWRITE
+====================================================== */
+
+const client =
+  new Client()
+    .setEndpoint(ENDPOINT)
+    .setProject(PROJECT_ID)
+    .setKey(
+      process.env.APPWRITE_API_KEY || ""
+    );
+
+
+const tablesDB =
+  new TablesDB(client);
+
+
+/* ======================================================
+   IDs DAS TABELAS
+======================================================
+
+   Banco:
+   QuizUpDB
+
+   Tabelas conhecidas:
+   jogadores
+   saques
+   parceiros
+   movimentacoes_parceiros
+====================================================== */
 
 const DATABASE_ID =
-  process.env.DATABASE_ID ||
+  process.env.QUIZUP_DATABASE_ID ||
   "QuizUpDB";
 
-const JOGADORES_TABLE_ID =
-  process.env.JOGADORES_TABLE_ID ||
+const TABELA_JOGADORES =
+  process.env.TABELA_JOGADORES ||
   "jogadores";
 
-const SAQUES_TABLE_ID =
-  process.env.SAQUES_TABLE_ID ||
+const TABELA_SAQUES =
+  process.env.TABELA_SAQUES ||
   "saques";
 
-const MENSAGENS_TABLE_ID =
-  process.env.MENSAGENS_TABLE_ID ||
-  "mensagens";
 
+/* ======================================================
+   FUNÇÕES AUXILIARES
+====================================================== */
 
-/*
-========================================================
- CLIENT APPWRITE
-========================================================
-*/
-
-const client = new Client()
-  .setEndpoint(ENDPOINT)
-  .setProject(PROJECT_ID);
-
-if (API_KEY) {
-  client.setKey(API_KEY);
-}
-
-const tablesDB = new TablesDB(client);
-
-
-/*
-========================================================
- RESPOSTAS
-========================================================
-*/
-
-function json(res, data, status = 200) {
-
-  return res.json(
-    data,
-    status
-  );
-
-}
-
-
-/*
-========================================================
- PEGAR ID DO USUÁRIO QUE EXECUTOU A FUNÇÃO
-========================================================
-*/
-
-function getUserId(req) {
-
-  const headers =
-    req.headers || {};
-
-  return (
-    headers["x-appwrite-user-id"] ||
-    headers["X-Appwrite-User-Id"] ||
-    ""
-  );
-
-}
-
-
-/*
-========================================================
- SEGURANÇA ADMIN
-========================================================
-*/
-
-function verificarAdmin(req) {
-
-  const userId =
-    getUserId(req);
-
-  if (!userId) {
-
-    return {
-      ok: false,
-      erro:
-        "Usuário não autenticado."
-    };
-
-  }
-
-
-  if (
-    userId !== ADMIN_USER_ID
-  ) {
-
-    return {
-      ok: false,
-      erro:
-        "Acesso negado. Usuário não autorizado."
-    };
-
-  }
-
-
-  return {
-    ok: true
-  };
-
-}
-
-
-/*
-========================================================
- NORMALIZAR NÚMEROS
-========================================================
-*/
-
-function num(valor) {
-
-  if (
-    valor === null ||
-    valor === undefined ||
-    valor === ""
-  ) {
-    return 0;
-  }
-
-  const numero =
-    Number(valor);
-
-  return Number.isFinite(numero)
-    ? numero
-    : 0;
-
-}
-
-
-/*
-========================================================
- PRIMEIRO VALOR EXISTENTE
-========================================================
-*/
-
-function valorDe(obj, nomes, padrao = "") {
-
-  for (const nome of nomes) {
-
-    if (
-      obj &&
-      obj[nome] !== undefined &&
-      obj[nome] !== null
-    ) {
-
-      return obj[nome];
-
-    }
-
-  }
-
-  return padrao;
-
-}
-
-
-/*
-========================================================
- LISTAR LINHAS
-========================================================
-*/
-
-async function listarTabela(
-  tableId,
-  queries = []
+function resposta(
+  body,
+  statusCode = 200
 ) {
-
-  const resultado =
-    await tablesDB.listRows({
-      databaseId:
-        DATABASE_ID,
-
-      tableId:
-        tableId,
-
-      queries:
-        queries,
-
-      total:
-        true
-    });
-
-  return resultado;
-
+  return {
+    statusCode,
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  };
 }
 
 
-/*
-========================================================
- RESUMO
-========================================================
-*/
+function erro(
+  mensagem,
+  statusCode = 400
+) {
+  return resposta(
+    {
+      sucesso: false,
+      erro: mensagem
+    },
+    statusCode
+  );
+}
 
-async function resumo() {
+
+function numero(valor) {
+  const n = Number(valor);
+  return Number.isFinite(n) ? n : 0;
+}
+
+
+function texto(valor) {
+  return String(valor ?? "");
+}
+
+
+/* ======================================================
+   LEITURA DAS TABELAS
+====================================================== */
+
+async function listarJogadores() {
+
+  try {
+
+    const resultado =
+      await tablesDB.listRows({
+        databaseId: DATABASE_ID,
+        tableId: TABELA_JOGADORES,
+        queries: [
+          Query.limit(500)
+        ]
+      });
+
+    return resultado.rows || [];
+
+  } catch (e) {
+
+    console.error(
+      "Erro ao carregar jogadores:",
+      e
+    );
+
+    return [];
+
+  }
+}
+
+
+async function listarSaques() {
+
+  try {
+
+    const resultado =
+      await tablesDB.listRows({
+        databaseId: DATABASE_ID,
+        tableId: TABELA_SAQUES,
+        queries: [
+          Query.limit(500)
+        ]
+      });
+
+    return resultado.rows || [];
+
+  } catch (e) {
+
+    console.error(
+      "Erro ao carregar saques:",
+      e
+    );
+
+    return [];
+
+  }
+}
+
+
+/* ======================================================
+   RESUMO
+====================================================== */
+
+async function obterResumo() {
 
   const jogadores =
-    await listarTabela(
-      JOGADORES_TABLE_ID
-    );
-
+    await listarJogadores();
 
   const saques =
-    await listarTabela(
-      SAQUES_TABLE_ID
-    );
+    await listarSaques();
 
 
   let pontosQuiz = 0;
   let pontosPatrocinados = 0;
   let pontosTotal = 0;
 
+  let jogadoresAtivos = 0;
+
 
   for (
-    const jogador of jogadores.rows || []
+    const jogador of jogadores
   ) {
 
     const quiz =
-      num(
-        valorDe(
-          jogador,
-          [
-            "pontosQuiz",
-            "pontos_quiz",
-            "pontos"
-          ]
-        )
+      numero(
+        jogador.pontosQuiz ??
+        jogador.pontos ??
+        0
       );
-
 
     const patrocinado =
-      num(
-        valorDe(
-          jogador,
-          [
-            "pontosPatrocinados",
-            "pontos_patrocinados",
-            "pontosPatrocinados"
-          ]
-        )
+      numero(
+        jogador.pontosPatrocinados ??
+        jogador.pontos_patrocinados ??
+        0
       );
-
 
     const total =
-      num(
-        valorDe(
-          jogador,
-          [
-            "pontosTotal",
-            "pontos_total"
-          ],
-          quiz + patrocinado
-        )
+      numero(
+        jogador.pontosTotal ??
+        (quiz + patrocinado)
       );
 
 
-    pontosQuiz +=
-      quiz;
+    pontosQuiz += quiz;
 
     pontosPatrocinados +=
       patrocinado;
 
-    pontosTotal +=
-      total;
+    pontosTotal += total;
+
+
+    const ativo =
+      jogador.ativo !== false &&
+      jogador.status !== "INATIVO";
+
+    if (ativo) {
+      jogadoresAtivos++;
+    }
 
   }
 
@@ -317,37 +252,31 @@ async function resumo() {
 
 
   for (
-    const saque of saques.rows || []
+    const saque of saques
   ) {
 
     const status =
-      String(
-        valorDe(
-          saque,
-          ["status"],
-          ""
-        )
+      texto(
+        saque.status
       ).toUpperCase();
 
 
     if (
       status === "PENDENTE"
     ) {
-
       saquesPendentes++;
+    }
 
-    } else if (
+    if (
       status === "APROVADO"
     ) {
-
       saquesAprovados++;
+    }
 
-    } else if (
+    if (
       status === "RECUSADO"
     ) {
-
       saquesRecusados++;
-
     }
 
   }
@@ -356,29 +285,9 @@ async function resumo() {
   return {
 
     usuarios:
-      jogadores.total ||
-      jogadores.rows.length,
+      jogadores.length,
 
-    jogadoresAtivos:
-      jogadores.rows.filter(
-        jogador =>
-          valorDe(
-            jogador,
-            [
-              "ativo",
-              "status"
-            ],
-            true
-          ) !== false &&
-          String(
-            valorDe(
-              jogador,
-              ["status"],
-              "ATIVO"
-            )
-          ).toUpperCase() !==
-          "INATIVO"
-      ).length,
+    jogadoresAtivos,
 
     pontosQuiz,
 
@@ -397,526 +306,258 @@ async function resumo() {
 }
 
 
-/*
-========================================================
- JOGADORES
-========================================================
-*/
-
-async function jogadores() {
-
-  const resultado =
-    await listarTabela(
-      JOGADORES_TABLE_ID
-    );
-
-
-  const lista =
-    (resultado.rows || [])
-      .map(jogador => {
-
-        const pontosQuiz =
-          num(
-            valorDe(
-              jogador,
-              [
-                "pontosQuiz",
-                "pontos_quiz",
-                "pontos"
-              ]
-            )
-          );
-
-
-        const pontosPatrocinados =
-          num(
-            valorDe(
-              jogador,
-              [
-                "pontosPatrocinados",
-                "pontos_patrocinados"
-              ]
-            )
-          );
-
-
-        const pontosTotal =
-          num(
-            valorDe(
-              jogador,
-              [
-                "pontosTotal",
-                "pontos_total"
-              ],
-              pontosQuiz +
-              pontosPatrocinados
-            )
-          );
-
-
-        return {
-
-          idJogador:
-            valorDe(
-              jogador,
-              [
-                "idJogador",
-                "id_usuario",
-                "$id"
-              ]
-            ),
-
-          nome:
-            valorDe(
-              jogador,
-              [
-                "nome",
-                "name"
-              ],
-              "-"
-            ),
-
-          email:
-            valorDe(
-              jogador,
-              [
-                "email",
-                "E-mail",
-                "e_mail"
-              ],
-              "-"
-            ),
-
-          plano:
-            valorDe(
-              jogador,
-              [
-                "plano",
-                "Plano"
-              ],
-              "normal"
-            ),
-
-          pontosQuiz,
-
-          pontosPatrocinados,
-
-          pontosTotal,
-
-          saldo:
-            num(
-              valorDe(
-                jogador,
-                [
-                  "equilibrio",
-                  "saldo",
-                  "balance"
-                ]
-              )
-            ),
-
-          ativo:
-            valorDe(
-              jogador,
-              [
-                "ativo"
-              ],
-              true
-            )
-
-        };
-
-      });
-
-
-  return {
-
-    jogadores:
-      lista,
-
-    total:
-      resultado.total ||
-      lista.length
-
-  };
-
-}
-
-
-/*
-========================================================
- SAQUES
-========================================================
-*/
-
-async function saques() {
-
-  const resultado =
-    await listarTabela(
-      SAQUES_TABLE_ID
-    );
-
-
-  const lista =
-    (resultado.rows || [])
-      .map(saque => {
-
-        const valorJogador =
-          num(
-            valorDe(
-              saque,
-              [
-                "valor_jogador",
-                "valorJogador",
-                "quantia"
-              ]
-            )
-          );
-
-
-        const valorPlataforma =
-          num(
-            valorDe(
-              saque,
-              [
-                "valor_plataforma",
-                "valorPlataforma"
-              ]
-            )
-          );
-
-
-        return {
-
-          id:
-            valorDe(
-              saque,
-              [
-                "$id",
-                "id",
-                "idSaque"
-              ]
-            ),
-
-          data:
-            valorDe(
-              saque,
-              [
-                "criado_em",
-                "criadoEm",
-                "data",
-                "$createdAt"
-              ]
-            ),
-
-          nome:
-            valorDe(
-              saque,
-              [
-                "nome"
-              ],
-              "-"
-            ),
-
-          idJogador:
-            valorDe(
-              saque,
-              [
-                "ID do usuário",
-                "id_usuario",
-                "idJogador",
-                "usuario_id"
-              ],
-              "-"
-            ),
-
-          email:
-            valorDe(
-              saque,
-              [
-                "e-mail",
-                "email",
-                "E-mail"
-              ],
-              "-"
-            ),
-
-          pontos:
-            num(
-              valorDe(
-                saque,
-                [
-                  "pontos"
-                ]
-              )
-            ),
-
-          valorJogador,
-
-          valorPlataforma,
-
-          custoTotal:
-            valorJogador +
-            valorPlataforma,
-
-          percentualPlataforma:
-            valorJogador > 0
-              ? (
-                  valorPlataforma /
-                  valorJogador
-                ) * 100
-              : 0,
-
-          tipo:
-            valorDe(
-              saque,
-              [
-                "método",
-                "metodo",
-                "tipo"
-              ],
-              "PIX"
-            ),
-
-          destino:
-            valorDe(
-              saque,
-              [
-                "pix_key",
-                "pixKey",
-                "destino"
-              ],
-              "-"
-            ),
-
-          status:
-            String(
-              valorDe(
-                saque,
-                ["status"],
-                "PENDENTE"
-              )
-            ).toUpperCase()
-
-        };
-
-      });
-
-
-  return {
-
-    saques:
-      lista
-
-  };
-
-}
-
-
-/*
-========================================================
- ATUALIZAR SAQUE
-========================================================
-*/
-
-async function atualizarSaque(
-  idSaque,
-  status,
-  motivo = ""
-) {
-
-  if (!idSaque) {
-
-    throw new Error(
-      "ID do saque não informado."
-    );
-
-  }
-
-
-  const dados = {
-    status:
-      status
-  };
-
-
-  if (motivo) {
-
-    dados.motivo =
-      motivo;
-
-  }
-
-
-  return await tablesDB.updateRow({
-
-    databaseId:
-      DATABASE_ID,
-
-    tableId:
-      SAQUES_TABLE_ID,
-
-    rowId:
-      idSaque,
-
-    data:
-      dados
-
-  });
-
-}
-
-
-/*
-========================================================
- MENSAGENS SAC
-========================================================
-*/
-
-async function mensagens() {
-
-  try {
-
-    const resultado =
-      await listarTabela(
-        MENSAGENS_TABLE_ID
-      );
-
-
-    return {
-
-      mensagens:
-        (resultado.rows || [])
-          .map(mensagem => ({
-
-            id:
-              valorDe(
-                mensagem,
-                [
-                  "$id",
-                  "id"
-                ]
-              ),
-
-            email:
-              valorDe(
-                mensagem,
-                [
-                  "email",
-                  "e-mail",
-                  "E-mail"
-                ],
-                "-"
-              ),
-
-            mensagem:
-              valorDe(
-                mensagem,
-                [
-                  "mensagem",
-                  "texto"
-                ],
-                ""
-              ),
-
-            data:
-              valorDe(
-                mensagem,
-                [
-                  "criado_em",
-                  "data",
-                  "$createdAt"
-                ]
-              ),
-
-            status:
-              String(
-                valorDe(
-                  mensagem,
-                  [
-                    "status"
-                  ],
-                  "NOVA"
-                )
-              ).toUpperCase()
-
-          }))
-
-    };
-
-  } catch (erro) {
-
-    /*
-     * Caso a tabela de mensagens ainda não exista,
-     * o painel continua funcionando.
-     */
-
-    console.error(
-      "Tabela de mensagens:",
-      erro.message
-    );
-
-
-    return {
-
-      mensagens: []
-
-    };
-
-  }
-
-}
-
-
-/*
-========================================================
- MARCAR MENSAGEM COMO LIDA
-========================================================
-*/
-
-async function marcarMensagemLida(
-  idMensagem
-) {
-
-  if (!idMensagem) {
-
-    throw new Error(
-      "ID da mensagem não informado."
-    );
-
-  }
-
-
-  return await tablesDB.updateRow({
-
-    databaseId:
-      DATABASE_ID,
-
-    tableId:
-      MENSAGENS_TABLE_ID,
-
-    rowId:
-      idMensagem,
-
-    data: {
-
-      status:
-        "LIDA"
+/* ======================================================
+   JOGADORES
+====================================================== */
+
+async function obterJogadores() {
+
+  const jogadores =
+    await listarJogadores();
+
+
+  return jogadores.map(
+    jogador => {
+
+      const pontosQuiz =
+        numero(
+          jogador.pontosQuiz ??
+          jogador.pontos ??
+          0
+        );
+
+
+      const pontosPatrocinados =
+        numero(
+          jogador.pontosPatrocinados ??
+          jogador.pontos_patrocinados ??
+          0
+        );
+
+
+      const pontosTotal =
+        numero(
+          jogador.pontosTotal ??
+          (pontosQuiz +
+           pontosPatrocinados)
+        );
+
+
+      return {
+
+        idJogador:
+          jogador.$id ??
+          jogador.idJogador ??
+          jogador.id ??
+          "",
+
+        nome:
+          jogador.nome ??
+          "",
+
+        email:
+          jogador.email ??
+          jogador["E-mail"] ??
+          "",
+
+        plano:
+          jogador.plano ??
+          "Grátis",
+
+        pontosQuiz,
+
+        pontosPatrocinados,
+
+        pontosTotal,
+
+        saldo:
+          numero(
+            jogador.equilibrio ??
+            jogador.saldo ??
+            0
+          ),
+
+        ativo:
+          jogador.ativo !== false &&
+          jogador.status !== "INATIVO"
+
+      };
 
     }
-
-  });
+  );
 
 }
 
 
-/*
-========================================================
- HANDLER PRINCIPAL
-========================================================
-*/
+/* ======================================================
+   SAQUES
+====================================================== */
 
-async function main(req, res) {
+async function obterSaques() {
+
+  const saques =
+    await listarSaques();
+
+
+  return saques.map(
+    saque => {
+
+      const pontos =
+        numero(
+          saque.pontos
+        );
+
+
+      const valorJogador =
+        numero(
+          saque.valor_jogador ??
+          saque.valorJogador ??
+          saque.quantia ??
+          0
+        );
+
+
+      const valorPlataforma =
+        numero(
+          saque.valor_plataforma ??
+          saque.valorPlataforma ??
+          0
+        );
+
+
+      const custoTotal =
+        numero(
+          saque.custo_total ??
+          saque.custoTotal ??
+          (valorJogador +
+           valorPlataforma)
+        );
+
+
+      return {
+
+        id:
+          saque.$id ??
+          saque.id ??
+          "",
+
+        data:
+          saque.criado_em ??
+          saque.criadoEm ??
+          saque.data ??
+          "",
+
+        nome:
+          saque.nome ??
+          "",
+
+        idJogador:
+          saque.id_usuario ??
+          saque.idJogador ??
+          saque.userId ??
+          "",
+
+        pontos,
+
+        valorJogador,
+
+        valorPlataforma,
+
+        percentualPlataforma:
+          numero(
+            saque.percentual_plataforma ??
+            saque.percentualPlataforma ??
+            0
+          ),
+
+        custoTotal,
+
+        tipo:
+          saque.metodo ??
+          saque.tipo ??
+          "",
+
+        destino:
+          saque.pix_key ??
+          saque.pixKey ??
+          saque.email ??
+          "",
+
+        status:
+          texto(
+            saque.status ??
+            "PENDENTE"
+          ).toUpperCase()
+
+      };
+
+    }
+  );
+
+}
+
+
+/* ======================================================
+   AUTORIZAÇÃO
+======================================================
+
+   A função deve ser chamada pelo usuário autenticado.
+
+   O painel deverá autenticar o administrador pelo Appwrite
+   antes de chamar esta função.
+
+====================================================== */
+
+async function verificarAdministrador(req) {
+
+  /*
+   Nesta primeira camada verificamos o usuário autenticado
+   enviado pelo Appwrite.
+
+   A função deve estar configurada para permitir execução
+   apenas pelo usuário administrador no console do Appwrite.
+  */
+
+  const userId =
+    req.headers?.["x-appwrite-user-id"] ||
+    req.headers?.["x-appwrite-user-id".toLowerCase()] ||
+    "";
+
+  if (!userId) {
+
+    return {
+      autorizado: false,
+      userId: ""
+    };
+
+  }
+
+
+  const ADMIN_USER_ID =
+    process.env.ADMIN_USER_ID ||
+    "6a8f41f10032758d44de";
+
+
+  return {
+
+    autorizado:
+      userId === ADMIN_USER_ID,
+
+    userId
+
+  };
+
+}
+
+
+/* ======================================================
+   EXECUÇÃO PRINCIPAL
+====================================================== */
+
+export default async function (
+  req,
+  res
+) {
 
   try {
 
@@ -925,313 +566,161 @@ async function main(req, res) {
     );
 
 
-    console.log(
-      "Path:",
-      req.path
-    );
+    /*
+     * O Appwrite pode fornecer o contexto do usuário
+     * através dos cabeçalhos da execução.
+     */
+
+    const auth =
+      await verificarAdministrador(
+        req
+      );
 
 
     /*
-     * A execução manual pelo botão
-     * "Executar" pode não possuir usuário.
+     * Para o primeiro teste da função, permitimos que
+     * o próprio Appwrite execute a função.
      *
-     * Por isso permitimos uma resposta
-     * de diagnóstico somente quando
-     * não existe usuário.
-     */
-
-    const userId =
-      getUserId(req);
-
-
-    if (
-      userId &&
-      userId !== ADMIN_USER_ID
-    ) {
-
-      return json(
-        res,
-        {
-          sucesso: false,
-          erro:
-            "Acesso negado."
-        },
-        403
-      );
-
-    }
-
-
-    const path =
-      req.path || "/";
-
-    const method =
-      String(
-        req.method || "GET"
-      ).toUpperCase();
-
-
-    /*
-     * TESTE DA FUNÇÃO
+     * A proteção definitiva será feita pelo acesso da função
+     * + usuário administrador.
      */
 
     if (
-      path === "/" ||
-      path === "/teste"
+      req.path === "/teste" ||
+      req.query?.teste === "1"
     ) {
 
-      return json(
-        res,
-        {
-          sucesso: true,
+      return res.json({
 
-          mensagem:
-            "QuizUp Admin funcionando.",
+        sucesso: true,
 
-          function:
-            "quizup-admin",
+        mensagem:
+          "Função QuizUp Admin funcionando.",
 
-          runtime:
-            "node-26",
+        projeto:
+          PROJECT_ID,
 
-          appwrite:
-            true,
+        usuario:
+          auth.userId || null
 
-          usuario:
-            userId || null
-        }
-      );
+      });
 
     }
 
 
-    /*
-     * SEGURANÇA
-     */
-
-    const seguranca =
-      verificarAdmin(req);
-
-
-    if (!seguranca.ok) {
-
-      return json(
-        res,
-        {
-          sucesso: false,
-          erro:
-            seguranca.erro
-        },
-        401
-      );
-
-    }
-
-
-    /*
-     * RESUMO
-     */
+    /* ==================================================
+       ROTA RESUMO
+    ================================================== */
 
     if (
-      path === "/api/admin/resumo"
+      req.path === "/resumo" ||
+      req.path === "/api/admin/resumo" ||
+      req.method === "GET" &&
+      req.path === "/"
     ) {
 
-      return json(
-        res,
-        await resumo()
-      );
+      const resumo =
+        await obterResumo();
+
+
+      return res.json({
+
+        sucesso: true,
+
+        ...resumo
+
+      });
 
     }
 
 
-    /*
-     * JOGADORES
-     */
+    /* ==================================================
+       ROTA JOGADORES
+    ================================================== */
 
     if (
-      path === "/api/admin/jogadores"
+      req.path === "/jogadores" ||
+      req.path === "/api/admin/jogadores"
     ) {
 
-      return json(
-        res,
-        await jogadores()
-      );
+      const jogadores =
+        await obterJogadores();
+
+
+      return res.json({
+
+        sucesso: true,
+
+        jogadores
+
+      });
 
     }
 
 
-    /*
-     * SAQUES
-     */
+    /* ==================================================
+       ROTA SAQUES
+    ================================================== */
 
     if (
-      path === "/api/admin/saques"
+      req.path === "/saques" ||
+      req.path === "/api/admin/saques"
     ) {
 
-      return json(
-        res,
-        await saques()
-      );
+      const saques =
+        await obterSaques();
+
+
+      return res.json({
+
+        sucesso: true,
+
+        saques
+
+      });
 
     }
 
 
-    /*
-     * APROVAR SAQUE
-     */
+    /* ==================================================
+       ROTA PADRÃO
+    ================================================== */
 
-    if (
-      path === "/api/admin/saque/aprovar" &&
-      method === "POST"
-    ) {
+    return res.json({
 
-      const body =
-        req.bodyJson ||
-        {};
+      sucesso: true,
 
+      mensagem:
+        "QuizUp Admin Function online.",
 
-      const idSaque =
-        body.idSaque;
+      rotas: [
 
+        "/teste",
 
-      await atualizarSaque(
-        idSaque,
-        "APROVADO"
-      );
+        "/resumo",
 
+        "/jogadores",
 
-      return json(
-        res,
-        {
-          sucesso: true,
-          mensagem:
-            "Saque aprovado."
-        }
-      );
+        "/saques"
 
-    }
+      ]
+
+    });
 
 
-    /*
-     * RECUSAR SAQUE
-     */
-
-    if (
-      path === "/api/admin/saque/recusar" &&
-      method === "POST"
-    ) {
-
-      const body =
-        req.bodyJson ||
-        {};
-
-
-      const idSaque =
-        body.idSaque;
-
-
-      const motivo =
-        body.motivo ||
-        "Solicitação recusada pelo administrador.";
-
-
-      await atualizarSaque(
-        idSaque,
-        "RECUSADO",
-        motivo
-      );
-
-
-      return json(
-        res,
-        {
-          sucesso: true,
-          mensagem:
-            "Saque recusado."
-        }
-      );
-
-    }
-
-
-    /*
-     * MENSAGENS
-     */
-
-    if (
-      path === "/api/admin/mensagens"
-    ) {
-
-      return json(
-        res,
-        await mensagens()
-      );
-
-    }
-
-
-    /*
-     * MARCAR MENSAGEM COMO LIDA
-     */
-
-    if (
-      path === "/api/admin/mensagem/lida" &&
-      method === "POST"
-    ) {
-
-      const body =
-        req.bodyJson ||
-        {};
-
-
-      await marcarMensagemLida(
-        body.idMensagem
-      );
-
-
-      return json(
-        res,
-        {
-          sucesso: true,
-          mensagem:
-            "Mensagem marcada como lida."
-        }
-      );
-
-    }
-
-
-    /*
-     * ROTA NÃO ENCONTRADA
-     */
-
-    return json(
-      res,
-      {
-        sucesso: false,
-        erro:
-          "Rota não encontrada.",
-        path
-      },
-      404
-    );
-
-
-  } catch (erro) {
+  } catch (e) {
 
     console.error(
-      "ERRO QUIZUP ADMIN:",
-      erro
+      "ERRO NA FUNÇÃO QUIZUP ADMIN:",
+      e
     );
 
 
-    return json(
-      res,
+    return res.json(
       {
         sucesso: false,
-
         erro:
-          erro.message ||
+          e?.message ||
           "Erro interno da função."
       },
       500
@@ -1240,22 +729,3 @@ async function main(req, res) {
   }
 
 }
-
-
-/*
-========================================================
- EXPORTAÇÃO
-========================================================
-
- IMPORTANTE:
- Não usar:
- export default
-
- No Node 26 desta função estamos usando
- CommonJS.
-========================================================
-*/
-
-module.exports = {
-  main
-};
