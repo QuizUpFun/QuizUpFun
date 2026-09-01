@@ -1,239 +1,67 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<title>QuizUp Admin</title><style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#222}
-.hidden{display:none!important}
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>QuizUp Admin</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#222}.hidden{display:none!important}
+header{background:#111827;color:#fff;padding:18px;position:sticky;top:0;z-index:10}header h1{margin:0;font-size:22px}header small{opacity:.8}
+.container{max-width:1200px;margin:auto;padding:20px}.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.login-box{background:#fff;width:100%;max-width:430px;padding:30px;border-radius:18px;box-shadow:0 8px 30px rgba(0,0,0,.1);text-align:center}.login-box h1{margin-top:0}
+input{width:100%;padding:13px;margin:8px 0;border:1px solid #ddd;border-radius:10px;font-size:16px}button{border:0;border-radius:10px;padding:12px 16px;font-size:15px;cursor:pointer}button:disabled{opacity:.6}.primary{width:100%;background:#111827;color:#fff;margin-top:10px}.danger{background:#dc2626;color:#fff}.success{background:#16a34a;color:#fff}.logout{background:#374151;color:#fff;float:right;margin-top:-32px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-bottom:25px}.card{background:#fff;padding:20px;border-radius:15px;box-shadow:0 3px 12px rgba(0,0,0,.06)}.card strong{display:block;font-size:28px;margin-top:8px}.section{background:#fff;border-radius:15px;padding:20px;margin-bottom:20px;box-shadow:0 3px 12px rgba(0,0,0,.06)}.section h2{margin-top:0}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:700px}th,td{padding:11px;border-bottom:1px solid #eee;text-align:left;vertical-align:middle}th{background:#f9fafb}.status{font-weight:bold}.pendente{color:#d97706}.aprovado,.aprovada{color:#16a34a}.cancelado,.cancelada{color:#dc2626}.actions{display:flex;gap:6px;flex-wrap:wrap}.message{padding:12px;border-radius:10px;margin:10px 0;background:#eef2ff;word-break:break-word}.error{background:#fee2e2;color:#991b1b}.success-msg{background:#dcfce7;color:#166534}.info-msg{background:#e0f2fe;color:#075985}.debug{margin-top:15px;font-size:12px;word-break:break-word;text-align:left;background:#f3f4f6;padding:12px;border-radius:10px}.loading{text-align:center;padding:20px}@media(max-width:600px){.container{padding:12px}.card{padding:15px}}
+</style></head><body>
 
-header{
-  background:#111827;
-  color:#fff;
-  padding:18px;
-  position:sticky;
-  top:0;
-  z-index:10
-}
-header h1{margin:0;font-size:22px}
-header small{opacity:.8}
+<div id="loginScreen" class="login">
+<div class="login-box">
+<h1>QuizUp Admin</h1>
+<p>Acesso exclusivo do administrador</p>
 
-.container{max-width:1200px;margin:auto;padding:20px}
+<input id="email" type="email" placeholder="E-mail" autocomplete="username">
+<input id="password" type="password" placeholder="Senha" autocomplete="current-password">
 
-.login{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px
-}
-
-.login-box{
-  background:#fff;
-  width:100%;
-  max-width:430px;
-  padding:30px;
-  border-radius:18px;
-  box-shadow:0 8px 30px rgba(0,0,0,.1);
-  text-align:center
-}
-
-.login-box h1{margin-top:0}
-
-input{
-  width:100%;
-  padding:13px;
-  margin:8px 0;
-  border:1px solid #ddd;
-  border-radius:10px;
-  font-size:16px
-}
-
-button{
-  border:0;
-  border-radius:10px;
-  padding:12px 16px;
-  font-size:15px;
-  cursor:pointer
-}
-
-button:disabled{opacity:.6;cursor:not-allowed}
-
-.primary{
-  width:100%;
-  background:#111827;
-  color:#fff;
-  margin-top:10px
-}
-
-.danger{background:#dc2626;color:#fff}
-.success{background:#16a34a;color:#fff}
-
-.logout{
-  background:#374151;
-  color:#fff;
-  float:right;
-  margin-top:-32px
-}
-
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:15px;
-  margin-bottom:25px
-}
-
-.card{
-  background:#fff;
-  padding:20px;
-  border-radius:15px;
-  box-shadow:0 3px 12px rgba(0,0,0,.06)
-}
-
-.card strong{
-  display:block;
-  font-size:28px;
-  margin-top:8px
-}
-
-.section{
-  background:#fff;
-  border-radius:15px;
-  padding:20px;
-  margin-bottom:20px;
-  box-shadow:0 3px 12px rgba(0,0,0,.06)
-}
-
-.section h2{margin-top:0}
-
-.table-wrap{overflow-x:auto}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:700px
-}
-
-th,td{
-  padding:11px;
-  border-bottom:1px solid #eee;
-  text-align:left;
-  vertical-align:middle
-}
-
-th{background:#f9fafb}
-
-.status{font-weight:bold}
-.pendente{color:#d97706}
-.aprovado,.aprovada{color:#16a34a}
-.cancelado,.cancelada{color:#dc2626}
-
-.actions{
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap
-}
-
-.message{
-  padding:12px;
-  border-radius:10px;
-  margin:10px 0;
-  background:#eef2ff;
-  word-break:break-word;
-  text-align:left
-}
-
-.error{background:#fee2e2;color:#991b1b}
-.success-msg{background:#dcfce7;color:#166534}
-.info-msg{background:#e0f2fe;color:#075985}
-
-.debug{
-  margin-top:15px;
-  font-size:12px;
-  word-break:break-word;
-  text-align:left;
-  background:#f3f4f6;
-  padding:12px;
-  border-radius:10px
-}
-
-.loading{text-align:center;padding:20px}
-
-@media(max-width:600px){
-  .container{padding:12px}
-  .card{padding:15px}
-}
-</style></head><body><!-- LOGIN --><div id="loginScreen" class="login">
-  <div class="login-box">
-    <h1>QuizUp Admin</h1>
-    <p>Acesso exclusivo do administrador</p><input
-  id="email"
-  type="email"
-  placeholder="E-mail"
-  autocomplete="username"
-  autocapitalize="none"
-  spellcheck="false"
->
-
-<input
-  id="password"
-  type="password"
-  placeholder="Senha"
-  autocomplete="current-password"
->
-
-<button id="loginButton" class="primary" type="button">
-  Entrar
-</button>
-
+<button id="loginButton" class="primary" type="button">Entrar</button>
 <div id="loginMessage"></div>
 
 <div class="debug">
-  <b>ID do administrador:</b><br>
-  6a8f41f10032758d44de
-  <br><br>
-
-  <b>Projeto:</b><br>
-  6a8e10e900245502244c
-  <br><br>
-
-  <b>Endpoint:</b><br>
-  fra.cloud.appwrite.io
-  <br><br>
-
-  <b>Versão do painel:</b><br>
-  LOGIN-CORRIGIDO-2026-09-01
+<b>ID do administrador:</b><br>
+6a8f41f10032758d44de
+<br><br>
+<b>Projeto:</b><br>
+6a8e10e900245502244c
+<br><br>
+<b>Endpoint:</b><br>
+fra.cloud.appwrite.io
 </div>
 
-  </div>
-</div><!-- PAINEL --><div id="adminScreen" class="hidden"><header>
-  <h1>QuizUp Admin</h1>
-  <small id="adminUser"></small>
-  <button id="logoutButton" class="logout" type="button">
-    Sair
-  </button>
-</header><main class="container"><div id="globalMessage"></div><div class="cards">  <div class="card">
-    Jogadores
-    <strong id="totalJogadores">0</strong>
-  </div>  <div class="card">
-    Parceiros
-    <strong id="totalParceiros">0</strong>
-  </div>  <div class="card">
-    Saques
-    <strong id="totalSaques">0</strong>
-  </div>  <div class="card">
-    Pendentes
-    <strong id="totalPendentes">0</strong>
-  </div>  <div class="card">
-    Aprovados
-    <strong id="totalAprovados">0</strong>
-  </div>  <div class="card">
-    Cancelados
-    <strong id="totalCancelados">0</strong>
-  </div></div><section class="section"><h2>💸 Saques</h2><div class="table-wrap"><table><thead>
+</div>
+</div>
+
+<div id="adminScreen" class="hidden">
+
+<header>
+<h1>QuizUp Admin</h1>
+<small id="adminUser"></small>
+<button id="logoutButton" class="logout" type="button">Sair</button>
+</header>
+
+<main class="container">
+
+<div id="globalMessage"></div>
+
+<div class="cards">
+<div class="card">Jogadores<strong id="totalJogadores">0</strong></div>
+<div class="card">Parceiros<strong id="totalParceiros">0</strong></div>
+<div class="card">Saques<strong id="totalSaques">0</strong></div>
+<div class="card">Pendentes<strong id="totalPendentes">0</strong></div>
+<div class="card">Aprovados<strong id="totalAprovados">0</strong></div>
+<div class="card">Cancelados<strong id="totalCancelados">0</strong></div>
+</div>
+
+<section class="section">
+<h2>💸 Saques</h2>
+<div class="table-wrap">
+<table>
+<thead>
 <tr>
 <th>ID</th>
 <th>Usuário</th>
@@ -243,14 +71,19 @@ th{background:#f9fafb}
 <th>Status</th>
 <th>Ações</th>
 </tr>
-</thead><tbody id="saquesBody">
-<tr>
-<td colspan="7" class="loading">
-Carregando...
-</td>
-</tr>
-</tbody></table></div>
-</section><section class="section"><h2>👥 Jogadores</h2><div class="table-wrap"><table><thead>
+</thead>
+<tbody id="saquesBody">
+<tr><td colspan="7" class="loading">Carregando...</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="section">
+<h2>👥 Jogadores</h2>
+<div class="table-wrap">
+<table>
+<thead>
 <tr>
 <th>ID</th>
 <th>E-mail</th>
@@ -258,28 +91,38 @@ Carregando...
 <th>Pontos</th>
 <th>Saldo</th>
 </tr>
-</thead><tbody id="jogadoresBody">
-<tr>
-<td colspan="5" class="loading">
-Carregando...
-</td>
-</tr>
-</tbody></table></div>
-</section><section class="section"><h2>🤝 Parceiros</h2><div class="table-wrap"><table><thead>
+</thead>
+<tbody id="jogadoresBody">
+<tr><td colspan="5" class="loading">Carregando...</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="section">
+<h2>🤝 Parceiros</h2>
+<div class="table-wrap">
+<table>
+<thead>
 <tr>
 <th>ID</th>
 <th>Nome</th>
 <th>E-mail</th>
 <th>Dados</th>
 </tr>
-</thead><tbody id="parceirosBody">
-<tr>
-<td colspan="4" class="loading">
-Carregando...
-</td>
-</tr>
-</tbody></table></div>
-</section><section class="section"><h2>📊 Movimentações de parceiros</h2><div class="table-wrap"><table><thead>
+</thead>
+<tbody id="parceirosBody">
+<tr><td colspan="4" class="loading">Carregando...</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="section">
+<h2>📊 Movimentações de parceiros</h2>
+<div class="table-wrap">
+<table>
+<thead>
 <tr>
 <th>ID</th>
 <th>Parceiro</th>
@@ -288,1082 +131,503 @@ Carregando...
 <th>Valor</th>
 <th>Descrição</th>
 </tr>
-</thead><tbody id="movimentacoesBody">
-<tr>
-<td colspan="6" class="loading">
-Carregando...
-</td>
-</tr>
-</tbody></table></div>
-</section></main>
-</div><!-- APPWRITE SDK --><script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0"></script><script>
+</thead>
+<tbody id="movimentacoesBody">
+<tr><td colspan="6" class="loading">Carregando...</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+</main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/appwrite@17.0.0"></script>
+
+<script>
 'use strict';
 
-/* =========================
-   CONFIGURAÇÃO APPWRITE
-========================= */
+const ENDPOINT='https://fra.cloud.appwrite.io/v1';
+const PROJECT_ID='6a8e10e900245502244c';
+const DATABASE_ID='6a8e11820008abab052e';
+const ADMIN_USER_ID='6a8f41f10032758d44de';
 
-const ENDPOINT =
-  'https://fra.cloud.appwrite.io/v1';
-
-const PROJECT_ID =
-  '6a8e10e900245502244c';
-
-const DATABASE_ID =
-  '6a8e11820008abab052e';
-
-const ADMIN_USER_ID =
-  '6a8f41f10032758d44de';
-
-const TABLES = {
-  jogadores: 'jogadores',
-  parceiros: 'parceiros',
-  saques: 'saques',
-  movimentacoes: 'movimentacoes_parceiros'
+const TABLES={
+jogadores:'jogadores',
+parceiros:'parceiros',
+saques:'saques',
+movimentacoes:'movimentacoes_parceiros'
 };
 
-let account = null;
-let tablesDB = null;
+let account=null;
+let tablesDB=null;
 
+const $=id=>document.getElementById(id);
 
-/* =========================
-   UTILITÁRIOS
-========================= */
-
-const $ = id => document.getElementById(id);
-
-function esc(value){
-  return String(value ?? '')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#039;');
+function esc(v){
+return String(v??'')
+.replace(/&/g,'&amp;')
+.replace(/</g,'&lt;')
+.replace(/>/g,'&gt;')
+.replace(/"/g,'&quot;')
+.replace(/'/g,'&#039;')
 }
 
-function loginMsg(text, error = true){
-  $('loginMessage').innerHTML =
-    '<div class="message ' +
-    (error ? 'error' : 'info-msg') +
-    '">' +
-    esc(text) +
-    '</div>';
+function loginMsg(t,err=true){
+$('loginMessage').innerHTML=
+'<div class="message '+(err?'error':'info-msg')+'">'+esc(t)+'</div>'
 }
 
-function globalMsg(text, ok = true){
-  $('globalMessage').innerHTML =
-    '<div class="message ' +
-    (ok ? 'success-msg' : 'error') +
-    '">' +
-    esc(text) +
-    '</div>';
+function globalMsg(t,ok=true){
+$('globalMessage').innerHTML=
+'<div class="message '+(ok?'success-msg':'error')+'">'+esc(t)+'</div>'
 }
-
-
-/* =========================
-   INICIAR APPWRITE
-========================= */
 
 function init(){
 
-  if(!window.Appwrite){
-    loginMsg(
-      'ERRO: o SDK do Appwrite não carregou. Atualize a página e tente novamente.'
-    );
-    return false;
-  }
-
-  try{
-
-    const client = new Appwrite.Client();
-
-    client
-      .setEndpoint(ENDPOINT)
-      .setProject(PROJECT_ID);
-
-    account = new Appwrite.Account(client);
-
-    if(typeof Appwrite.TablesDB !== 'function'){
-      throw new Error(
-        'TablesDB não está disponível no SDK carregado.'
-      );
-    }
-
-    tablesDB = new Appwrite.TablesDB(client);
-
-    console.log(
-      'QuizUp Admin iniciado corretamente.',
-      {
-        project: PROJECT_ID,
-        admin: ADMIN_USER_ID,
-        endpoint: ENDPOINT
-      }
-    );
-
-    return true;
-
-  }catch(error){
-
-    console.error(
-      'ERRO AO INICIAR APPWRITE:',
-      error
-    );
-
-    loginMsg(
-      'Erro ao iniciar o Appwrite: ' +
-      (error.message || error)
-    );
-
-    return false;
-  }
+if(!window.Appwrite){
+loginMsg('ERRO: o SDK do Appwrite não carregou.');
+return false;
 }
 
+try{
 
-/* =========================
-   ENCERRAR SESSÃO
-========================= */
+const c=new Appwrite.Client();
+
+c.setEndpoint(ENDPOINT);
+c.setProject(PROJECT_ID);
+
+account=new Appwrite.Account(c);
+tablesDB=new Appwrite.TablesDB(c);
+
+return true;
+
+}catch(e){
+
+loginMsg('ERRO AO INICIAR APPWRITE: '+(e.message||e));
+return false;
+
+}
+
+}
 
 async function delSession(){
 
-  try{
+try{
 
-    if(account){
-      await account.deleteSession({
-        sessionId:'current'
-      });
-    }
+if(account)
+await account.deleteSession({
+sessionId:'current'
+});
 
-  }catch(error){
+}catch(e){
 
-    console.warn(
-      'Não havia sessão para encerrar:',
-      error
-    );
-  }
+console.warn(e);
+
 }
 
-
-/* =========================
-   LOGIN ADMINISTRADOR
-========================= */
+}
 
 async function login(){
 
-  const email =
-    $('email').value.trim();
+const email=$('email').value.trim();
+const password=$('password').value;
+const btn=$('loginButton');
 
-  const password =
-    $('password').value;
-
-  const button =
-    $('loginButton');
-
-  if(!email){
-    loginMsg('Digite o e-mail.');
-    return;
-  }
-
-  if(!password){
-    loginMsg('Digite a senha.');
-    return;
-  }
-
-  if(!account){
-
-    if(!init()){
-      return;
-    }
-  }
-
-  button.disabled = true;
-  button.textContent = 'Entrando...';
-
-  $('loginMessage').innerHTML = '';
-
-  try{
-
-    loginMsg(
-      'Conectando ao Appwrite...',
-      false
-    );
-
-    /*
-      IMPORTANTE:
-      Primeiro encerramos somente a sessão
-      atual deste navegador, caso exista.
-    */
-
-    try{
-      await account.deleteSession({
-        sessionId:'current'
-      });
-    }catch(ignore){
-      console.log(
-        'Nenhuma sessão anterior neste navegador.'
-      );
-    }
-
-    /*
-      LOGIN POR E-MAIL E SENHA
-    */
-
-    const session =
-      await account.createEmailPasswordSession({
-        email: email,
-        password: password
-      });
-
-    console.log(
-      'SESSÃO CRIADA:',
-      session
-    );
-
-    loginMsg(
-      'Login realizado. Confirmando administrador...',
-      false
-    );
-
-    /*
-      RECUPERA O USUÁRIO AUTENTICADO
-    */
-
-    const user =
-      await account.get();
-
-    console.log(
-      'USUÁRIO AUTENTICADO:',
-      user
-    );
-
-    /*
-      VERIFICA SE É O ADMINISTRADOR
-    */
-
-    if(user.$id !== ADMIN_USER_ID){
-
-      await delSession();
-
-      throw new Error(
-        'A senha está correta, mas esta conta não é o administrador configurado. ID encontrado: ' +
-        user.$id
-      );
-    }
-
-    /*
-      ABRE O PAINEL
-    */
-
-    $('adminUser').textContent =
-      user.email || email;
-
-    $('loginScreen')
-      .classList
-      .add('hidden');
-
-    $('adminScreen')
-      .classList
-      .remove('hidden');
-
-    $('loginMessage').innerHTML = '';
-
-    await carregarPainel();
-
-  }catch(error){
-
-    console.error(
-      'ERRO REAL DO LOGIN:',
-      error
-    );
-
-    /*
-      MOSTRA O ERRO REAL DO APPWRITE
-      PARA PODERMOS IDENTIFICAR O PROBLEMA.
-    */
-
-    let mensagem =
-      error?.message ||
-      String(error);
-
-    if(error?.code){
-      mensagem +=
-        ' | Código: ' +
-        error.code;
-    }
-
-    if(error?.type){
-      mensagem +=
-        ' | Tipo: ' +
-        error.type;
-    }
-
-    if(
-      $('adminScreen')
-        .classList
-        .contains('hidden')
-    ){
-
-      loginMsg(
-        'Appwrite recusou o login: ' +
-        mensagem
-      );
-
-      await delSession();
-
-    }else{
-
-      globalMsg(
-        'Painel aberto, mas ocorreu um erro: ' +
-        mensagem,
-        false
-      );
-    }
-
-  }finally{
-
-    button.disabled = false;
-    button.textContent = 'Entrar';
-  }
+if(!email||!password){
+loginMsg('Digite seu e-mail e sua senha.');
+return;
 }
 
+if(!account&&!init())return;
 
-/* =========================
-   VERIFICAR SESSÃO
-========================= */
+btn.disabled=true;
+btn.textContent='Entrando...';
+$('loginMessage').innerHTML='';
+
+try{
+
+loginMsg('Conectando ao Appwrite...',false);
+
+/*
+ CORREÇÃO:
+ No SDK Appwrite carregado neste painel,
+ a sessão de e-mail/senha é chamada
+ passando email e password diretamente.
+*/
+await account.createEmailPasswordSession(email,password);
+
+loginMsg('Login realizado. Confirmando a conta...',false);
+
+const user=await account.get();
+
+console.log('USUÁRIO APPWRITE:',user);
+
+if(user.$id!==ADMIN_USER_ID){
+
+await delSession();
+
+throw new Error(
+'Esta conta não é o administrador configurado. ID encontrado: '+user.$id
+);
+
+}
+
+$('adminUser').textContent=user.email||email;
+
+$('loginScreen').classList.add('hidden');
+$('adminScreen').classList.remove('hidden');
+
+$('loginMessage').innerHTML='';
+
+await carregarPainel();
+
+}catch(e){
+
+console.error('ERRO LOGIN/PAINEL:',e);
+
+if($('adminScreen').classList.contains('hidden')){
+
+loginMsg(
+'Não foi possível abrir o painel: '+(e.message||e)
+);
+
+await delSession();
+
+}else{
+
+globalMsg(
+'Painel aberto, mas ocorreu um erro ao carregar os dados: '+(e.message||e),
+false
+);
+
+}
+
+}finally{
+
+btn.disabled=false;
+btn.textContent='Entrar';
+
+}
+
+}
 
 async function sessao(){
 
-  if(!account){
+if(!account&&!init())return;
 
-    if(!init()){
-      return;
-    }
-  }
+try{
 
-  try{
+const u=await account.get();
 
-    const user =
-      await account.get();
+if(u.$id!==ADMIN_USER_ID){
 
-    console.log(
-      'SESSÃO ENCONTRADA:',
-      user
-    );
+await delSession();
+return;
 
-    if(user.$id !== ADMIN_USER_ID){
-
-      await delSession();
-
-      return;
-    }
-
-    $('adminUser').textContent =
-      user.email || '';
-
-    $('loginScreen')
-      .classList
-      .add('hidden');
-
-    $('adminScreen')
-      .classList
-      .remove('hidden');
-
-    await carregarPainel();
-
-  }catch(error){
-
-    console.log(
-      'Nenhuma sessão administrativa ativa.'
-    );
-  }
 }
 
+$('adminUser').textContent=u.email||'';
 
-/* =========================
-   LOGOUT
-========================= */
+$('loginScreen').classList.add('hidden');
+$('adminScreen').classList.remove('hidden');
+
+await carregarPainel();
+
+}catch(e){
+
+console.log('Sem sessão administrativa');
+
+}
+
+}
 
 async function logout(){
 
-  await delSession();
+await delSession();
 
-  $('adminScreen')
-    .classList
-    .add('hidden');
+$('adminScreen').classList.add('hidden');
+$('loginScreen').classList.remove('hidden');
 
-  $('loginScreen')
-    .classList
-    .remove('hidden');
+$('password').value='';
+$('loginMessage').innerHTML='';
 
-  $('password').value = '';
-
-  $('loginMessage').innerHTML = '';
 }
 
+async function list(t){
 
-/* =========================
-   LISTAR TABELAS
-========================= */
+const r=await tablesDB.listRows({
+databaseId:DATABASE_ID,
+tableId:t,
+queries:[Appwrite.Query.limit(100)]
+});
 
-async function list(tableId){
+return r.rows||[];
 
-  const result =
-    await tablesDB.listRows({
-      databaseId: DATABASE_ID,
-      tableId: tableId,
-      queries: [
-        Appwrite.Query.limit(100)
-      ]
-    });
-
-  return result.rows || [];
 }
-
-
-/* =========================
-   CARREGAR PAINEL
-========================= */
 
 async function carregarPainel(){
 
-  globalMsg(
-    'Carregando dados do QuizUp...'
-  );
-
-  const resultados =
-    await Promise.allSettled([
-
-      list(TABLES.jogadores),
-
-      list(TABLES.parceiros),
-
-      list(TABLES.saques),
-
-      list(TABLES.movimentacoes)
-
-    ]);
-
-  const jogadores =
-    resultados[0].status === 'fulfilled'
-      ? resultados[0].value
-      : [];
-
-  const parceiros =
-    resultados[1].status === 'fulfilled'
-      ? resultados[1].value
-      : [];
-
-  const saques =
-    resultados[2].status === 'fulfilled'
-      ? resultados[2].value
-      : [];
-
-  const movimentacoes =
-    resultados[3].status === 'fulfilled'
-      ? resultados[3].value
-      : [];
-
-  resumo(
-    jogadores,
-    parceiros,
-    saques
-  );
-
-  mostrarJogadores(
-    jogadores
-  );
-
-  mostrarSaques(
-    saques
-  );
-
-  mostrarParceiros(
-    parceiros
-  );
-
-  mostrarMovimentacoes(
-    movimentacoes
-  );
-
-  const erros =
-    resultados
-      .map((resultado,index)=>{
-
-        if(
-          resultado.status ===
-          'rejected'
-        ){
-
-          return [
-            'jogadores',
-            'parceiros',
-            'saques',
-            'movimentações'
-          ][index] +
-          ': ' +
-          (
-            resultado.reason?.message ||
-            resultado.reason
-          );
-        }
-
-        return null;
-
-      })
-      .filter(Boolean);
-
-  if(erros.length){
-
-    globalMsg(
-      'Painel aberto. Tabelas com erro: ' +
-      erros.join(' | '),
-      false
-    );
-
-  }else{
-
-    $('globalMessage')
-      .innerHTML = '';
-  }
-}
-
-
-/* =========================
-   RESUMO
-========================= */
-
-function st(value){
-
-  return String(
-    value || ''
-  )
-  .toLowerCase()
-  .trim();
-}
-
-function resumo(
-  jogadores,
-  parceiros,
-  saques
-){
-
-  $('totalJogadores')
-    .textContent =
-    jogadores.length;
-
-  $('totalParceiros')
-    .textContent =
-    parceiros.length;
-
-  $('totalSaques')
-    .textContent =
-    saques.length;
-
-  $('totalPendentes')
-    .textContent =
-    saques.filter(
-      x =>
-        st(x.status) ===
-        'pendente'
-    ).length;
-
-  $('totalAprovados')
-    .textContent =
-    saques.filter(
-      x =>
-        [
-          'aprovado',
-          'aprovada'
-        ].includes(
-          st(x.status)
-        )
-    ).length;
-
-  $('totalCancelados')
-    .textContent =
-    saques.filter(
-      x =>
-        [
-          'cancelado',
-          'cancelada'
-        ].includes(
-          st(x.status)
-        )
-    ).length;
-}
-
-
-/* =========================
-   JOGADORES
-========================= */
-
-function mostrarJogadores(array){
-
-  const body =
-    $('jogadoresBody');
-
-  if(!array.length){
-
-    body.innerHTML =
-      '<tr>' +
-      '<td colspan="5">' +
-      'Nenhum jogador encontrado.' +
-      '</td>' +
-      '</tr>';
-
-    return;
-  }
-
-  body.innerHTML =
-    array.map(x => {
-
-      return (
-        '<tr>' +
-
-        '<td>' +
-        esc(x.$id) +
-        '</td>' +
-
-        '<td>' +
-        esc(
-          x.email ||
-          x['E-mail'] ||
-          '-'
-        ) +
-        '</td>' +
-
-        '<td>' +
-        esc(
-          x.nome ||
-          x.name ||
-          '-'
-        ) +
-        '</td>' +
-
-        '<td>' +
-        esc(
-          x.pontos ??
-          x.Pontos ??
-          0
-        ) +
-        '</td>' +
-
-        '<td>' +
-        esc(
-          x.equilibrio ??
-          x['equilíbrio'] ??
-          x.saldo ??
-          0
-        ) +
-        '</td>' +
-
-        '</tr>'
-      );
-
-    }).join('');
-}
-
-
-/* =========================
-   SAQUES
-========================= */
-
-function mostrarSaques(array){
-
-  const body =
-    $('saquesBody');
-
-  if(!array.length){
-
-    body.innerHTML =
-      '<tr>' +
-      '<td colspan="7">' +
-      'Nenhum saque encontrado.' +
-      '</td>' +
-      '</tr>';
-
-    return;
-  }
-
-  body.innerHTML =
-    array.map(x => {
-
-      const status =
-        st(x.status);
-
-      const id =
-        esc(x.$id);
-
-      let acoes =
-        '-';
-
-      if(status === 'pendente'){
-
-        acoes =
-          '<div class="actions">' +
-
-          '<button ' +
-          'class="success" ' +
-          'data-a="ok" ' +
-          'data-id="' +
-          id +
-          '">' +
-          'Aprovar' +
-          '</button>' +
-
-          '<button ' +
-          'class="danger" ' +
-          'data-a="no" ' +
-          'data-id="' +
-          id +
-          '">' +
-          'Cancelar' +
-          '</button>' +
-
-          '</div>';
-      }
-
-      return (
-        '<tr>' +
-
-        '<td>' +
-        id +
-        '</td>' +
-
-        '<td>' +
-        esc(
-          x['ID do usuário.'] ||
-          x['ID do usuário'] ||
-          x.usuario ||
-          x.userId ||
-          '-'
-        ) +
-        '</td>' +
-
-        '<td>' +
-        esc(
-          x.email ||
-          x['e-mail'] ||
-          x['E-mail'] ||
-          '-'
-        ) +
-        '</td>' +
-
-        '<td>R$ ' +
-        esc(
-          x.quantia ??
-          x.valor_jogador ??
-          x.valor ??
-          0
-        ) +
-        '</td>' +
-
-        '<td>' +
-        esc(
-          x.pix_key ||
-          x.pix ||
-          '-'
-        ) +
-        '</td>' +
-
-        '<td class="status ' +
-        esc(status) +
-        '">' +
-        esc(status || '-') +
-        '</td>' +
-
-        '<td>' +
-        acoes +
-        '</td>' +
-
-        '</tr>'
-      );
-
-    }).join('');
-}
-
-
-/* =========================
-   ALTERAR SAQUE
-========================= */
-
-async function alterar(
-  id,
-  status
-){
-
-  const confirmar =
-    confirm(
-      'Tem certeza que deseja ' +
-      (
-        status === 'aprovado'
-          ? 'APROVAR'
-          : 'CANCELAR'
-      ) +
-      ' este saque?'
-    );
-
-  if(!confirmar){
-    return;
-  }
-
-  try{
-
-    await tablesDB.updateRow({
-
-      databaseId:
-        DATABASE_ID,
-
-      tableId:
-        TABLES.saques,
-
-      rowId:
-        id,
-
-      data:{
-        status:
-          status
-      }
-
-    });
-
-    await carregarPainel();
-
-  }catch(error){
-
-    globalMsg(
-      'Erro ao atualizar saque: ' +
-      (
-        error.message ||
-        error
-      ),
-      false
-    );
-  }
-}
-
-
-/* =========================
-   PARCEIROS
-========================= */
-
-function mostrarParceiros(array){
-
-  const body =
-    $('parceirosBody');
-
-  if(!array.length){
-
-    body.innerHTML =
-      '<tr>' +
-      '<td colspan="4">' +
-      'Nenhum parceiro encontrado.' +
-      '</td>' +
-      '</tr>';
-
-    return;
-  }
-
-  body.innerHTML =
-    array.map(x => {
-
-      return (
-        '<tr>' +
-
-        '<td>' +
-        esc(x.$id) +
-        '</td>' +
-
-        '<td>' +
-        esc(
-          x.nome ||
-          x.name ||
-          '-'
-        ) +
-        '</td>' +
-
-        '<td>' +
-        esc(
-          x.email ||
-          x['E-mail'] ||
-          '-'
-        ) +
-        '</td>' +
-
-        '<td>' +
-        esc(
-          JSON.stringify(x)
-        ) +
-        '</td>' +
-
-        '</tr>'
-      );
-
-    }).join('');
-}
-
-
-/* =========================
-   MOVIMENTAÇÕES
-========================= */
-
-function mostrarMovimentacoes(array){
-
-  const body =
-    $('movimentacoesBody');
-
-  if(!array.length){
-
-    body.innerHTML =
-      '<tr>' +
-      '<td colspan="6">' +
-      'Nenhuma movimentação encontrada.' +
-      '</td>' +
-      '</tr>';
-
-    return;
-  }
-
-  body.innerHTML =
-    array.map(x => {
-
-      return (
-        '<tr>' +
-
-        '<td>' +
-        esc(x.$id) +
-        '</td>' +
-
-        '<td>' +
-        esc(
-          x.parceiro_id ||
-          '-'
-        ) +
-        '</td>' +
-
-        '<td>' +
-        esc(
-          x.tipo ||
-          '-'
-        ) +
-        '</td>' +
-
-        '<td>' +
-        esc(
-          x.pontos ??
-          0
-        ) +
-        '</td>' +
-
-        '<td>' +
-        esc(
-          x.valor ??
-          0
-        ) +
-        '</td>' +
-
-        '<td>' +
-        esc(
-          x.descricao ||
-          '-'
-        ) +
-        '</td>' +
-
-        '</tr>'
-      );
-
-    }).join('');
-}
-
-
-/* =========================
-   EVENTOS
-========================= */
-
-$('loginButton')
-  .addEventListener(
-    'click',
-    login
-  );
-
-$('logoutButton')
-  .addEventListener(
-    'click',
-    logout
-  );
-
-$('password')
-  .addEventListener(
-    'keydown',
-    event => {
-
-      if(event.key === 'Enter'){
-        login();
-      }
-
-    }
-  );
-
-document.addEventListener(
-  'click',
-  event => {
-
-    const button =
-      event.target.closest(
-        'button[data-a]'
-      );
-
-    if(!button){
-      return;
-    }
-
-    alterar(
-      button.dataset.id,
-      button.dataset.a === 'ok'
-        ? 'aprovado'
-        : 'cancelado'
-    );
-
-  }
+globalMsg('Carregando dados do QuizUp...');
+
+const rs=await Promise.allSettled([
+list(TABLES.jogadores),
+list(TABLES.parceiros),
+list(TABLES.saques),
+list(TABLES.movimentacoes)
+]);
+
+const j=rs[0].status==='fulfilled'?rs[0].value:[];
+const p=rs[1].status==='fulfilled'?rs[1].value:[];
+const s=rs[2].status==='fulfilled'?rs[2].value:[];
+const m=rs[3].status==='fulfilled'?rs[3].value:[];
+
+resumo(j,p,s);
+jogadores(j);
+saques(s);
+parceiros(p);
+movs(m);
+
+const f=rs.map((r,i)=>
+r.status==='rejected'
+?['jogadores','parceiros','saques','movimentações'][i]+': '+(r.reason?.message||r.reason)
+:null
+).filter(Boolean);
+
+if(f.length){
+
+globalMsg(
+'Painel aberto. Tabelas com erro: '+f.join(' | '),
+false
 );
 
+}else{
 
-/* =========================
-   ERROS DO JAVASCRIPT
-========================= */
+$('globalMessage').innerHTML='';
 
-window.addEventListener(
-  'error',
-  event => {
-
-    console.error(
-      'ERRO JAVASCRIPT:',
-      event.error ||
-      event.message
-    );
-
-  }
-);
-
-window.addEventListener(
-  'unhandledrejection',
-  event => {
-
-    console.error(
-      'PROMISE ERROR:',
-      event.reason
-    );
-
-  }
-);
-
-
-/* =========================
-   INICIALIZAÇÃO
-========================= */
-
-if(init()){
-  sessao();
 }
 
-</script></body>
-  </html>
+}
+
+function st(v){
+
+return String(v||'').toLowerCase().trim();
+
+}
+
+function resumo(j,p,s){
+
+$('totalJogadores').textContent=j.length;
+$('totalParceiros').textContent=p.length;
+$('totalSaques').textContent=s.length;
+
+$('totalPendentes').textContent=
+s.filter(x=>st(x.status)==='pendente').length;
+
+$('totalAprovados').textContent=
+s.filter(x=>['aprovado','aprovada'].includes(st(x.status))).length;
+
+$('totalCancelados').textContent=
+s.filter(x=>['cancelado','cancelada'].includes(st(x.status))).length;
+
+}
+
+function jogadores(a){
+
+const b=$('jogadoresBody');
+
+if(!a.length){
+
+b.innerHTML=
+'<tr><td colspan="5">Nenhum jogador encontrado.</td></tr>';
+
+return;
+
+}
+
+b.innerHTML=a.map(x=>
+'<tr>'+
+'<td>'+esc(x.$id)+'</td>'+
+'<td>'+esc(x.email||x['E-mail']||'-')+'</td>'+
+'<td>'+esc(x.nome||x.name||'-')+'</td>'+
+'<td>'+esc(x.pontos??x.Pontos??0)+'</td>'+
+'<td>'+esc(x.equilibrio??x['equilíbrio']??x.saldo??0)+'</td>'+
+'</tr>'
+).join('');
+
+}
+
+function saques(a){
+
+const b=$('saquesBody');
+
+if(!a.length){
+
+b.innerHTML=
+'<tr><td colspan="7">Nenhum saque encontrado.</td></tr>';
+
+return;
+
+}
+
+b.innerHTML=a.map(x=>{
+
+const s=st(x.status);
+const id=esc(x.$id);
+
+let act='-';
+
+if(s==='pendente'){
+
+act=
+'<div class="actions">'+
+'<button class="success" data-a="ok" data-id="'+id+'">Aprovar</button>'+
+'<button class="danger" data-a="no" data-id="'+id+'">Cancelar</button>'+
+'</div>';
+
+}
+
+return '<tr>'+
+'<td>'+id+'</td>'+
+'<td>'+esc(
+x['ID do usuário.']||
+x['ID do usuário']||
+x.usuario||
+x.userId||
+'-'
+)+'</td>'+
+'<td>'+esc(
+x.email||
+x['e-mail']||
+x['E-mail']||
+'-'
+)+'</td>'+
+'<td>R$ '+esc(
+x.quantia??
+x.valor_jogador??
+x.valor??
+0
+)+'</td>'+
+'<td>'+esc(x.pix_key||x.pix||'-')+'</td>'+
+'<td class="status '+esc(s)+'">'+esc(s||'-')+'</td>'+
+'<td>'+act+'</td>'+
+'</tr>';
+
+}).join('');
+
+}
+
+async function alterar(id,status){
+
+if(!confirm(
+'Tem certeza que deseja '+
+(status==='aprovado'?'APROVAR':'CANCELAR')+
+' este saque?'
+))return;
+
+try{
+
+await tablesDB.updateRow({
+databaseId:DATABASE_ID,
+tableId:TABLES.saques,
+rowId:id,
+data:{status}
+});
+
+await carregarPainel();
+
+}catch(e){
+
+globalMsg(
+'Erro ao atualizar saque: '+(e.message||e),
+false
+);
+
+}
+
+}
+
+function parceiros(a){
+
+const b=$('parceirosBody');
+
+if(!a.length){
+
+b.innerHTML=
+'<tr><td colspan="4">Nenhum parceiro encontrado.</td></tr>';
+
+return;
+
+}
+
+b.innerHTML=a.map(x=>
+'<tr>'+
+'<td>'+esc(x.$id)+'</td>'+
+'<td>'+esc(x.nome||x.name||'-')+'</td>'+
+'<td>'+esc(x.email||x['E-mail']||'-')+'</td>'+
+'<td>'+esc(JSON.stringify(x))+'</td>'+
+'</tr>'
+).join('');
+
+}
+
+function movs(a){
+
+const b=$('movimentacoesBody');
+
+if(!a.length){
+
+b.innerHTML=
+'<tr><td colspan="6">Nenhuma movimentação encontrada.</td></tr>';
+
+return;
+
+}
+
+b.innerHTML=a.map(x=>
+'<tr>'+
+'<td>'+esc(x.$id)+'</td>'+
+'<td>'+esc(x.parceiro_id||'-')+'</td>'+
+'<td>'+esc(x.tipo||'-')+'</td>'+
+'<td>'+esc(x.pontos??0)+'</td>'+
+'<td>'+esc(x.valor??0)+'</td>'+
+'<td>'+esc(x.descricao||'-')+'</td>'+
+'</tr>'
+).join('');
+
+}
+
+$('loginButton').addEventListener('click',login);
+
+$('logoutButton').addEventListener('click',logout);
+
+$('password').addEventListener('keydown',e=>{
+if(e.key==='Enter')login();
+});
+
+document.addEventListener('click',e=>{
+
+const b=e.target.closest('button[data-a]');
+
+if(!b)return;
+
+alterar(
+b.dataset.id,
+b.dataset.a==='ok'?'aprovado':'cancelado'
+);
+
+});
+
+window.addEventListener('error',e=>
+console.error('JS ERROR',e.error||e.message)
+);
+
+window.addEventListener('unhandledrejection',e=>
+console.error('PROMISE ERROR',e.reason)
+);
+
+if(init())sessao();
+
+</script>
+</body>
+                  </html>
