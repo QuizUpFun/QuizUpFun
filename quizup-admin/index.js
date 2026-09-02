@@ -1,1261 +1,1701 @@
-const sdk = require("node-appwrite");
+import { Client, TablesDB } from "node-appwrite";
+import crypto from "crypto";
 
 /*
-========================================================
- QUIZUP ADMIN - BACKEND
- Compatível com Node 26 / Appwrite Functions
-========================================================
+=========================================================
+QUIZUP ADMIN - APPWRITE FUNCTION
+Node.js / ES MODULE
+=========================================================
 */
 
-const {
-  Client,
-  TablesDB,
-  Query
-} = sdk;
-
-
 /*
-========================================================
- CONFIGURAÇÃO
-========================================================
+=========================================================
+CONFIGURAÇÃO APPWRITE
+=========================================================
 */
 
 const ENDPOINT =
+  process.env.APPWRITE_FUNCTION_API_ENDPOINT ||
   process.env.APPWRITE_ENDPOINT ||
   "https://fra.cloud.appwrite.io/v1";
 
 const PROJECT_ID =
+  process.env.APPWRITE_FUNCTION_PROJECT_ID ||
   process.env.APPWRITE_PROJECT_ID ||
   "6a8e10e900245502244c";
 
 const API_KEY =
-  process.env.APPWRITE_API_KEY || "";
+  process.env.APPWRITE_API_KEY ||
+  "";
+
+
+/*
+=========================================================
+ADMINISTRADOR
+=========================================================
+*/
+
+const ADMIN_EMAIL =
+  String(
+    process.env.ADMIN_EMAIL || ""
+  )
+    .trim()
+    .toLowerCase();
+
+const ADMIN_DATA_NASCIMENTO =
+  String(
+    process.env.ADMIN_DATA_NASCIMENTO || ""
+  )
+    .trim();
+
+const ADMIN_LOGIN_SECRET =
+  String(
+    process.env.ADMIN_LOGIN_SECRET || ""
+  );
 
 const ADMIN_USER_ID =
-  process.env.ADMIN_USER_ID ||
-  "6a8f41f10032758d44de";
+  String(
+    process.env.ADMIN_USER_ID ||
+    "6a8f41f10032758d44de"
+  )
+    .trim();
+
+
+/*
+=========================================================
+TOKEN
+=========================================================
+*/
+
+const TOKEN_DURACAO_SEGUNDOS =
+  2 * 60 * 60;
+
+
+/*
+=========================================================
+BANCO DE DADOS
+=========================================================
+*/
 
 const DATABASE_ID =
+  process.env.QUIZUP_DATABASE_ID ||
   process.env.DATABASE_ID ||
   "QuizUpDB";
 
-const JOGADORES_TABLE_ID =
+const TABELA_JOGADORES =
+  process.env.TABELA_JOGADORES ||
   process.env.JOGADORES_TABLE_ID ||
   "jogadores";
 
-const SAQUES_TABLE_ID =
+const TABELA_SAQUES =
+  process.env.TABELA_SAQUES ||
   process.env.SAQUES_TABLE_ID ||
   "saques";
 
-const MENSAGENS_TABLE_ID =
+const TABELA_MENSAGENS =
+  process.env.TABELA_MENSAGENS ||
   process.env.MENSAGENS_TABLE_ID ||
   "mensagens";
 
 
 /*
-========================================================
- CLIENT APPWRITE
-========================================================
+=========================================================
+CLIENTE APPWRITE
+=========================================================
 */
 
-const client = new Client()
-  .setEndpoint(ENDPOINT)
-  .setProject(PROJECT_ID);
+const client =
+  new Client()
+    .setEndpoint(ENDPOINT)
+    .setProject(PROJECT_ID);
 
 if (API_KEY) {
   client.setKey(API_KEY);
 }
 
-const tablesDB = new TablesDB(client);
+const tablesDB =
+  new TablesDB(client);
 
 
 /*
-========================================================
- RESPOSTAS
-========================================================
+=========================================================
+CORS
+=========================================================
 */
 
-function json(res, data, status = 200) {
+function corsHeaders() {
+  return {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods":
+      "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers":
+      "Content-Type, Authorization, X-Appwrite-User-Id",
+    "Access-Control-Max-Age":
+      "86400"
+  };
+}
 
+
+/*
+=========================================================
+JSON
+=========================================================
+*/
+
+function json(res, status, data) {
   return res.json(
     data,
-    status
+    status,
+    corsHeaders()
   );
-
 }
 
 
 /*
-========================================================
- PEGAR ID DO USUÁRIO QUE EXECUTOU A FUNÇÃO
-========================================================
-*/
-
-function getUserId(req) {
-
-  const headers =
-    req.headers || {};
-
-  return (
-    headers["x-appwrite-user-id"] ||
-    headers["X-Appwrite-User-Id"] ||
-    ""
-  );
-
-}
-
-
-/*
-========================================================
- SEGURANÇA ADMIN
-========================================================
-*/
-
-function verificarAdmin(req) {
-
-  const userId =
-    getUserId(req);
-
-  if (!userId) {
-
-    return {
-      ok: false,
-      erro:
-        "Usuário não autenticado."
-    };
-
-  }
-
-
-  if (
-    userId !== ADMIN_USER_ID
-  ) {
-
-    return {
-      ok: false,
-      erro:
-        "Acesso negado. Usuário não autorizado."
-    };
-
-  }
-
-
-  return {
-    ok: true
-  };
-
-}
-
-
-/*
-========================================================
- NORMALIZAR NÚMEROS
-========================================================
+=========================================================
+NÚMERO
+=========================================================
 */
 
 function num(valor) {
-
-  if (
-    valor === null ||
-    valor === undefined ||
-    valor === ""
-  ) {
-    return 0;
-  }
-
-  const numero =
-    Number(valor);
+  const numero = Number(valor);
 
   return Number.isFinite(numero)
     ? numero
     : 0;
-
 }
 
 
 /*
-========================================================
- PRIMEIRO VALOR EXISTENTE
-========================================================
+=========================================================
+VALOR
+=========================================================
 */
 
-function valorDe(obj, nomes, padrao = "") {
+function valorDe(obj) {
 
-  for (const nome of nomes) {
+  if (!obj) {
+    return 0;
+  }
+
+  return num(
+    obj.quantia ??
+    obj.valor ??
+    obj.valor_jogador ??
+    obj.equilibrio ??
+    obj.saldo ??
+    0
+  );
+}
+
+
+/*
+=========================================================
+BODY
+=========================================================
+*/
+
+function lerBody(req) {
+
+  try {
 
     if (
-      obj &&
-      obj[nome] !== undefined &&
-      obj[nome] !== null
+      req.bodyJson &&
+      typeof req.bodyJson === "object"
     ) {
 
-      return obj[nome];
+      return req.bodyJson;
+
+    }
+
+  } catch (e) {
+
+    console.error(
+      "Erro bodyJson:",
+      e
+    );
+
+  }
+
+
+  try {
+
+    if (
+      req.bodyText &&
+      typeof req.bodyText === "string"
+    ) {
+
+      return JSON.parse(
+        req.bodyText
+      );
+
+    }
+
+  } catch (e) {
+
+    console.error(
+      "Erro bodyText:",
+      e
+    );
+
+  }
+
+
+  return {};
+}
+
+
+/*
+=========================================================
+NORMALIZAR DATA
+=========================================================
+*/
+
+function normalizarData(data) {
+
+  const valor =
+    String(data || "").trim();
+
+  /*
+  DD/MM/AAAA
+  */
+
+  const brasileira =
+    /^(\d{2})\/(\d{2})\/(\d{4})$/
+      .exec(valor);
+
+  if (brasileira) {
+
+    return (
+      `${brasileira[3]}-` +
+      `${brasileira[2]}-` +
+      `${brasileira[1]}`
+    );
+
+  }
+
+  /*
+  AAAA-MM-DD
+  */
+
+  const iso =
+    /^\d{4}-\d{2}-\d{2}$/
+      .test(valor);
+
+  if (iso) {
+    return valor;
+  }
+
+  return valor;
+}
+
+
+/*
+=========================================================
+CRIAR TOKEN
+=========================================================
+*/
+
+function criarToken() {
+
+  const agora =
+    Math.floor(
+      Date.now() / 1000
+    );
+
+  const expira =
+    agora +
+    TOKEN_DURACAO_SEGUNDOS;
+
+  const payload = {
+    sub: "quizup-admin",
+    iat: agora,
+    exp: expira
+  };
+
+  const textoPayload =
+    Buffer
+      .from(
+        JSON.stringify(payload)
+      )
+      .toString("base64url");
+
+  const assinatura =
+    crypto
+      .createHmac(
+        "sha256",
+        ADMIN_LOGIN_SECRET
+      )
+      .update(textoPayload)
+      .digest("base64url");
+
+  return (
+    textoPayload +
+    "." +
+    assinatura
+  );
+}
+
+
+/*
+=========================================================
+VALIDAR TOKEN
+=========================================================
+*/
+
+function validarToken(token) {
+
+  if (
+    !token ||
+    !ADMIN_LOGIN_SECRET
+  ) {
+
+    return false;
+
+  }
+
+  const partes =
+    String(token).split(".");
+
+  if (
+    partes.length !== 2
+  ) {
+
+    return false;
+
+  }
+
+  const [
+    payloadCodificado,
+    assinatura
+  ] = partes;
+
+  const assinaturaEsperada =
+    crypto
+      .createHmac(
+        "sha256",
+        ADMIN_LOGIN_SECRET
+      )
+      .update(payloadCodificado)
+      .digest("base64url");
+
+  if (
+    assinatura !==
+    assinaturaEsperada
+  ) {
+
+    return false;
+
+  }
+
+  try {
+
+    const payload =
+      JSON.parse(
+        Buffer
+          .from(
+            payloadCodificado,
+            "base64url"
+          )
+          .toString("utf8")
+      );
+
+    const agora =
+      Math.floor(
+        Date.now() / 1000
+      );
+
+    if (
+      !payload.exp ||
+      Number(payload.exp) < agora
+    ) {
+
+      return false;
+
+    }
+
+    if (
+      payload.sub !==
+      "quizup-admin"
+    ) {
+
+      return false;
+
+    }
+
+    return true;
+
+  } catch (e) {
+
+    return false;
+
+  }
+}
+
+
+/*
+=========================================================
+VERIFICAR ADMIN
+=========================================================
+*/
+
+function verificarAdmin(req) {
+
+  const headers =
+    req.headers || {};
+
+  /*
+  TOKEN DO PAINEL
+  */
+
+  const authorization =
+    headers.authorization ||
+    headers.Authorization ||
+    "";
+
+  if (
+    String(
+      authorization
+    ).startsWith("Bearer ")
+  ) {
+
+    const token =
+      String(
+        authorization
+      )
+        .substring(7)
+        .trim();
+
+    if (
+      validarToken(token)
+    ) {
+
+      return true;
 
     }
 
   }
 
-  return padrao;
 
+  /*
+  USUÁRIO APPWRITE
+  */
+
+  const appwriteUserId =
+    headers["x-appwrite-user-id"] ||
+    headers["X-Appwrite-User-Id"] ||
+    "";
+
+  if (
+    appwriteUserId &&
+    appwriteUserId ===
+    ADMIN_USER_ID
+  ) {
+
+    return true;
+
+  }
+
+
+  return false;
 }
 
 
 /*
-========================================================
- LISTAR LINHAS
-========================================================
+=========================================================
+LISTAR TABELA
+=========================================================
 */
 
 async function listarTabela(
-  tableId,
+  tabela,
   queries = []
 ) {
 
   const resultado =
     await tablesDB.listRows({
+
       databaseId:
         DATABASE_ID,
 
       tableId:
-        tableId,
+        tabela,
 
       queries:
-        queries,
+        queries
 
-      total:
-        true
     });
 
-  return resultado;
-
+  return (
+    resultado.rows ||
+    []
+  );
 }
 
 
 /*
-========================================================
- RESUMO
-========================================================
+=========================================================
+LOGIN
+=========================================================
 */
 
-async function resumo() {
+async function login(
+  req,
+  res
+) {
 
-  const jogadores =
-    await listarTabela(
-      JOGADORES_TABLE_ID
-    );
+  const body =
+    lerBody(req);
+
+  const email =
+    String(
+      body.email || ""
+    )
+      .trim()
+      .toLowerCase();
+
+  const dataNascimento =
+    String(
+      body.dataNascimento ||
+      body.data_nascimento ||
+      body.data ||
+      ""
+    ).trim();
 
 
-  const saques =
-    await listarTabela(
-      SAQUES_TABLE_ID
-    );
-
-
-  let pontosQuiz = 0;
-  let pontosPatrocinados = 0;
-  let pontosTotal = 0;
-
-
-  for (
-    const jogador of jogadores.rows || []
+  if (
+    !email ||
+    !dataNascimento
   ) {
 
-    const quiz =
-      num(
-        valorDe(
-          jogador,
-          [
-            "pontosQuiz",
-            "pontos_quiz",
-            "pontos"
-          ]
-        )
-      );
-
-
-    const patrocinado =
-      num(
-        valorDe(
-          jogador,
-          [
-            "pontosPatrocinados",
-            "pontos_patrocinados",
-            "pontosPatrocinados"
-          ]
-        )
-      );
-
-
-    const total =
-      num(
-        valorDe(
-          jogador,
-          [
-            "pontosTotal",
-            "pontos_total"
-          ],
-          quiz + patrocinado
-        )
-      );
-
-
-    pontosQuiz +=
-      quiz;
-
-    pontosPatrocinados +=
-      patrocinado;
-
-    pontosTotal +=
-      total;
+    return json(
+      res,
+      400,
+      {
+        success: false,
+        error:
+          "E-mail e data de nascimento são obrigatórios."
+      }
+    );
 
   }
 
 
-  let saquesPendentes = 0;
-  let saquesAprovados = 0;
-  let saquesRecusados = 0;
+  /*
+  VERIFICA CONFIGURAÇÃO
+  */
 
-
-  for (
-    const saque of saques.rows || []
+  if (
+    !ADMIN_EMAIL ||
+    !ADMIN_DATA_NASCIMENTO ||
+    !ADMIN_LOGIN_SECRET
   ) {
 
-    const status =
-      String(
+    console.error(
+      "CONFIGURAÇÃO ADMINISTRATIVA AUSENTE."
+    );
+
+    return json(
+      res,
+      500,
+      {
+        success: false,
+        error:
+          "Login administrativo não configurado no servidor."
+      }
+    );
+
+  }
+
+
+  const dataInformada =
+    normalizarData(
+      dataNascimento
+    );
+
+  const dataConfigurada =
+    normalizarData(
+      ADMIN_DATA_NASCIMENTO
+    );
+
+
+  /*
+  VERIFICA E-MAIL
+  */
+
+  if (
+    email !==
+    ADMIN_EMAIL
+  ) {
+
+    return json(
+      res,
+      401,
+      {
+        success: false,
+        error:
+          "E-mail ou data de nascimento inválidos."
+      }
+    );
+
+  }
+
+
+  /*
+  VERIFICA DATA
+  */
+
+  if (
+    dataInformada !==
+    dataConfigurada
+  ) {
+
+    return json(
+      res,
+      401,
+      {
+        success: false,
+        error:
+          "E-mail ou data de nascimento inválidos."
+      }
+    );
+
+  }
+
+
+  /*
+  LOGIN OK
+  */
+
+  const token =
+    criarToken();
+
+  return json(
+    res,
+    200,
+    {
+
+      success: true,
+
+      token,
+
+      expiresIn:
+        TOKEN_DURACAO_SEGUNDOS,
+
+      admin: {
+        email:
+          ADMIN_EMAIL
+      }
+
+    }
+  );
+}
+
+
+/*
+=========================================================
+RESUMO
+=========================================================
+*/
+
+async function resumo(
+  req,
+  res
+) {
+
+  if (
+    !verificarAdmin(req)
+  ) {
+
+    return json(
+      res,
+      401,
+      {
+        success: false,
+        error:
+          "Não autorizado."
+      }
+    );
+
+  }
+
+
+  try {
+
+    const jogadores =
+      await listarTabela(
+        TABELA_JOGADORES
+      );
+
+    let totalPontos = 0;
+    let totalSaldo = 0;
+    let jogadoresAtivos = 0;
+
+
+    for (
+      const jogador of jogadores
+    ) {
+
+      totalPontos +=
+        num(
+          jogador.pontos
+        );
+
+      totalSaldo +=
         valorDe(
-          saque,
-          ["status"],
-          ""
-        )
-      ).toUpperCase();
+          jogador
+        );
 
 
-    if (
-      status === "PENDENTE"
-    ) {
+      if (
+        jogador.ativo === true ||
+        jogador.status === "ativo" ||
+        jogador.online === true
+      ) {
 
-      saquesPendentes++;
+        jogadoresAtivos++;
 
-    } else if (
-      status === "APROVADO"
-    ) {
-
-      saquesAprovados++;
-
-    } else if (
-      status === "RECUSADO"
-    ) {
-
-      saquesRecusados++;
+      }
 
     }
 
+
+    let saques = [];
+
+    try {
+
+      saques =
+        await listarTabela(
+          TABELA_SAQUES
+        );
+
+    } catch (e) {
+
+      console.error(
+        "Erro ao carregar saques:",
+        e
+      );
+
+    }
+
+
+    let saquesPendentes = 0;
+    let saquesAprovados = 0;
+    let saquesRecusados = 0;
+
+
+    for (
+      const saque of saques
+    ) {
+
+      const status =
+        String(
+          saque.status || ""
+        )
+          .trim()
+          .toLowerCase();
+
+
+      if (
+        status === "pendente"
+      ) {
+
+        saquesPendentes++;
+
+      }
+
+      if (
+        status === "aprovado"
+      ) {
+
+        saquesAprovados++;
+
+      }
+
+      if (
+        status === "recusado"
+      ) {
+
+        saquesRecusados++;
+
+      }
+
+    }
+
+
+    return json(
+      res,
+      200,
+      {
+
+        success: true,
+
+        totalUsuarios:
+          jogadores.length,
+
+        usuarios:
+          jogadores.length,
+
+        totalJogadores:
+          jogadores.length,
+
+        jogadoresAtivos,
+
+        pontosQuiz:
+          totalPontos,
+
+        pontos:
+          totalPontos,
+
+        totalPontos,
+
+        pontosPatrocinados:
+          0,
+
+        totalSaldo,
+
+        saquesPendentes,
+
+        pendentes:
+          saquesPendentes,
+
+        saquesAprovados,
+
+        aprovados:
+          saquesAprovados,
+
+        saquesRecusados,
+
+        recusados:
+          saquesRecusados
+
+      }
+    );
+
+  } catch (e) {
+
+    console.error(
+      "ERRO RESUMO:",
+      e
+    );
+
+    return json(
+      res,
+      500,
+      {
+        success: false,
+        error:
+          "Erro ao carregar resumo.",
+        details:
+          String(
+            e?.message || e
+          )
+      }
+    );
+
+  }
+}
+
+
+/*
+=========================================================
+JOGADORES
+=========================================================
+*/
+
+async function jogadores(
+  req,
+  res
+) {
+
+  if (
+    !verificarAdmin(req)
+  ) {
+
+    return json(
+      res,
+      401,
+      {
+        success: false,
+        error:
+          "Não autorizado."
+      }
+    );
+
   }
 
 
-  return {
+  try {
 
-    usuarios:
-      jogadores.total ||
-      jogadores.rows.length,
+    const lista =
+      await listarTabela(
+        TABELA_JOGADORES
+      );
 
-    jogadoresAtivos:
-      jogadores.rows.filter(
-        jogador =>
-          valorDe(
-            jogador,
-            [
-              "ativo",
-              "status"
-            ],
-            true
-          ) !== false &&
+    return json(
+      res,
+      200,
+      {
+
+        success: true,
+
+        jogadores:
+          lista
+
+      }
+    );
+
+  } catch (e) {
+
+    console.error(
+      "ERRO JOGADORES:",
+      e
+    );
+
+    return json(
+      res,
+      500,
+      {
+
+        success: false,
+
+        error:
+          "Erro ao carregar jogadores.",
+
+        details:
           String(
-            valorDe(
-              jogador,
-              ["status"],
-              "ATIVO"
-            )
-          ).toUpperCase() !==
-          "INATIVO"
-      ).length,
+            e?.message || e
+          )
 
-    pontosQuiz,
-
-    pontosPatrocinados,
-
-    pontosTotal,
-
-    saquesPendentes,
-
-    saquesAprovados,
-
-    saquesRecusados
-
-  };
-
-}
-
-
-/*
-========================================================
- JOGADORES
-========================================================
-*/
-
-async function jogadores() {
-
-  const resultado =
-    await listarTabela(
-      JOGADORES_TABLE_ID
+      }
     );
 
-
-  const lista =
-    (resultado.rows || [])
-      .map(jogador => {
-
-        const pontosQuiz =
-          num(
-            valorDe(
-              jogador,
-              [
-                "pontosQuiz",
-                "pontos_quiz",
-                "pontos"
-              ]
-            )
-          );
-
-
-        const pontosPatrocinados =
-          num(
-            valorDe(
-              jogador,
-              [
-                "pontosPatrocinados",
-                "pontos_patrocinados"
-              ]
-            )
-          );
-
-
-        const pontosTotal =
-          num(
-            valorDe(
-              jogador,
-              [
-                "pontosTotal",
-                "pontos_total"
-              ],
-              pontosQuiz +
-              pontosPatrocinados
-            )
-          );
-
-
-        return {
-
-          idJogador:
-            valorDe(
-              jogador,
-              [
-                "idJogador",
-                "id_usuario",
-                "$id"
-              ]
-            ),
-
-          nome:
-            valorDe(
-              jogador,
-              [
-                "nome",
-                "name"
-              ],
-              "-"
-            ),
-
-          email:
-            valorDe(
-              jogador,
-              [
-                "email",
-                "E-mail",
-                "e_mail"
-              ],
-              "-"
-            ),
-
-          plano:
-            valorDe(
-              jogador,
-              [
-                "plano",
-                "Plano"
-              ],
-              "normal"
-            ),
-
-          pontosQuiz,
-
-          pontosPatrocinados,
-
-          pontosTotal,
-
-          saldo:
-            num(
-              valorDe(
-                jogador,
-                [
-                  "equilibrio",
-                  "saldo",
-                  "balance"
-                ]
-              )
-            ),
-
-          ativo:
-            valorDe(
-              jogador,
-              [
-                "ativo"
-              ],
-              true
-            )
-
-        };
-
-      });
-
-
-  return {
-
-    jogadores:
-      lista,
-
-    total:
-      resultado.total ||
-      lista.length
-
-  };
-
+  }
 }
 
 
 /*
-========================================================
- SAQUES
-========================================================
+=========================================================
+SAQUES
+=========================================================
 */
 
-async function saques() {
+async function saques(
+  req,
+  res
+) {
 
-  const resultado =
-    await listarTabela(
-      SAQUES_TABLE_ID
+  if (
+    !verificarAdmin(req)
+  ) {
+
+    return json(
+      res,
+      401,
+      {
+        success: false,
+        error:
+          "Não autorizado."
+      }
     );
 
-
-  const lista =
-    (resultado.rows || [])
-      .map(saque => {
-
-        const valorJogador =
-          num(
-            valorDe(
-              saque,
-              [
-                "valor_jogador",
-                "valorJogador",
-                "quantia"
-              ]
-            )
-          );
+  }
 
 
-        const valorPlataforma =
-          num(
-            valorDe(
-              saque,
-              [
-                "valor_plataforma",
-                "valorPlataforma"
-              ]
-            )
-          );
+  try {
 
+    const lista =
+      await listarTabela(
+        TABELA_SAQUES
+      );
 
-        return {
+    return json(
+      res,
+      200,
+      {
 
-          id:
-            valorDe(
-              saque,
-              [
-                "$id",
-                "id",
-                "idSaque"
-              ]
-            ),
+        success: true,
 
-          data:
-            valorDe(
-              saque,
-              [
-                "criado_em",
-                "criadoEm",
-                "data",
-                "$createdAt"
-              ]
-            ),
+        saques:
+          lista
 
-          nome:
-            valorDe(
-              saque,
-              [
-                "nome"
-              ],
-              "-"
-            ),
+      }
+    );
 
-          idJogador:
-            valorDe(
-              saque,
-              [
-                "ID do usuário",
-                "id_usuario",
-                "idJogador",
-                "usuario_id"
-              ],
-              "-"
-            ),
+  } catch (e) {
 
-          email:
-            valorDe(
-              saque,
-              [
-                "e-mail",
-                "email",
-                "E-mail"
-              ],
-              "-"
-            ),
+    console.error(
+      "ERRO SAQUES:",
+      e
+    );
 
-          pontos:
-            num(
-              valorDe(
-                saque,
-                [
-                  "pontos"
-                ]
-              )
-            ),
+    return json(
+      res,
+      500,
+      {
 
-          valorJogador,
+        success: false,
 
-          valorPlataforma,
+        error:
+          "Erro ao carregar saques.",
 
-          custoTotal:
-            valorJogador +
-            valorPlataforma,
+        details:
+          String(
+            e?.message || e
+          )
 
-          percentualPlataforma:
-            valorJogador > 0
-              ? (
-                  valorPlataforma /
-                  valorJogador
-                ) * 100
-              : 0,
+      }
+    );
 
-          tipo:
-            valorDe(
-              saque,
-              [
-                "método",
-                "metodo",
-                "tipo"
-              ],
-              "PIX"
-            ),
-
-          destino:
-            valorDe(
-              saque,
-              [
-                "pix_key",
-                "pixKey",
-                "destino"
-              ],
-              "-"
-            ),
-
-          status:
-            String(
-              valorDe(
-                saque,
-                ["status"],
-                "PENDENTE"
-              )
-            ).toUpperCase()
-
-        };
-
-      });
-
-
-  return {
-
-    saques:
-      lista
-
-  };
-
+  }
 }
 
 
 /*
-========================================================
- ATUALIZAR SAQUE
-========================================================
+=========================================================
+ATUALIZAR SAQUE
+=========================================================
 */
 
 async function atualizarSaque(
-  idSaque,
-  status,
-  motivo = ""
+  req,
+  res,
+  novoStatus
 ) {
 
-  if (!idSaque) {
+  if (
+    !verificarAdmin(req)
+  ) {
 
-    throw new Error(
-      "ID do saque não informado."
+    return json(
+      res,
+      401,
+      {
+        success: false,
+        error:
+          "Não autorizado."
+      }
     );
 
   }
 
 
-  const dados = {
-    status:
-      status
-  };
+  const body =
+    lerBody(req);
+
+  const id =
+    String(
+      body.id ||
+      body.saqueId ||
+      body.documentId ||
+      ""
+    ).trim();
 
 
-  if (motivo) {
+  if (!id) {
 
-    dados.motivo =
-      motivo;
+    return json(
+      res,
+      400,
+      {
+        success: false,
+        error:
+          "ID do saque não informado."
+      }
+    );
 
   }
 
-
-  return await tablesDB.updateRow({
-
-    databaseId:
-      DATABASE_ID,
-
-    tableId:
-      SAQUES_TABLE_ID,
-
-    rowId:
-      idSaque,
-
-    data:
-      dados
-
-  });
-
-}
-
-
-/*
-========================================================
- MENSAGENS SAC
-========================================================
-*/
-
-async function mensagens() {
 
   try {
 
-    const resultado =
-      await listarTabela(
-        MENSAGENS_TABLE_ID
-      );
+    const atualizado =
+      await tablesDB.updateRow({
+
+        databaseId:
+          DATABASE_ID,
+
+        tableId:
+          TABELA_SAQUES,
+
+        rowId:
+          id,
+
+        data: {
+          status:
+            novoStatus
+        }
+
+      });
 
 
-    return {
+    return json(
+      res,
+      200,
+      {
 
-      mensagens:
-        (resultado.rows || [])
-          .map(mensagem => ({
+        success: true,
 
-            id:
-              valorDe(
-                mensagem,
-                [
-                  "$id",
-                  "id"
-                ]
-              ),
+        status:
+          novoStatus,
 
-            email:
-              valorDe(
-                mensagem,
-                [
-                  "email",
-                  "e-mail",
-                  "E-mail"
-                ],
-                "-"
-              ),
+        saque:
+          atualizado
 
-            mensagem:
-              valorDe(
-                mensagem,
-                [
-                  "mensagem",
-                  "texto"
-                ],
-                ""
-              ),
-
-            data:
-              valorDe(
-                mensagem,
-                [
-                  "criado_em",
-                  "data",
-                  "$createdAt"
-                ]
-              ),
-
-            status:
-              String(
-                valorDe(
-                  mensagem,
-                  [
-                    "status"
-                  ],
-                  "NOVA"
-                )
-              ).toUpperCase()
-
-          }))
-
-    };
-
-  } catch (erro) {
-
-    /*
-     * Caso a tabela de mensagens ainda não exista,
-     * o painel continua funcionando.
-     */
-
-    console.error(
-      "Tabela de mensagens:",
-      erro.message
+      }
     );
 
+  } catch (e) {
 
-    return {
+    console.error(
+      "ERRO ATUALIZAR SAQUE:",
+      e
+    );
 
-      mensagens: []
+    return json(
+      res,
+      500,
+      {
 
-    };
+        success: false,
+
+        error:
+          "Erro ao atualizar saque.",
+
+        details:
+          String(
+            e?.message || e
+          )
+
+      }
+    );
 
   }
-
 }
 
 
 /*
-========================================================
- MARCAR MENSAGEM COMO LIDA
-========================================================
+=========================================================
+MENSAGENS
+=========================================================
+*/
+
+async function mensagens(
+  req,
+  res
+) {
+
+  if (
+    !verificarAdmin(req)
+  ) {
+
+    return json(
+      res,
+      401,
+      {
+        success: false,
+        error:
+          "Não autorizado."
+      }
+    );
+
+  }
+
+
+  try {
+
+    const lista =
+      await listarTabela(
+        TABELA_MENSAGENS
+      );
+
+    return json(
+      res,
+      200,
+      {
+
+        success: true,
+
+        mensagens:
+          lista
+
+      }
+    );
+
+  } catch (e) {
+
+    console.error(
+      "ERRO MENSAGENS:",
+      e
+    );
+
+    /*
+    A tabela pode ainda não existir.
+    Não derruba o painel.
+    */
+
+    return json(
+      res,
+      200,
+      {
+
+        success: true,
+
+        mensagens: []
+
+      }
+    );
+
+  }
+}
+
+
+/*
+=========================================================
+MARCAR MENSAGEM COMO LIDA
+=========================================================
 */
 
 async function marcarMensagemLida(
-  idMensagem
+  req,
+  res
 ) {
 
-  if (!idMensagem) {
+  if (
+    !verificarAdmin(req)
+  ) {
 
-    throw new Error(
-      "ID da mensagem não informado."
+    return json(
+      res,
+      401,
+      {
+        success: false,
+        error:
+          "Não autorizado."
+      }
     );
 
   }
 
 
-  return await tablesDB.updateRow({
+  const body =
+    lerBody(req);
 
-    databaseId:
-      DATABASE_ID,
+  const id =
+    String(
+      body.id ||
+      body.mensagemId ||
+      body.documentId ||
+      ""
+    ).trim();
 
-    tableId:
-      MENSAGENS_TABLE_ID,
 
-    rowId:
-      idMensagem,
+  if (!id) {
 
-    data: {
+    return json(
+      res,
+      400,
+      {
+        success: false,
+        error:
+          "ID da mensagem não informado."
+      }
+    );
 
-      status:
-        "LIDA"
+  }
 
-    }
 
-  });
+  try {
 
+    const atualizado =
+      await tablesDB.updateRow({
+
+        databaseId:
+          DATABASE_ID,
+
+        tableId:
+          TABELA_MENSAGENS,
+
+        rowId:
+          id,
+
+        data: {
+          status:
+            "lida"
+        }
+
+      });
+
+
+    return json(
+      res,
+      200,
+      {
+
+        success: true,
+
+        mensagem:
+          atualizado
+
+      }
+    );
+
+  } catch (e) {
+
+    console.error(
+      "ERRO MENSAGEM:",
+      e
+    );
+
+    return json(
+      res,
+      500,
+      {
+
+        success: false,
+
+        error:
+          "Erro ao atualizar mensagem.",
+
+        details:
+          String(
+            e?.message || e
+          )
+
+      }
+    );
+
+  }
 }
 
 
 /*
-========================================================
- HANDLER PRINCIPAL
-========================================================
+=========================================================
+TESTE
+=========================================================
 */
 
-async function main(req, res) {
+async function teste(
+  req,
+  res
+) {
 
-  try {
+  return json(
+    res,
+    200,
+    {
 
-    console.log(
-      "QuizUp Admin iniciado."
-    );
+      ok: true,
 
+      success: true,
 
-    console.log(
-      "Path:",
-      req.path
-    );
+      function:
+        "quizup-admin",
 
+      status:
+        "online",
 
-    /*
-     * A execução manual pelo botão
-     * "Executar" pode não possuir usuário.
-     *
-     * Por isso permitimos uma resposta
-     * de diagnóstico somente quando
-     * não existe usuário.
-     */
+      runtime:
+        "node-26",
 
-    const userId =
-      getUserId(req);
-
-
-    if (
-      userId &&
-      userId !== ADMIN_USER_ID
-    ) {
-
-      return json(
-        res,
-        {
-          sucesso: false,
-          erro:
-            "Acesso negado."
-        },
-        403
-      );
+      timestamp:
+        new Date().toISOString()
 
     }
+  );
+}
 
 
-    const path =
-      req.path || "/";
+/*
+=========================================================
+HANDLER APPWRITE
+=========================================================
+*/
+
+export default async function main({
+  req,
+  res,
+  log,
+  error
+}) {
+
+  try {
 
     const method =
       String(
         req.method || "GET"
       ).toUpperCase();
 
-
-    /*
-     * TESTE DA FUNÇÃO
-     */
-
-    if (
-      path === "/" ||
-      path === "/teste"
-    ) {
-
-      return json(
-        res,
-        {
-          sucesso: true,
-
-          mensagem:
-            "QuizUp Admin funcionando.",
-
-          function:
-            "quizup-admin",
-
-          runtime:
-            "node-26",
-
-          appwrite:
-            true,
-
-          usuario:
-            userId || null
-        }
-      );
-
-    }
-
-
-    /*
-     * SEGURANÇA
-     */
-
-    const seguranca =
-      verificarAdmin(req);
-
-
-    if (!seguranca.ok) {
-
-      return json(
-        res,
-        {
-          sucesso: false,
-          erro:
-            seguranca.erro
-        },
-        401
-      );
-
-    }
-
-
-    /*
-     * RESUMO
-     */
-
-    if (
-      path === "/api/admin/resumo"
-    ) {
-
-      return json(
-        res,
-        await resumo()
-      );
-
-    }
-
-
-    /*
-     * JOGADORES
-     */
-
-    if (
-      path === "/api/admin/jogadores"
-    ) {
-
-      return json(
-        res,
-        await jogadores()
-      );
-
-    }
-
-
-    /*
-     * SAQUES
-     */
-
-    if (
-      path === "/api/admin/saques"
-    ) {
-
-      return json(
-        res,
-        await saques()
-      );
-
-    }
-
-
-    /*
-     * APROVAR SAQUE
-     */
-
-    if (
-      path === "/api/admin/saque/aprovar" &&
-      method === "POST"
-    ) {
-
-      const body =
-        req.bodyJson ||
-        {};
-
-
-      const idSaque =
-        body.idSaque;
-
-
-      await atualizarSaque(
-        idSaque,
-        "APROVADO"
+    const caminho =
+      String(
+        req.path || "/"
       );
 
 
-      return json(
-        res,
-        {
-          sucesso: true,
-          mensagem:
-            "Saque aprovado."
-        }
-      );
-
-    }
-
-
-    /*
-     * RECUSAR SAQUE
-     */
-
-    if (
-      path === "/api/admin/saque/recusar" &&
-      method === "POST"
-    ) {
-
-      const body =
-        req.bodyJson ||
-        {};
-
-
-      const idSaque =
-        body.idSaque;
-
-
-      const motivo =
-        body.motivo ||
-        "Solicitação recusada pelo administrador.";
-
-
-      await atualizarSaque(
-        idSaque,
-        "RECUSADO",
-        motivo
-      );
-
-
-      return json(
-        res,
-        {
-          sucesso: true,
-          mensagem:
-            "Saque recusado."
-        }
-      );
-
-    }
-
-
-    /*
-     * MENSAGENS
-     */
-
-    if (
-      path === "/api/admin/mensagens"
-    ) {
-
-      return json(
-        res,
-        await mensagens()
-      );
-
-    }
-
-
-    /*
-     * MARCAR MENSAGEM COMO LIDA
-     */
-
-    if (
-      path === "/api/admin/mensagem/lida" &&
-      method === "POST"
-    ) {
-
-      const body =
-        req.bodyJson ||
-        {};
-
-
-      await marcarMensagemLida(
-        body.idMensagem
-      );
-
-
-      return json(
-        res,
-        {
-          sucesso: true,
-          mensagem:
-            "Mensagem marcada como lida."
-        }
-      );
-
-    }
-
-
-    /*
-     * ROTA NÃO ENCONTRADA
-     */
-
-    return json(
-      res,
-      {
-        sucesso: false,
-        erro:
-          "Rota não encontrada.",
-        path
-      },
-      404
+    log(
+      `QuizUp Admin: ${method} ${caminho}`
     );
 
 
-  } catch (erro) {
+    /*
+    =====================================================
+    CORS PREFLIGHT
+    =====================================================
+    */
+
+    if (
+      method === "OPTIONS"
+    ) {
+
+      return res.empty(
+        204,
+        corsHeaders()
+      );
+
+    }
+
+
+    /*
+    =====================================================
+    TESTE
+    =====================================================
+    */
+
+    if (
+      caminho === "/" ||
+      caminho === "/teste"
+    ) {
+
+      return teste(
+        req,
+        res
+      );
+
+    }
+
+
+    /*
+    =====================================================
+    LOGIN
+    =====================================================
+    */
+
+    if (
+      caminho === "/api/admin/login" &&
+      method === "POST"
+    ) {
+
+      return login(
+        req,
+        res
+      );
+
+    }
+
+
+    /*
+    =====================================================
+    RESUMO
+    =====================================================
+    */
+
+    if (
+      (
+        caminho === "/api/admin/resumo" ||
+        caminho === "/resumo"
+      )
+    ) {
+
+      return resumo(
+        req,
+        res
+      );
+
+    }
+
+
+    /*
+    =====================================================
+    JOGADORES
+    =====================================================
+    */
+
+    if (
+      (
+        caminho === "/api/admin/jogadores" ||
+        caminho === "/jogadores"
+      )
+    ) {
+
+      return jogadores(
+        req,
+        res
+      );
+
+    }
+
+
+    /*
+    =====================================================
+    SAQUES
+    =====================================================
+    */
+
+    if (
+      (
+        caminho === "/api/admin/saques" ||
+        caminho === "/saques"
+      )
+    ) {
+
+      return saques(
+        req,
+        res
+      );
+
+    }
+
+
+    /*
+    =====================================================
+    APROVAR SAQUE
+    =====================================================
+    */
+
+    if (
+      caminho ===
+        "/api/admin/saque/aprovar" &&
+      method === "POST"
+    ) {
+
+      return atualizarSaque(
+        req,
+        res,
+        "aprovado"
+      );
+
+    }
+
+
+    /*
+    =====================================================
+    RECUSAR SAQUE
+    =====================================================
+    */
+
+    if (
+      caminho ===
+        "/api/admin/saque/recusar" &&
+      method === "POST"
+    ) {
+
+      return atualizarSaque(
+        req,
+        res,
+        "recusado"
+      );
+
+    }
+
+
+    /*
+    =====================================================
+    MENSAGENS
+    =====================================================
+    */
+
+    if (
+      caminho ===
+        "/api/admin/mensagens"
+    ) {
+
+      return mensagens(
+        req,
+        res
+      );
+
+    }
+
+
+    /*
+    =====================================================
+    MENSAGEM LIDA
+    =====================================================
+    */
+
+    if (
+      caminho ===
+        "/api/admin/mensagem/lida" &&
+      method === "POST"
+    ) {
+
+      return marcarMensagemLida(
+        req,
+        res
+      );
+
+    }
+
+
+    /*
+    =====================================================
+    404
+    =====================================================
+    */
+
+    return json(
+      res,
+      404,
+      {
+
+        success: false,
+
+        error:
+          "Rota não encontrada.",
+
+        path:
+          caminho
+
+      }
+    );
+
+
+  } catch (e) {
 
     console.error(
-      "ERRO QUIZUP ADMIN:",
-      erro
+      "ERRO FATAL DA FUNCTION:",
+      e
     );
 
+    if (error) {
+      error(
+        String(
+          e?.stack ||
+          e?.message ||
+          e
+        )
+      );
+    }
 
     return json(
       res,
+      500,
       {
-        sucesso: false,
 
-        erro:
-          erro.message ||
-          "Erro interno da função."
-      },
-      500
+        success: false,
+
+        error:
+          "Erro interno da Function.",
+
+        details:
+          String(
+            e?.message ||
+            e
+          )
+
+      }
     );
 
   }
 
 }
-
-
-/*
-========================================================
- EXPORTAÇÃO
-========================================================
-
- IMPORTANTE:
- Não usar:
- export default
-
- No Node 26 desta função estamos usando
- CommonJS.
-========================================================
-*/
-
-module.exports = {
-  main
-};
