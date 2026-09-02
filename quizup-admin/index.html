@@ -1,694 +1,1127 @@
-import { Client, TablesDB } from "node-appwrite";
-import crypto from "crypto";
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-/*
-=========================================================
-QUIZUP ADMIN - APPWRITE FUNCTION
-Node.js / ES MODULE
-=========================================================
-*/
+<title>QuizUp Admin</title>
 
-/*
-=========================================================
-CONFIGURAÇÃO APPWRITE
-=========================================================
-*/
-
-const ENDPOINT =
-  process.env.APPWRITE_FUNCTION_API_ENDPOINT ||
-  process.env.APPWRITE_ENDPOINT ||
-  "https://fra.cloud.appwrite.io/v1";
-
-const PROJECT_ID =
-  process.env.APPWRITE_FUNCTION_PROJECT_ID ||
-  process.env.APPWRITE_PROJECT_ID ||
-  "6a8e10e900245502244c";
-
-const API_KEY =
-  process.env.APPWRITE_API_KEY ||
-  "";
-
-
-/*
-=========================================================
-ADMINISTRADOR
-=========================================================
-*/
-
-const ADMIN_EMAIL =
-  String(
-    process.env.ADMIN_EMAIL || ""
-  )
-    .trim()
-    .toLowerCase();
-
-const ADMIN_DATA_NASCIMENTO =
-  String(
-    process.env.ADMIN_DATA_NASCIMENTO || ""
-  )
-    .trim();
-
-const ADMIN_LOGIN_SECRET =
-  String(
-    process.env.ADMIN_LOGIN_SECRET || ""
-  );
-
-const ADMIN_USER_ID =
-  String(
-    process.env.ADMIN_USER_ID ||
-    "6a8f41f10032758d44de"
-  )
-    .trim();
-
-
-/*
-=========================================================
-TOKEN
-=========================================================
-*/
-
-const TOKEN_DURACAO_SEGUNDOS =
-  2 * 60 * 60;
-
-
-/*
-=========================================================
-BANCO DE DADOS
-=========================================================
-*/
-
-const DATABASE_ID =
-  process.env.QUIZUP_DATABASE_ID ||
-  process.env.DATABASE_ID ||
-  "QuizUpDB";
-
-const TABELA_JOGADORES =
-  process.env.TABELA_JOGADORES ||
-  process.env.JOGADORES_TABLE_ID ||
-  "jogadores";
-
-const TABELA_SAQUES =
-  process.env.TABELA_SAQUES ||
-  process.env.SAQUES_TABLE_ID ||
-  "saques";
-
-const TABELA_MENSAGENS =
-  process.env.TABELA_MENSAGENS ||
-  process.env.MENSAGENS_TABLE_ID ||
-  "mensagens";
-
-
-/*
-=========================================================
-CLIENTE APPWRITE
-=========================================================
-*/
-
-const client =
-  new Client()
-    .setEndpoint(ENDPOINT)
-    .setProject(PROJECT_ID);
-
-if (API_KEY) {
-  client.setKey(API_KEY);
+<style>
+*{
+  box-sizing:border-box;
 }
 
-const tablesDB =
-  new TablesDB(client);
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f4f6f9;
+  color:#222;
+}
+
+/* ================================
+   LOGIN
+================================ */
+
+#telaLogin{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:linear-gradient(
+    135deg,
+    #111827,
+    #2563eb,
+    #7c3aed
+  );
+}
+
+.login-card{
+  width:100%;
+  max-width:430px;
+  background:#fff;
+  border-radius:22px;
+  padding:35px 28px;
+  box-shadow:0 20px 60px rgba(0,0,0,.30);
+  text-align:center;
+}
+
+.login-logo{
+  font-size:50px;
+  margin-bottom:10px;
+}
+
+.login-card h1{
+  margin:5px 0;
+  font-size:30px;
+}
+
+.login-card p{
+  color:#666;
+  margin-bottom:28px;
+}
+
+.login-card label{
+  display:block;
+  text-align:left;
+  font-weight:bold;
+  margin:14px 0 7px;
+}
+
+.login-card input{
+  width:100%;
+  padding:14px;
+  border:1px solid #d1d5db;
+  border-radius:12px;
+  font-size:16px;
+  outline:none;
+}
+
+.login-card input:focus{
+  border-color:#2563eb;
+  box-shadow:0 0 0 3px rgba(37,99,235,.12);
+}
+
+.btn-principal{
+  width:100%;
+  margin-top:20px;
+  border:0;
+  border-radius:12px;
+  padding:15px;
+  font-size:16px;
+  font-weight:bold;
+  color:white;
+  background:#2563eb;
+  cursor:pointer;
+}
+
+.btn-principal:hover{
+  background:#1d4ed8;
+}
+
+.btn-principal:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+#erroLogin{
+  min-height:24px;
+  margin-top:15px;
+  color:#dc2626;
+  font-weight:bold;
+}
+
+/* ================================
+   PAINEL
+================================ */
+
+#painel{
+  display:none;
+}
+
+header{
+  background:#111827;
+  color:white;
+  padding:18px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+header h1{
+  margin:0;
+  font-size:22px;
+}
+
+.btn-sair{
+  border:0;
+  background:#dc2626;
+  color:white;
+  padding:10px 15px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.container{
+  max-width:1400px;
+  margin:auto;
+  padding:20px;
+}
+
+/* ================================
+   CARDS
+================================ */
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.card{
+  background:white;
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 4px 18px rgba(0,0,0,.08);
+}
+
+.card h3{
+  margin:0 0 10px;
+  color:#6b7280;
+  font-size:14px;
+}
+
+.card .numero{
+  font-size:28px;
+  font-weight:bold;
+}
+
+/* ================================
+   SEÇÕES
+================================ */
+
+.secao{
+  background:white;
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 4px 18px rgba(0,0,0,.08);
+}
+
+.secao h2{
+  margin-top:0;
+}
+
+/* ================================
+   BOTÕES
+================================ */
+
+.btn{
+  border:0;
+  border-radius:9px;
+  padding:9px 12px;
+  cursor:pointer;
+  font-weight:bold;
+  margin:2px;
+}
+
+.btn-atualizar{
+  background:#2563eb;
+  color:white;
+}
+
+.btn-aprovar{
+  background:#16a34a;
+  color:white;
+}
+
+.btn-recusar{
+  background:#dc2626;
+  color:white;
+}
+
+.btn-lida{
+  background:#6b7280;
+  color:white;
+}
+
+/* ================================
+   TABELAS
+================================ */
+
+.tabela-wrapper{
+  width:100%;
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:700px;
+}
+
+th,
+td{
+  padding:12px;
+  border-bottom:1px solid #e5e7eb;
+  text-align:left;
+  vertical-align:top;
+}
+
+th{
+  background:#f9fafb;
+  font-size:14px;
+}
+
+td{
+  font-size:14px;
+}
+
+/* ================================
+   STATUS
+================================ */
+
+.status{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.status-pendente{
+  background:#fef3c7;
+  color:#92400e;
+}
+
+.status-aprovado{
+  background:#dcfce7;
+  color:#166534;
+}
+
+.status-recusado{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+/* ================================
+   AVISO
+================================ */
+
+#aviso{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  background:#111827;
+  color:white;
+  padding:14px 18px;
+  border-radius:12px;
+  display:none;
+  z-index:100;
+  max-width:320px;
+  box-shadow:0 8px 30px rgba(0,0,0,.25);
+}
+
+.vazio{
+  text-align:center;
+  color:#777;
+  padding:20px;
+}
+
+/* ================================
+   MOBILE
+================================ */
+
+@media(max-width:600px){
+
+  header{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  header h1{
+    text-align:center;
+  }
+
+  .btn-sair{
+    width:100%;
+  }
+
+  .container{
+    padding:12px;
+  }
+
+  .login-card{
+    padding:28px 20px;
+  }
+
+  .card .numero{
+    font-size:24px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<!-- ==========================================
+     LOGIN
+========================================== -->
+
+<section id="telaLogin">
+
+  <div class="login-card">
+
+    <div class="login-logo">
+      🔐
+    </div>
+
+    <h1>
+      QuizUp Admin
+    </h1>
+
+    <p>
+      Painel administrativo
+    </p>
+
+    <label for="emailAdmin">
+      E-mail
+    </label>
+
+    <input
+      id="emailAdmin"
+      type="email"
+      placeholder="Digite seu e-mail"
+      autocomplete="username"
+      value="castrole334@gmail.com"
+    >
+
+    <label for="dataNascimento">
+      Data de nascimento
+    </label>
+
+    <input
+      id="dataNascimento"
+      type="text"
+      placeholder="DD/MM/AAAA"
+      inputmode="numeric"
+      maxlength="10"
+      autocomplete="bday"
+    >
+
+    <button
+      id="btnEntrar"
+      class="btn-principal"
+      onclick="entrarAdmin()"
+    >
+      🔐 ENTRAR NO PAINEL
+    </button>
+
+    <div id="erroLogin"></div>
+
+  </div>
+
+</section>
+
+
+<!-- ==========================================
+     PAINEL
+========================================== -->
+
+<section id="painel">
+
+  <header>
+
+    <h1>
+      🎯 QuizUp Admin
+    </h1>
+
+    <button
+      class="btn-sair"
+      onclick="sairAdmin()"
+    >
+      🚪 Sair
+    </button>
+
+  </header>
+
+
+  <main class="container">
+
+    <!-- ======================================
+         RESUMO
+    ======================================= -->
+
+    <div class="cards">
+
+      <div class="card">
+        <h3>👥 Usuários</h3>
+        <div
+          class="numero"
+          id="totalUsuarios"
+        >
+          0
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🟢 Jogadores ativos</h3>
+        <div
+          class="numero"
+          id="jogadoresAtivos"
+        >
+          0
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🎯 Pontos do Quiz</h3>
+        <div
+          class="numero"
+          id="pontosQuiz"
+        >
+          0
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🎁 Pontos patrocinados</h3>
+        <div
+          class="numero"
+          id="pontosPatrocinados"
+        >
+          0
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>⭐ Total de pontos</h3>
+        <div
+          class="numero"
+          id="totalPontos"
+        >
+          0
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>⏳ Saques pendentes</h3>
+        <div
+          class="numero"
+          id="saquesPendentes"
+        >
+          0
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>✅ Saques aprovados</h3>
+        <div
+          class="numero"
+          id="saquesAprovados"
+        >
+          0
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>❌ Saques recusados</h3>
+        <div
+          class="numero"
+          id="saquesRecusados"
+        >
+          0
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ======================================
+         CONTROLE
+    ======================================= -->
+
+    <section class="secao">
+
+      <button
+        class="btn btn-atualizar"
+        onclick="carregarTudo()"
+      >
+        🔄 ATUALIZAR PAINEL
+      </button>
+
+    </section>
+
+
+    <!-- ======================================
+         JOGADORES
+    ======================================= -->
+
+    <section class="secao">
+
+      <h2>
+        👥 Jogadores
+      </h2>
+
+      <div class="tabela-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>ID</th>
+              <th>E-mail</th>
+              <th>Pontos</th>
+              <th>Saldo</th>
+              <th>Status</th>
+            </tr>
+
+          </thead>
+
+          <tbody id="tabelaJogadores">
+
+            <tr>
+              <td
+                colspan="5"
+                class="vazio"
+              >
+                Nenhum jogador carregado.
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- ======================================
+         SAQUES
+    ======================================= -->
+
+    <section class="secao">
+
+      <h2>
+        💰 Saques
+      </h2>
+
+      <div class="tabela-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>ID</th>
+              <th>E-mail</th>
+              <th>PIX</th>
+              <th>Valor</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+
+          </thead>
+
+          <tbody id="tabelaSaques">
+
+            <tr>
+              <td
+                colspan="6"
+                class="vazio"
+              >
+                Nenhum saque carregado.
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- ======================================
+         MENSAGENS / SAC
+    ======================================= -->
+
+    <section class="secao">
+
+      <h2>
+        💬 Mensagens / SAC
+      </h2>
+
+      <div class="tabela-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>ID</th>
+              <th>E-mail</th>
+              <th>Mensagem</th>
+              <th>Status</th>
+              <th>Ação</th>
+            </tr>
+
+          </thead>
+
+          <tbody id="tabelaMensagens">
+
+            <tr>
+              <td
+                colspan="5"
+                class="vazio"
+              >
+                Nenhuma mensagem carregada.
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</section>
+
+
+<!-- ==========================================
+     AVISO
+========================================== -->
+
+<div id="aviso"></div>
+
+
+<script>
+
+/*
+=========================================================
+CONFIGURAÇÃO
+=========================================================
+*/
+
+const API =
+  "https://6a90b4dd00237df7ff4b.fra.appwrite.run";
+
+const TOKEN_STORAGE =
+  "quizup_admin_token";
+
+
+let tokenAdmin =
+  sessionStorage.getItem(
+    TOKEN_STORAGE
+  ) || "";
 
 
 /*
 =========================================================
-CORS
+ELEMENTOS
 =========================================================
 */
 
-function corsHeaders() {
-  return {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods":
-      "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers":
-      "Content-Type, Authorization, X-Appwrite-User-Id",
-    "Access-Control-Max-Age":
-      "86400"
+const telaLogin =
+  document.getElementById(
+    "telaLogin"
+  );
+
+const painel =
+  document.getElementById(
+    "painel"
+  );
+
+const erroLogin =
+  document.getElementById(
+    "erroLogin"
+  );
+
+const btnEntrar =
+  document.getElementById(
+    "btnEntrar"
+  );
+
+
+/*
+=========================================================
+AVISO
+=========================================================
+*/
+
+function mostrarAviso(
+  mensagem
+){
+
+  const aviso =
+    document.getElementById(
+      "aviso"
+    );
+
+  aviso.textContent =
+    mensagem;
+
+  aviso.style.display =
+    "block";
+
+  setTimeout(
+    () => {
+      aviso.style.display =
+        "none";
+    },
+    3000
+  );
+}
+
+
+/*
+=========================================================
+REQUISIÇÃO ADMIN
+=========================================================
+*/
+
+async function requisicaoAdmin(
+  caminho,
+  opcoes = {}
+){
+
+  const headers = {
+    ...(opcoes.headers || {})
   };
-}
 
 
-/*
-=========================================================
-JSON
-=========================================================
-*/
+  if(
+    tokenAdmin
+  ){
 
-function json(res, status, data) {
-  return res.json(
-    data,
-    status,
-    corsHeaders()
-  );
-}
+    headers[
+      "Authorization"
+    ] =
+      "Bearer " +
+      tokenAdmin;
 
-
-/*
-=========================================================
-NÚMERO
-=========================================================
-*/
-
-function num(valor) {
-  const numero = Number(valor);
-
-  return Number.isFinite(numero)
-    ? numero
-    : 0;
-}
-
-
-/*
-=========================================================
-VALOR
-=========================================================
-*/
-
-function valorDe(obj) {
-
-  if (!obj) {
-    return 0;
   }
 
-  return num(
-    obj.quantia ??
-    obj.valor ??
-    obj.valor_jogador ??
-    obj.equilibrio ??
-    obj.saldo ??
-    0
-  );
-}
+
+  if(
+    opcoes.body &&
+    !headers[
+      "Content-Type"
+    ]
+  ){
+
+    headers[
+      "Content-Type"
+    ] =
+      "application/json";
+
+  }
 
 
-/*
-=========================================================
-BODY
-=========================================================
-*/
+  const resposta =
+    await fetch(
+      API + caminho,
+      {
+        ...opcoes,
+        headers
+      }
+    );
 
-function lerBody(req) {
 
-  try {
+  let dados = {};
 
-    if (
-      req.bodyJson &&
-      typeof req.bodyJson === "object"
-    ) {
+  try{
 
-      return req.bodyJson;
+    dados =
+      await resposta.json();
 
-    }
+  }catch(e){
 
-  } catch (e) {
+    dados = {};
 
-    console.error(
-      "Erro bodyJson:",
-      e
+  }
+
+
+  if(
+    resposta.status === 401
+  ){
+
+    sessionStorage.removeItem(
+      TOKEN_STORAGE
+    );
+
+    tokenAdmin = "";
+
+    mostrarLogin();
+
+    throw new Error(
+      "Sessão expirada ou não autorizada."
     );
 
   }
 
 
-  try {
+  if(
+    !resposta.ok
+  ){
 
-    if (
-      req.bodyText &&
-      typeof req.bodyText === "string"
-    ) {
-
-      return JSON.parse(
-        req.bodyText
-      );
-
-    }
-
-  } catch (e) {
-
-    console.error(
-      "Erro bodyText:",
-      e
+    throw new Error(
+      dados.error ||
+      `Erro HTTP ${resposta.status}`
     );
 
   }
 
 
-  return {};
+  return dados;
 }
 
 
 /*
 =========================================================
-NORMALIZAR DATA
+ENTRAR
 =========================================================
 */
 
-function normalizarData(data) {
-
-  const valor =
-    String(data || "").trim();
-
-  /*
-  DD/MM/AAAA
-  */
-
-  const brasileira =
-    /^(\d{2})\/(\d{2})\/(\d{4})$/
-      .exec(valor);
-
-  if (brasileira) {
-
-    return (
-      `${brasileira[3]}-` +
-      `${brasileira[2]}-` +
-      `${brasileira[1]}`
-    );
-
-  }
-
-  /*
-  AAAA-MM-DD
-  */
-
-  const iso =
-    /^\d{4}-\d{2}-\d{2}$/
-      .test(valor);
-
-  if (iso) {
-    return valor;
-  }
-
-  return valor;
-}
-
-
-/*
-=========================================================
-CRIAR TOKEN
-=========================================================
-*/
-
-function criarToken() {
-
-  const agora =
-    Math.floor(
-      Date.now() / 1000
-    );
-
-  const expira =
-    agora +
-    TOKEN_DURACAO_SEGUNDOS;
-
-  const payload = {
-    sub: "quizup-admin",
-    iat: agora,
-    exp: expira
-  };
-
-  const textoPayload =
-    Buffer
-      .from(
-        JSON.stringify(payload)
-      )
-      .toString("base64url");
-
-  const assinatura =
-    crypto
-      .createHmac(
-        "sha256",
-        ADMIN_LOGIN_SECRET
-      )
-      .update(textoPayload)
-      .digest("base64url");
-
-  return (
-    textoPayload +
-    "." +
-    assinatura
-  );
-}
-
-
-/*
-=========================================================
-VALIDAR TOKEN
-=========================================================
-*/
-
-function validarToken(token) {
-
-  if (
-    !token ||
-    !ADMIN_LOGIN_SECRET
-  ) {
-
-    return false;
-
-  }
-
-  const partes =
-    String(token).split(".");
-
-  if (
-    partes.length !== 2
-  ) {
-
-    return false;
-
-  }
-
-  const [
-    payloadCodificado,
-    assinatura
-  ] = partes;
-
-  const assinaturaEsperada =
-    crypto
-      .createHmac(
-        "sha256",
-        ADMIN_LOGIN_SECRET
-      )
-      .update(payloadCodificado)
-      .digest("base64url");
-
-  if (
-    assinatura !==
-    assinaturaEsperada
-  ) {
-
-    return false;
-
-  }
-
-  try {
-
-    const payload =
-      JSON.parse(
-        Buffer
-          .from(
-            payloadCodificado,
-            "base64url"
-          )
-          .toString("utf8")
-      );
-
-    const agora =
-      Math.floor(
-        Date.now() / 1000
-      );
-
-    if (
-      !payload.exp ||
-      Number(payload.exp) < agora
-    ) {
-
-      return false;
-
-    }
-
-    if (
-      payload.sub !==
-      "quizup-admin"
-    ) {
-
-      return false;
-
-    }
-
-    return true;
-
-  } catch (e) {
-
-    return false;
-
-  }
-}
-
-
-/*
-=========================================================
-VERIFICAR ADMIN
-=========================================================
-*/
-
-function verificarAdmin(req) {
-
-  const headers =
-    req.headers || {};
-
-  /*
-  TOKEN DO PAINEL
-  */
-
-  const authorization =
-    headers.authorization ||
-    headers.Authorization ||
-    "";
-
-  if (
-    String(
-      authorization
-    ).startsWith("Bearer ")
-  ) {
-
-    const token =
-      String(
-        authorization
-      )
-        .substring(7)
-        .trim();
-
-    if (
-      validarToken(token)
-    ) {
-
-      return true;
-
-    }
-
-  }
-
-
-  /*
-  USUÁRIO APPWRITE
-  */
-
-  const appwriteUserId =
-    headers["x-appwrite-user-id"] ||
-    headers["X-Appwrite-User-Id"] ||
-    "";
-
-  if (
-    appwriteUserId &&
-    appwriteUserId ===
-    ADMIN_USER_ID
-  ) {
-
-    return true;
-
-  }
-
-
-  return false;
-}
-
-
-/*
-=========================================================
-LISTAR TABELA
-=========================================================
-*/
-
-async function listarTabela(
-  tabela,
-  queries = []
-) {
-
-  const resultado =
-    await tablesDB.listRows({
-
-      databaseId:
-        DATABASE_ID,
-
-      tableId:
-        tabela,
-
-      queries:
-        queries
-
-    });
-
-  return (
-    resultado.rows ||
-    []
-  );
-}
-
-
-/*
-=========================================================
-LOGIN
-=========================================================
-*/
-
-async function login(
-  req,
-  res
-) {
-
-  const body =
-    lerBody(req);
+async function entrarAdmin(){
 
   const email =
-    String(
-      body.email || ""
-    )
+    document
+      .getElementById(
+        "emailAdmin"
+      )
+      .value
       .trim()
       .toLowerCase();
 
+
   const dataNascimento =
-    String(
-      body.dataNascimento ||
-      body.data_nascimento ||
-      body.data ||
-      ""
-    ).trim();
+    document
+      .getElementById(
+        "dataNascimento"
+      )
+      .value
+      .trim();
 
 
-  if (
+  erroLogin.textContent =
+    "";
+
+
+  if(
     !email ||
     !dataNascimento
-  ) {
+  ){
 
-    return json(
-      res,
-      400,
-      {
-        success: false,
-        error:
-          "E-mail e data de nascimento são obrigatórios."
-      }
-    );
+    erroLogin.textContent =
+      "Informe o e-mail e a data de nascimento.";
+
+    return;
 
   }
 
 
-  /*
-  VERIFICA CONFIGURAÇÃO
-  */
+  btnEntrar.disabled =
+    true;
 
-  if (
-    !ADMIN_EMAIL ||
-    !ADMIN_DATA_NASCIMENTO ||
-    !ADMIN_LOGIN_SECRET
-  ) {
-
-    console.error(
-      "CONFIGURAÇÃO ADMINISTRATIVA AUSENTE."
-    );
-
-    return json(
-      res,
-      500,
-      {
-        success: false,
-        error:
-          "Login administrativo não configurado no servidor."
-      }
-    );
-
-  }
+  btnEntrar.textContent =
+    "⏳ ENTRANDO...";
 
 
-  const dataInformada =
-    normalizarData(
-      dataNascimento
-    );
+  try{
 
-  const dataConfigurada =
-    normalizarData(
-      ADMIN_DATA_NASCIMENTO
-    );
+    const resposta =
+      await fetch(
+        API +
+        "/api/admin/login",
+        {
 
+          method:
+            "POST",
 
-  /*
-  VERIFICA E-MAIL
-  */
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
 
-  if (
-    email !==
-    ADMIN_EMAIL
-  ) {
+          body:
+            JSON.stringify({
 
-    return json(
-      res,
-      401,
-      {
-        success: false,
-        error:
-          "E-mail ou data de nascimento inválidos."
-      }
-    );
+              email:
+                email,
 
-  }
+              dataNascimento:
+                dataNascimento
+
+            })
+
+        }
+      );
 
 
-  /*
-  VERIFICA DATA
-  */
+    let dados = {};
 
-  if (
-    dataInformada !==
-    dataConfigurada
-  ) {
+    try{
 
-    return json(
-      res,
-      401,
-      {
-        success: false,
-        error:
-          "E-mail ou data de nascimento inválidos."
-      }
-    );
+      dados =
+        await resposta.json();
 
-  }
+    }catch(e){
 
-
-  /*
-  LOGIN OK
-  */
-
-  const token =
-    criarToken();
-
-  return json(
-    res,
-    200,
-    {
-
-      success: true,
-
-      token,
-
-      expiresIn:
-        TOKEN_DURACAO_SEGUNDOS,
-
-      admin: {
-        email:
-          ADMIN_EMAIL
-      }
+      dados = {};
 
     }
+
+
+    if(
+      !resposta.ok
+    ){
+
+      throw new Error(
+        dados.error ||
+        `Erro HTTP ${resposta.status}`
+      );
+
+    }
+
+
+    if(
+      !dados.token
+    ){
+
+      throw new Error(
+        "O servidor não enviou o token de acesso."
+      );
+
+    }
+
+
+    tokenAdmin =
+      dados.token;
+
+
+    sessionStorage.setItem(
+      TOKEN_STORAGE,
+      tokenAdmin
+    );
+
+
+    telaLogin.style.display =
+      "none";
+
+    painel.style.display =
+      "block";
+
+
+    erroLogin.textContent =
+      "";
+
+
+    mostrarAviso(
+      "Login realizado com sucesso!"
+    );
+
+
+    await carregarTudo();
+
+
+  }catch(e){
+
+    console.error(
+      "Erro no login:",
+      e
+    );
+
+
+    erroLogin.textContent =
+      e.message ||
+      "Não foi possível conectar ao servidor.";
+
+  }finally{
+
+    btnEntrar.disabled =
+      false;
+
+    btnEntrar.textContent =
+      "🔐 ENTRAR NO PAINEL";
+
+  }
+
+}
+
+
+/*
+=========================================================
+MOSTRAR LOGIN
+=========================================================
+*/
+
+function mostrarLogin(){
+
+  painel.style.display =
+    "none";
+
+  telaLogin.style.display =
+    "flex";
+
+}
+
+
+/*
+=========================================================
+SAIR
+=========================================================
+*/
+
+function sairAdmin(){
+
+  tokenAdmin =
+    "";
+
+  sessionStorage.removeItem(
+    TOKEN_STORAGE
   );
+
+  mostrarLogin();
+
+  mostrarAviso(
+    "Sessão encerrada."
+  );
+
+}
+
+
+/*
+=========================================================
+CARREGAR TUDO
+=========================================================
+*/
+
+async function carregarTudo(){
+
+  try{
+
+    await Promise.all([
+
+      carregarResumo(),
+
+      carregarJogadores(),
+
+      carregarSaques(),
+
+      carregarMensagens()
+
+    ]);
+
+  }catch(e){
+
+    console.error(
+      "Erro ao carregar painel:",
+      e
+    );
+
+    mostrarAviso(
+      e.message ||
+      "Erro ao carregar painel."
+    );
+
+  }
+
 }
 
 
@@ -698,202 +1131,91 @@ RESUMO
 =========================================================
 */
 
-async function resumo(
-  req,
-  res
-) {
+async function carregarResumo(){
 
-  if (
-    !verificarAdmin(req)
-  ) {
-
-    return json(
-      res,
-      401,
-      {
-        success: false,
-        error:
-          "Não autorizado."
-      }
+  const dados =
+    await requisicaoAdmin(
+      "/api/admin/resumo"
     );
 
-  }
 
-
-  try {
-
-    const jogadores =
-      await listarTabela(
-        TABELA_JOGADORES
-      );
-
-    let totalPontos = 0;
-    let totalSaldo = 0;
-    let jogadoresAtivos = 0;
-
-
-    for (
-      const jogador of jogadores
-    ) {
-
-      totalPontos +=
-        num(
-          jogador.pontos
-        );
-
-      totalSaldo +=
-        valorDe(
-          jogador
-        );
-
-
-      if (
-        jogador.ativo === true ||
-        jogador.status === "ativo" ||
-        jogador.online === true
-      ) {
-
-        jogadoresAtivos++;
-
-      }
-
-    }
-
-
-    let saques = [];
-
-    try {
-
-      saques =
-        await listarTabela(
-          TABELA_SAQUES
-        );
-
-    } catch (e) {
-
-      console.error(
-        "Erro ao carregar saques:",
-        e
-      );
-
-    }
-
-
-    let saquesPendentes = 0;
-    let saquesAprovados = 0;
-    let saquesRecusados = 0;
-
-
-    for (
-      const saque of saques
-    ) {
-
-      const status =
-        String(
-          saque.status || ""
-        )
-          .trim()
-          .toLowerCase();
-
-
-      if (
-        status === "pendente"
-      ) {
-
-        saquesPendentes++;
-
-      }
-
-      if (
-        status === "aprovado"
-      ) {
-
-        saquesAprovados++;
-
-      }
-
-      if (
-        status === "recusado"
-      ) {
-
-        saquesRecusados++;
-
-      }
-
-    }
-
-
-    return json(
-      res,
-      200,
-      {
-
-        success: true,
-
-        totalUsuarios:
-          jogadores.length,
-
-        usuarios:
-          jogadores.length,
-
-        totalJogadores:
-          jogadores.length,
-
-        jogadoresAtivos,
-
-        pontosQuiz:
-          totalPontos,
-
-        pontos:
-          totalPontos,
-
-        totalPontos,
-
-        pontosPatrocinados:
-          0,
-
-        totalSaldo,
-
-        saquesPendentes,
-
-        pendentes:
-          saquesPendentes,
-
-        saquesAprovados,
-
-        aprovados:
-          saquesAprovados,
-
-        saquesRecusados,
-
-        recusados:
-          saquesRecusados
-
-      }
+  document.getElementById(
+    "totalUsuarios"
+  ).textContent =
+    formatarNumero(
+      dados.totalUsuarios ??
+      dados.usuarios ??
+      dados.totalJogadores ??
+      0
     );
 
-  } catch (e) {
 
-    console.error(
-      "ERRO RESUMO:",
-      e
+  document.getElementById(
+    "jogadoresAtivos"
+  ).textContent =
+    formatarNumero(
+      dados.jogadoresAtivos ??
+      0
     );
 
-    return json(
-      res,
-      500,
-      {
-        success: false,
-        error:
-          "Erro ao carregar resumo.",
-        details:
-          String(
-            e?.message || e
-          )
-      }
+
+  document.getElementById(
+    "pontosQuiz"
+  ).textContent =
+    formatarNumero(
+      dados.pontosQuiz ??
+      dados.pontos ??
+      0
     );
 
-  }
+
+  document.getElementById(
+    "pontosPatrocinados"
+  ).textContent =
+    formatarNumero(
+      dados.pontosPatrocinados ??
+      0
+    );
+
+
+  document.getElementById(
+    "totalPontos"
+  ).textContent =
+    formatarNumero(
+      dados.totalPontos ??
+      0
+    );
+
+
+  document.getElementById(
+    "saquesPendentes"
+  ).textContent =
+    formatarNumero(
+      dados.saquesPendentes ??
+      dados.pendentes ??
+      0
+    );
+
+
+  document.getElementById(
+    "saquesAprovados"
+  ).textContent =
+    formatarNumero(
+      dados.saquesAprovados ??
+      dados.aprovados ??
+      0
+    );
+
+
+  document.getElementById(
+    "saquesRecusados"
+  ).textContent =
+    formatarNumero(
+      dados.saquesRecusados ??
+      dados.recusados ??
+      0
+    );
+
 }
 
 
@@ -903,74 +1225,108 @@ JOGADORES
 =========================================================
 */
 
-async function jogadores(
-  req,
-  res
-) {
+async function carregarJogadores(){
 
-  if (
-    !verificarAdmin(req)
-  ) {
-
-    return json(
-      res,
-      401,
-      {
-        success: false,
-        error:
-          "Não autorizado."
-      }
+  const dados =
+    await requisicaoAdmin(
+      "/api/admin/jogadores"
     );
+
+
+  const lista =
+    Array.isArray(
+      dados.jogadores
+    )
+      ? dados.jogadores
+      : [];
+
+
+  const tabela =
+    document.getElementById(
+      "tabelaJogadores"
+    );
+
+
+  if(
+    lista.length === 0
+  ){
+
+    tabela.innerHTML = `
+      <tr>
+        <td
+          colspan="5"
+          class="vazio"
+        >
+          Nenhum jogador encontrado.
+        </td>
+      </tr>
+    `;
+
+    return;
 
   }
 
 
-  try {
+  tabela.innerHTML =
+    lista.map(
+      jogador => {
 
-    const lista =
-      await listarTabela(
-        TABELA_JOGADORES
-      );
+        const id =
+          escapar(
+            jogador.$id ||
+            jogador.id ||
+            "-"
+          );
 
-    return json(
-      res,
-      200,
-      {
+        const email =
+          escapar(
+            jogador.email ||
+            jogador["E-mail"] ||
+            "-"
+          );
 
-        success: true,
+        const pontos =
+          formatarNumero(
+            jogador.pontos ||
+            0
+          );
 
-        jogadores:
-          lista
+        const saldo =
+          formatarValor(
+            jogador.equilibrio ??
+            jogador.saldo ??
+            jogador.valor ??
+            0
+          );
+
+        const status =
+          jogador.status ||
+          (
+            jogador.ativo === true
+              ? "ativo"
+              : "—"
+          );
+
+
+        return `
+          <tr>
+
+            <td>${id}</td>
+
+            <td>${email}</td>
+
+            <td>${pontos}</td>
+
+            <td>${saldo}</td>
+
+            <td>${escapar(status)}</td>
+
+          </tr>
+        `;
 
       }
-    );
+    ).join("");
 
-  } catch (e) {
-
-    console.error(
-      "ERRO JOGADORES:",
-      e
-    );
-
-    return json(
-      res,
-      500,
-      {
-
-        success: false,
-
-        error:
-          "Erro ao carregar jogadores.",
-
-        details:
-          String(
-            e?.message || e
-          )
-
-      }
-    );
-
-  }
 }
 
 
@@ -980,197 +1336,261 @@ SAQUES
 =========================================================
 */
 
-async function saques(
-  req,
-  res
-) {
+async function carregarSaques(){
 
-  if (
-    !verificarAdmin(req)
-  ) {
-
-    return json(
-      res,
-      401,
-      {
-        success: false,
-        error:
-          "Não autorizado."
-      }
+  const dados =
+    await requisicaoAdmin(
+      "/api/admin/saques"
     );
+
+
+  const lista =
+    Array.isArray(
+      dados.saques
+    )
+      ? dados.saques
+      : [];
+
+
+  const tabela =
+    document.getElementById(
+      "tabelaSaques"
+    );
+
+
+  if(
+    lista.length === 0
+  ){
+
+    tabela.innerHTML = `
+      <tr>
+        <td
+          colspan="6"
+          class="vazio"
+        >
+          Nenhum saque encontrado.
+        </td>
+      </tr>
+    `;
+
+    return;
 
   }
 
 
-  try {
+  tabela.innerHTML =
+    lista.map(
+      saque => {
 
-    const lista =
-      await listarTabela(
-        TABELA_SAQUES
-      );
+        const id =
+          saque.$id ||
+          saque.id ||
+          saque.saqueId ||
+          "";
 
-    return json(
-      res,
-      200,
-      {
 
-        success: true,
+        const email =
+          saque.email ||
+          saque["E-mail"] ||
+          "-";
 
-        saques:
-          lista
 
-      }
-    );
+        const pix =
+          saque.pix_key ||
+          saque.pix ||
+          saque.chave_pix ||
+          "-";
 
-  } catch (e) {
 
-    console.error(
-      "ERRO SAQUES:",
-      e
-    );
+        const valor =
+          saque.quantia ??
+          saque.valor ??
+          saque.valor_jogador ??
+          0;
 
-    return json(
-      res,
-      500,
-      {
 
-        success: false,
-
-        error:
-          "Erro ao carregar saques.",
-
-        details:
+        const status =
           String(
-            e?.message || e
+            saque.status ||
+            "pendente"
           )
+            .trim()
+            .toLowerCase();
+
+
+        return `
+          <tr>
+
+            <td>
+              ${escapar(id)}
+            </td>
+
+            <td>
+              ${escapar(email)}
+            </td>
+
+            <td>
+              ${escapar(pix)}
+            </td>
+
+            <td>
+              ${formatarValor(valor)}
+            </td>
+
+            <td>
+              <span
+                class="status ${classeStatus(status)}"
+              >
+                ${escapar(status)}
+              </span>
+            </td>
+
+            <td>
+
+              ${
+                status === "pendente"
+                ? `
+                  <button
+                    class="btn btn-aprovar"
+                    onclick="aprovarSaque('${escaparJS(id)}')"
+                  >
+                    ✅ Aprovar
+                  </button>
+
+                  <button
+                    class="btn btn-recusar"
+                    onclick="recusarSaque('${escaparJS(id)}')"
+                  >
+                    ❌ Recusar
+                  </button>
+                `
+                : "—"
+              }
+
+            </td>
+
+          </tr>
+        `;
 
       }
-    );
+    ).join("");
 
-  }
 }
 
 
 /*
 =========================================================
-ATUALIZAR SAQUE
+APROVAR SAQUE
 =========================================================
 */
 
-async function atualizarSaque(
-  req,
-  res,
-  novoStatus
-) {
+async function aprovarSaque(
+  id
+){
 
-  if (
-    !verificarAdmin(req)
-  ) {
+  if(
+    !confirm(
+      "Deseja aprovar este saque?"
+    )
+  ){
 
-    return json(
-      res,
-      401,
-      {
-        success: false,
-        error:
-          "Não autorizado."
-      }
-    );
+    return;
 
   }
 
 
-  const body =
-    lerBody(req);
+  try{
 
-  const id =
-    String(
-      body.id ||
-      body.saqueId ||
-      body.documentId ||
-      ""
-    ).trim();
-
-
-  if (!id) {
-
-    return json(
-      res,
-      400,
+    await requisicaoAdmin(
+      "/api/admin/saque/aprovar",
       {
-        success: false,
-        error:
-          "ID do saque não informado."
+
+        method:
+          "POST",
+
+        body:
+          JSON.stringify({
+            id
+          })
+
       }
+    );
+
+
+    mostrarAviso(
+      "Saque aprovado."
+    );
+
+
+    await carregarTudo();
+
+
+  }catch(e){
+
+    mostrarAviso(
+      e.message
     );
 
   }
 
-
-  try {
-
-    const atualizado =
-      await tablesDB.updateRow({
-
-        databaseId:
-          DATABASE_ID,
-
-        tableId:
-          TABELA_SAQUES,
-
-        rowId:
-          id,
-
-        data: {
-          status:
-            novoStatus
-        }
-
-      });
+}
 
 
-    return json(
-      res,
-      200,
+/*
+=========================================================
+RECUSAR SAQUE
+=========================================================
+*/
+
+async function recusarSaque(
+  id
+){
+
+  if(
+    !confirm(
+      "Deseja recusar este saque?"
+    )
+  ){
+
+    return;
+
+  }
+
+
+  try{
+
+    await requisicaoAdmin(
+      "/api/admin/saque/recusar",
       {
 
-        success: true,
+        method:
+          "POST",
 
-        status:
-          novoStatus,
-
-        saque:
-          atualizado
+        body:
+          JSON.stringify({
+            id
+          })
 
       }
     );
 
-  } catch (e) {
 
-    console.error(
-      "ERRO ATUALIZAR SAQUE:",
-      e
+    mostrarAviso(
+      "Saque recusado."
     );
 
-    return json(
-      res,
-      500,
-      {
 
-        success: false,
+    await carregarTudo();
 
-        error:
-          "Erro ao atualizar saque.",
 
-        details:
-          String(
-            e?.message || e
-          )
+  }catch(e){
 
-      }
+    mostrarAviso(
+      e.message
     );
 
   }
+
 }
 
 
@@ -1180,522 +1600,481 @@ MENSAGENS
 =========================================================
 */
 
-async function mensagens(
-  req,
-  res
-) {
+async function carregarMensagens(){
 
-  if (
-    !verificarAdmin(req)
-  ) {
-
-    return json(
-      res,
-      401,
-      {
-        success: false,
-        error:
-          "Não autorizado."
-      }
+  const dados =
+    await requisicaoAdmin(
+      "/api/admin/mensagens"
     );
+
+
+  const lista =
+    Array.isArray(
+      dados.mensagens
+    )
+      ? dados.mensagens
+      : [];
+
+
+  const tabela =
+    document.getElementById(
+      "tabelaMensagens"
+    );
+
+
+  if(
+    lista.length === 0
+  ){
+
+    tabela.innerHTML = `
+      <tr>
+        <td
+          colspan="5"
+          class="vazio"
+        >
+          Nenhuma mensagem encontrada.
+        </td>
+      </tr>
+    `;
+
+    return;
 
   }
 
 
-  try {
+  tabela.innerHTML =
+    lista.map(
+      mensagem => {
 
-    const lista =
-      await listarTabela(
-        TABELA_MENSAGENS
-      );
+        const id =
+          mensagem.$id ||
+          mensagem.id ||
+          "";
 
-    return json(
-      res,
-      200,
-      {
 
-        success: true,
+        const email =
+          mensagem.email ||
+          mensagem["E-mail"] ||
+          "-";
 
-        mensagens:
-          lista
+
+        const texto =
+          mensagem.mensagem ||
+          mensagem.message ||
+          mensagem.texto ||
+          mensagem.descricao ||
+          "-";
+
+
+        const status =
+          mensagem.status ||
+          "nova";
+
+
+        return `
+          <tr>
+
+            <td>
+              ${escapar(id)}
+            </td>
+
+            <td>
+              ${escapar(email)}
+            </td>
+
+            <td>
+              ${escapar(texto)}
+            </td>
+
+            <td>
+              ${escapar(status)}
+            </td>
+
+            <td>
+
+              ${
+                String(status).toLowerCase() !== "lida"
+                ? `
+                  <button
+                    class="btn btn-lida"
+                    onclick="marcarMensagemLida('${escaparJS(id)}')"
+                  >
+                    ✓ Marcar como lida
+                  </button>
+                `
+                : "✓ Lida"
+              }
+
+            </td>
+
+          </tr>
+        `;
 
       }
-    );
+    ).join("");
 
-  } catch (e) {
-
-    console.error(
-      "ERRO MENSAGENS:",
-      e
-    );
-
-    /*
-    A tabela pode ainda não existir.
-    Não derruba o painel.
-    */
-
-    return json(
-      res,
-      200,
-      {
-
-        success: true,
-
-        mensagens: []
-
-      }
-    );
-
-  }
 }
 
 
 /*
 =========================================================
-MARCAR MENSAGEM COMO LIDA
+MARCAR MENSAGEM
 =========================================================
 */
 
 async function marcarMensagemLida(
-  req,
-  res
-) {
+  id
+){
 
-  if (
-    !verificarAdmin(req)
-  ) {
+  try{
 
-    return json(
-      res,
-      401,
+    await requisicaoAdmin(
+      "/api/admin/mensagem/lida",
       {
-        success: false,
-        error:
-          "Não autorizado."
+
+        method:
+          "POST",
+
+        body:
+          JSON.stringify({
+            id
+          })
+
       }
+    );
+
+
+    mostrarAviso(
+      "Mensagem marcada como lida."
+    );
+
+
+    await carregarMensagens();
+
+
+  }catch(e){
+
+    mostrarAviso(
+      e.message
     );
 
   }
 
-
-  const body =
-    lerBody(req);
-
-  const id =
-    String(
-      body.id ||
-      body.mensagemId ||
-      body.documentId ||
-      ""
-    ).trim();
-
-
-  if (!id) {
-
-    return json(
-      res,
-      400,
-      {
-        success: false,
-        error:
-          "ID da mensagem não informado."
-      }
-    );
-
-  }
-
-
-  try {
-
-    const atualizado =
-      await tablesDB.updateRow({
-
-        databaseId:
-          DATABASE_ID,
-
-        tableId:
-          TABELA_MENSAGENS,
-
-        rowId:
-          id,
-
-        data: {
-          status:
-            "lida"
-        }
-
-      });
-
-
-    return json(
-      res,
-      200,
-      {
-
-        success: true,
-
-        mensagem:
-          atualizado
-
-      }
-    );
-
-  } catch (e) {
-
-    console.error(
-      "ERRO MENSAGEM:",
-      e
-    );
-
-    return json(
-      res,
-      500,
-      {
-
-        success: false,
-
-        error:
-          "Erro ao atualizar mensagem.",
-
-        details:
-          String(
-            e?.message || e
-          )
-
-      }
-    );
-
-  }
 }
 
 
 /*
 =========================================================
-TESTE
+FORMATADORES
 =========================================================
 */
 
-async function teste(
-  req,
-  res
-) {
+function formatarNumero(
+  valor
+){
 
-  return json(
-    res,
-    200,
+  return Number(
+    valor || 0
+  ).toLocaleString(
+    "pt-BR"
+  );
+
+}
+
+
+function formatarValor(
+  valor
+){
+
+  return Number(
+    valor || 0
+  ).toLocaleString(
+    "pt-BR",
     {
+      style:
+        "currency",
 
-      ok: true,
+      currency:
+        "BRL"
+    }
+  );
 
-      success: true,
+}
 
-      function:
-        "quizup-admin",
 
-      status:
-        "online",
+/*
+=========================================================
+STATUS
+=========================================================
+*/
 
-      runtime:
-        "node-26",
+function classeStatus(
+  status
+){
 
-      timestamp:
-        new Date().toISOString()
+  if(
+    status ===
+    "pendente"
+  ){
+
+    return "status-pendente";
+
+  }
+
+  if(
+    status ===
+    "aprovado"
+  ){
+
+    return "status-aprovado";
+
+  }
+
+  if(
+    status ===
+    "recusado"
+  ){
+
+    return "status-recusado";
+
+  }
+
+  return "";
+
+}
+
+
+/*
+=========================================================
+SEGURANÇA HTML
+=========================================================
+*/
+
+function escapar(
+  valor
+){
+
+  return String(
+    valor ?? ""
+  )
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+function escaparJS(
+  valor
+){
+
+  return String(
+    valor ?? ""
+  )
+    .replace(
+      /\\/g,
+      "\\\\"
+    )
+    .replace(
+      /'/g,
+      "\\'"
+    )
+    .replace(
+      /"/g,
+      '\\"'
+    )
+    .replace(
+      /\n/g,
+      "\\n"
+    )
+    .replace(
+      /\r/g,
+      "\\r"
+    );
+
+}
+
+
+/*
+=========================================================
+MÁSCARA DATA
+=========================================================
+*/
+
+document
+  .getElementById(
+    "dataNascimento"
+  )
+  .addEventListener(
+    "input",
+    function(){
+
+      let valor =
+        this.value
+          .replace(
+            /\D/g,
+            ""
+          )
+          .slice(
+            0,
+            8
+          );
+
+
+      if(
+        valor.length > 4
+      ){
+
+        valor =
+          valor.slice(0,2) +
+          "/" +
+          valor.slice(2,4) +
+          "/" +
+          valor.slice(4);
+
+      }else if(
+        valor.length > 2
+      ){
+
+        valor =
+          valor.slice(0,2) +
+          "/" +
+          valor.slice(2);
+
+      }
+
+
+      this.value =
+        valor;
 
     }
   );
+
+
+/*
+=========================================================
+ENTER PARA LOGIN
+=========================================================
+*/
+
+document
+  .getElementById(
+    "emailAdmin"
+  )
+  .addEventListener(
+    "keydown",
+    function(event){
+
+      if(
+        event.key === "Enter"
+      ){
+
+        entrarAdmin();
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById(
+    "dataNascimento"
+  )
+  .addEventListener(
+    "keydown",
+    function(event){
+
+      if(
+        event.key === "Enter"
+      ){
+
+        entrarAdmin();
+
+      }
+
+    }
+  );
+
+
+/*
+=========================================================
+RESTAURAR SESSÃO
+=========================================================
+*/
+
+async function restaurarSessao(){
+
+  if(
+    !tokenAdmin
+  ){
+
+    mostrarLogin();
+
+    return;
+
+  }
+
+
+  try{
+
+    telaLogin.style.display =
+      "none";
+
+    painel.style.display =
+      "block";
+
+
+    await carregarResumo();
+
+
+  }catch(e){
+
+    console.error(
+      "Sessão inválida:",
+      e
+    );
+
+    tokenAdmin =
+      "";
+
+    sessionStorage.removeItem(
+      TOKEN_STORAGE
+    );
+
+    mostrarLogin();
+
+  }
+
 }
 
 
 /*
 =========================================================
-HANDLER APPWRITE
+INICIALIZAÇÃO
 =========================================================
 */
 
-export default async function main({
-  req,
-  res,
-  log,
-  error
-}) {
+restaurarSessao();
 
-  try {
+</script>
 
-    const method =
-      String(
-        req.method || "GET"
-      ).toUpperCase();
-
-    const caminho =
-      String(
-        req.path || "/"
-      );
-
-
-    log(
-      `QuizUp Admin: ${method} ${caminho}`
-    );
-
-
-    /*
-    =====================================================
-    CORS PREFLIGHT
-    =====================================================
-    */
-
-    if (
-      method === "OPTIONS"
-    ) {
-
-      return res.empty(
-        204,
-        corsHeaders()
-      );
-
-    }
-
-
-    /*
-    =====================================================
-    TESTE
-    =====================================================
-    */
-
-    if (
-      caminho === "/" ||
-      caminho === "/teste"
-    ) {
-
-      return teste(
-        req,
-        res
-      );
-
-    }
-
-
-    /*
-    =====================================================
-    LOGIN
-    =====================================================
-    */
-
-    if (
-      caminho === "/api/admin/login" &&
-      method === "POST"
-    ) {
-
-      return login(
-        req,
-        res
-      );
-
-    }
-
-
-    /*
-    =====================================================
-    RESUMO
-    =====================================================
-    */
-
-    if (
-      (
-        caminho === "/api/admin/resumo" ||
-        caminho === "/resumo"
-      )
-    ) {
-
-      return resumo(
-        req,
-        res
-      );
-
-    }
-
-
-    /*
-    =====================================================
-    JOGADORES
-    =====================================================
-    */
-
-    if (
-      (
-        caminho === "/api/admin/jogadores" ||
-        caminho === "/jogadores"
-      )
-    ) {
-
-      return jogadores(
-        req,
-        res
-      );
-
-    }
-
-
-    /*
-    =====================================================
-    SAQUES
-    =====================================================
-    */
-
-    if (
-      (
-        caminho === "/api/admin/saques" ||
-        caminho === "/saques"
-      )
-    ) {
-
-      return saques(
-        req,
-        res
-      );
-
-    }
-
-
-    /*
-    =====================================================
-    APROVAR SAQUE
-    =====================================================
-    */
-
-    if (
-      caminho ===
-        "/api/admin/saque/aprovar" &&
-      method === "POST"
-    ) {
-
-      return atualizarSaque(
-        req,
-        res,
-        "aprovado"
-      );
-
-    }
-
-
-    /*
-    =====================================================
-    RECUSAR SAQUE
-    =====================================================
-    */
-
-    if (
-      caminho ===
-        "/api/admin/saque/recusar" &&
-      method === "POST"
-    ) {
-
-      return atualizarSaque(
-        req,
-        res,
-        "recusado"
-      );
-
-    }
-
-
-    /*
-    =====================================================
-    MENSAGENS
-    =====================================================
-    */
-
-    if (
-      caminho ===
-        "/api/admin/mensagens"
-    ) {
-
-      return mensagens(
-        req,
-        res
-      );
-
-    }
-
-
-    /*
-    =====================================================
-    MENSAGEM LIDA
-    =====================================================
-    */
-
-    if (
-      caminho ===
-        "/api/admin/mensagem/lida" &&
-      method === "POST"
-    ) {
-
-      return marcarMensagemLida(
-        req,
-        res
-      );
-
-    }
-
-
-    /*
-    =====================================================
-    404
-    =====================================================
-    */
-
-    return json(
-      res,
-      404,
-      {
-
-        success: false,
-
-        error:
-          "Rota não encontrada.",
-
-        path:
-          caminho
-
-      }
-    );
-
-
-  } catch (e) {
-
-    console.error(
-      "ERRO FATAL DA FUNCTION:",
-      e
-    );
-
-    if (error) {
-      error(
-        String(
-          e?.stack ||
-          e?.message ||
-          e
-        )
-      );
-    }
-
-    return json(
-      res,
-      500,
-      {
-
-        success: false,
-
-        error:
-          "Erro interno da Function.",
-
-        details:
-          String(
-            e?.message ||
-            e
-          )
-
-      }
-    );
-
-  }
-
-}
+</body>
+  </html>
