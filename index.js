@@ -1,1701 +1,1000 @@
-import { Client, TablesDB } from "node-appwrite";
+import {
+  Client,
+  TablesDB,
+  Query
+} from "node-appwrite";
+
 import crypto from "crypto";
 
 /*
-=========================================================
-QUIZUP ADMIN - APPWRITE FUNCTION
-Node.js / ES MODULE
-=========================================================
+====================================================
+ QUIZUP ADMIN — APPWRITE FUNCTION
+ Node.js / ES Module
+====================================================
 */
 
-/*
-=========================================================
-CONFIGURAÇÃO APPWRITE
-=========================================================
-*/
+// ===============================
+// CONFIGURAÇÕES
+// ===============================
 
-const ENDPOINT =
-  process.env.APPWRITE_FUNCTION_API_ENDPOINT ||
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "";
+const ADMIN_DATA_NASCIMENTO = process.env.ADMIN_DATA_NASCIMENTO || "";
+const ADMIN_LOGIN_SECRET = process.env.ADMIN_LOGIN_SECRET || "";
+const ADMIN_USER_ID = process.env.ADMIN_USER_ID || "";
+
+const APPWRITE_ENDPOINT =
   process.env.APPWRITE_ENDPOINT ||
   "https://fra.cloud.appwrite.io/v1";
 
-const PROJECT_ID =
-  process.env.APPWRITE_FUNCTION_PROJECT_ID ||
+const APPWRITE_PROJECT_ID =
   process.env.APPWRITE_PROJECT_ID ||
   "6a8e10e900245502244c";
 
-const API_KEY =
-  process.env.APPWRITE_API_KEY ||
-  "";
-
-
-/*
-=========================================================
-ADMINISTRADOR
-=========================================================
-*/
-
-const ADMIN_EMAIL =
-  String(
-    process.env.ADMIN_EMAIL || ""
-  )
-    .trim()
-    .toLowerCase();
-
-const ADMIN_DATA_NASCIMENTO =
-  String(
-    process.env.ADMIN_DATA_NASCIMENTO || ""
-  )
-    .trim();
-
-const ADMIN_LOGIN_SECRET =
-  String(
-    process.env.ADMIN_LOGIN_SECRET || ""
-  );
-
-const ADMIN_USER_ID =
-  String(
-    process.env.ADMIN_USER_ID ||
-    "6a8f41f10032758d44de"
-  )
-    .trim();
-
-
-/*
-=========================================================
-TOKEN
-=========================================================
-*/
-
-const TOKEN_DURACAO_SEGUNDOS =
-  2 * 60 * 60;
-
-
-/*
-=========================================================
-BANCO DE DADOS
-=========================================================
-*/
+const APPWRITE_API_KEY =
+  process.env.APPWRITE_API_KEY || "";
 
 const DATABASE_ID =
-  process.env.QUIZUP_DATABASE_ID ||
   process.env.DATABASE_ID ||
-  "QuizUpDB";
+  "6a8e11820008abab052e";
 
-const TABELA_JOGADORES =
-  process.env.TABELA_JOGADORES ||
-  process.env.JOGADORES_TABLE_ID ||
-  "jogadores";
+const TABLE_JOGADORES = "jogadores";
+const TABLE_SAQUES = "saques";
+const TABLE_MENSAGENS = "mensagens";
 
-const TABELA_SAQUES =
-  process.env.TABELA_SAQUES ||
-  process.env.SAQUES_TABLE_ID ||
-  "saques";
-
-const TABELA_MENSAGENS =
-  process.env.TABELA_MENSAGENS ||
-  process.env.MENSAGENS_TABLE_ID ||
-  "mensagens";
-
-
-/*
-=========================================================
-CLIENTE APPWRITE
-=========================================================
-*/
-
-const client =
-  new Client()
-    .setEndpoint(ENDPOINT)
-    .setProject(PROJECT_ID);
-
-if (API_KEY) {
-  client.setKey(API_KEY);
-}
-
-const tablesDB =
-  new TablesDB(client);
-
-
-/*
-=========================================================
-CORS
-=========================================================
-*/
+// ===============================
+// CORS
+// ===============================
 
 function corsHeaders() {
   return {
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods":
-      "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers":
-      "Content-Type, Authorization, X-Appwrite-User-Id",
-    "Access-Control-Max-Age":
-      "86400"
+      "Content-Type, Authorization, X-Requested-With",
+    "Access-Control-Max-Age": "86400"
   };
 }
 
-
-/*
-=========================================================
-JSON
-=========================================================
-*/
+// ===============================
+// RESPOSTAS
+// ===============================
 
 function json(res, status, data) {
-  return res.json(
-    data,
-    status,
-    corsHeaders()
-  );
+  return res.json(data, status, corsHeaders());
 }
 
-
-/*
-=========================================================
-NÚMERO
-=========================================================
-*/
-
-function num(valor) {
-  const numero = Number(valor);
-
-  return Number.isFinite(numero)
-    ? numero
-    : 0;
+function text(res, status, data) {
+  return res.text(data, status, corsHeaders());
 }
 
-
-/*
-=========================================================
-VALOR
-=========================================================
-*/
-
-function valorDe(obj) {
-
-  if (!obj) {
-    return 0;
-  }
-
-  return num(
-    obj.quantia ??
-    obj.valor ??
-    obj.valor_jogador ??
-    obj.equilibrio ??
-    obj.saldo ??
-    0
-  );
-}
-
-
-/*
-=========================================================
-BODY
-=========================================================
-*/
-
-function lerBody(req) {
-
-  try {
-
-    if (
-      req.bodyJson &&
-      typeof req.bodyJson === "object"
-    ) {
-
-      return req.bodyJson;
-
-    }
-
-  } catch (e) {
-
-    console.error(
-      "Erro bodyJson:",
-      e
-    );
-
-  }
-
-
-  try {
-
-    if (
-      req.bodyText &&
-      typeof req.bodyText === "string"
-    ) {
-
-      return JSON.parse(
-        req.bodyText
-      );
-
-    }
-
-  } catch (e) {
-
-    console.error(
-      "Erro bodyText:",
-      e
-    );
-
-  }
-
-
-  return {};
-}
-
-
-/*
-=========================================================
-NORMALIZAR DATA
-=========================================================
-*/
+// ===============================
+// NORMALIZA DATA
+// ===============================
 
 function normalizarData(data) {
+  if (!data) return "";
 
-  const valor =
-    String(data || "").trim();
+  const valor = String(data).trim();
 
-  /*
-  DD/MM/AAAA
-  */
-
-  const brasileira =
-    /^(\d{2})\/(\d{2})\/(\d{4})$/
-      .exec(valor);
-
-  if (brasileira) {
-
-    return (
-      `${brasileira[3]}-` +
-      `${brasileira[2]}-` +
-      `${brasileira[1]}`
-    );
-
+  // DD/MM/AAAA
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(valor)) {
+    const [dia, mes, ano] = valor.split("/");
+    return `${ano}-${mes}-${dia}`;
   }
 
-  /*
-  AAAA-MM-DD
-  */
-
-  const iso =
-    /^\d{4}-\d{2}-\d{2}$/
-      .test(valor);
-
-  if (iso) {
+  // AAAA-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
     return valor;
   }
 
   return valor;
 }
 
+// ===============================
+// NORMALIZA E-MAIL
+// ===============================
 
-/*
-=========================================================
-CRIAR TOKEN
-=========================================================
-*/
+function normalizarEmail(email) {
+  return String(email || "")
+    .trim()
+    .toLowerCase();
+}
+
+// ===============================
+// COMPARAÇÃO SEGURA
+// ===============================
+
+function compararSeguro(a, b) {
+  const aa = Buffer.from(String(a || ""));
+  const bb = Buffer.from(String(b || ""));
+
+  if (aa.length !== bb.length) return false;
+
+  return crypto.timingSafeEqual(aa, bb);
+}
+
+// ===============================
+// TOKEN ADMIN
+// ===============================
 
 function criarToken() {
-
-  const agora =
-    Math.floor(
-      Date.now() / 1000
-    );
-
-  const expira =
-    agora +
-    TOKEN_DURACAO_SEGUNDOS;
-
   const payload = {
-    sub: "quizup-admin",
-    iat: agora,
-    exp: expira
+    tipo: "admin",
+    criadoEm: Date.now(),
+    expiraEm: Date.now() + 2 * 60 * 60 * 1000
   };
 
-  const textoPayload =
-    Buffer
-      .from(
-        JSON.stringify(payload)
-      )
-      .toString("base64url");
+  const dados = Buffer.from(
+    JSON.stringify(payload)
+  ).toString("base64url");
 
-  const assinatura =
-    crypto
-      .createHmac(
-        "sha256",
-        ADMIN_LOGIN_SECRET
-      )
-      .update(textoPayload)
-      .digest("base64url");
+  const assinatura = crypto
+    .createHmac(
+      "sha256",
+      ADMIN_LOGIN_SECRET
+    )
+    .update(dados)
+    .digest("base64url");
 
-  return (
-    textoPayload +
-    "." +
-    assinatura
-  );
+  return `${dados}.${assinatura}`;
 }
 
+// ===============================
+// VERIFICA TOKEN
+// ===============================
 
-/*
-=========================================================
-VALIDAR TOKEN
-=========================================================
-*/
-
-function validarToken(token) {
-
-  if (
-    !token ||
-    !ADMIN_LOGIN_SECRET
-  ) {
-
+function verificarToken(token) {
+  if (!token || !ADMIN_LOGIN_SECRET) {
     return false;
-
   }
 
-  const partes =
-    String(token).split(".");
+  const partes = String(token).split(".");
 
-  if (
-    partes.length !== 2
-  ) {
-
+  if (partes.length !== 2) {
     return false;
-
   }
 
-  const [
-    payloadCodificado,
-    assinatura
-  ] = partes;
+  const [dados, assinatura] = partes;
 
-  const assinaturaEsperada =
-    crypto
-      .createHmac(
-        "sha256",
-        ADMIN_LOGIN_SECRET
-      )
-      .update(payloadCodificado)
-      .digest("base64url");
+  const assinaturaEsperada = crypto
+    .createHmac(
+      "sha256",
+      ADMIN_LOGIN_SECRET
+    )
+    .update(dados)
+    .digest("base64url");
 
-  if (
-    assinatura !==
-    assinaturaEsperada
-  ) {
-
+  if (!compararSeguro(assinatura, assinaturaEsperada)) {
     return false;
-
   }
 
   try {
+    const payload = JSON.parse(
+      Buffer.from(dados, "base64url").toString("utf8")
+    );
 
-    const payload =
-      JSON.parse(
-        Buffer
-          .from(
-            payloadCodificado,
-            "base64url"
-          )
-          .toString("utf8")
-      );
-
-    const agora =
-      Math.floor(
-        Date.now() / 1000
-      );
-
-    if (
-      !payload.exp ||
-      Number(payload.exp) < agora
-    ) {
-
+    if (payload.tipo !== "admin") {
       return false;
-
     }
 
     if (
-      payload.sub !==
-      "quizup-admin"
+      !payload.expiraEm ||
+      Date.now() > Number(payload.expiraEm)
     ) {
-
       return false;
-
     }
 
     return true;
 
-  } catch (e) {
-
+  } catch {
     return false;
-
   }
 }
 
+// ===============================
+// EXTRAI TOKEN
+// ===============================
 
-/*
-=========================================================
-VERIFICAR ADMIN
-=========================================================
-*/
-
-function verificarAdmin(req) {
-
-  const headers =
-    req.headers || {};
-
-  /*
-  TOKEN DO PAINEL
-  */
-
+function obterToken(req) {
   const authorization =
-    headers.authorization ||
-    headers.Authorization ||
+    req.headers?.authorization ||
+    req.headers?.Authorization ||
     "";
 
-  if (
-    String(
-      authorization
-    ).startsWith("Bearer ")
-  ) {
+  if (!authorization) {
+    return "";
+  }
 
-    const token =
-      String(
-        authorization
-      )
-        .substring(7)
-        .trim();
+  if (!authorization.startsWith("Bearer ")) {
+    return "";
+  }
 
-    if (
-      validarToken(token)
-    ) {
+  return authorization.substring(7).trim();
+}
 
-      return true;
+// ===============================
+// PROTEÇÃO ADMIN
+// ===============================
 
+function autorizado(req) {
+  const token = obterToken(req);
+  return verificarToken(token);
+}
+
+// ===============================
+// CLIENT APPWRITE
+// ===============================
+
+function criarAppwrite() {
+  const client = new Client()
+    .setEndpoint(APPWRITE_ENDPOINT)
+    .setProject(APPWRITE_PROJECT_ID);
+
+  if (APPWRITE_API_KEY) {
+    client.setKey(APPWRITE_API_KEY);
+  }
+
+  const tablesDB = new TablesDB(client);
+
+  return {
+    client,
+    tablesDB
+  };
+}
+
+// ===============================
+// LOGIN
+// ===============================
+
+async function login(req, res, log) {
+  try {
+    let body = req.body;
+
+    if (typeof body === "string") {
+      try {
+        body = JSON.parse(body);
+      } catch {
+        body = {};
+      }
     }
 
-  }
+    body = body || {};
 
+    const email = normalizarEmail(body.email);
 
-  /*
-  USUÁRIO APPWRITE
-  */
+    const dataNascimento =
+      normalizarData(body.dataNascimento);
 
-  const appwriteUserId =
-    headers["x-appwrite-user-id"] ||
-    headers["X-Appwrite-User-Id"] ||
-    "";
+    log(
+      `Tentativa de login administrativo: ${email}`
+    );
 
-  if (
-    appwriteUserId &&
-    appwriteUserId ===
-    ADMIN_USER_ID
-  ) {
+    if (!email || !dataNascimento) {
+      return json(res, 400, {
+        sucesso: false,
+        erro: "E-mail e data de nascimento são obrigatórios."
+      });
+    }
 
-    return true;
+    const emailConfigurado =
+      normalizarEmail(ADMIN_EMAIL);
 
-  }
+    const dataConfigurada =
+      normalizarData(ADMIN_DATA_NASCIMENTO);
 
+    if (
+      !emailConfigurado ||
+      !dataConfigurada ||
+      !ADMIN_LOGIN_SECRET
+    ) {
+      log(
+        "ERRO: variáveis ADMIN_EMAIL, ADMIN_DATA_NASCIMENTO ou ADMIN_LOGIN_SECRET não configuradas."
+      );
 
-  return false;
-}
+      return json(res, 500, {
+        sucesso: false,
+        erro: "Configuração administrativa incompleta."
+      });
+    }
 
+    const emailOk =
+      compararSeguro(email, emailConfigurado);
 
-/*
-=========================================================
-LISTAR TABELA
-=========================================================
-*/
+    const dataOk =
+      compararSeguro(
+        dataNascimento,
+        dataConfigurada
+      );
 
-async function listarTabela(
-  tabela,
-  queries = []
-) {
+    if (!emailOk || !dataOk) {
+      log("Login administrativo recusado.");
 
-  const resultado =
-    await tablesDB.listRows({
+      return json(res, 401, {
+        sucesso: false,
+        erro: "E-mail ou data de nascimento inválidos."
+      });
+    }
 
-      databaseId:
-        DATABASE_ID,
+    const token = criarToken();
 
-      tableId:
-        tabela,
+    log("Login administrativo autorizado.");
 
-      queries:
-        queries
-
+    return json(res, 200, {
+      sucesso: true,
+      token,
+      tipo: "admin",
+      expiraEm: Date.now() + 2 * 60 * 60 * 1000
     });
 
-  return (
-    resultado.rows ||
-    []
-  );
+  } catch (erro) {
+    log(
+      `Erro no login: ${
+        erro?.message || String(erro)
+      }`
+    );
+
+    return json(res, 500, {
+      sucesso: false,
+      erro: "Erro interno ao realizar login."
+    });
+  }
 }
 
+// ===============================
+// RESUMO
+// ===============================
 
-/*
-=========================================================
-LOGIN
-=========================================================
-*/
-
-async function login(
-  req,
-  res
-) {
-
-  const body =
-    lerBody(req);
-
-  const email =
-    String(
-      body.email || ""
-    )
-      .trim()
-      .toLowerCase();
-
-  const dataNascimento =
-    String(
-      body.dataNascimento ||
-      body.data_nascimento ||
-      body.data ||
-      ""
-    ).trim();
-
-
-  if (
-    !email ||
-    !dataNascimento
-  ) {
-
-    return json(
-      res,
-      400,
-      {
-        success: false,
-        error:
-          "E-mail e data de nascimento são obrigatórios."
-      }
-    );
-
+async function resumo(req, res, log) {
+  if (!autorizado(req)) {
+    return json(res, 401, {
+      sucesso: false,
+      erro: "Não autorizado."
+    });
   }
-
-
-  /*
-  VERIFICA CONFIGURAÇÃO
-  */
-
-  if (
-    !ADMIN_EMAIL ||
-    !ADMIN_DATA_NASCIMENTO ||
-    !ADMIN_LOGIN_SECRET
-  ) {
-
-    console.error(
-      "CONFIGURAÇÃO ADMINISTRATIVA AUSENTE."
-    );
-
-    return json(
-      res,
-      500,
-      {
-        success: false,
-        error:
-          "Login administrativo não configurado no servidor."
-      }
-    );
-
-  }
-
-
-  const dataInformada =
-    normalizarData(
-      dataNascimento
-    );
-
-  const dataConfigurada =
-    normalizarData(
-      ADMIN_DATA_NASCIMENTO
-    );
-
-
-  /*
-  VERIFICA E-MAIL
-  */
-
-  if (
-    email !==
-    ADMIN_EMAIL
-  ) {
-
-    return json(
-      res,
-      401,
-      {
-        success: false,
-        error:
-          "E-mail ou data de nascimento inválidos."
-      }
-    );
-
-  }
-
-
-  /*
-  VERIFICA DATA
-  */
-
-  if (
-    dataInformada !==
-    dataConfigurada
-  ) {
-
-    return json(
-      res,
-      401,
-      {
-        success: false,
-        error:
-          "E-mail ou data de nascimento inválidos."
-      }
-    );
-
-  }
-
-
-  /*
-  LOGIN OK
-  */
-
-  const token =
-    criarToken();
-
-  return json(
-    res,
-    200,
-    {
-
-      success: true,
-
-      token,
-
-      expiresIn:
-        TOKEN_DURACAO_SEGUNDOS,
-
-      admin: {
-        email:
-          ADMIN_EMAIL
-      }
-
-    }
-  );
-}
-
-
-/*
-=========================================================
-RESUMO
-=========================================================
-*/
-
-async function resumo(
-  req,
-  res
-) {
-
-  if (
-    !verificarAdmin(req)
-  ) {
-
-    return json(
-      res,
-      401,
-      {
-        success: false,
-        error:
-          "Não autorizado."
-      }
-    );
-
-  }
-
 
   try {
+    const { tablesDB } = criarAppwrite();
 
-    const jogadores =
-      await listarTabela(
-        TABELA_JOGADORES
+    const jogadores = await tablesDB.listRows(
+      DATABASE_ID,
+      TABLE_JOGADORES,
+      [
+        Query.limit(5000)
+      ]
+    );
+
+    const saques = await tablesDB.listRows(
+      DATABASE_ID,
+      TABLE_SAQUES,
+      [
+        Query.limit(5000)
+      ]
+    );
+
+    const listaJogadores =
+      jogadores.rows || [];
+
+    const listaSaques =
+      saques.rows || [];
+
+    let pontosQuiz = 0;
+    let pontosPatrocinados = 0;
+
+    for (const jogador of listaJogadores) {
+      pontosQuiz += Number(
+        jogador.pontos || 0
       );
 
-    let totalPontos = 0;
-    let totalSaldo = 0;
-    let jogadoresAtivos = 0;
-
-
-    for (
-      const jogador of jogadores
-    ) {
-
-      totalPontos +=
-        num(
-          jogador.pontos
-        );
-
-      totalSaldo +=
-        valorDe(
-          jogador
-        );
-
-
-      if (
-        jogador.ativo === true ||
-        jogador.status === "ativo" ||
-        jogador.online === true
-      ) {
-
-        jogadoresAtivos++;
-
-      }
-
-    }
-
-
-    let saques = [];
-
-    try {
-
-      saques =
-        await listarTabela(
-          TABELA_SAQUES
-        );
-
-    } catch (e) {
-
-      console.error(
-        "Erro ao carregar saques:",
-        e
+      pontosPatrocinados += Number(
+        jogador.pontos_patrocinados ||
+        jogador.pontosPatrocinados ||
+        0
       );
-
     }
 
+    const totalPontos =
+      pontosQuiz + pontosPatrocinados;
 
-    let saquesPendentes = 0;
-    let saquesAprovados = 0;
-    let saquesRecusados = 0;
+    const saquesPendentes =
+      listaSaques.filter(
+        s =>
+          String(s.status || "")
+            .toLowerCase() === "pendente"
+      ).length;
 
+    const saquesAprovados =
+      listaSaques.filter(
+        s =>
+          String(s.status || "")
+            .toLowerCase() === "aprovado"
+      ).length;
 
-    for (
-      const saque of saques
-    ) {
+    const saquesRecusados =
+      listaSaques.filter(
+        s =>
+          String(s.status || "")
+            .toLowerCase() === "recusado" ||
+          String(s.status || "")
+            .toLowerCase() === "rejeitado"
+      ).length;
 
-      const status =
-        String(
-          saque.status || ""
-        )
-          .trim()
-          .toLowerCase();
+    return json(res, 200, {
+      sucesso: true,
 
+      totalUsuarios:
+        listaJogadores.length,
 
-      if (
-        status === "pendente"
-      ) {
+      jogadoresAtivos:
+        listaJogadores.length,
 
-        saquesPendentes++;
+      pontosQuiz,
 
-      }
+      pontosPatrocinados,
 
-      if (
-        status === "aprovado"
-      ) {
+      totalPontos,
 
-        saquesAprovados++;
+      saquesPendentes,
 
-      }
+      saquesAprovados,
 
-      if (
-        status === "recusado"
-      ) {
+      saquesRecusados
+    });
 
-        saquesRecusados++;
-
-      }
-
-    }
-
-
-    return json(
-      res,
-      200,
-      {
-
-        success: true,
-
-        totalUsuarios:
-          jogadores.length,
-
-        usuarios:
-          jogadores.length,
-
-        totalJogadores:
-          jogadores.length,
-
-        jogadoresAtivos,
-
-        pontosQuiz:
-          totalPontos,
-
-        pontos:
-          totalPontos,
-
-        totalPontos,
-
-        pontosPatrocinados:
-          0,
-
-        totalSaldo,
-
-        saquesPendentes,
-
-        pendentes:
-          saquesPendentes,
-
-        saquesAprovados,
-
-        aprovados:
-          saquesAprovados,
-
-        saquesRecusados,
-
-        recusados:
-          saquesRecusados
-
-      }
+  } catch (erro) {
+    log(
+      `Erro no resumo: ${
+        erro?.message || String(erro)
+      }`
     );
 
-  } catch (e) {
-
-    console.error(
-      "ERRO RESUMO:",
-      e
-    );
-
-    return json(
-      res,
-      500,
-      {
-        success: false,
-        error:
-          "Erro ao carregar resumo.",
-        details:
-          String(
-            e?.message || e
-          )
-      }
-    );
-
+    return json(res, 500, {
+      sucesso: false,
+      erro: "Erro ao carregar resumo."
+    });
   }
 }
 
+// ===============================
+// JOGADORES
+// ===============================
 
-/*
-=========================================================
-JOGADORES
-=========================================================
-*/
-
-async function jogadores(
-  req,
-  res
-) {
-
-  if (
-    !verificarAdmin(req)
-  ) {
-
-    return json(
-      res,
-      401,
-      {
-        success: false,
-        error:
-          "Não autorizado."
-      }
-    );
-
+async function jogadores(req, res, log) {
+  if (!autorizado(req)) {
+    return json(res, 401, {
+      sucesso: false,
+      erro: "Não autorizado."
+    });
   }
 
-
   try {
+    const { tablesDB } = criarAppwrite();
 
-    const lista =
-      await listarTabela(
-        TABELA_JOGADORES
+    const resultado =
+      await tablesDB.listRows(
+        DATABASE_ID,
+        TABLE_JOGADORES,
+        [
+          Query.limit(5000)
+        ]
       );
 
-    return json(
-      res,
-      200,
-      {
+    return json(res, 200, {
+      sucesso: true,
+      jogadores:
+        resultado.rows || []
+    });
 
-        success: true,
-
-        jogadores:
-          lista
-
-      }
+  } catch (erro) {
+    log(
+      `Erro jogadores: ${
+        erro?.message || String(erro)
+      }`
     );
 
-  } catch (e) {
-
-    console.error(
-      "ERRO JOGADORES:",
-      e
-    );
-
-    return json(
-      res,
-      500,
-      {
-
-        success: false,
-
-        error:
-          "Erro ao carregar jogadores.",
-
-        details:
-          String(
-            e?.message || e
-          )
-
-      }
-    );
-
+    return json(res, 500, {
+      sucesso: false,
+      erro: "Erro ao carregar jogadores."
+    });
   }
 }
 
+// ===============================
+// SAQUES
+// ===============================
 
-/*
-=========================================================
-SAQUES
-=========================================================
-*/
-
-async function saques(
-  req,
-  res
-) {
-
-  if (
-    !verificarAdmin(req)
-  ) {
-
-    return json(
-      res,
-      401,
-      {
-        success: false,
-        error:
-          "Não autorizado."
-      }
-    );
-
+async function saques(req, res, log) {
+  if (!autorizado(req)) {
+    return json(res, 401, {
+      sucesso: false,
+      erro: "Não autorizado."
+    });
   }
 
-
   try {
+    const { tablesDB } = criarAppwrite();
 
-    const lista =
-      await listarTabela(
-        TABELA_SAQUES
+    const resultado =
+      await tablesDB.listRows(
+        DATABASE_ID,
+        TABLE_SAQUES,
+        [
+          Query.limit(5000)
+        ]
       );
 
-    return json(
-      res,
-      200,
-      {
+    return json(res, 200, {
+      sucesso: true,
+      saques:
+        resultado.rows || []
+    });
 
-        success: true,
-
-        saques:
-          lista
-
-      }
+  } catch (erro) {
+    log(
+      `Erro saques: ${
+        erro?.message || String(erro)
+      }`
     );
 
-  } catch (e) {
-
-    console.error(
-      "ERRO SAQUES:",
-      e
-    );
-
-    return json(
-      res,
-      500,
-      {
-
-        success: false,
-
-        error:
-          "Erro ao carregar saques.",
-
-        details:
-          String(
-            e?.message || e
-          )
-
-      }
-    );
-
+    return json(res, 500, {
+      sucesso: false,
+      erro: "Erro ao carregar saques."
+    });
   }
 }
 
+// ===============================
+// APROVAR SAQUE
+// ===============================
 
-/*
-=========================================================
-ATUALIZAR SAQUE
-=========================================================
-*/
-
-async function atualizarSaque(
-  req,
-  res,
-  novoStatus
-) {
-
-  if (
-    !verificarAdmin(req)
-  ) {
-
-    return json(
-      res,
-      401,
-      {
-        success: false,
-        error:
-          "Não autorizado."
-      }
-    );
-
+async function aprovarSaque(req, res, log) {
+  if (!autorizado(req)) {
+    return json(res, 401, {
+      sucesso: false,
+      erro: "Não autorizado."
+    });
   }
-
-
-  const body =
-    lerBody(req);
-
-  const id =
-    String(
-      body.id ||
-      body.saqueId ||
-      body.documentId ||
-      ""
-    ).trim();
-
-
-  if (!id) {
-
-    return json(
-      res,
-      400,
-      {
-        success: false,
-        error:
-          "ID do saque não informado."
-      }
-    );
-
-  }
-
 
   try {
+    let body = req.body;
+
+    if (typeof body === "string") {
+      try {
+        body = JSON.parse(body);
+      } catch {
+        body = {};
+      }
+    }
+
+    const id =
+      body?.id ||
+      body?.saqueId ||
+      body?.documentId;
+
+    if (!id) {
+      return json(res, 400, {
+        sucesso: false,
+        erro: "ID do saque não informado."
+      });
+    }
+
+    const { tablesDB } = criarAppwrite();
 
     const atualizado =
-      await tablesDB.updateRow({
-
-        databaseId:
-          DATABASE_ID,
-
-        tableId:
-          TABELA_SAQUES,
-
-        rowId:
-          id,
-
-        data: {
-          status:
-            novoStatus
+      await tablesDB.updateRow(
+        DATABASE_ID,
+        TABLE_SAQUES,
+        id,
+        {
+          status: "aprovado"
         }
-
-      });
-
-
-    return json(
-      res,
-      200,
-      {
-
-        success: true,
-
-        status:
-          novoStatus,
-
-        saque:
-          atualizado
-
-      }
-    );
-
-  } catch (e) {
-
-    console.error(
-      "ERRO ATUALIZAR SAQUE:",
-      e
-    );
-
-    return json(
-      res,
-      500,
-      {
-
-        success: false,
-
-        error:
-          "Erro ao atualizar saque.",
-
-        details:
-          String(
-            e?.message || e
-          )
-
-      }
-    );
-
-  }
-}
-
-
-/*
-=========================================================
-MENSAGENS
-=========================================================
-*/
-
-async function mensagens(
-  req,
-  res
-) {
-
-  if (
-    !verificarAdmin(req)
-  ) {
-
-    return json(
-      res,
-      401,
-      {
-        success: false,
-        error:
-          "Não autorizado."
-      }
-    );
-
-  }
-
-
-  try {
-
-    const lista =
-      await listarTabela(
-        TABELA_MENSAGENS
       );
 
-    return json(
-      res,
-      200,
-      {
-
-        success: true,
-
-        mensagens:
-          lista
-
-      }
+    log(
+      `Saque ${id} aprovado pelo administrador.`
     );
 
-  } catch (e) {
+    return json(res, 200, {
+      sucesso: true,
+      saque: atualizado
+    });
 
-    console.error(
-      "ERRO MENSAGENS:",
-      e
+  } catch (erro) {
+    log(
+      `Erro aprovar saque: ${
+        erro?.message || String(erro)
+      }`
     );
 
-    /*
-    A tabela pode ainda não existir.
-    Não derruba o painel.
-    */
-
-    return json(
-      res,
-      200,
-      {
-
-        success: true,
-
-        mensagens: []
-
-      }
-    );
-
+    return json(res, 500, {
+      sucesso: false,
+      erro: "Erro ao aprovar saque."
+    });
   }
 }
 
+// ===============================
+// RECUSAR SAQUE
+// ===============================
 
-/*
-=========================================================
-MARCAR MENSAGEM COMO LIDA
-=========================================================
-*/
-
-async function marcarMensagemLida(
-  req,
-  res
-) {
-
-  if (
-    !verificarAdmin(req)
-  ) {
-
-    return json(
-      res,
-      401,
-      {
-        success: false,
-        error:
-          "Não autorizado."
-      }
-    );
-
+async function recusarSaque(req, res, log) {
+  if (!autorizado(req)) {
+    return json(res, 401, {
+      sucesso: false,
+      erro: "Não autorizado."
+    });
   }
-
-
-  const body =
-    lerBody(req);
-
-  const id =
-    String(
-      body.id ||
-      body.mensagemId ||
-      body.documentId ||
-      ""
-    ).trim();
-
-
-  if (!id) {
-
-    return json(
-      res,
-      400,
-      {
-        success: false,
-        error:
-          "ID da mensagem não informado."
-      }
-    );
-
-  }
-
 
   try {
+    let body = req.body;
+
+    if (typeof body === "string") {
+      try {
+        body = JSON.parse(body);
+      } catch {
+        body = {};
+      }
+    }
+
+    const id =
+      body?.id ||
+      body?.saqueId ||
+      body?.documentId;
+
+    if (!id) {
+      return json(res, 400, {
+        sucesso: false,
+        erro: "ID do saque não informado."
+      });
+    }
+
+    const { tablesDB } = criarAppwrite();
 
     const atualizado =
-      await tablesDB.updateRow({
-
-        databaseId:
-          DATABASE_ID,
-
-        tableId:
-          TABELA_MENSAGENS,
-
-        rowId:
-          id,
-
-        data: {
-          status:
-            "lida"
+      await tablesDB.updateRow(
+        DATABASE_ID,
+        TABLE_SAQUES,
+        id,
+        {
+          status: "recusado"
         }
+      );
 
-      });
-
-
-    return json(
-      res,
-      200,
-      {
-
-        success: true,
-
-        mensagem:
-          atualizado
-
-      }
+    log(
+      `Saque ${id} recusado pelo administrador.`
     );
 
-  } catch (e) {
+    return json(res, 200, {
+      sucesso: true,
+      saque: atualizado
+    });
 
-    console.error(
-      "ERRO MENSAGEM:",
-      e
+  } catch (erro) {
+    log(
+      `Erro recusar saque: ${
+        erro?.message || String(erro)
+      }`
     );
 
-    return json(
-      res,
-      500,
-      {
-
-        success: false,
-
-        error:
-          "Erro ao atualizar mensagem.",
-
-        details:
-          String(
-            e?.message || e
-          )
-
-      }
-    );
-
+    return json(res, 500, {
+      sucesso: false,
+      erro: "Erro ao recusar saque."
+    });
   }
 }
 
+// ===============================
+// MENSAGENS
+// ===============================
 
-/*
-=========================================================
-TESTE
-=========================================================
-*/
+async function mensagens(req, res, log) {
+  if (!autorizado(req)) {
+    return json(res, 401, {
+      sucesso: false,
+      erro: "Não autorizado."
+    });
+  }
 
-async function teste(
-  req,
-  res
-) {
+  try {
+    const { tablesDB } = criarAppwrite();
 
-  return json(
-    res,
-    200,
-    {
+    const resultado =
+      await tablesDB.listRows(
+        DATABASE_ID,
+        TABLE_MENSAGENS,
+        [
+          Query.limit(5000)
+        ]
+      );
 
-      ok: true,
+    return json(res, 200, {
+      sucesso: true,
+      mensagens:
+        resultado.rows || []
+    });
 
-      success: true,
+  } catch (erro) {
+    log(
+      `Erro mensagens: ${
+        erro?.message || String(erro)
+      }`
+    );
 
-      function:
-        "quizup-admin",
-
-      status:
-        "online",
-
-      runtime:
-        "node-26",
-
-      timestamp:
-        new Date().toISOString()
-
-    }
-  );
+    // Se a tabela ainda não existir,
+    // o painel continua funcionando.
+    return json(res, 200, {
+      sucesso: true,
+      mensagens: []
+    });
+  }
 }
 
+// ===============================
+// MARCAR MENSAGEM COMO LIDA
+// ===============================
 
-/*
-=========================================================
-HANDLER APPWRITE
-=========================================================
-*/
+async function mensagemLida(req, res, log) {
+  if (!autorizado(req)) {
+    return json(res, 401, {
+      sucesso: false,
+      erro: "Não autorizado."
+    });
+  }
 
-export default async function main({
-  req,
-  res,
-  log,
-  error
-}) {
+  try {
+    let body = req.body;
+
+    if (typeof body === "string") {
+      try {
+        body = JSON.parse(body);
+      } catch {
+        body = {};
+      }
+    }
+
+    const id =
+      body?.id ||
+      body?.mensagemId ||
+      body?.documentId;
+
+    if (!id) {
+      return json(res, 400, {
+        sucesso: false,
+        erro: "ID da mensagem não informado."
+      });
+    }
+
+    const { tablesDB } = criarAppwrite();
+
+    const atualizado =
+      await tablesDB.updateRow(
+        DATABASE_ID,
+        TABLE_MENSAGENS,
+        id,
+        {
+          lida: true
+        }
+      );
+
+    log(
+      `Mensagem ${id} marcada como lida.`
+    );
+
+    return json(res, 200, {
+      sucesso: true,
+      mensagem: atualizado
+    });
+
+  } catch (erro) {
+    log(
+      `Erro mensagem lida: ${
+        erro?.message || String(erro)
+      }`
+    );
+
+    return json(res, 500, {
+      sucesso: false,
+      erro: "Erro ao marcar mensagem como lida."
+    });
+  }
+}
+
+// ===============================
+// FUNÇÃO PRINCIPAL
+// ===============================
+
+export default async ({ req, res, log }) => {
 
   try {
 
     const method =
-      String(
-        req.method || "GET"
-      ).toUpperCase();
+      String(req.method || "GET")
+        .toUpperCase();
 
-    const caminho =
-      String(
-        req.path || "/"
-      );
-
+    const path =
+      String(req.path || "/")
+        .split("?")[0];
 
     log(
-      `QuizUp Admin: ${method} ${caminho}`
+      `QuizUp Admin: ${method} ${path}`
     );
 
+    // ---------------------------------
+    // CORS PREFLIGHT
+    // ---------------------------------
 
-    /*
-    =====================================================
-    CORS PREFLIGHT
-    =====================================================
-    */
-
-    if (
-      method === "OPTIONS"
-    ) {
-
-      return res.empty(
-        204,
-        corsHeaders()
-      );
-
+    if (method === "OPTIONS") {
+      return res.empty(204, corsHeaders());
     }
 
-
-    /*
-    =====================================================
-    TESTE
-    =====================================================
-    */
+    // ---------------------------------
+    // TESTE
+    // ---------------------------------
 
     if (
-      caminho === "/" ||
-      caminho === "/teste"
+      path === "/" &&
+      method === "GET"
     ) {
-
-      return teste(
-        req,
-        res
-      );
-
+      return json(res, 200, {
+        sucesso: true,
+        sistema: "QuizUp Admin",
+        status: "online"
+      });
     }
 
+    if (
+      path === "/teste" &&
+      method === "GET"
+    ) {
+      return json(res, 200, {
+        sucesso: true,
+        mensagem: "Function QuizUp Admin funcionando."
+      });
+    }
 
-    /*
-    =====================================================
-    LOGIN
-    =====================================================
-    */
+    // ---------------------------------
+    // LOGIN
+    // ---------------------------------
 
     if (
-      caminho === "/api/admin/login" &&
+      path === "/api/admin/login" &&
       method === "POST"
     ) {
-
-      return login(
-        req,
-        res
-      );
-
-    }
-
-
-    /*
-    =====================================================
-    RESUMO
-    =====================================================
-    */
-
-    if (
-      (
-        caminho === "/api/admin/resumo" ||
-        caminho === "/resumo"
-      )
-    ) {
-
-      return resumo(
-        req,
-        res
-      );
-
-    }
-
-
-    /*
-    =====================================================
-    JOGADORES
-    =====================================================
-    */
-
-    if (
-      (
-        caminho === "/api/admin/jogadores" ||
-        caminho === "/jogadores"
-      )
-    ) {
-
-      return jogadores(
-        req,
-        res
-      );
-
-    }
-
-
-    /*
-    =====================================================
-    SAQUES
-    =====================================================
-    */
-
-    if (
-      (
-        caminho === "/api/admin/saques" ||
-        caminho === "/saques"
-      )
-    ) {
-
-      return saques(
-        req,
-        res
-      );
-
-    }
-
-
-    /*
-    =====================================================
-    APROVAR SAQUE
-    =====================================================
-    */
-
-    if (
-      caminho ===
-        "/api/admin/saque/aprovar" &&
-      method === "POST"
-    ) {
-
-      return atualizarSaque(
+      return await login(
         req,
         res,
-        "aprovado"
+        log
       );
-
     }
 
-
-    /*
-    =====================================================
-    RECUSAR SAQUE
-    =====================================================
-    */
+    // ---------------------------------
+    // RESUMO
+    // ---------------------------------
 
     if (
-      caminho ===
-        "/api/admin/saque/recusar" &&
-      method === "POST"
+      path === "/api/admin/resumo" &&
+      method === "GET"
     ) {
-
-      return atualizarSaque(
+      return await resumo(
         req,
         res,
-        "recusado"
+        log
       );
-
     }
 
-
-    /*
-    =====================================================
-    MENSAGENS
-    =====================================================
-    */
+    // ---------------------------------
+    // JOGADORES
+    // ---------------------------------
 
     if (
-      caminho ===
-        "/api/admin/mensagens"
+      path === "/api/admin/jogadores" &&
+      method === "GET"
     ) {
-
-      return mensagens(
+      return await jogadores(
         req,
-        res
+        res,
+        log
       );
-
     }
 
-
-    /*
-    =====================================================
-    MENSAGEM LIDA
-    =====================================================
-    */
+    // ---------------------------------
+    // SAQUES
+    // ---------------------------------
 
     if (
-      caminho ===
-        "/api/admin/mensagem/lida" &&
+      path === "/api/admin/saques" &&
+      method === "GET"
+    ) {
+      return await saques(
+        req,
+        res,
+        log
+      );
+    }
+
+    // ---------------------------------
+    // APROVAR SAQUE
+    // ---------------------------------
+
+    if (
+      path === "/api/admin/saque/aprovar" &&
       method === "POST"
     ) {
-
-      return marcarMensagemLida(
+      return await aprovarSaque(
         req,
-        res
-      );
-
-    }
-
-
-    /*
-    =====================================================
-    404
-    =====================================================
-    */
-
-    return json(
-      res,
-      404,
-      {
-
-        success: false,
-
-        error:
-          "Rota não encontrada.",
-
-        path:
-          caminho
-
-      }
-    );
-
-
-  } catch (e) {
-
-    console.error(
-      "ERRO FATAL DA FUNCTION:",
-      e
-    );
-
-    if (error) {
-      error(
-        String(
-          e?.stack ||
-          e?.message ||
-          e
-        )
+        res,
+        log
       );
     }
 
-    return json(
-      res,
-      500,
-      {
+    // ---------------------------------
+    // RECUSAR SAQUE
+    // ---------------------------------
 
-        success: false,
+    if (
+      path === "/api/admin/saque/recusar" &&
+      method === "POST"
+    ) {
+      return await recusarSaque(
+        req,
+        res,
+        log
+      );
+    }
 
-        error:
-          "Erro interno da Function.",
+    // ---------------------------------
+    // MENSAGENS
+    // ---------------------------------
 
-        details:
-          String(
-            e?.message ||
-            e
-          )
+    if (
+      path === "/api/admin/mensagens" &&
+      method === "GET"
+    ) {
+      return await mensagens(
+        req,
+        res,
+        log
+      );
+    }
 
-      }
+    // ---------------------------------
+    // MENSAGEM LIDA
+    // ---------------------------------
+
+    if (
+      path === "/api/admin/mensagem/lida" &&
+      method === "POST"
+    ) {
+      return await mensagemLida(
+        req,
+        res,
+        log
+      );
+    }
+
+    // ---------------------------------
+    // ROTA NÃO ENCONTRADA
+    // ---------------------------------
+
+    return json(res, 404, {
+      sucesso: false,
+      erro: "Rota não encontrada.",
+      caminho: path,
+      metodo: method
+    });
+
+  } catch (erro) {
+
+    log(
+      `ERRO GERAL: ${
+        erro?.stack ||
+        erro?.message ||
+        String(erro)
+      }`
     );
 
+    return json(res, 500, {
+      sucesso: false,
+      erro: "Erro interno da Function."
+    });
   }
-
-}
+};
