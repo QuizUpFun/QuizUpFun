@@ -1,2128 +1,503 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QuizUp Admin</title><style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizUp Admin</title>
 
-body{
-    font-family:Arial,Helvetica,sans-serif;
-    background:#f4f6fb;
-    color:#222;
-}
-
-/* LOGIN */
-
-#loginScreen{
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-    background:linear-gradient(135deg,#111827,#1e3a8a);
-}
-
-.login-box{
-    width:100%;
-    max-width:420px;
-    background:#fff;
-    border-radius:18px;
-    padding:35px 28px;
-    box-shadow:0 20px 60px rgba(0,0,0,.25);
-    text-align:center;
-}
-
-.login-icon{
-    font-size:42px;
-    margin-bottom:10px;
-}
-
-.login-box h1{
-    font-size:25px;
-    margin-bottom:8px;
-}
-
-.login-box p{
-    color:#777;
-    margin-bottom:28px;
-}
-
-.input-group{
-    text-align:left;
-    margin-bottom:18px;
-}
-
-.input-group label{
-    display:block;
-    font-weight:bold;
-    margin-bottom:7px;
-}
-
-.input-group input{
-    width:100%;
-    padding:14px;
-    border:1px solid #ddd;
-    border-radius:10px;
-    font-size:16px;
-    outline:none;
-}
-
-.input-group input:focus{
-    border-color:#2563eb;
-}
-
-.btn-login{
-    width:100%;
-    border:none;
-    padding:15px;
-    border-radius:10px;
-    background:#2563eb;
-    color:#fff;
-    font-size:16px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.btn-login:hover{
-    background:#1d4ed8;
-}
-
-.btn-login:disabled{
-    opacity:.7;
-    cursor:not-allowed;
-}
-
-#loginError{
-    display:none;
-    margin-top:15px;
-    padding:12px;
-    border-radius:8px;
-    background:#fee2e2;
-    color:#b91c1c;
-    font-size:14px;
-}
-
-/* PAINEL */
-
-#adminScreen{
-    display:none;
-    min-height:100vh;
-}
-
-header{
-    background:#111827;
-    color:#fff;
-    padding:16px 22px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:15px;
-    position:sticky;
-    top:0;
-    z-index:20;
-}
-
-.logo{
-    font-size:21px;
-    font-weight:bold;
-}
-
-.logo span{
-    color:#60a5fa;
-}
-
-.logout{
-    border:none;
-    background:#dc2626;
-    color:#fff;
-    padding:9px 15px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-.layout{
-    display:flex;
-    min-height:calc(100vh - 65px);
-}
-
-.sidebar{
-    width:230px;
-    background:#fff;
-    border-right:1px solid #e5e7eb;
-    padding:18px 12px;
-}
-
-.menu-btn{
-    width:100%;
-    text-align:left;
-    padding:13px 14px;
-    border:none;
-    background:transparent;
-    border-radius:9px;
-    margin-bottom:5px;
-    cursor:pointer;
-    font-size:15px;
-    color:#374151;
-}
-
-.menu-btn:hover,
-.menu-btn.active{
-    background:#eff6ff;
-    color:#2563eb;
-    font-weight:bold;
-}
-
-.content{
-    flex:1;
-    padding:25px;
-    overflow:auto;
-}
-
-.page{
-    display:none;
-}
-
-.page.active{
-    display:block;
-}
-
-.page-title{
-    font-size:25px;
-    margin-bottom:20px;
-}
-
-/* CARDS */
-
-.cards{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:15px;
-    margin-bottom:25px;
-}
-
-.card{
-    background:#fff;
-    border-radius:13px;
-    padding:20px;
-    box-shadow:0 2px 8px rgba(0,0,0,.05);
-}
-
-.card-title{
-    color:#6b7280;
-    font-size:14px;
-    margin-bottom:9px;
-}
-
-.card-value{
-    font-size:27px;
-    font-weight:bold;
-}
-
-/* TABELAS */
-
-.table-box{
-    background:#fff;
-    border-radius:13px;
-    padding:20px;
-    overflow:auto;
-    box-shadow:0 2px 8px rgba(0,0,0,.05);
-}
-
-.table-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:15px;
-    gap:10px;
-}
-
-.table-header h3{
-    font-size:18px;
-}
-
-.refresh{
-    border:none;
-    background:#2563eb;
-    color:white;
-    padding:9px 13px;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-    min-width:650px;
-}
-
-th,td{
-    text-align:left;
-    padding:12px 10px;
-    border-bottom:1px solid #eee;
-    font-size:14px;
-}
-
-th{
-    background:#f9fafb;
-}
-
-.badge{
-    display:inline-block;
-    padding:5px 9px;
-    border-radius:20px;
-    font-size:12px;
-    font-weight:bold;
-}
-
-.badge-pendente{
-    background:#fef3c7;
-    color:#92400e;
-}
-
-.badge-aprovado{
-    background:#dcfce7;
-    color:#166534;
-}
-
-.badge-recusado{
-    background:#fee2e2;
-    color:#991b1b;
-}
-
-.action-btn{
-    border:none;
-    padding:7px 10px;
-    border-radius:7px;
-    cursor:pointer;
-    font-size:12px;
-    margin-right:4px;
-}
-
-.approve{
-    background:#16a34a;
-    color:#fff;
-}
-
-.reject{
-    background:#dc2626;
-    color:#fff;
-}
-
-.read{
-    background:#2563eb;
-    color:#fff;
-}
-
-/* CONFIGURAÇÕES */
-
-.settings-box{
-    background:#fff;
-    border-radius:13px;
-    padding:22px;
-    box-shadow:0 2px 8px rgba(0,0,0,.05);
-}
-
-.setting-row{
-    padding:15px 0;
-    border-bottom:1px solid #eee;
-}
-
-.setting-row:last-child{
-    border-bottom:none;
-}
-
-.setting-label{
-    font-weight:bold;
-    margin-bottom:5px;
-}
-
-.setting-value{
-    color:#6b7280;
-    word-break:break-all;
-}
-
-/* MOBILE */
-
-@media(max-width:900px){
-
-    .cards{
-        grid-template-columns:repeat(2,1fr);
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
     }
 
-    .sidebar{
-        width:190px;
-    }
-}
-
-@media(max-width:650px){
-
-    header{
-        padding:13px 15px;
+    body {
+      min-height: 100vh;
+      background: #f4f6fb;
+      color: #1f2937;
     }
 
-    .logo{
-        font-size:18px;
+    /* LOGIN */
+
+    #loginPage {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: linear-gradient(135deg, #111827, #374151);
     }
 
-    .layout{
-        display:block;
+    .login-box {
+      width: 100%;
+      max-width: 410px;
+      background: white;
+      padding: 35px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
     }
 
-    .sidebar{
-        width:100%;
-        display:flex;
-        overflow-x:auto;
-        padding:8px;
-        border-right:none;
-        border-bottom:1px solid #e5e7eb;
+    .logo {
+      text-align: center;
+      margin-bottom: 30px;
     }
 
-    .menu-btn{
-        min-width:max-content;
-        width:auto;
-        margin-right:5px;
-        margin-bottom:0;
+    .logo-icon {
+      width: 65px;
+      height: 65px;
+      margin: auto;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #111827;
+      color: white;
+      font-size: 30px;
+      font-weight: bold;
     }
 
-    .content{
-        padding:15px;
+    .logo h1 {
+      margin-top: 14px;
+      font-size: 27px;
     }
 
-    .cards{
-        grid-template-columns:1fr 1fr;
-        gap:10px;
+    .logo p {
+      margin-top: 6px;
+      color: #6b7280;
+      font-size: 14px;
     }
 
-    .card{
-        padding:15px;
+    .input-group {
+      margin-bottom: 18px;
     }
 
-    .card-value{
-        font-size:22px;
+    .input-group label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 14px;
+      font-weight: bold;
     }
 
-    .page-title{
-        font-size:21px;
+    .input-group input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      outline: none;
+      font-size: 15px;
     }
-}
 
-@media(max-width:400px){
-
-    .cards{
-        grid-template-columns:1fr;
+    .input-group input:focus {
+      border-color: #111827;
     }
-}
-</style></head><body><!-- LOGIN --><div id="loginScreen"><div class="login-box">
 
-    <div class="login-icon">🔐</div>
+    .login-btn {
+      width: 100%;
+      padding: 15px;
+      border: 0;
+      border-radius: 10px;
+      background: #111827;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-    <h1>QuizUp Admin</h1>
+    .login-btn:hover {
+      background: #000;
+    }
 
-    <p>Painel administrativo</p>
+    #loginMessage {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #fee2e2;
+      color: #991b1b;
+      font-size: 14px;
+      text-align: center;
+    }
 
-    <div class="input-group">
-        <label for="adminEmail">E-mail</label>
+    /* PAINEL */
+
+    #adminPage {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 245px;
+      background: #111827;
+      color: white;
+      padding: 25px 15px;
+    }
+
+    .sidebar-logo {
+      padding: 0 12px 25px;
+      border-bottom: 1px solid #374151;
+      margin-bottom: 20px;
+    }
+
+    .sidebar-logo h2 {
+      font-size: 22px;
+    }
+
+    .sidebar-logo p {
+      color: #9ca3af;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .menu button {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 7px;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: #d1d5db;
+      text-align: left;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .menu button:hover,
+    .menu button.active {
+      background: #374151;
+      color: white;
+    }
+
+    .logout {
+      position: absolute;
+      left: 15px;
+      right: 15px;
+      bottom: 20px;
+    }
+
+    .logout button {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #4b5563;
+      border-radius: 9px;
+      background: transparent;
+      color: white;
+      cursor: pointer;
+    }
+
+    .content {
+      margin-left: 245px;
+      padding: 30px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .topbar h1 {
+      font-size: 28px;
+    }
+
+    .admin-user {
+      padding: 10px 15px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+      font-size: 14px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: white;
+      padding: 22px;
+      border-radius: 15px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.05);
+    }
+
+    .card-title {
+      color: #6b7280;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .card-value {
+      font-size: 27px;
+      font-weight: bold;
+    }
+
+    .section {
+      margin-top: 25px;
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.05);
+    }
+
+    .section h2 {
+      font-size: 19px;
+      margin-bottom: 20px;
+    }
+
+    .welcome {
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 900px) {
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 650px) {
+      .sidebar {
+        width: 70px;
+        padding: 15px 8px;
+      }
+
+      .sidebar-logo h2,
+      .sidebar-logo p,
+      .menu span,
+      .logout span {
+        display: none;
+      }
+
+      .menu button {
+        text-align: center;
+        font-size: 20px;
+      }
+
+      .content {
+        margin-left: 70px;
+        padding: 20px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        gap: 15px;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOGIN -->
+
+  <div id="loginPage">
+
+    <div class="login-box">
+
+      <div class="logo">
+        <div class="logo-icon">Q</div>
+        <h1>QuizUp Admin</h1>
+        <p>Painel administrativo</p>
+      </div>
+
+      <div class="input-group">
+        <label>E-mail</label>
         <input
-            type="email"
-            id="adminEmail"
-            value="castrole334@gmail.com"
-            autocomplete="username"
-            placeholder="Digite seu e-mail"
+          type="email"
+          id="email"
+          placeholder="Digite seu e-mail"
+          autocomplete="username"
         >
+      </div>
+
+      <div class="input-group">
+        <label>Senha</label>
+        <input
+          type="password"
+          id="password"
+          placeholder="Digite sua senha"
+          autocomplete="current-password"
+        >
+      </div>
+
+      <button class="login-btn" onclick="entrar()">
+        Entrar no painel
+      </button>
+
+      <div id="loginMessage"></div>
+
     </div>
 
-    <button
-        class="btn-login"
-        id="loginButton"
-        onclick="fazerLogin()"
-    >
-        🔐 ENTRAR NO PAINEL
-    </button>
-
-    <div id="loginError"></div>
-
-</div>
-
-</div><!-- ADMIN --><div id="adminScreen"><header>
-
-    <div class="logo">
-        🔐 QuizUp <span>Admin</span>
-    </div>
-
-    <button
-        class="logout"
-        onclick="sair()"
-    >
-        Sair
-    </button>
-
-</header>
+  </div>
 
 
-<div class="layout">
+  <!-- ADMIN -->
+
+  <div id="adminPage">
 
     <aside class="sidebar">
 
-        <button
-            class="menu-btn active"
-            onclick="abrirPagina('dashboard',this)"
-        >
-            📊 Dashboard
+      <div class="sidebar-logo">
+        <h2>QuizUp</h2>
+        <p>Painel Admin</p>
+      </div>
+
+      <div class="menu">
+
+        <button class="active" onclick="abrirPagina(this)">
+          📊 <span>Dashboard</span>
         </button>
 
-        <button
-            class="menu-btn"
-            onclick="abrirPagina('jogadores',this)"
-        >
-            👥 Jogadores
+        <button onclick="abrirPagina(this)">
+          👥 <span>Jogadores</span>
         </button>
 
-        <button
-            class="menu-btn"
-            onclick="abrirPagina('saques',this)"
-        >
-            💰 Saques
+        <button onclick="abrirPagina(this)">
+          ❓ <span>Perguntas</span>
         </button>
 
-        <button
-            class="menu-btn"
-            onclick="abrirPagina('mensagens',this)"
-        >
-            💬 Mensagens
+        <button onclick="abrirPagina(this)">
+          💰 <span>Saques</span>
         </button>
 
-        <button
-            class="menu-btn"
-            onclick="abrirPagina('parceiros',this)"
-        >
-            🤝 Parceiros
+        <button onclick="abrirPagina(this)">
+          🤝 <span>Parceiros</span>
         </button>
 
-        <button
-            class="menu-btn"
-            onclick="abrirPagina('configuracoes',this)"
-        >
-            ⚙️ Configurações
+        <button onclick="abrirPagina(this)">
+          📈 <span>Movimentações</span>
         </button>
+
+        <button onclick="abrirPagina(this)">
+          ⚙️ <span>Configurações</span>
+        </button>
+
+      </div>
+
+      <div class="logout">
+        <button onclick="sair()">
+          🚪 <span>Sair</span>
+        </button>
+      </div>
 
     </aside>
 
 
     <main class="content">
 
-        <!-- DASHBOARD -->
+      <div class="topbar">
 
-        <section
-            id="dashboard"
-            class="page active"
-        >
+        <div>
+          <h1>Dashboard</h1>
+        </div>
 
-            <h2 class="page-title">
-                Dashboard
-            </h2>
+        <div class="admin-user">
+          👤 Administrador
+        </div>
 
-            <div class="cards">
+      </div>
 
-                <div class="card">
-                    <div class="card-title">
-                        Total de usuários
-                    </div>
 
-                    <div
-                        class="card-value"
-                        id="totalUsuarios"
-                    >
-                        0
-                    </div>
-                </div>
+      <div class="cards">
 
+        <div class="card">
+          <div class="card-title">Jogadores</div>
+          <div class="card-value">0</div>
+        </div>
 
-                <div class="card">
-                    <div class="card-title">
-                        Jogadores ativos
-                    </div>
+        <div class="card">
+          <div class="card-title">Pontos distribuídos</div>
+          <div class="card-value">0</div>
+        </div>
 
-                    <div
-                        class="card-value"
-                        id="jogadoresAtivos"
-                    >
-                        0
-                    </div>
-                </div>
+        <div class="card">
+          <div class="card-title">Saques pendentes</div>
+          <div class="card-value">0</div>
+        </div>
 
+        <div class="card">
+          <div class="card-title">Valor dos saques</div>
+          <div class="card-value">R$ 0,00</div>
+        </div>
 
-                <div class="card">
-                    <div class="card-title">
-                        Total de pontos
-                    </div>
+      </div>
 
-                    <div
-                        class="card-value"
-                        id="totalPontos"
-                    >
-                        0
-                    </div>
-                </div>
 
+      <div class="section">
 
-                <div class="card">
-                    <div class="card-title">
-                        Saldo dos jogadores
-                    </div>
+        <h2>Visão geral</h2>
 
-                    <div
-                        class="card-value"
-                        id="totalSaldo"
-                    >
-                        R$ 0,00
-                    </div>
-                </div>
+        <p class="welcome">
+          Bem-vindo ao painel administrativo do QuizUp.
+          Aqui você poderá administrar jogadores, perguntas,
+          saques, parceiros e demais informações do sistema.
+        </p>
 
-            </div>
-
-
-            <div class="cards">
-
-                <div class="card">
-                    <div class="card-title">
-                        Saques pendentes
-                    </div>
-
-                    <div
-                        class="card-value"
-                        id="saquesPendentes"
-                    >
-                        0
-                    </div>
-                </div>
-
-
-                <div class="card">
-                    <div class="card-title">
-                        Saques aprovados
-                    </div>
-
-                    <div
-                        class="card-value"
-                        id="saquesAprovados"
-                    >
-                        0
-                    </div>
-                </div>
-
-
-                <div class="card">
-                    <div class="card-title">
-                        Saques recusados
-                    </div>
-
-                    <div
-                        class="card-value"
-                        id="saquesRecusados"
-                    >
-                        0
-                    </div>
-                </div>
-
-
-                <div class="card">
-                    <div class="card-title">
-                        Status do servidor
-                    </div>
-
-                    <div
-                        class="card-value"
-                        id="serverStatus"
-                    >
-                        🟢
-                    </div>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- JOGADORES -->
-
-        <section
-            id="jogadores"
-            class="page"
-        >
-
-            <h2 class="page-title">
-                Jogadores
-            </h2>
-
-            <div class="table-box">
-
-                <div class="table-header">
-
-                    <h3>
-                        Lista de jogadores
-                    </h3>
-
-                    <button
-                        class="refresh"
-                        onclick="carregarJogadores()"
-                    >
-                        🔄 Atualizar
-                    </button>
-
-                </div>
-
-                <div id="jogadoresTabela">
-                    Carregando...
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- SAQUES -->
-
-        <section
-            id="saques"
-            class="page"
-        >
-
-            <h2 class="page-title">
-                Saques
-            </h2>
-
-            <div class="table-box">
-
-                <div class="table-header">
-
-                    <h3>
-                        Solicitações de saque
-                    </h3>
-
-                    <button
-                        class="refresh"
-                        onclick="carregarSaques()"
-                    >
-                        🔄 Atualizar
-                    </button>
-
-                </div>
-
-                <div id="saquesTabela">
-                    Carregando...
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- MENSAGENS -->
-
-        <section
-            id="mensagens"
-            class="page"
-        >
-
-            <h2 class="page-title">
-                Mensagens
-            </h2>
-
-            <div class="table-box">
-
-                <div class="table-header">
-
-                    <h3>
-                        Mensagens dos jogadores
-                    </h3>
-
-                    <button
-                        class="refresh"
-                        onclick="carregarMensagens()"
-                    >
-                        🔄 Atualizar
-                    </button>
-
-                </div>
-
-                <div id="mensagensTabela">
-                    Carregando...
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- PARCEIROS -->
-
-        <section
-            id="parceiros"
-            class="page"
-        >
-
-            <h2 class="page-title">
-                Parceiros
-            </h2>
-
-            <div class="table-box">
-
-                <div class="table-header">
-
-                    <h3>
-                        Área de parceiros
-                    </h3>
-
-                </div>
-
-                <p>
-                    Área disponível para gerenciamento de parceiros.
-                </p>
-
-            </div>
-
-        </section>
-
-
-        <!-- CONFIGURAÇÕES -->
-
-        <section
-            id="configuracoes"
-            class="page"
-        >
-
-            <h2 class="page-title">
-                Configurações
-            </h2>
-
-            <div class="settings-box">
-
-                <div class="setting-row">
-
-                    <div class="setting-label">
-                        Sistema
-                    </div>
-
-                    <div class="setting-value">
-                        QuizUp
-                    </div>
-
-                </div>
-
-
-                <div class="setting-row">
-
-                    <div class="setting-label">
-                        Painel
-                    </div>
-
-                    <div class="setting-value">
-                        QuizUp Admin
-                    </div>
-
-                </div>
-
-
-                <div class="setting-row">
-
-                    <div class="setting-label">
-                        Autenticação
-                    </div>
-
-                    <div class="setting-value">
-                        Login administrativo por e-mail
-                    </div>
-
-                </div>
-
-
-                <div class="setting-row">
-
-                    <div class="setting-label">
-                        Function
-                    </div>
-
-                    <div class="setting-value">
-                        quizup-admin
-                    </div>
-
-                </div>
-
-
-                <div class="setting-row">
-
-                    <div class="setting-label">
-                        Status
-                    </div>
-
-                    <div
-                        class="setting-value"
-                        id="configStatus"
-                    >
-                        Verificando...
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
+      </div>
 
     </main>
 
-</div>
-
-</div><script>
-
-/*
-=========================================================
-CONFIGURAÇÃO
-=========================================================
-*/
-
-const FUNCTION_URL =
-    "https://6a90b4dd00237df7ff4b.fra.appwrite.run";
+  </div>
 
 
-const LOGIN_URL =
-    FUNCTION_URL + "/api/admin/login";
+  <script>
 
+    function entrar() {
 
-let adminToken =
-    localStorage.getItem("quizup_admin_token") || "";
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const message = document.getElementById("loginMessage");
 
-
-/*
-=========================================================
-ELEMENTOS
-=========================================================
-*/
-
-const loginScreen =
-    document.getElementById("loginScreen");
-
-const adminScreen =
-    document.getElementById("adminScreen");
-
-const loginError =
-    document.getElementById("loginError");
-
-const loginButton =
-    document.getElementById("loginButton");
-
-
-/*
-=========================================================
-INICIALIZAÇÃO
-=========================================================
-*/
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function(){
-
-        if(adminToken){
-
-            mostrarPainel();
-
-        }
-
-    }
-);
-
-
-/*
-=========================================================
-MOSTRAR ERRO
-=========================================================
-*/
-
-function mostrarErro(mensagem){
-
-    loginError.textContent =
-        mensagem;
-
-    loginError.style.display =
-        "block";
-
-}
-
-
-/*
-=========================================================
-LOGIN
-=========================================================
-*/
-
-async function fazerLogin(){
-
-    loginError.style.display =
-        "none";
-
-
-    const email =
-        document
-        .getElementById("adminEmail")
-        .value
-        .trim()
-        .toLowerCase();
-
-
-    if(!email){
-
-        mostrarErro(
-            "Digite o e-mail."
-        );
-
+      if (!email || !password) {
+        message.style.display = "block";
+        message.textContent = "Preencha o e-mail e a senha.";
         return;
+      }
 
+      /*
+        O login real será conectado ao novo backend.
+        Não colocamos uma senha fixa no HTML por segurança.
+      */
+
+      message.style.display = "block";
+      message.textContent =
+        "A interface está pronta. O sistema de autenticação será conectado na próxima etapa.";
     }
 
 
-    loginButton.disabled =
-        true;
+    function sair() {
 
-    loginButton.textContent =
-        "⏳ ENTRANDO...";
+      document.getElementById("adminPage").style.display = "none";
+      document.getElementById("loginPage").style.display = "flex";
 
-
-    try{
-
-        const resposta =
-            await fetch(
-                LOGIN_URL,
-                {
-                    method:"POST",
-
-                    headers:{
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:JSON.stringify({
-                        email:email
-                    })
-                }
-            );
-
-
-        const texto =
-            await resposta.text();
-
-
-        let dados = {};
-
-        try{
-
-            dados =
-                texto
-                ? JSON.parse(texto)
-                : {};
-
-        }catch(e){
-
-            dados = {};
-
-        }
-
-
-        if(!resposta.ok){
-
-            throw new Error(
-                dados.error ||
-                "Não foi possível fazer login."
-            );
-
-        }
-
-
-        if(
-            !dados.success ||
-            !dados.token
-        ){
-
-            throw new Error(
-                dados.error ||
-                "A Function não retornou um token de acesso."
-            );
-
-        }
-
-
-        adminToken =
-            dados.token;
-
-
-        localStorage.setItem(
-            "quizup_admin_token",
-            adminToken
-        );
-
-
-        mostrarPainel();
-
-
-    }catch(erro){
-
-        console.error(
-            "Erro no login:",
-            erro
-        );
-
-
-        mostrarErro(
-            erro.message ||
-            "Falha ao conectar ao servidor."
-        );
-
-
-    }finally{
-
-        loginButton.disabled =
-            false;
-
-        loginButton.textContent =
-            "🔐 ENTRAR NO PAINEL";
-
-    }
-
-}
-
-
-/*
-=========================================================
-MOSTRAR PAINEL
-=========================================================
-*/
-
-function mostrarPainel(){
-
-    loginScreen.style.display =
-        "none";
-
-    adminScreen.style.display =
-        "block";
-
-
-    carregarResumo();
-
-}
-
-
-/*
-=========================================================
-REQUISIÇÃO AUTENTICADA
-=========================================================
-*/
-
-async function api(
-    caminho,
-    opcoes = {}
-){
-
-    const headers = {
-
-        ...(opcoes.headers || {}),
-
-        "Authorization":
-            "Bearer " + adminToken,
-
-        "Content-Type":
-            "application/json"
-
-    };
-
-
-    const resposta =
-        await fetch(
-            FUNCTION_URL + caminho,
-            {
-                ...opcoes,
-                headers:headers
-            }
-        );
-
-
-    const texto =
-        await resposta.text();
-
-
-    let dados = {};
-
-    try{
-
-        dados =
-            texto
-            ? JSON.parse(texto)
-            : {};
-
-    }catch(e){
-
-        dados = {
-            error:texto
-        };
-
+      document.getElementById("email").value = "";
+      document.getElementById("password").value = "";
     }
 
 
-    if(
-        resposta.status === 401
-    ){
+    function abrirPagina(botao) {
 
-        sair();
+      document.querySelectorAll(".menu button").forEach(function(item) {
+        item.classList.remove("active");
+      });
 
-        throw new Error(
-            "Sessão expirada. Faça login novamente."
-        );
+      botao.classList.add("active");
 
     }
 
+  </script>
 
-    if(!resposta.ok){
-
-        throw new Error(
-            dados.error ||
-            "Erro na comunicação com o servidor."
-        );
-
-    }
-
-
-    return dados;
-
-}
-
-
-/*
-=========================================================
-NAVEGAÇÃO
-=========================================================
-*/
-
-function abrirPagina(
-    pagina,
-    botao
-){
-
-    document
-        .querySelectorAll(".page")
-        .forEach(
-            function(item){
-
-                item.classList.remove(
-                    "active"
-                );
-
-            }
-        );
-
-
-    document
-        .getElementById(pagina)
-        .classList.add("active");
-
-
-    document
-        .querySelectorAll(".menu-btn")
-        .forEach(
-            function(item){
-
-                item.classList.remove(
-                    "active"
-                );
-
-            }
-        );
-
-
-    if(botao){
-
-        botao.classList.add(
-            "active"
-        );
-
-    }
-
-
-    if(pagina === "dashboard"){
-
-        carregarResumo();
-
-    }
-
-
-    if(pagina === "jogadores"){
-
-        carregarJogadores();
-
-    }
-
-
-    if(pagina === "saques"){
-
-        carregarSaques();
-
-    }
-
-
-    if(pagina === "mensagens"){
-
-        carregarMensagens();
-
-    }
-
-}
-
-
-/*
-=========================================================
-RESUMO
-=========================================================
-*/
-
-async function carregarResumo(){
-
-    try{
-
-        const dados =
-            await api(
-                "/api/admin/resumo"
-            );
-
-
-        document.getElementById(
-            "totalUsuarios"
-        ).textContent =
-            formatarNumero(
-                dados.totalUsuarios ??
-                dados.usuarios ??
-                dados.totalJogadores ??
-                0
-            );
-
-
-        document.getElementById(
-            "jogadoresAtivos"
-        ).textContent =
-            formatarNumero(
-                dados.jogadoresAtivos || 0
-            );
-
-
-        document.getElementById(
-            "totalPontos"
-        ).textContent =
-            formatarNumero(
-                dados.totalPontos ??
-                dados.pontos ??
-                0
-            );
-
-
-        document.getElementById(
-            "totalSaldo"
-        ).textContent =
-            formatarMoeda(
-                dados.totalSaldo || 0
-            );
-
-
-        document.getElementById(
-            "saquesPendentes"
-        ).textContent =
-            formatarNumero(
-                dados.saquesPendentes ??
-                dados.pendentes ??
-                0
-            );
-
-
-        document.getElementById(
-            "saquesAprovados"
-        ).textContent =
-            formatarNumero(
-                dados.saquesAprovados ??
-                dados.aprovados ??
-                0
-            );
-
-
-        document.getElementById(
-            "saquesRecusados"
-        ).textContent =
-            formatarNumero(
-                dados.saquesRecusados ??
-                dados.recusados ??
-                0
-            );
-
-
-        document.getElementById(
-            "serverStatus"
-        ).textContent =
-            "🟢";
-
-
-        document.getElementById(
-            "configStatus"
-        ).textContent =
-            "🟢 Online";
-
-
-    }catch(e){
-
-        console.error(
-            "Erro no resumo:",
-            e
-        );
-
-
-        document.getElementById(
-            "serverStatus"
-        ).textContent =
-            "🔴";
-
-
-        document.getElementById(
-            "configStatus"
-        ).textContent =
-            "🔴 Erro";
-
-
-    }
-
-}
-
-
-/*
-=========================================================
-JOGADORES
-=========================================================
-*/
-
-async function carregarJogadores(){
-
-    const elemento =
-        document.getElementById(
-            "jogadoresTabela"
-        );
-
-
-    elemento.innerHTML =
-        "Carregando...";
-
-
-    try{
-
-        const dados =
-            await api(
-                "/api/admin/jogadores"
-            );
-
-
-        const lista =
-            Array.isArray(
-                dados.jogadores
-            )
-            ? dados.jogadores
-            : [];
-
-
-        if(!lista.length){
-
-            elemento.innerHTML =
-                "<p>Nenhum jogador encontrado.</p>";
-
-            return;
-
-        }
-
-
-        let html = `
-
-        <table>
-
-        <thead>
-
-        <tr>
-            <th>ID</th>
-            <th>E-mail</th>
-            <th>Pontos</th>
-            <th>Saldo</th>
-            <th>Indicação</th>
-        </tr>
-
-        </thead>
-
-        <tbody>
-        `;
-
-
-        lista.forEach(
-            function(jogador){
-
-                const id =
-                    jogador.$id ||
-                    jogador.id ||
-                    "-";
-
-
-                const email =
-                    jogador.email ||
-                    jogador["E-mail"] ||
-                    "-";
-
-
-                const pontos =
-                    jogador.pontos ||
-                    0;
-
-
-                const saldo =
-                    jogador.equilibrio ??
-                    jogador.saldo ??
-                    jogador.valor ??
-                    0;
-
-
-                const indicacao =
-                    jogador.código_de_indicação ||
-                    jogador.codigo_de_indicacao ||
-                    jogador.codigo ||
-                    "-";
-
-
-                html += `
-
-                <tr>
-
-                    <td>${escapar(id)}</td>
-
-                    <td>${escapar(email)}</td>
-
-                    <td>${formatarNumero(pontos)}</td>
-
-                    <td>${formatarMoeda(saldo)}</td>
-
-                    <td>${escapar(indicacao)}</td>
-
-                </tr>
-
-                `;
-
-            }
-        );
-
-
-        html += `
-        </tbody>
-        </table>
-        `;
-
-
-        elemento.innerHTML =
-            html;
-
-
-    }catch(e){
-
-        elemento.innerHTML =
-            "<p>Erro ao carregar jogadores: " +
-            escapar(e.message) +
-            "</p>";
-
-    }
-
-}
-
-
-/*
-=========================================================
-SAQUES
-=========================================================
-*/
-
-async function carregarSaques(){
-
-    const elemento =
-        document.getElementById(
-            "saquesTabela"
-        );
-
-
-    elemento.innerHTML =
-        "Carregando...";
-
-
-    try{
-
-        const dados =
-            await api(
-                "/api/admin/saques"
-            );
-
-
-        const lista =
-            Array.isArray(
-                dados.saques
-            )
-            ? dados.saques
-            : [];
-
-
-        if(!lista.length){
-
-            elemento.innerHTML =
-                "<p>Nenhum saque encontrado.</p>";
-
-            return;
-
-        }
-
-
-        let html = `
-
-        <table>
-
-        <thead>
-
-        <tr>
-            <th>ID</th>
-            <th>E-mail</th>
-            <th>PIX</th>
-            <th>Valor</th>
-            <th>Status</th>
-            <th>Ações</th>
-        </tr>
-
-        </thead>
-
-        <tbody>
-        `;
-
-
-        lista.forEach(
-            function(saque){
-
-                const id =
-                    saque.$id ||
-                    saque.id ||
-                    "-";
-
-
-                const email =
-                    saque.email ||
-                    "-";
-
-
-                const pix =
-                    saque.pix_key ||
-                    saque.pix ||
-                    "-";
-
-
-                const valor =
-                    saque.quantia ??
-                    saque.valor ??
-                    saque.valor_jogador ??
-                    0;
-
-
-                const status =
-                    String(
-                        saque.status ||
-                        "pendente"
-                    )
-                    .toLowerCase();
-
-
-                let classe =
-                    "badge-pendente";
-
-
-                if(status === "aprovado"){
-
-                    classe =
-                        "badge-aprovado";
-
-                }
-
-
-                if(status === "recusado"){
-
-                    classe =
-                        "badge-recusado";
-
-                }
-
-
-                html += `
-
-                <tr>
-
-                    <td>${escapar(id)}</td>
-
-                    <td>${escapar(email)}</td>
-
-                    <td>${escapar(pix)}</td>
-
-                    <td>${formatarMoeda(valor)}</td>
-
-                    <td>
-                        <span class="badge ${classe}">
-                            ${escapar(status)}
-                        </span>
-                    </td>
-
-                    <td>
-
-                        ${
-                            status === "pendente"
-                            ?
-                            `
-                            <button
-                                class="action-btn approve"
-                                onclick="aprovarSaque('${escaparJS(id)}')"
-                            >
-                                Aprovar
-                            </button>
-
-                            <button
-                                class="action-btn reject"
-                                onclick="recusarSaque('${escaparJS(id)}')"
-                            >
-                                Recusar
-                            </button>
-                            `
-                            :
-                            "-"
-                        }
-
-                    </td>
-
-                </tr>
-
-                `;
-
-            }
-        );
-
-
-        html += `
-        </tbody>
-        </table>
-        `;
-
-
-        elemento.innerHTML =
-            html;
-
-
-    }catch(e){
-
-        elemento.innerHTML =
-            "<p>Erro ao carregar saques: " +
-            escapar(e.message) +
-            "</p>";
-
-    }
-
-}
-
-
-/*
-=========================================================
-APROVAR SAQUE
-=========================================================
-*/
-
-async function aprovarSaque(id){
-
-    if(
-        !confirm(
-            "Deseja aprovar este saque?"
-        )
-    ){
-
-        return;
-
-    }
-
-
-    try{
-
-        await api(
-            "/api/admin/saque/aprovar",
-            {
-                method:"POST",
-
-                body:JSON.stringify({
-                    id:id
-                })
-            }
-        );
-
-
-        alert(
-            "Saque aprovado."
-        );
-
-
-        carregarSaques();
-        carregarResumo();
-
-
-    }catch(e){
-
-        alert(
-            e.message
-        );
-
-    }
-
-}
-
-
-/*
-=========================================================
-RECUSAR SAQUE
-=========================================================
-*/
-
-async function recusarSaque(id){
-
-    if(
-        !confirm(
-            "Deseja recusar este saque?"
-        )
-    ){
-
-        return;
-
-    }
-
-
-    try{
-
-        await api(
-            "/api/admin/saque/recusar",
-            {
-                method:"POST",
-
-                body:JSON.stringify({
-                    id:id
-                })
-            }
-        );
-
-
-        alert(
-            "Saque recusado."
-        );
-
-
-        carregarSaques();
-        carregarResumo();
-
-
-    }catch(e){
-
-        alert(
-            e.message
-        );
-
-    }
-
-}
-
-
-/*
-=========================================================
-MENSAGENS
-=========================================================
-*/
-
-async function carregarMensagens(){
-
-    const elemento =
-        document.getElementById(
-            "mensagensTabela"
-        );
-
-
-    elemento.innerHTML =
-        "Carregando...";
-
-
-    try{
-
-        const dados =
-            await api(
-                "/api/admin/mensagens"
-            );
-
-
-        const lista =
-            Array.isArray(
-                dados.mensagens
-            )
-            ? dados.mensagens
-            : [];
-
-
-        if(!lista.length){
-
-            elemento.innerHTML =
-                "<p>Nenhuma mensagem encontrada.</p>";
-
-            return;
-
-        }
-
-
-        let html = `
-
-        <table>
-
-        <thead>
-
-        <tr>
-            <th>ID</th>
-            <th>E-mail</th>
-            <th>Mensagem</th>
-            <th>Status</th>
-            <th>Ação</th>
-        </tr>
-
-        </thead>
-
-        <tbody>
-        `;
-
-
-        lista.forEach(
-            function(mensagem){
-
-                const id =
-                    mensagem.$id ||
-                    mensagem.id ||
-                    "-";
-
-
-                const email =
-                    mensagem.email ||
-                    "-";
-
-
-                const texto =
-                    mensagem.mensagem ||
-                    mensagem.texto ||
-                    mensagem.descricao ||
-                    "-";
-
-
-                const status =
-                    mensagem.status ||
-                    "não lida";
-
-
-                html += `
-
-                <tr>
-
-                    <td>${escapar(id)}</td>
-
-                    <td>${escapar(email)}</td>
-
-                    <td>${escapar(texto)}</td>
-
-                    <td>${escapar(status)}</td>
-
-                    <td>
-
-                        ${
-                            String(status).toLowerCase()
-                            !== "lida"
-                            ?
-                            `
-                            <button
-                                class="action-btn read"
-                                onclick="marcarLida('${escaparJS(id)}')"
-                            >
-                                Marcar como lida
-                            </button>
-                            `
-                            :
-                            "✓"
-                        }
-
-                    </td>
-
-                </tr>
-
-                `;
-
-            }
-        );
-
-
-        html += `
-        </tbody>
-        </table>
-        `;
-
-
-        elemento.innerHTML =
-            html;
-
-
-    }catch(e){
-
-        elemento.innerHTML =
-            "<p>Erro ao carregar mensagens: " +
-            escapar(e.message) +
-            "</p>";
-
-    }
-
-}
-
-
-/*
-=========================================================
-MARCAR MENSAGEM COMO LIDA
-=========================================================
-*/
-
-async function marcarLida(id){
-
-    try{
-
-        await api(
-            "/api/admin/mensagem/lida",
-            {
-                method:"POST",
-
-                body:JSON.stringify({
-                    id:id
-                })
-            }
-        );
-
-
-        carregarMensagens();
-
-
-    }catch(e){
-
-        alert(
-            e.message
-        );
-
-    }
-
-}
-
-
-/*
-=========================================================
-SAIR
-=========================================================
-*/
-
-function sair(){
-
-    adminToken =
-        "";
-
-
-    localStorage.removeItem(
-        "quizup_admin_token"
-    );
-
-
-    adminScreen.style.display =
-        "none";
-
-
-    loginScreen.style.display =
-        "flex";
-
-
-    loginError.style.display =
-        "none";
-
-}
-
-
-/*
-=========================================================
-FORMATAÇÃO
-=========================================================
-*/
-
-function formatarNumero(valor){
-
-    return Number(
-        valor || 0
-    ).toLocaleString(
-        "pt-BR"
-    );
-
-}
-
-
-function formatarMoeda(valor){
-
-    return Number(
-        valor || 0
-    ).toLocaleString(
-        "pt-BR",
-        {
-            style:"currency",
-            currency:"BRL"
-        }
-    );
-
-}
-
-
-/*
-=========================================================
-SEGURANÇA DE HTML
-=========================================================
-*/
-
-function escapar(valor){
-
-    return String(
-        valor ?? ""
-    )
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-
-}
-
-
-function escaparJS(valor){
-
-    return String(
-        valor ?? ""
-    )
-    .replaceAll("\\","\\\\")
-    .replaceAll("'","\\'")
-    .replaceAll("\n","\\n")
-    .replaceAll("\r","\\r");
-
-}
-
-</script></body>
-  </html>
+</body>
+    </html>
