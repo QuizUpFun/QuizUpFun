@@ -1,8 +1,12 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QuizUp Admin</title>  <style>
+
+  <title>QuizUp Admin</title>
+
+  <style>
     * {
       box-sizing: border-box;
       margin: 0;
@@ -100,12 +104,8 @@
       cursor: pointer;
     }
 
-    .login-btn:hover {
-      background: #000;
-    }
-
     .login-btn:disabled {
-      opacity: 0.7;
+      opacity: .7;
       cursor: wait;
     }
 
@@ -254,6 +254,47 @@
       line-height: 1.6;
     }
 
+    .loading {
+      color: #6b7280;
+      padding: 20px 0;
+    }
+
+    .empty {
+      color: #6b7280;
+      padding: 20px 0;
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: #f9fafb;
+      font-weight: bold;
+    }
+
     @media (max-width: 900px) {
       .cards {
         grid-template-columns: repeat(2, 1fr);
@@ -293,149 +334,172 @@
         flex-direction: column;
       }
     }
-  </style></head><body>  <!-- LOGIN -->  <div id="loginPage"><div class="login-box">
+  </style>
+</head>
 
-  <div class="logo">
-    <div class="logo-icon">Q</div>
-    <h1>QuizUp Admin</h1>
-    <p>Painel administrativo</p>
-  </div>
+<body>
 
-  <div class="input-group">
-    <label>E-mail</label>
+  <!-- LOGIN -->
 
-    <input
-      type="email"
-      id="email"
-      placeholder="Digite seu e-mail"
-      autocomplete="username"
-    >
-  </div>
+  <div id="loginPage">
 
-  <div class="input-group">
-    <label>Senha</label>
+    <div class="login-box">
 
-    <input
-      type="password"
-      id="password"
-      placeholder="Digite sua senha"
-      autocomplete="current-password"
-    >
-  </div>
+      <div class="logo">
+        <div class="logo-icon">Q</div>
+        <h1>QuizUp Admin</h1>
+        <p>Painel administrativo</p>
+      </div>
 
-  <button class="login-btn" onclick="entrar()">
-    Entrar no painel
-  </button>
+      <div class="input-group">
+        <label>E-mail</label>
 
-  <div id="loginMessage"></div>
+        <input
+          type="email"
+          id="email"
+          placeholder="Digite seu e-mail"
+          autocomplete="username"
+        >
+      </div>
 
-</div>
+      <div class="input-group">
+        <label>Senha</label>
 
-  </div>  <!-- PAINEL ADMIN -->  <div id="adminPage"><aside class="sidebar">
+        <input
+          type="password"
+          id="password"
+          placeholder="Digite sua senha"
+          autocomplete="current-password"
+        >
+      </div>
 
-  <div class="sidebar-logo">
-    <h2>QuizUp</h2>
-    <p>Painel Admin</p>
-  </div>
+      <button class="login-btn" onclick="entrar()">
+        Entrar no painel
+      </button>
 
-  <div class="menu">
+      <div id="loginMessage"></div>
 
-    <button class="active" onclick="abrirPagina(this)">
-      📊 <span>Dashboard</span>
-    </button>
-
-    <button onclick="abrirPagina(this)">
-      👥 <span>Jogadores</span>
-    </button>
-
-    <button onclick="abrirPagina(this)">
-      ❓ <span>Perguntas</span>
-    </button>
-
-    <button onclick="abrirPagina(this)">
-      💰 <span>Saques</span>
-    </button>
-
-    <button onclick="abrirPagina(this)">
-      🤝 <span>Parceiros</span>
-    </button>
-
-    <button onclick="abrirPagina(this)">
-      📈 <span>Movimentações</span>
-    </button>
-
-    <button onclick="abrirPagina(this)">
-      ⚙️ <span>Configurações</span>
-    </button>
-
-  </div>
-
-  <div class="logout">
-
-    <button onclick="sair()">
-      🚪 <span>Sair</span>
-    </button>
-
-  </div>
-
-</aside>
-
-
-<main class="content">
-
-  <div class="topbar">
-
-    <div>
-      <h1>Dashboard</h1>
-    </div>
-
-    <div class="admin-user">
-      👤 Administrador
     </div>
 
   </div>
 
 
-  <div class="cards">
+  <!-- PAINEL -->
 
-    <div class="card">
-      <div class="card-title">Jogadores</div>
-      <div class="card-value">0</div>
-    </div>
+  <div id="adminPage">
 
-    <div class="card">
-      <div class="card-title">Pontos distribuídos</div>
-      <div class="card-value">0</div>
-    </div>
+    <aside class="sidebar">
 
-    <div class="card">
-      <div class="card-title">Saques pendentes</div>
-      <div class="card-value">0</div>
-    </div>
+      <div class="sidebar-logo">
+        <h2>QuizUp</h2>
+        <p>Painel Admin</p>
+      </div>
 
-    <div class="card">
-      <div class="card-title">Valor dos saques</div>
-      <div class="card-value">R$ 0,00</div>
-    </div>
+      <div class="menu">
+
+        <button class="active" onclick="abrirPagina('dashboard', this)">
+          📊 <span>Dashboard</span>
+        </button>
+
+        <button onclick="abrirPagina('jogadores', this)">
+          👥 <span>Jogadores</span>
+        </button>
+
+        <button onclick="abrirPagina('perguntas', this)">
+          ❓ <span>Perguntas</span>
+        </button>
+
+        <button onclick="abrirPagina('saques', this)">
+          💰 <span>Saques</span>
+        </button>
+
+        <button onclick="abrirPagina('parceiros', this)">
+          🤝 <span>Parceiros</span>
+        </button>
+
+        <button onclick="abrirPagina('movimentacoes', this)">
+          📈 <span>Movimentações</span>
+        </button>
+
+        <button onclick="abrirPagina('configuracoes', this)">
+          ⚙️ <span>Configurações</span>
+        </button>
+
+      </div>
+
+      <div class="logout">
+
+        <button onclick="sair()">
+          🚪 <span>Sair</span>
+        </button>
+
+      </div>
+
+    </aside>
+
+
+    <main class="content">
+
+      <div class="topbar">
+
+        <div>
+          <h1 id="tituloPagina">Dashboard</h1>
+        </div>
+
+        <div class="admin-user">
+          👤 Administrador
+        </div>
+
+      </div>
+
+      <div id="conteudoPagina">
+
+        <div class="cards">
+
+          <div class="card">
+            <div class="card-title">Jogadores</div>
+            <div class="card-value" id="totalJogadores">0</div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Pontos distribuídos</div>
+            <div class="card-value" id="totalPontos">0</div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Saques pendentes</div>
+            <div class="card-value" id="totalSaques">0</div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Valor dos saques</div>
+            <div class="card-value" id="valorSaques">R$ 0,00</div>
+          </div>
+
+        </div>
+
+        <div class="section">
+
+          <h2>Visão geral</h2>
+
+          <p class="welcome">
+            Bem-vindo ao painel administrativo do QuizUp.
+            Aqui você poderá administrar jogadores,
+            perguntas, saques, parceiros e demais informações do sistema.
+          </p>
+
+        </div>
+
+      </div>
+
+    </main>
 
   </div>
 
 
-  <div class="section">
+  <!-- JAVASCRIPT -->
 
-    <h2>Visão geral</h2>
-
-    <p class="welcome">
-      Bem-vindo ao painel administrativo do QuizUp.
-      Aqui você poderá administrar jogadores, perguntas,
-      saques, parceiros e demais informações do sistema.
-    </p>
-
-  </div>
-
-</main>
-
-  </div>  <!-- JAVASCRIPT -->  <script>
+  <script>
 
     const API_URL =
       "https://quizup-api-qxn2.onrender.com";
@@ -472,29 +536,32 @@
 
       button.disabled = true;
 
-      button.textContent = "Entrando...";
+      button.textContent =
+        "Entrando...";
 
 
       try {
 
-        const resposta = await fetch(
-          `${API_URL}/api/admin/login`,
-          {
-            method: "POST",
+        const resposta =
+          await fetch(
+            `${API_URL}/api/admin/login`,
+            {
+              method: "POST",
 
-            headers: {
-              "Content-Type": "application/json"
-            },
+              headers: {
+                "Content-Type": "application/json"
+              },
 
-            body: JSON.stringify({
-              email: email,
-              password: password
-            })
-          }
-        );
+              body: JSON.stringify({
+                email: email,
+                password: password
+              })
+            }
+          );
 
 
-        const dados = await resposta.json();
+        const dados =
+          await resposta.json();
 
 
         if (!resposta.ok) {
@@ -533,7 +600,8 @@
 
         console.error(error);
 
-        message.style.display = "block";
+        message.style.display =
+          "block";
 
         message.textContent =
           error.message ||
@@ -541,7 +609,8 @@
 
       } finally {
 
-        button.disabled = false;
+        button.disabled =
+          false;
 
         button.textContent =
           "Entrar no painel";
@@ -560,12 +629,14 @@
 
       document.getElementById(
         "adminPage"
-      ).style.display = "none";
+      ).style.display =
+        "none";
 
 
       document.getElementById(
         "loginPage"
-      ).style.display = "flex";
+      ).style.display =
+        "flex";
 
 
       document.getElementById(
@@ -580,12 +651,13 @@
 
       document.getElementById(
         "loginMessage"
-      ).style.display = "none";
+      ).style.display =
+        "none";
 
     }
 
 
-    function abrirPagina(botao) {
+    function abrirPagina(pagina, botao) {
 
       document
         .querySelectorAll(".menu button")
@@ -597,6 +669,371 @@
 
 
       botao.classList.add("active");
+
+
+      const titulo =
+        document.getElementById("tituloPagina");
+
+      const conteudo =
+        document.getElementById("conteudoPagina");
+
+
+      if (pagina === "dashboard") {
+
+        titulo.textContent =
+          "Dashboard";
+
+        conteudo.innerHTML = `
+
+          <div class="cards">
+
+            <div class="card">
+              <div class="card-title">
+                Jogadores
+              </div>
+
+              <div class="card-value">
+                0
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">
+                Pontos distribuídos
+              </div>
+
+              <div class="card-value">
+                0
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">
+                Saques pendentes
+              </div>
+
+              <div class="card-value">
+                0
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">
+                Valor dos saques
+              </div>
+
+              <div class="card-value">
+                R$ 0,00
+              </div>
+            </div>
+
+          </div>
+
+          <div class="section">
+
+            <h2>Visão geral</h2>
+
+            <p class="welcome">
+              Bem-vindo ao painel administrativo do QuizUp.
+              Aqui você poderá administrar jogadores,
+              perguntas, saques, parceiros e demais informações do sistema.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+      }
+
+
+      if (pagina === "jogadores") {
+
+        titulo.textContent =
+          "Jogadores";
+
+        conteudo.innerHTML = `
+
+          <div class="section">
+
+            <h2>👥 Jogadores cadastrados</h2>
+
+            <p class="loading">
+              Carregando jogadores...
+            </p>
+
+            <div id="jogadoresResultado"></div>
+
+          </div>
+
+        `;
+
+        carregarJogadores();
+
+        return;
+      }
+
+
+      if (pagina === "perguntas") {
+
+        titulo.textContent =
+          "Perguntas";
+
+        conteudo.innerHTML = `
+
+          <div class="section">
+
+            <h2>❓ Perguntas</h2>
+
+            <p class="welcome">
+              Área de gerenciamento das perguntas do QuizUp.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+      }
+
+
+      if (pagina === "saques") {
+
+        titulo.textContent =
+          "Saques";
+
+        conteudo.innerHTML = `
+
+          <div class="section">
+
+            <h2>💰 Saques</h2>
+
+            <p class="welcome">
+              Área de gerenciamento dos saques dos jogadores.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+      }
+
+
+      if (pagina === "parceiros") {
+
+        titulo.textContent =
+          "Parceiros";
+
+        conteudo.innerHTML = `
+
+          <div class="section">
+
+            <h2>🤝 Parceiros</h2>
+
+            <p class="welcome">
+              Área de gerenciamento dos parceiros do QuizUp.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+      }
+
+
+      if (pagina === "movimentacoes") {
+
+        titulo.textContent =
+          "Movimentações";
+
+        conteudo.innerHTML = `
+
+          <div class="section">
+
+            <h2>📈 Movimentações</h2>
+
+            <p class="welcome">
+              Área de movimentações financeiras e de pontos.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+      }
+
+
+      if (pagina === "configuracoes") {
+
+        titulo.textContent =
+          "Configurações";
+
+        conteudo.innerHTML = `
+
+          <div class="section">
+
+            <h2>⚙️ Configurações</h2>
+
+            <p class="welcome">
+              Configurações administrativas do QuizUp.
+            </p>
+
+          </div>
+
+        `;
+
+      }
+
+    }
+
+
+    async function carregarJogadores() {
+
+      const resultado =
+        document.getElementById(
+          "jogadoresResultado"
+        );
+
+
+      if (!resultado) {
+        return;
+      }
+
+
+      try {
+
+        /*
+          Este endereço será usado quando
+          o endpoint de jogadores estiver
+          disponível no backend.
+        */
+
+        const resposta =
+          await fetch(
+            `${API_URL}/api/admin/jogadores`
+          );
+
+
+        if (!resposta.ok) {
+
+          throw new Error(
+            "O servidor não conseguiu carregar os jogadores."
+          );
+
+        }
+
+
+        const dados =
+          await resposta.json();
+
+
+        const jogadores =
+          Array.isArray(dados)
+            ? dados
+            : dados.jogadores;
+
+
+        if (!jogadores || jogadores.length === 0) {
+
+          resultado.innerHTML = `
+
+            <div class="empty">
+              Nenhum jogador encontrado.
+            </div>
+
+          `;
+
+          return;
+        }
+
+
+        let html = `
+
+          <div class="table-wrapper">
+
+            <table>
+
+              <thead>
+
+                <tr>
+
+                  <th>E-mail</th>
+                  <th>Pontos</th>
+                  <th>Saldo</th>
+
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+        `;
+
+
+        jogadores.forEach(function(jogador) {
+
+          html += `
+
+            <tr>
+
+              <td>
+                ${jogador.email || jogador["E-mail"] || "-"}
+              </td>
+
+              <td>
+                ${jogador.pontos ?? 0}
+              </td>
+
+              <td>
+                R$ ${Number(
+                  jogador.equilibrio ?? 0
+                ).toFixed(2).replace(".", ",")}
+              </td>
+
+            </tr>
+
+          `;
+
+        });
+
+
+        html += `
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        `;
+
+
+        resultado.innerHTML =
+          html;
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        resultado.innerHTML = `
+
+          <div class="error">
+
+            Não foi possível carregar os jogadores.
+
+            <br><br>
+
+            ${error.message}
+
+          </div>
+
+        `;
+
+      }
 
     }
 
@@ -624,12 +1061,14 @@
 
           document.getElementById(
             "loginPage"
-          ).style.display = "none";
+          ).style.display =
+            "none";
 
 
           document.getElementById(
             "adminPage"
-          ).style.display = "block";
+          ).style.display =
+            "block";
 
 
           document.querySelector(
@@ -649,5 +1088,7 @@
       }
     );
 
-  </script></body>
-  </html>
+  </script>
+
+</body>
+</html>
