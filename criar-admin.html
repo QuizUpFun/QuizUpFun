@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criar Administrador - QuizUp</title>
+</head>
+<body>
+
+  <h2>Criar primeiro administrador</h2>
+
+  <input id="setupKey" type="password" placeholder="Chave de configuração">
+  <br><br>
+
+  <input id="email" type="email" placeholder="E-mail do administrador">
+  <br><br>
+
+  <input id="password" type="password" placeholder="Senha">
+  <br><br>
+
+  <button onclick="criarAdmin()">Criar administrador</button>
+
+  <pre id="resultado"></pre>
+
+  <script>
+    async function criarAdmin() {
+
+      const setupKey = document.getElementById("setupKey").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const resultado = document.getElementById("resultado");
+
+      resultado.textContent = "Criando administrador...";
+
+      try {
+
+        const resposta = await fetch(
+          "https://quizup-api-qxn2.onrender.com/api/admin/setup",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              setupKey,
+              email,
+              password
+            })
+          }
+        );
+
+        const dados = await resposta.json();
+
+        resultado.textContent =
+          JSON.stringify(dados, null, 2);
+
+      } catch (erro) {
+
+        resultado.textContent =
+          "Erro: " + erro.message;
+
+      }
+    }
+  </script>
+
+</body>
+  </html>
