@@ -76,10 +76,7 @@ async function criarTabelaAdmins() {
     console.log("Tabela admins pronta.");
 
   } catch (error) {
-    console.error(
-      "Erro ao criar tabela admins:",
-      error
-    );
+    console.error("Erro ao criar tabela admins:", error);
   }
 }
 
@@ -134,10 +131,7 @@ app.post("/api/admin/login", async (req, res) => {
     });
 
   } catch (error) {
-    console.error(
-      "Erro no login:",
-      error
-    );
+    console.error("Erro no login:", error);
 
     res.status(500).json({
       status: "error",
