@@ -60,7 +60,6 @@ app.get("/api/test-db", async (req, res) => {
     });
 
   } catch (error) {
-
     console.error("ERRO POSTGRES:", error);
 
     res.status(500).json({
@@ -77,9 +76,7 @@ app.get("/api/test-db", async (req, res) => {
 // =====================================================
 
 async function criarTabelaAdmins() {
-
   try {
-
     await pool.query(`
       CREATE TABLE IF NOT EXISTS admins (
         id SERIAL PRIMARY KEY,
@@ -92,7 +89,6 @@ async function criarTabelaAdmins() {
     console.log("Tabela admins pronta.");
 
   } catch (error) {
-
     console.error(
       "Erro ao criar tabela admins:",
       error
@@ -105,18 +101,14 @@ async function criarTabelaAdmins() {
 // =====================================================
 
 app.post("/api/admin/setup", async (req, res) => {
-
   try {
-
     const {
       setupKey,
       email,
       password
     } = req.body;
 
-    // Verificar se a chave existe no Render
     if (!process.env.ADMIN_SETUP_KEY) {
-
       return res.status(500).json({
         status: "error",
         message:
@@ -124,12 +116,7 @@ app.post("/api/admin/setup", async (req, res) => {
       });
     }
 
-    // Verificar chave
-    if (
-      setupKey !==
-      process.env.ADMIN_SETUP_KEY
-    ) {
-
+    if (setupKey !== process.env.ADMIN_SETUP_KEY) {
       return res.status(403).json({
         status: "error",
         message:
@@ -137,9 +124,7 @@ app.post("/api/admin/setup", async (req, res) => {
       });
     }
 
-    // Verificar dados
     if (!email || !password) {
-
       return res.status(400).json({
         status: "error",
         message:
@@ -150,9 +135,7 @@ app.post("/api/admin/setup", async (req, res) => {
     const emailNormalizado =
       email.toLowerCase().trim();
 
-    // Senha mínima
     if (password.length < 8) {
-
       return res.status(400).json({
         status: "error",
         message:
@@ -160,15 +143,12 @@ app.post("/api/admin/setup", async (req, res) => {
       });
     }
 
-    // Verificar se já existe administrador
-    const quantidade =
-      await pool.query(`
-        SELECT COUNT(*)::int AS total
-        FROM admins
-      `);
+    const quantidade = await pool.query(`
+      SELECT COUNT(*)::int AS total
+      FROM admins
+    `);
 
     if (quantidade.rows[0].total > 0) {
-
       return res.status(409).json({
         status: "error",
         message:
@@ -176,41 +156,33 @@ app.post("/api/admin/setup", async (req, res) => {
       });
     }
 
-    // Criptografar senha
     const senhaHash =
       await bcrypt.hash(password, 12);
 
-    // Criar administrador
-    const result =
-      await pool.query(
-        `
-        INSERT INTO admins
-        (email, senha)
-        VALUES ($1, $2)
-        RETURNING
-          id,
-          email,
-          criado_em
-        `,
-        [
-          emailNormalizado,
-          senhaHash
-        ]
-      );
+    const result = await pool.query(
+      `
+      INSERT INTO admins
+      (email, senha)
+      VALUES ($1, $2)
+      RETURNING
+        id,
+        email,
+        criado_em
+      `,
+      [
+        emailNormalizado,
+        senhaHash
+      ]
+    );
 
     res.status(201).json({
-
       status: "ok",
-
       message:
         "Administrador criado com sucesso.",
-
-      admin:
-        result.rows[0]
+      admin: result.rows[0]
     });
 
   } catch (error) {
-
     console.error(
       "Erro ao criar administrador:",
       error
@@ -229,17 +201,13 @@ app.post("/api/admin/setup", async (req, res) => {
 // =====================================================
 
 app.post("/api/admin/login", async (req, res) => {
-
   try {
-
     const {
       email,
       password
     } = req.body;
 
-    // Verificar campos
     if (!email || !password) {
-
       return res.status(400).json({
         status: "error",
         message:
@@ -250,23 +218,20 @@ app.post("/api/admin/login", async (req, res) => {
     const emailNormalizado =
       email.toLowerCase().trim();
 
-    // Procurar administrador
-    const result =
-      await pool.query(
-        `
-        SELECT
-          id,
-          email,
-          senha,
-          criado_em
-        FROM admins
-        WHERE email = $1
-        `,
-        [emailNormalizado]
-      );
+    const result = await pool.query(
+      `
+      SELECT
+        id,
+        email,
+        senha,
+        criado_em
+      FROM admins
+      WHERE email = $1
+      `,
+      [emailNormalizado]
+    );
 
     if (result.rows.length === 0) {
-
       return res.status(401).json({
         status: "error",
         message:
@@ -274,10 +239,8 @@ app.post("/api/admin/login", async (req, res) => {
       });
     }
 
-    const admin =
-      result.rows[0];
+    const admin = result.rows[0];
 
-    // Comparar senha
     const senhaCorreta =
       await bcrypt.compare(
         password,
@@ -285,7 +248,6 @@ app.post("/api/admin/login", async (req, res) => {
       );
 
     if (!senhaCorreta) {
-
       return res.status(401).json({
         status: "error",
         message:
@@ -293,27 +255,19 @@ app.post("/api/admin/login", async (req, res) => {
       });
     }
 
-    // Login aprovado
     res.json({
-
       status: "ok",
-
       message:
         "Login realizado com sucesso.",
-
       admin: {
-
         id: admin.id,
-
         email: admin.email,
-
         criado_em:
           admin.criado_em
       }
     });
 
   } catch (error) {
-
     console.error(
       "Erro no login:",
       error
@@ -332,23 +286,16 @@ app.post("/api/admin/login", async (req, res) => {
 // =====================================================
 
 app.get("/api/admin/dashboard", async (req, res) => {
-
   try {
 
-    // -----------------------------------------------
     // TOTAL DE JOGADORES
-    // -----------------------------------------------
-
     const jogadoresResult =
       await pool.query(`
         SELECT COUNT(*)::int AS total
         FROM jogadores
       `);
 
-    // -----------------------------------------------
     // TOTAL DE PONTOS
-    // -----------------------------------------------
-
     const pontosResult =
       await pool.query(`
         SELECT
@@ -359,10 +306,7 @@ app.get("/api/admin/dashboard", async (req, res) => {
         FROM jogadores
       `);
 
-    // -----------------------------------------------
     // SAQUES PENDENTES
-    // -----------------------------------------------
-
     const saquesPendentesResult =
       await pool.query(`
         SELECT COUNT(*)::int AS total
@@ -370,10 +314,7 @@ app.get("/api/admin/dashboard", async (req, res) => {
         WHERE LOWER(status) = 'pendente'
       `);
 
-    // -----------------------------------------------
     // VALOR DOS SAQUES PENDENTES
-    // -----------------------------------------------
-
     const valorSaquesResult =
       await pool.query(`
         SELECT
@@ -385,16 +326,10 @@ app.get("/api/admin/dashboard", async (req, res) => {
         WHERE LOWER(status) = 'pendente'
       `);
 
-    // -----------------------------------------------
-    // RESPONDER
-    // -----------------------------------------------
-
     res.json({
-
       status: "ok",
 
       dashboard: {
-
         jogadores:
           jogadoresResult.rows[0].total,
 
@@ -419,12 +354,46 @@ app.get("/api/admin/dashboard", async (req, res) => {
     );
 
     res.status(500).json({
-
       status: "error",
 
       message:
         "Erro ao carregar dados do dashboard.",
 
+      detail:
+        error.message
+    });
+  }
+});
+
+// =====================================================
+// LISTAR JOGADORES
+// =====================================================
+
+app.get("/api/admin/jogadores", async (req, res) => {
+  try {
+
+    const result = await pool.query(`
+      SELECT *
+      FROM jogadores
+      ORDER BY id DESC
+    `);
+
+    res.json({
+      status: "ok",
+      jogadores: result.rows
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Erro ao carregar jogadores:",
+      error
+    );
+
+    res.status(500).json({
+      status: "error",
+      message:
+        "Erro ao carregar jogadores.",
       detail:
         error.message
     });
