@@ -10,9 +10,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// =========================
-// CONEXÃO COM POSTGRESQL
-// =========================
+// =====================================================
+// CONFIGURAÇÃO DO POSTGRESQL
+// =====================================================
+
+if (!process.env.DATABASE_URL) {
+  console.error("ERRO: DATABASE_URL não foi configurada.");
+  process.exit(1);
+}
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -21,9 +26,9 @@ const pool = new Pool({
   }
 });
 
-// =========================
-// TESTE DO SERVIDOR
-// =========================
+// =====================================================
+// ROTA PRINCIPAL
+// =====================================================
 
 app.get("/", (req, res) => {
   res.json({
@@ -32,9 +37,9 @@ app.get("/", (req, res) => {
   });
 });
 
-// =========================
+// =====================================================
 // TESTE DO BANCO
-// =========================
+// =====================================================
 
 app.get("/api/test-db", async (req, res) => {
   try {
@@ -45,7 +50,6 @@ app.get("/api/test-db", async (req, res) => {
       database: "conectado",
       time: result.rows[0].now
     });
-
   } catch (error) {
     console.error("ERRO POSTGRES:", error);
 
@@ -58,9 +62,9 @@ app.get("/api/test-db", async (req, res) => {
   }
 });
 
-// =========================
+// =====================================================
 // CRIAR TABELA DE ADMINS
-// =========================
+// =====================================================
 
 async function criarTabelaAdmins() {
   try {
@@ -74,20 +78,43 @@ async function criarTabelaAdmins() {
     `);
 
     console.log("Tabela admins pronta.");
-
   } catch (error) {
     console.error("Erro ao criar tabela admins:", error);
   }
 }
 
-// =========================
-// LOGIN DO ADMIN
-// =========================
+// =====================================================
+// CRIAR PRIMEIRO ADMINISTRADOR
+// =====================================================
+//
+// Esta rota só funciona se:
+// 1. ADMIN_SETUP_KEY estiver configurada no Render
+// 2. Ainda não existir nenhum administrador
+//
+// Depois de criar o primeiro administrador,
+// recomendamos apagar ADMIN_SETUP_KEY do Render.
+//
 
-app.post("/api/admin/login", async (req, res) => {
+app.post("/api/admin/setup", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { setupKey, email, password } = req.body;
 
+    // Verifica a chave secreta
+    if (!process.env.ADMIN_SETUP_KEY) {
+      return res.status(500).json({
+        status: "error",
+        message: "ADMIN_SETUP_KEY não configurada no servidor."
+      });
+    }
+
+    if (setupKey !== process.env.ADMIN_SETUP_KEY) {
+      return res.status(403).json({
+        status: "error",
+        message: "Chave de configuração inválida."
+      });
+    }
+
+    // Validação dos dados
     if (!email || !password) {
       return res.status(400).json({
         status: "error",
@@ -95,9 +122,82 @@ app.post("/api/admin/login", async (req, res) => {
       });
     }
 
+    const emailNormalizado = email.toLowerCase().trim();
+
+    if (password.length < 8) {
+      return res.status(400).json({
+        status: "error",
+        message: "A senha precisa ter pelo menos 8 caracteres."
+      });
+    }
+
+    // Verifica se já existe administrador
+    const quantidade = await pool.query(
+      "SELECT COUNT(*)::int AS total FROM admins"
+    );
+
+    if (quantidade.rows[0].total > 0) {
+      return res.status(409).json({
+        status: "error",
+        message: "O primeiro administrador já foi criado."
+      });
+    }
+
+    // Criptografa a senha
+    const senhaHash = await bcrypt.hash(password, 12);
+
+    // Cria o administrador
     const result = await pool.query(
-      "SELECT id, email, senha FROM admins WHERE email = $1",
-      [email.toLowerCase().trim()]
+      `
+      INSERT INTO admins (email, senha)
+      VALUES ($1, $2)
+      RETURNING id, email, criado_em
+      `,
+      [emailNormalizado, senhaHash]
+    );
+
+    res.status(201).json({
+      status: "ok",
+      message: "Administrador criado com sucesso.",
+      admin: result.rows[0]
+    });
+
+  } catch (error) {
+    console.error("Erro ao criar administrador:", error);
+
+    res.status(500).json({
+      status: "error",
+      message: "Erro interno ao criar administrador."
+    });
+  }
+});
+
+// =====================================================
+// LOGIN DO ADMINISTRADOR
+// =====================================================
+
+app.post("/api/admin/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validação
+    if (!email || !password) {
+      return res.status(400).json({
+        status: "error",
+        message: "E-mail e senha são obrigatórios."
+      });
+    }
+
+    const emailNormalizado = email.toLowerCase().trim();
+
+    // Procura o administrador
+    const result = await pool.query(
+      `
+      SELECT id, email, senha, criado_em
+      FROM admins
+      WHERE email = $1
+      `,
+      [emailNormalizado]
     );
 
     if (result.rows.length === 0) {
@@ -109,6 +209,7 @@ app.post("/api/admin/login", async (req, res) => {
 
     const admin = result.rows[0];
 
+    // Compara a senha digitada com o hash armazenado
     const senhaCorreta = await bcrypt.compare(
       password,
       admin.senha
@@ -121,12 +222,14 @@ app.post("/api/admin/login", async (req, res) => {
       });
     }
 
+    // Login realizado
     res.json({
       status: "ok",
       message: "Login realizado com sucesso.",
       admin: {
         id: admin.id,
-        email: admin.email
+        email: admin.email,
+        criado_em: admin.criado_em
       }
     });
 
@@ -140,16 +243,14 @@ app.post("/api/admin/login", async (req, res) => {
   }
 });
 
-// =========================
+// =====================================================
 // INICIAR SERVIDOR
-// =========================
+// =====================================================
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async () => {
-  console.log(
-    `QuizUp Admin Backend rodando na porta ${PORT}`
-  );
+  console.log(`QuizUp Admin Backend rodando na porta ${PORT}`);
 
   await criarTabelaAdmins();
 });
