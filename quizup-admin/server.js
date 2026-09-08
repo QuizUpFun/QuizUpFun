@@ -10,11 +10,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// =========================
+// CONEXÃO COM POSTGRESQL
+// =========================
+
 const pool = new Pool({
-connectionString: process.env.DATABASE_URL,
-ssl: {
-rejectUnauthorized: false
-}
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 // =========================
@@ -22,10 +26,10 @@ rejectUnauthorized: false
 // =========================
 
 app.get("/", (req, res) => {
-res.json({
-status: "online",
-message: "QuizUp Admin Backend funcionando!"
-});
+  res.json({
+    status: "online",
+    message: "QuizUp Admin Backend funcionando!"
+  });
 });
 
 // =========================
@@ -33,24 +37,25 @@ message: "QuizUp Admin Backend funcionando!"
 // =========================
 
 app.get("/api/test-db", async (req, res) => {
-try {
-const result = await pool.query("SELECT NOW()");
+  try {
+    const result = await pool.query("SELECT NOW()");
 
-res.json({
-  status: "ok",
-  database: "conectado",
-  time: result.rows[0].now
-});
+    res.json({
+      status: "ok",
+      database: "conectado",
+      time: result.rows[0].now
+    });
 
-} catch (error) {
-console.error(error);
+  } catch (error) {
+    console.error("ERRO POSTGRES:", error);
 
-res.status(500).json({
-  status: "error",
-  message: "Erro ao conectar ao PostgreSQL"
-});
-
-}
+    res.status(500).json({
+      status: "error",
+      message: "Erro ao conectar ao PostgreSQL",
+      code: error.code,
+      detail: error.message
+    });
+  }
 });
 
 // =========================
@@ -58,27 +63,24 @@ res.status(500).json({
 // =========================
 
 async function criarTabelaAdmins() {
-try {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS admins (
+        id SERIAL PRIMARY KEY,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        senha VARCHAR(255) NOT NULL,
+        criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
 
-await pool.query(`
-  CREATE TABLE IF NOT EXISTS admins (
-    id SERIAL PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    senha VARCHAR(255) NOT NULL,
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  );
-`);
+    console.log("Tabela admins pronta.");
 
-console.log("Tabela admins pronta.");
-
-} catch (error) {
-
-console.error(
-  "Erro ao criar tabela admins:",
-  error
-);
-
-}
+  } catch (error) {
+    console.error(
+      "Erro ao criar tabela admins:",
+      error
+    );
+  }
 }
 
 // =========================
@@ -86,73 +88,62 @@ console.error(
 // =========================
 
 app.post("/api/admin/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-try {
+    if (!email || !password) {
+      return res.status(400).json({
+        status: "error",
+        message: "E-mail e senha são obrigatórios."
+      });
+    }
 
-const { email, password } = req.body;
+    const result = await pool.query(
+      "SELECT id, email, senha FROM admins WHERE email = $1",
+      [email.toLowerCase().trim()]
+    );
 
-if (!email || !password) {
+    if (result.rows.length === 0) {
+      return res.status(401).json({
+        status: "error",
+        message: "E-mail ou senha incorretos."
+      });
+    }
 
-  return res.status(400).json({
-    status: "error",
-    message: "E-mail e senha são obrigatórios."
-  });
+    const admin = result.rows[0];
 
-}
+    const senhaCorreta = await bcrypt.compare(
+      password,
+      admin.senha
+    );
 
-const result = await pool.query(
-  "SELECT id, email, senha FROM admins WHERE email = $1",
-  [email.toLowerCase().trim()]
-);
+    if (!senhaCorreta) {
+      return res.status(401).json({
+        status: "error",
+        message: "E-mail ou senha incorretos."
+      });
+    }
 
-if (result.rows.length === 0) {
+    res.json({
+      status: "ok",
+      message: "Login realizado com sucesso.",
+      admin: {
+        id: admin.id,
+        email: admin.email
+      }
+    });
 
-  return res.status(401).json({
-    status: "error",
-    message: "E-mail ou senha incorretos."
-  });
+  } catch (error) {
+    console.error(
+      "Erro no login:",
+      error
+    );
 
-}
-
-const admin = result.rows[0];
-
-const senhaCorreta = await bcrypt.compare(
-  password,
-  admin.senha
-);
-
-if (!senhaCorreta) {
-
-  return res.status(401).json({
-    status: "error",
-    message: "E-mail ou senha incorretos."
-  });
-
-}
-
-res.json({
-  status: "ok",
-  message: "Login realizado com sucesso.",
-  admin: {
-    id: admin.id,
-    email: admin.email
+    res.status(500).json({
+      status: "error",
+      message: "Erro interno no servidor."
+    });
   }
-});
-
-} catch (error) {
-
-console.error(
-  "Erro no login:",
-  error
-);
-
-res.status(500).json({
-  status: "error",
-  message: "Erro interno no servidor."
-});
-
-}
-
 });
 
 // =========================
@@ -162,11 +153,9 @@ res.status(500).json({
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async () => {
+  console.log(
+    `QuizUp Admin Backend rodando na porta ${PORT}`
+  );
 
-console.log(
-"QuizUp Admin Backend rodando na porta ${PORT}"
-);
-
-await criarTabelaAdmins();
-
+  await criarTabelaAdmins();
 });
