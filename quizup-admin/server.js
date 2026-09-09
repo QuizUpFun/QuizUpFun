@@ -262,8 +262,7 @@ app.post("/api/admin/login", async (req, res) => {
       admin: {
         id: admin.id,
         email: admin.email,
-        criado_em:
-          admin.criado_em
+        criado_em: admin.criado_em
       }
     });
 
@@ -282,20 +281,221 @@ app.post("/api/admin/login", async (req, res) => {
 });
 
 // =====================================================
+// CADASTRO DE JOGADOR
+// =====================================================
+
+app.post("/api/cadastro", async (req, res) => {
+  try {
+
+    const {
+      email,
+      senha,
+      nome,
+      cpf,
+      codigo_indicacao
+    } = req.body;
+
+    // -------------------------------------------------
+    // VALIDAR CAMPOS
+    // -------------------------------------------------
+
+    if (!email || !senha || !nome || !cpf) {
+      return res.status(400).json({
+        status: "error",
+        message:
+          "E-mail, senha, nome e CPF são obrigatórios."
+      });
+    }
+
+    const emailNormalizado =
+      email.toLowerCase().trim();
+
+    const nomeNormalizado =
+      nome.trim();
+
+    const cpfLimpo =
+      String(cpf).replace(/\D/g, "");
+
+    // -------------------------------------------------
+    // VALIDAR SENHA
+    // -------------------------------------------------
+
+    if (senha.length < 8) {
+      return res.status(400).json({
+        status: "error",
+        message:
+          "A senha precisa ter pelo menos 8 caracteres."
+      });
+    }
+
+    // -------------------------------------------------
+    // VALIDAR CPF
+    // -------------------------------------------------
+
+    if (cpfLimpo.length !== 11) {
+      return res.status(400).json({
+        status: "error",
+        message:
+          "CPF inválido."
+      });
+    }
+
+    // -------------------------------------------------
+    // VERIFICAR E-MAIL EXISTENTE
+    // -------------------------------------------------
+
+    const emailExiste =
+      await pool.query(
+        `
+        SELECT id
+        FROM jogadores
+        WHERE LOWER(email) = $1
+        LIMIT 1
+        `,
+        [emailNormalizado]
+      );
+
+    if (emailExiste.rows.length > 0) {
+      return res.status(409).json({
+        status: "error",
+        message:
+          "Essa conta já existe."
+      });
+    }
+
+    // -------------------------------------------------
+    // VERIFICAR CPF EXISTENTE
+    // -------------------------------------------------
+
+    const cpfExiste =
+      await pool.query(
+        `
+        SELECT id
+        FROM jogadores
+        WHERE cpf = $1
+        LIMIT 1
+        `,
+        [cpfLimpo]
+      );
+
+    if (cpfExiste.rows.length > 0) {
+      return res.status(409).json({
+        status: "error",
+        message:
+          "Este CPF já possui uma conta no QuizUp."
+      });
+    }
+
+    // -------------------------------------------------
+    // CÓDIGO DE INDICAÇÃO
+    // -------------------------------------------------
+
+    const codigo =
+      codigo_indicacao ||
+      (
+        "QU" +
+        Math.random()
+          .toString(36)
+          .slice(2, 8)
+          .toUpperCase()
+      );
+
+    // -------------------------------------------------
+    // PROTEGER SENHA DO JOGADOR
+    // -------------------------------------------------
+
+    const senhaHash =
+      await bcrypt.hash(senha, 12);
+
+    // -------------------------------------------------
+    // INSERIR JOGADOR
+    // -------------------------------------------------
+
+    const result =
+      await pool.query(
+        `
+        INSERT INTO jogadores
+        (
+          email,
+          senha,
+          nome,
+          cpf,
+          codigo_indicacao,
+          pontos,
+          equilibrio,
+          criado_em
+        )
+        VALUES
+        (
+          $1,
+          $2,
+          $3,
+          $4,
+          $5,
+          0,
+          0,
+          CURRENT_TIMESTAMP
+        )
+        RETURNING
+          id,
+          email,
+          nome,
+          cpf,
+          codigo_indicacao,
+          pontos,
+          equilibrio,
+          criado_em
+        `,
+        [
+          emailNormalizado,
+          senhaHash,
+          nomeNormalizado,
+          cpfLimpo,
+          codigo
+        ]
+      );
+
+    // -------------------------------------------------
+    // RESPOSTA
+    // -------------------------------------------------
+
+    res.status(201).json({
+      status: "ok",
+      message:
+        "Cadastro realizado com sucesso.",
+      jogador: result.rows[0]
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Erro ao cadastrar jogador:",
+      error
+    );
+
+    res.status(500).json({
+      status: "error",
+      message:
+        "Erro interno ao cadastrar jogador.",
+      detail:
+        error.message
+    });
+  }
+});
+
+// =====================================================
 // DADOS DO DASHBOARD
 // =====================================================
 
 app.get("/api/admin/dashboard", async (req, res) => {
   try {
 
-    // TOTAL DE JOGADORES
     const jogadoresResult =
       await pool.query(`
         SELECT COUNT(*)::int AS total
         FROM jogadores
       `);
 
-    // TOTAL DE PONTOS
     const pontosResult =
       await pool.query(`
         SELECT
@@ -306,7 +506,6 @@ app.get("/api/admin/dashboard", async (req, res) => {
         FROM jogadores
       `);
 
-    // SAQUES PENDENTES
     const saquesPendentesResult =
       await pool.query(`
         SELECT COUNT(*)::int AS total
@@ -314,7 +513,6 @@ app.get("/api/admin/dashboard", async (req, res) => {
         WHERE LOWER(status) = 'pendente'
       `);
 
-    // VALOR DOS SAQUES PENDENTES
     const valorSaquesResult =
       await pool.query(`
         SELECT
@@ -330,6 +528,7 @@ app.get("/api/admin/dashboard", async (req, res) => {
       status: "ok",
 
       dashboard: {
+
         jogadores:
           jogadoresResult.rows[0].total,
 
@@ -372,11 +571,20 @@ app.get("/api/admin/dashboard", async (req, res) => {
 app.get("/api/admin/jogadores", async (req, res) => {
   try {
 
-    const result = await pool.query(`
-      SELECT *
-      FROM jogadores
-      ORDER BY id DESC
-    `);
+    const result =
+      await pool.query(`
+        SELECT
+          id,
+          email,
+          nome,
+          cpf,
+          codigo_indicacao,
+          pontos,
+          equilibrio,
+          criado_em
+        FROM jogadores
+        ORDER BY id DESC
+      `);
 
     res.json({
       status: "ok",
