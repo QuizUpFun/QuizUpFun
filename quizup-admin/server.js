@@ -8,10 +8,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 
 if (!process.env.DATABASE_URL) {
-  console.error("ERRO: DATABASE_URL não configurada.");
+  console.error("DATABASE_URL não configurada.");
   process.exit(1);
 }
 
@@ -22,162 +22,149 @@ const pool = new Pool({
   }
 });
 
-/* =========================
-   BANCO
-========================= */
+// ======================================================
+// BANCO
+// ======================================================
 
 async function prepararBanco() {
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS admins (
-      id SERIAL PRIMARY KEY,
-      email VARCHAR(255) UNIQUE NOT NULL,
-      senha VARCHAR(255) NOT NULL,
-      criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-  `);
-
-  console.log("Tabela admins pronta.");
-
-  /*
-    A tabela jogadores já existe no seu banco.
-    Não vamos apagá-la nem recriá-la.
-  */
-
   try {
     await pool.query(`
+      CREATE TABLE IF NOT EXISTS admins (
+        id SERIAL PRIMARY KEY,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        senha VARCHAR(255) NOT NULL,
+        criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    console.log("Tabela admins pronta.");
+
+    // Garante que jogadores tenha os campos necessários
+    await pool.query(`
       ALTER TABLE jogadores
-      ADD COLUMN IF NOT EXISTS pontos BIGINT DEFAULT 0;
+      ADD COLUMN IF NOT EXISTS pontos BIGINT DEFAULT 0
     `);
 
     await pool.query(`
       ALTER TABLE jogadores
-      ADD COLUMN IF NOT EXISTS equilibrio NUMERIC DEFAULT 0;
+      ADD COLUMN IF NOT EXISTS equilibrio NUMERIC DEFAULT 0
     `);
 
     await pool.query(`
       ALTER TABLE jogadores
-      ADD COLUMN IF NOT EXISTS criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+      ADD COLUMN IF NOT EXISTS criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     `);
 
-    console.log("Estrutura de jogadores verificada.");
+    console.log("Tabela jogadores verificada.");
+
   } catch (erro) {
-    console.error("Erro ao verificar jogadores:", erro.message);
+    console.error("Erro ao preparar banco:", erro);
   }
 }
 
-/* =========================
-   FUNÇÕES AUXILIARES
-========================= */
+// ======================================================
+// FUNÇÕES AUXILIARES
+// ======================================================
 
 function limparCPF(cpf) {
   return String(cpf || "").replace(/\D/g, "");
 }
 
 function gerarCodigo() {
-  return "QU" +
-    Math.random()
-      .toString(36)
-      .substring(2, 8)
-      .toUpperCase();
+  return Math.random().toString(36).substring(2, 8).toUpperCase();
 }
 
-/* =========================
-   TESTE
-========================= */
+// ======================================================
+// TESTE
+// ======================================================
 
 app.get("/", (req, res) => {
   res.json({
-    ok: true,
-    message: "QuizUp Admin Backend funcionando."
+    sucesso: true,
+    mensagem: "QuizUp Admin Backend funcionando."
   });
 });
 
 app.get("/api/test-db", async (req, res) => {
   try {
-    const result = await pool.query("SELECT NOW() AS agora");
+    const resultado = await pool.query("SELECT NOW() AS agora");
 
     res.json({
-      ok: true,
-      banco: "PostgreSQL conectado",
-      agora: result.rows[0].agora
+      sucesso: true,
+      banco: "conectado",
+      agora: resultado.rows[0].agora
     });
+
   } catch (erro) {
-    console.error(erro);
+    console.error("Erro teste banco:", erro);
 
     res.status(500).json({
-      ok: false,
-      error: "Erro ao conectar ao PostgreSQL."
+      sucesso: false,
+      erro: "Erro ao conectar ao banco."
     });
   }
 });
 
-/* =========================
-   CADASTRO
-========================= */
+// ======================================================
+// CADASTRO
+// ======================================================
 
 app.post("/api/cadastro", async (req, res) => {
   try {
-    let {
+    const {
       email,
       senha,
       nome,
       cpf,
-      codigo_indicacao,
-      referrer
+      codigo_indicacao
     } = req.body;
-
-    email = String(email || "").trim().toLowerCase();
-    senha = String(senha || "");
-    nome = String(nome || "").trim();
-    cpf = limparCPF(cpf);
 
     if (!email || !senha || !nome || !cpf) {
       return res.status(400).json({
-        error: "Preencha todos os campos."
+        sucesso: false,
+        erro: "Preencha todos os campos."
       });
     }
 
-    if (senha.length < 8) {
+    const emailNormalizado = String(email).trim().toLowerCase();
+    const cpfLimpo = limparCPF(cpf);
+
+    if (cpfLimpo.length !== 11) {
       return res.status(400).json({
-        error: "A senha precisa ter pelo menos 8 caracteres."
+        sucesso: false,
+        erro: "CPF inválido."
       });
     }
 
-    if (cpf.length !== 11) {
+    if (senha.length < 6) {
       return res.status(400).json({
-        error: "Digite um CPF válido com 11 números."
+        sucesso: false,
+        erro: "A senha deve ter pelo menos 6 caracteres."
       });
     }
 
-    const emailExistente = await pool.query(
-      `SELECT id FROM jogadores WHERE LOWER(email) = $1 LIMIT 1`,
-      [email]
+    const existente = await pool.query(
+      `
+      SELECT id
+      FROM jogadores
+      WHERE LOWER(email) = $1
+         OR cpf = $2
+      LIMIT 1
+      `,
+      [emailNormalizado, cpfLimpo]
     );
 
-    if (emailExistente.rows.length > 0) {
+    if (existente.rows.length > 0) {
       return res.status(409).json({
-        error: "Este e-mail já está cadastrado."
+        sucesso: false,
+        erro: "E-mail ou CPF já cadastrado."
       });
     }
 
-    const cpfExistente = await pool.query(
-      `SELECT id FROM jogadores WHERE cpf = $1 LIMIT 1`,
-      [cpf]
-    );
+    const senhaHash = await bcrypt.hash(senha, 10);
+    const codigo = gerarCodigo();
 
-    if (cpfExistente.rows.length > 0) {
-      return res.status(409).json({
-        error: "Este CPF já está cadastrado."
-      });
-    }
-
-    if (!codigo_indicacao) {
-      codigo_indicacao = gerarCodigo();
-    }
-
-    const senhaHash = await bcrypt.hash(senha, 12);
-
-    const result = await pool.query(
+    const resultado = await pool.query(
       `
       INSERT INTO jogadores
       (
@@ -203,87 +190,64 @@ app.post("/api/cadastro", async (req, res) => {
         criado_em
       `,
       [
-        email,
+        emailNormalizado,
         senhaHash,
-        nome,
-        cpf,
-        codigo_indicacao
+        nome.trim(),
+        cpfLimpo,
+        codigo
       ]
     );
 
-    const jogador = result.rows[0];
-
-    /*
-      O referrer é recebido para manter o link
-      ?ref=CODIGO, mas ainda não é gravado
-      porque a tabela atual não possui essa coluna.
-    */
-
-    res.status(201).json({
-      ok: true,
-      message: "Cadastro realizado com sucesso.",
-      id: jogador.id,
-      email: jogador.email,
-      nome: jogador.nome,
-      cpf: jogador.cpf,
-      codigo_indicacao: jogador.codigo_indicacao,
-      pontos: Number(jogador.pontos || 0),
-      equilibrio: Number(jogador.equilibrio || 0)
+    res.json({
+      sucesso: true,
+      jogador: resultado.rows[0]
     });
 
   } catch (erro) {
-    console.error("ERRO NO CADASTRO:", erro);
+    console.error("Erro cadastro:", erro);
 
     res.status(500).json({
-      error: "Erro interno ao realizar cadastro."
+      sucesso: false,
+      erro: "Erro ao realizar cadastro."
     });
   }
 });
 
-/* =========================
-   LOGIN
-========================= */
+// ======================================================
+// LOGIN
+// ======================================================
 
 app.post("/api/login", async (req, res) => {
   try {
-    const email = String(req.body.email || "")
-      .trim()
-      .toLowerCase();
-
-    const senha = String(req.body.senha || "");
+    const { email, senha } = req.body;
 
     if (!email || !senha) {
       return res.status(400).json({
-        error: "Informe e-mail e senha."
+        sucesso: false,
+        erro: "Informe e-mail e senha."
       });
     }
 
-    const result = await pool.query(
+    const emailNormalizado = String(email).trim().toLowerCase();
+
+    const resultado = await pool.query(
       `
-      SELECT
-        id,
-        email,
-        senha,
-        nome,
-        cpf,
-        codigo_indicacao,
-        pontos,
-        equilibrio,
-        criado_em
+      SELECT *
       FROM jogadores
       WHERE LOWER(email) = $1
       LIMIT 1
       `,
-      [email]
+      [emailNormalizado]
     );
 
-    if (result.rows.length === 0) {
+    if (resultado.rows.length === 0) {
       return res.status(401).json({
-        error: "E-mail ou senha incorretos."
+        sucesso: false,
+        erro: "E-mail ou senha incorretos."
       });
     }
 
-    const jogador = result.rows[0];
+    const jogador = resultado.rows[0];
 
     const senhaCorreta = await bcrypt.compare(
       senha,
@@ -292,33 +256,31 @@ app.post("/api/login", async (req, res) => {
 
     if (!senhaCorreta) {
       return res.status(401).json({
-        error: "E-mail ou senha incorretos."
+        sucesso: false,
+        erro: "E-mail ou senha incorretos."
       });
     }
 
     delete jogador.senha;
 
     res.json({
-      ok: true,
-      jogador: {
-        ...jogador,
-        pontos: Number(jogador.pontos || 0),
-        equilibrio: Number(jogador.equilibrio || 0)
-      }
+      sucesso: true,
+      jogador
     });
 
   } catch (erro) {
-    console.error("ERRO NO LOGIN:", erro);
+    console.error("Erro login:", erro);
 
     res.status(500).json({
-      error: "Erro interno ao realizar login."
+      sucesso: false,
+      erro: "Erro ao realizar login."
     });
   }
 });
 
-/* =========================
-   BUSCAR JOGADOR
-========================= */
+// ======================================================
+// BUSCAR JOGADOR
+// ======================================================
 
 app.get("/api/jogador/:id", async (req, res) => {
   try {
@@ -326,11 +288,12 @@ app.get("/api/jogador/:id", async (req, res) => {
 
     if (!Number.isInteger(id)) {
       return res.status(400).json({
-        error: "ID inválido."
+        sucesso: false,
+        erro: "ID inválido."
       });
     }
 
-    const result = await pool.query(
+    const resultado = await pool.query(
       `
       SELECT
         id,
@@ -343,68 +306,66 @@ app.get("/api/jogador/:id", async (req, res) => {
         criado_em
       FROM jogadores
       WHERE id = $1
-      LIMIT 1
       `,
       [id]
     );
 
-    if (result.rows.length === 0) {
+    if (resultado.rows.length === 0) {
       return res.status(404).json({
-        error: "Jogador não encontrado."
+        sucesso: false,
+        erro: "Jogador não encontrado."
       });
     }
 
-    const jogador = result.rows[0];
-
     res.json({
-      ok: true,
-      jogador: {
-        ...jogador,
-        pontos: Number(jogador.pontos || 0),
-        equilibrio: Number(jogador.equilibrio || 0)
-      }
+      sucesso: true,
+      jogador: resultado.rows[0]
     });
 
   } catch (erro) {
-    console.error("ERRO AO BUSCAR JOGADOR:", erro);
+    console.error("Erro jogador:", erro);
 
     res.status(500).json({
-      error: "Erro ao buscar jogador."
+      sucesso: false,
+      erro: "Erro ao buscar jogador."
     });
   }
 });
 
-/* =========================
-   ATUALIZAR JOGADOR
-========================= */
+// ======================================================
+// ATUALIZAR JOGADOR
+// ======================================================
 
 app.put("/api/jogador/:id", async (req, res) => {
   try {
     const id = Number(req.params.id);
+    const { pontos, equilibrio } = req.body;
 
     if (!Number.isInteger(id)) {
       return res.status(400).json({
-        error: "ID inválido."
+        sucesso: false,
+        erro: "ID inválido."
       });
     }
 
-    const pontos = Number(req.body.pontos);
+    const novosPontos = Number(pontos);
+    const novoEquilibrio = Number(equilibrio || 0);
 
-    const equilibrio = Number(req.body.equilibrio);
-
-    if (!Number.isFinite(pontos) || pontos < 0) {
+    if (!Number.isFinite(novosPontos) || novosPontos < 0) {
       return res.status(400).json({
-        error: "Pontos inválidos."
+        sucesso: false,
+        erro: "Pontuação inválida."
       });
     }
 
-    if (!Number.isFinite(equilibrio) || equilibrio < 0) {
+    if (!Number.isFinite(novoEquilibrio) || novoEquilibrio < 0) {
       return res.status(400).json({
-        error: "Saldo inválido."
+        sucesso: false,
+        erro: "Equilíbrio inválido."
       });
     }
 
-    const result = await pool.query(
+    const resultado = await pool.query(
       `
       UPDATE jogadores
       SET
@@ -422,85 +383,85 @@ app.put("/api/jogador/:id", async (req, res) => {
         criado_em
       `,
       [
-        Math.floor(pontos),
-        equilibrio,
+        Math.floor(novosPontos),
+        novoEquilibrio,
         id
       ]
     );
 
-    if (result.rows.length === 0) {
+    if (resultado.rows.length === 0) {
       return res.status(404).json({
-        error: "Jogador não encontrado."
+        sucesso: false,
+        erro: "Jogador não encontrado."
       });
     }
 
     res.json({
-      ok: true,
-      jogador: result.rows[0]
+      sucesso: true,
+      jogador: resultado.rows[0]
     });
 
   } catch (erro) {
-    console.error("ERRO AO ATUALIZAR JOGADOR:", erro);
+    console.error("Erro atualizar jogador:", erro);
 
     res.status(500).json({
-      error: "Erro ao atualizar jogador."
+      sucesso: false,
+      erro: "Erro ao atualizar jogador."
     });
   }
 });
 
-/* =========================
-   RECUPERAÇÃO DE SENHA
-========================= */
+// ======================================================
+// RECUPERAR SENHA
+// ======================================================
 
 app.post("/api/recuperar-senha", async (req, res) => {
   try {
-    const email = String(req.body.email || "")
-      .trim()
-      .toLowerCase();
-
-    const cpf = limparCPF(req.body.cpf);
-
-    const novaSenha = String(req.body.novaSenha || "");
+    const {
+      email,
+      cpf,
+      novaSenha
+    } = req.body;
 
     if (!email || !cpf || !novaSenha) {
       return res.status(400).json({
-        error: "Preencha e-mail, CPF e nova senha."
+        sucesso: false,
+        erro: "Preencha todos os campos."
       });
     }
 
-    if (cpf.length !== 11) {
+    if (novaSenha.length < 6) {
       return res.status(400).json({
-        error: "CPF inválido."
+        sucesso: false,
+        erro: "A nova senha deve ter pelo menos 6 caracteres."
       });
     }
 
-    if (novaSenha.length < 8) {
-      return res.status(400).json({
-        error: "A nova senha precisa ter pelo menos 8 caracteres."
-      });
-    }
+    const emailNormalizado = String(email).trim().toLowerCase();
+    const cpfLimpo = limparCPF(cpf);
 
-    const result = await pool.query(
+    const resultado = await pool.query(
       `
       SELECT id
       FROM jogadores
       WHERE LOWER(email) = $1
-      AND cpf = $2
+        AND cpf = $2
       LIMIT 1
       `,
-      [email, cpf]
+      [
+        emailNormalizado,
+        cpfLimpo
+      ]
     );
 
-    if (result.rows.length === 0) {
+    if (resultado.rows.length === 0) {
       return res.status(404).json({
-        error: "E-mail e CPF não conferem."
+        sucesso: false,
+        erro: "E-mail e CPF não conferem."
       });
     }
 
-    const senhaHash = await bcrypt.hash(
-      novaSenha,
-      12
-    );
+    const senhaHash = await bcrypt.hash(novaSenha, 10);
 
     await pool.query(
       `
@@ -510,135 +471,139 @@ app.post("/api/recuperar-senha", async (req, res) => {
       `,
       [
         senhaHash,
-        result.rows[0].id
+        resultado.rows[0].id
       ]
     );
 
     res.json({
-      ok: true,
-      message: "Senha alterada com sucesso."
+      sucesso: true,
+      mensagem: "Senha alterada com sucesso."
     });
 
   } catch (erro) {
-    console.error("ERRO NA RECUPERAÇÃO:", erro);
+    console.error("Erro recuperar senha:", erro);
 
     res.status(500).json({
-      error: "Erro ao recuperar senha."
+      sucesso: false,
+      erro: "Erro ao recuperar senha."
     });
   }
 });
 
-/* =========================
-   ADMIN LOGIN
-========================= */
+// ======================================================
+// ADMIN SETUP
+// ======================================================
 
 app.post("/api/admin/setup", async (req, res) => {
   try {
-    const setupKey = String(
-      req.body.setupKey || ""
-    );
+    const { email, senha } = req.body;
 
-    const email = String(
-      req.body.email || ""
-    ).trim().toLowerCase();
-
-    const senha = String(
-      req.body.senha || ""
-    );
-
-    if (
-      !process.env.ADMIN_SETUP_KEY ||
-      setupKey !== process.env.ADMIN_SETUP_KEY
-    ) {
-      return res.status(403).json({
-        error: "Chave de configuração inválida."
-      });
-    }
-
-    if (!email || senha.length < 8) {
+    if (!email || !senha) {
       return res.status(400).json({
-        error: "Informe e-mail e uma senha de pelo menos 8 caracteres."
+        sucesso: false,
+        erro: "Informe e-mail e senha."
       });
     }
 
-    const hash = await bcrypt.hash(
-      senha,
-      12
-    );
+    const emailNormalizado = String(email).trim().toLowerCase();
 
-    await pool.query(
+    const existente = await pool.query(
       `
-      INSERT INTO admins
-      (
-        email,
-        senha
-      )
-      VALUES
-      ($1, $2)
-      ON CONFLICT (email)
-      DO UPDATE SET senha = EXCLUDED.senha
-      `,
-      [
-        email,
-        hash
-      ]
-    );
-
-    res.json({
-      ok: true,
-      message: "Administrador configurado."
-    });
-
-  } catch (erro) {
-    console.error("ERRO NO ADMIN SETUP:", erro);
-
-    res.status(500).json({
-      error: "Erro ao configurar administrador."
-    });
-  }
-});
-
-app.post("/api/admin/login", async (req, res) => {
-  try {
-    const email = String(
-      req.body.email || ""
-    ).trim().toLowerCase();
-
-    const senha = String(
-      req.body.senha || ""
-    );
-
-    const result = await pool.query(
-      `
-      SELECT id, email, senha
+      SELECT id
       FROM admins
       WHERE LOWER(email) = $1
       LIMIT 1
       `,
-      [email]
+      [emailNormalizado]
     );
 
-    if (result.rows.length === 0) {
-      return res.status(401).json({
-        error: "E-mail ou senha incorretos."
+    if (existente.rows.length > 0) {
+      return res.status(409).json({
+        sucesso: false,
+        erro: "Administrador já cadastrado."
       });
     }
 
-    const admin = result.rows[0];
+    const senhaHash = await bcrypt.hash(senha, 10);
 
-    const correta = await bcrypt.compare(
+    const resultado = await pool.query(
+      `
+      INSERT INTO admins
+      (email, senha)
+      VALUES ($1, $2)
+      RETURNING id, email, criado_em
+      `,
+      [
+        emailNormalizado,
+        senhaHash
+      ]
+    );
+
+    res.json({
+      sucesso: true,
+      admin: resultado.rows[0]
+    });
+
+  } catch (erro) {
+    console.error("Erro admin setup:", erro);
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao criar administrador."
+    });
+  }
+});
+
+// ======================================================
+// LOGIN ADMIN
+// ======================================================
+
+app.post("/api/admin/login", async (req, res) => {
+  try {
+    const { email, senha } = req.body;
+
+    if (!email || !senha) {
+      return res.status(400).json({
+        sucesso: false,
+        erro: "Informe e-mail e senha."
+      });
+    }
+
+    const emailNormalizado = String(email).trim().toLowerCase();
+
+    const resultado = await pool.query(
+      `
+      SELECT *
+      FROM admins
+      WHERE LOWER(email) = $1
+      LIMIT 1
+      `,
+      [emailNormalizado]
+    );
+
+    if (resultado.rows.length === 0) {
+      return res.status(401).json({
+        sucesso: false,
+        erro: "E-mail ou senha incorretos."
+      });
+    }
+
+    const admin = resultado.rows[0];
+
+    const senhaCorreta = await bcrypt.compare(
       senha,
       admin.senha
     );
 
-    if (!correta) {
+    if (!senhaCorreta) {
       return res.status(401).json({
-        error: "E-mail ou senha incorretos."
+        sucesso: false,
+        erro: "E-mail ou senha incorretos."
       });
     }
 
     res.json({
-      ok: true,
+      sucesso: true,
       admin: {
         id: admin.id,
         email: admin.email
@@ -646,80 +611,70 @@ app.post("/api/admin/login", async (req, res) => {
     });
 
   } catch (erro) {
-    console.error("ERRO NO LOGIN ADMIN:", erro);
+    console.error("Erro admin login:", erro);
 
     res.status(500).json({
-      error: "Erro interno."
+      sucesso: false,
+      erro: "Erro ao realizar login."
     });
   }
 });
 
-/* =========================
-   DASHBOARD ADMIN
-========================= */
+// ======================================================
+// DASHBOARD ADMIN
+// ======================================================
 
 app.get("/api/admin/dashboard", async (req, res) => {
   try {
-    const jogadores = await pool.query(
-      `SELECT COUNT(*)::int AS total FROM jogadores`
-    );
-
-    const pontos = await pool.query(
-      `
-      SELECT COALESCE(SUM(pontos), 0) AS total
+    const jogadores = await pool.query(`
+      SELECT COUNT(*)::integer AS total
       FROM jogadores
-      `
-    );
+    `);
+
+    const pontos = await pool.query(`
+      SELECT COALESCE(SUM(pontos), 0)::bigint AS total
+      FROM jogadores
+    `);
 
     let saquesPendentes = 0;
-    let valorSaquesPendentes = 0;
 
     try {
-      const saques = await pool.query(
-        `
-        SELECT
-          COUNT(*)::int AS total,
-          COALESCE(SUM(quantia), 0) AS valor
+      const saques = await pool.query(`
+        SELECT COUNT(*)::integer AS total
         FROM saques
-        WHERE status = 'pendente'
-        `
-      );
+        WHERE LOWER(status) IN ('pendente', 'pending')
+      `);
 
       saquesPendentes = saques.rows[0].total;
-      valorSaquesPendentes =
-        Number(saques.rows[0].valor || 0);
 
-    } catch (erro) {
-      console.log(
-        "Tabela saques ainda não disponível."
-      );
+    } catch (erroSaques) {
+      console.log("Tabela saques ainda não disponível.");
     }
 
     res.json({
-      ok: true,
+      sucesso: true,
       jogadores: jogadores.rows[0].total,
-      pontos: Number(pontos.rows[0].total || 0),
-      saquesPendentes,
-      valorSaquesPendentes
+      pontos: pontos.rows[0].total,
+      saques_pendentes: saquesPendentes
     });
 
   } catch (erro) {
-    console.error("ERRO DASHBOARD:", erro);
+    console.error("Erro dashboard:", erro);
 
     res.status(500).json({
-      error: "Erro ao carregar dashboard."
+      sucesso: false,
+      erro: "Erro ao carregar dashboard."
     });
   }
 });
 
-/* =========================
-   LISTAR JOGADORES
-========================= */
+// ======================================================
+// LISTAR JOGADORES
+// ======================================================
 
 app.get("/api/admin/jogadores", async (req, res) => {
   try {
-    const result = await pool.query(
-      `
+    const resultado = await pool.query(`
       SELECT
         id,
         email,
@@ -731,84 +686,131 @@ app.get("/api/admin/jogadores", async (req, res) => {
         criado_em
       FROM jogadores
       ORDER BY id DESC
-      `
-    );
+    `);
 
     res.json({
-      ok: true,
-      jogadores: result.rows.map(jogador => ({
-        ...jogador,
-        pontos: Number(jogador.pontos || 0),
-        equilibrio: Number(jogador.equilibrio || 0)
-      }))
+      sucesso: true,
+      jogadores: resultado.rows
     });
 
   } catch (erro) {
-    console.error("ERRO AO CARREGAR JOGADORES:", erro);
+    console.error("Erro ao carregar jogadores:", erro);
 
     res.status(500).json({
-      error: "Erro ao carregar jogadores."
+      sucesso: false,
+      erro: "Erro ao carregar jogadores."
     });
   }
 });
 
-/* =========================
-   SAQUES
-========================= */
+// ======================================================
+// SAQUE
+// ======================================================
 
 app.post("/api/saques", async (req, res) => {
+  const client = await pool.connect();
+
   try {
     const {
       jogador_id,
       pix_key,
       quantia,
-      valor_jogador,
-      valor_plataforma,
-      metodo,
-      email
+      metodo
     } = req.body;
 
-    const id = Number(jogador_id);
+    const jogadorId = Number(jogador_id);
     const valor = Number(quantia);
 
-    if (!Number.isInteger(id)) {
+    if (!Number.isInteger(jogadorId)) {
       return res.status(400).json({
-        error: "Jogador inválido."
+        sucesso: false,
+        erro: "Jogador inválido."
       });
     }
 
-    if (!Number.isFinite(valor) || valor <= 0) {
+    if (![1, 5, 10].includes(valor)) {
       return res.status(400).json({
-        error: "Valor de saque inválido."
+        sucesso: false,
+        erro: "Valor de saque inválido."
       });
     }
 
-    const jogador = await pool.query(
+    if (!pix_key) {
+      return res.status(400).json({
+        sucesso: false,
+        erro: "Informe a chave Pix."
+      });
+    }
+
+    const pontosNecessarios = {
+      1: 2000,
+      5: 6000,
+      10: 11000
+    };
+
+    const pontosParaSaque = pontosNecessarios[valor];
+
+    await client.query("BEGIN");
+
+    const jogadorResult = await client.query(
       `
-      SELECT id, pontos, equilibrio
+      SELECT
+        id,
+        email,
+        pontos,
+        equilibrio
       FROM jogadores
       WHERE id = $1
       FOR UPDATE
       `,
-      [id]
+      [jogadorId]
     );
 
-    if (jogador.rows.length === 0) {
+    if (jogadorResult.rows.length === 0) {
+      await client.query("ROLLBACK");
+
       return res.status(404).json({
-        error: "Jogador não encontrado."
+        sucesso: false,
+        erro: "Jogador não encontrado."
       });
     }
 
-    const saldoAtual =
-      Number(jogador.rows[0].equilibrio || 0);
+    const jogador = jogadorResult.rows[0];
 
-    if (valor > saldoAtual) {
+    if (Number(jogador.pontos) < pontosParaSaque) {
+      await client.query("ROLLBACK");
+
       return res.status(400).json({
-        error: "Saldo insuficiente."
+        sucesso: false,
+        erro: `Você precisa de ${pontosParaSaque} pontos para sacar R$ ${valor}.`
       });
     }
 
-    const saque = await pool.query(
+    // Máximo de 2 saques por dia
+    const quantidadeHoje = await client.query(
+      `
+      SELECT COUNT(*)::integer AS total
+      FROM saques
+      WHERE jogador_id = $1
+        AND criado_em >= CURRENT_DATE
+        AND criado_em < CURRENT_DATE + INTERVAL '1 day'
+      `,
+      [jogadorId]
+    );
+
+    if (Number(quantidadeHoje.rows[0].total) >= 2) {
+      await client.query("ROLLBACK");
+
+      return res.status(400).json({
+        sucesso: false,
+        erro: "Limite de 2 saques por dia atingido."
+      });
+    }
+
+    const valorJogador = Number((valor * 0.70).toFixed(2));
+    const valorPlataforma = Number((valor * 0.30).toFixed(2));
+
+    const saque = await client.query(
       `
       INSERT INTO saques
       (
@@ -819,66 +821,73 @@ app.post("/api/saques", async (req, res) => {
         valor_jogador,
         valor_plataforma,
         metodo,
-        email
+        email,
+        criado_em
       )
       VALUES
-      ($1, $2, 'pendente', $3, $4, $5, $6, $7)
+      ($1, $2, 'pendente', $3, $4, $5, $6, $7, CURRENT_TIMESTAMP)
       RETURNING *
       `,
       [
-        id,
-        pix_key || "",
+        jogadorId,
+        pix_key,
         valor,
-        Number(valor_jogador || valor),
-        Number(valor_plataforma || 0),
-        metodo || "Pix",
-        email || ""
+        valorJogador,
+        valorPlataforma,
+        metodo || "pix",
+        jogador.email
       ]
     );
 
-    await pool.query(
+    await client.query(
       `
       UPDATE jogadores
-      SET equilibrio = equilibrio - $1
+      SET pontos = pontos - $1
       WHERE id = $2
       `,
       [
-        valor,
-        id
+        pontosParaSaque,
+        jogadorId
       ]
     );
 
-    res.status(201).json({
-      ok: true,
-      saque: saque.rows[0]
+    await client.query("COMMIT");
+
+    res.json({
+      sucesso: true,
+      saque: saque.rows[0],
+      pontos_descontados: pontosParaSaque,
+      valor_jogador: valorJogador,
+      valor_plataforma: valorPlataforma
     });
 
   } catch (erro) {
-    console.error("ERRO AO CRIAR SAQUE:", erro);
+    try {
+      await client.query("ROLLBACK");
+    } catch (_) {}
+
+    console.error("Erro saque:", erro);
 
     res.status(500).json({
-      error: "Erro ao solicitar saque."
+      sucesso: false,
+      erro: "Erro ao solicitar saque."
     });
+
+  } finally {
+    client.release();
   }
 });
 
-/* =========================
-   INICIAR SERVIDOR
-========================= */
+// ======================================================
+// INICIAR
+// ======================================================
 
-prepararBanco()
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(
-        `QuizUp Admin Backend rodando na porta ${PORT}`
-      );
-    });
-  })
-  .catch(erro => {
-    console.error(
-      "ERRO AO PREPARAR BANCO:",
-      erro
-    );
+async function iniciar() {
+  await prepararBanco();
 
-    process.exit(1);
+  app.listen(PORT, () => {
+    console.log(`QuizUp Admin Backend rodando na porta ${PORT}`);
   });
+}
+
+iniciar();
