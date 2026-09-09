@@ -1,21 +1,18 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>QuizUp</title>
-
-<script>
+<title>QuizUp</title><script>
 (function(s){
   s.dataset.zone='11646165';
   s.src='https://nap5k.com/tag.min.js';
 })([document.documentElement, document.body]
   .filter(Boolean).pop()
   .appendChild(document.createElement('script')));
-</script>
-
-<style>
-*{box-sizing:border-box}
+</script><style>
+*{
+  box-sizing:border-box
+}
 
 body{
   margin:0;
@@ -172,7 +169,7 @@ select{
 .bar div{
   height:100%;
   background:#ffd43b;
-  width:0;
+  width:100%;
   transition:width .2s linear
 }
 
@@ -213,6 +210,16 @@ select{
   margin:12px 0
 }
 
+.next-wrap{
+  text-align:center;
+  margin-top:16px
+}
+
+.next-button{
+  width:100%;
+  font-size:18px
+}
+
 @media(max-width:560px){
 
   .nav{
@@ -228,32 +235,21 @@ select{
   }
 
 }
-</style>
-</head>
-
-<body>
-
-<audio id="backgroundMusic" preload="auto" loop>
-  <source
-    src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
-    type="audio/mpeg">
+</style></head><body><audio
+id="backgroundMusic"
+preload="auto"
+loop
+playsinline>
+<source
+src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
+type="audio/mpeg">
 </audio>
 
-<div class="wrap">
-
-<div class="logo">
+<div class="wrap"><div class="logo">
   QuizUp
-</div>
-
-<div class="sub">
+</div><div class="sub">
   🎲 Jogue, responda e acumule pontos
-</div>
-
-<!-- BANNER -->
-
-<div class="adbox">
-
-<script>
+</div><div class="adbox"><script>
 atOptions={
   'key':'827464848b02582093e6b5d45cb10d0a',
   'format':'iframe',
@@ -261,22 +257,7 @@ atOptions={
   'width':320,
   'params':{}
 };
-</script>
-
-<script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
-
-</div>
-
-
-<!-- =====================================================
-     LOGIN / CADASTRO
-     ===================================================== -->
-
-<section id="auth" class="card">
-
-<div class="tabs2">
-
-<button
+</script><script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script></div><section id="auth" class="card"><div class="tabs2"><button
 class="primary"
 onclick="authMode('register')">
 Cadastro
@@ -288,23 +269,13 @@ onclick="authMode('login')">
 Login
 </button>
 
-</div>
-
-
-<!-- CADASTRO -->
-
-<div id="registerBox">
-
-<h2>📝 Cadastro</h2>
-
-<label>E-mail</label>
+</div><div id="registerBox"><h2>📝 Cadastro</h2><label>E-mail</label>
 
 <input
 id="rEmail"
 type="email"
 autocomplete="email"
 placeholder="Seu e-mail">
-
 
 <label>Senha</label>
 
@@ -314,7 +285,6 @@ type="password"
 autocomplete="new-password"
 placeholder="Sua senha">
 
-
 <label>Nome completo</label>
 
 <input
@@ -322,7 +292,6 @@ id="rName"
 type="text"
 autocomplete="name"
 placeholder="Seu nome completo">
-
 
 <label>CPF</label>
 
@@ -341,23 +310,13 @@ onclick="register()">
 Cadastrar
 </button>
 
-</div>
-
-
-<!-- LOGIN -->
-
-<div id="loginBox" class="hidden">
-
-<h2>🔐 Login</h2>
-
-<label>E-mail</label>
+</div><div id="loginBox" class="hidden"><h2>🔐 Login</h2><label>E-mail</label>
 
 <input
 id="lEmail"
 type="email"
 autocomplete="email"
 placeholder="Seu e-mail">
-
 
 <label>Senha</label>
 
@@ -367,63 +326,29 @@ type="password"
 autocomplete="current-password"
 placeholder="Sua senha">
 
-
 <button
 class="primary"
 onclick="login()">
 Entrar
 </button>
 
-
-<p
-style="margin-top:18px;text-align:center">
-
-<button
+<p style="margin-top:18px;text-align:center"><button
 class="ghost"
 onclick="forgotPassword()">
-
 Esqueceu a senha?
-
 </button>
 
-</p>
-
-</div>
-
-</section>
-
-
-<!-- =====================================================
-     JOGO
-     ===================================================== -->
-
-<section id="game" class="hidden">
-
-
-<div class="top card">
-
-<div class="stat">
+</p></div></section><section id="game" class="hidden"><div class="top card"><div class="stat">
 ⭐ <span id="points">0</span> pontos
-</div>
-
-<div class="stat">
+</div><div class="stat">
 🎲 Rodada <span id="round">1</span>
-</div>
-
-<button
+</div><button
 class="ghost"
 onclick="logout()">
 Sair
 </button>
 
-</div>
-
-
-<!-- NAVEGAÇÃO -->
-
-<div class="nav">
-
-<button
+</div><div class="nav"><button
 class="ghost"
 onclick="tab('quiz')">
 🎲 Quiz
@@ -447,26 +372,11 @@ onclick="tab('premium')">
 💎 Premium
 </button>
 
-</div>
-
-
-<!-- =====================================================
-     QUIZ
-     ===================================================== -->
-
-<div id="quizTab">
-
-<div id="rollCard" class="card">
-
-<h2 style="text-align:center">
+</div><div id="quizTab"><div id="rollCard" class="card"><h2 style="text-align:center">
 Jogue o dado
-</h2>
-
-<div id="dice" class="dice">
+</h2><div id="dice" class="dice">
 🎲
-</div>
-
-<button
+</div><button
 class="primary roll"
 onclick="rollDice()">
 JOGAR DADO
@@ -475,62 +385,36 @@ JOGAR DADO
 <p
 id="diceResult"
 class="result">
-</p>
-
-</div>
-
-
-<!-- PERGUNTA -->
-
-<div
+</p></div><div
 id="questionCard"
-class="card hidden">
-
-<div class="top">
-
-<b>Pergunta</b>
+class="card hidden"><div class="top"><b>Pergunta</b>
 
 <span class="timer">
-⏱️ <span id="time">5</span>s
-</span>
-
-</div>
-
-
-<div class="bar">
+⏱️ <span id="time">10</span>s
+</span></div><div class="bar">
 <div id="progress"></div>
-</div>
-
-
-<h2 id="question"></h2>
-
-
-<div
+</div><h2 id="question"></h2><div
 id="answers"
 class="answers">
-</div>
-
-
-<p
+</div><p
 id="feedback"
 class="notice hidden">
-</p>
-
-
-<div
-style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
-
-⭐ Pontuação:
+</p><div
+style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">⭐ Pontuação:
 <span id="totalScore">0</span>
 
-</div>
+</div><div
+id="nextWrap"
+class="next-wrap hidden"><button
+id="nextButton"
+class="primary next-button"
+onclick="finishQuestion()">
+➡️ Próxima
+</button>
 
-
-<div
+</div><div
 id="answerAd"
-class="adbox">
-
-<script>
+class="adbox"><script>
 atOptions={
   'key':'827464848b02582093e6b5d45cb10d0a',
   'format':'iframe',
@@ -538,35 +422,12 @@ atOptions={
   'width':320,
   'params':{}
 };
-</script>
-
-<script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- =====================================================
-     INDICAÇÃO
-     ===================================================== -->
-
-<div
+</script><script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script></div></div></div></div><div
 id="refTab"
-class="hidden card">
-
-<h2>🎁 Indicação</h2>
-
-<p>
+class="hidden card"><h2>🎁 Indicação</h2><p>
 Ganhe <b>50 pontos</b> quando seu convidado atingir
 <b>300 pontos</b>.
-</p>
-
-<input
+</p><input
 id="refCode"
 readonly>
 
@@ -586,2274 +447,2023 @@ onclick="shareRef()">
 Enviar link
 </button>
 
-<p id="refMsg"></p>
-
-</div>
-
-
-<!-- =====================================================
-     SAQUE
-     ===================================================== -->
-
-<div
+<p id="refMsg"></p></div><div
 id="cashTab"
-class="hidden card">
-
-<h2>💸 Saque</h2>
-
-
-<div class="notice">
-
-<b>Valores:</b><br>
+class="hidden card"><h2>💸 Saque</h2><div class="notice"><b>Valores:</b><br>
 
 2.000 pontos → R$ 1,00<br>
 6.000 pontos → R$ 5,00<br>
 11.000 pontos → R$ 10,00
 
-</div>
-
-
-<div class="cash-summary">
-
-<b>Divisão do saque</b><br><br>
+</div><div class="cash-summary"><b>Divisão do saque</b><br><br>
 
 70% → jogador<br>
 30% → plataforma
 
-</div>
-
-
-<div class="notice">
-
-<b>Limite:</b><br>
+</div><div class="notice"><b>Limite:</b><br>
 
 Cada jogador pode solicitar no máximo
 <b>2 saques por dia</b>.
 
-</div>
-
-
-<select
+</div><select
 id="payMethod"
 onchange="payFields()">
 
 <option value="pix">
 Pix
-</option>
-
-<option value="paypal">
+</option><option value="paypal">
 PayPal
-</option>
-
-</select>
-
-
-<div id="pix">
-
-<input
+</option></select><div id="pix"><input
 id="pixKey"
 placeholder="Chave Pix">
 
-</div>
-
-
-<div
+</div><div
 id="paypal"
-class="hidden">
-
-<input
+class="hidden"><input
 id="paypalKey"
 type="email"
 placeholder="E-mail PayPal">
 
-</div>
-
-
-<select
+</div><select
 id="withdrawAmount">
 
 <option value="1">
 R$ 1,00 — 2.000 pontos
-</option>
-
-<option value="5">
+</option><option value="5">
 R$ 5,00 — 6.000 pontos
-</option>
-
-<option value="10">
+</option><option value="10">
 R$ 10,00 — 11.000 pontos
-</option>
-
-</select>
-
-
-<button
+</option></select><button
 id="withdrawButton"
 class="primary"
 onclick="withdraw()">
 
 Solicitar saque
 
-</button>
-
-
-<p
+</button><p
 id="cashMsg"
 class="notice hidden">
-</p>
-
-</div>
-
-
-<!-- =====================================================
-     PREMIUM
-     ===================================================== -->
-
-<div
+</p></div><div
 id="premiumTab"
-class="hidden card">
-
-<h2>💎 Premium</h2>
-
-<p>
+class="hidden card"><h2>💎 Premium</h2><p>
 Área Premium preparada para receber benefícios do QuizUp.
-</p>
-
-<button
+</p><button
 class="primary"
 onclick="alert('O pagamento Premium ainda será conectado.')">
 
 Quero ser Premium
 
-</button>
-
-</div>
-
-</section>
-
-</div>
-
-
-<script>
-
-/* =========================================================
-   API — RENDER + AIVEN POSTGRESQL
-   ========================================================= */
+</button></div></section></div><script>
 
 const API_URL =
 "https://quizup-api-qxn2.onrender.com";
 
+const QUESTION_TIME = 10;
 
-async function api(path,options={}){
+let handle = null;
 
-const response=
-await fetch(
-API_URL+path,
-{
-...options,
-headers:{
-"Content-Type":"application/json",
-...(options.headers||{})
-}
-}
-);
+let answered = false;
 
+const SESSION_KEY =
+"quizup_session";
 
-let data={};
-
-try{
-
-data=
-await response.json();
-
-}catch(error){
-
-}
-
-
-if(!response.ok){
-
-throw new Error(
-data.error||
-data.message||
-"Erro de comunicação com o servidor."
-);
-
-}
-
-
-return data;
-
-}
-
-
-/* =========================================================
-   PERGUNTAS
-   ========================================================= */
-
-const Q=[
-
-["Quanto é 2 + 2?",
-["3","4","5","6"],1],
-
-["Qual é a capital do Brasil?",
-["Brasília","São Paulo","Salvador","Recife"],0],
-
-["Qual planeta é conhecido como Planeta Vermelho?",
-["Terra","Marte","Vênus","Saturno"],1],
-
-["Quantos dias tem uma semana?",
-["5","6","7","8"],2],
-
-["Qual animal é conhecido como rei da selva?",
-["Tigre","Elefante","Leão","Urso"],2],
-
-["Quantos meses tem um ano?",
-["10","11","12","13"],2],
-
-["Qual é a cor formada pela mistura de azul e amarelo?",
-["Verde","Roxo","Laranja","Rosa"],0],
-
-["Qual é o maior planeta do Sistema Solar?",
-["Terra","Marte","Júpiter","Mercúrio"],2],
-
-["Qual é o maior oceano da Terra?",
-["Atlântico","Índico","Pacífico","Ártico"],2],
-
-["Quanto é 12 × 8?",
-["86","96","108","112"],1],
-
-["Quem escreveu Dom Casmurro?",
-["Machado de Assis","José de Alencar","Clarice Lispector","Cecília Meireles"],0],
-
-["Qual é o símbolo químico do ouro?",
-["Ag","Fe","Au","Cu"],2],
-
-["Qual destes números é primo?",
-["21","27","29","33"],2],
-
-["Qual é a raiz quadrada de 144?",
-["10","11","12","14"],2],
-
-["Qual é o maior país do mundo em área?",
-["China","Canadá","Brasil","Rússia"],3],
-
-["Em que ano terminou a Segunda Guerra Mundial?",
-["1943","1944","1945","1946"],2],
-
-["Qual é o elemento químico de número atômico 6?",
-["Oxigênio","Carbono","Nitrogênio","Ferro"],1],
-
-["Qual é a velocidade aproximada da luz no vácuo?",
-["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],1],
-
-["Qual é a derivada de x³ − 4x?",
-["3x² − 4","x² − 4","3x − 4","3x² + 4"],0]
-
-];
-
-
-/* =========================================================
-   ESTADO
-   ========================================================= */
-
-let s={
+let s = {
 
 id:null,
-
 email:"",
-
 name:"",
-
 cpf:"",
-
 points:0,
-
 balance:0,
-
 round:1,
-
 code:"",
-
 referrer:"",
-
 dice:0,
-
 question:null,
-
-timer:5,
-
-answered:false,
-
+timer:QUESTION_TIME,
 roundPoints:0
 
 };
 
 
-let handle=null;
+/* =========================
+   API
+========================= */
 
-let nextRoundHandle=null;
+async function api(path,options={}){
+
+  const response =
+    await fetch(
+      API_URL + path,
+      {
+        ...options,
+        headers:{
+          "Content-Type":"application/json",
+          ...(options.headers || {})
+        }
+      }
+    );
+
+  let data = {};
+
+  try{
+    data = await response.json();
+  }catch(error){}
+
+  if(!response.ok){
+
+    throw new Error(
+      data.error ||
+      data.message ||
+      "Erro de comunicação com o servidor."
+    );
+
+  }
+
+  return data;
+}
 
 
-/* =========================================================
+/* =========================
    SESSÃO
-   ========================================================= */
-
-const SESSION_KEY=
-"quizup_session";
-
+========================= */
 
 function saveSession(){
 
-if(!s.id||!s.email)return;
+  if(!s.id || !s.email) return;
 
+  const session = {
 
-const session={
+    id:s.id,
+    email:s.email,
+    name:s.name,
+    cpf:s.cpf,
+    points:Number(s.points || 0),
+    balance:Number(s.balance || 0),
+    round:Number(s.round || 1),
+    code:s.code || "",
+    referrer:s.referrer || ""
 
-id:s.id,
+  };
 
-email:s.email,
+  localStorage.setItem(
+    SESSION_KEY,
+    JSON.stringify(session)
+  );
 
-name:s.name,
-
-cpf:s.cpf,
-
-points:Number(s.points||0),
-
-balance:Number(s.balance||0),
-
-round:Number(s.round||1),
-
-code:s.code||"",
-
-referrer:s.referrer||""
-
-};
-
-
-localStorage.setItem(
-SESSION_KEY,
-JSON.stringify(session)
-);
-
-ui();
+  ui();
 
 }
 
 
 function clearSession(){
 
-localStorage.removeItem(
-SESSION_KEY
-);
+  localStorage.removeItem(
+    SESSION_KEY
+  );
 
 }
 
 
 function restoreSession(){
 
-try{
+  try{
 
-const raw=
-localStorage.getItem(
-SESSION_KEY
-);
+    const raw =
+      localStorage.getItem(
+        SESSION_KEY
+      );
 
-if(!raw)return false;
+    if(!raw) return false;
 
+    const saved =
+      JSON.parse(raw);
 
-const saved=
-JSON.parse(raw);
+    if(!saved.id || !saved.email){
 
+      clearSession();
 
-if(!saved.id||!saved.email){
+      return false;
 
-clearSession();
+    }
 
-return false;
+    s = {
 
-}
+      ...s,
+      ...saved,
 
+      points:
+        Number(saved.points || 0),
 
-s={
+      balance:
+        Number(saved.balance || 0),
 
-...s,
+      round:
+        Number(saved.round || 1)
 
-...saved,
+    };
 
-points:Number(saved.points||0),
+    return true;
 
-balance:Number(saved.balance||0),
+  }catch(error){
 
-round:Number(saved.round||1)
+    clearSession();
 
-};
+    return false;
 
-
-return true;
-
-
-}catch(error){
-
-console.error(error);
-
-clearSession();
-
-return false;
-
-}
+  }
 
 }
 
 
-/* =========================================================
+/* =========================
    MÚSICA
-   ========================================================= */
+========================= */
 
 function playMusic(){
 
-const music=
-document.getElementById(
-"backgroundMusic"
-);
+  const music =
+    document.getElementById(
+      "backgroundMusic"
+    );
 
-if(!music)return;
+  if(!music) return;
 
-music.volume=.35;
+  music.volume = 0.35;
 
-music.play().catch(()=>{
+  const tocar = () => {
 
-console.log(
-"Música aguardando interação."
-);
+    music.play()
+      .then(() => {
 
-});
+        document.removeEventListener(
+          "click",
+          tocar
+        );
+
+        document.removeEventListener(
+          "touchstart",
+          tocar
+        );
+
+        document.removeEventListener(
+          "pointerdown",
+          tocar
+        );
+
+      })
+      .catch(() => {});
+
+  };
+
+  tocar();
+
+  document.addEventListener(
+    "click",
+    tocar,
+    {once:true}
+  );
+
+  document.addEventListener(
+    "touchstart",
+    tocar,
+    {once:true}
+  );
+
+  document.addEventListener(
+    "pointerdown",
+    tocar,
+    {once:true}
+  );
 
 }
 
 
 function stopMusic(){
 
-const music=
-document.getElementById(
-"backgroundMusic"
-);
+  const music =
+    document.getElementById(
+      "backgroundMusic"
+    );
 
-if(!music)return;
+  if(!music) return;
 
-music.pause();
+  music.pause();
 
-music.currentTime=0;
+  music.currentTime = 0;
 
 }
 
 
-/* =========================================================
+/* =========================
    CPF
-   ========================================================= */
+========================= */
 
 function onlyNumbers(value){
 
-return String(value||"")
-.replace(/\D/g,"");
+  return String(value || "")
+    .replace(/\D/g,"");
 
 }
 
 
 function formatCPF(input){
 
-let v=
-onlyNumbers(input.value)
-.slice(0,11);
+  let v =
+    onlyNumbers(input.value)
+      .slice(0,11);
 
+  if(v.length > 9){
 
-if(v.length>9){
+    v =
+      v.replace(
+        /(\d{3})(\d{3})(\d{3})(\d{0,2})/,
+        "$1.$2.$3-$4"
+      );
 
-v=
-v.replace(
-/(\d{3})(\d{3})(\d{3})(\d{0,2})/,
-"$1.$2.$3-$4"
-);
+  }else if(v.length > 6){
 
-}
+    v =
+      v.replace(
+        /(\d{3})(\d{3})(\d{0,3})/,
+        "$1.$2.$3"
+      );
 
-else if(v.length>6){
+  }else if(v.length > 3){
 
-v=
-v.replace(
-/(\d{3})(\d{3})(\d{0,3})/,
-"$1.$2.$3"
-);
+    v =
+      v.replace(
+        /(\d{3})(\d{0,3})/,
+        "$1.$2"
+      );
 
-}
+  }
 
-else if(v.length>3){
-
-v=
-v.replace(
-/(\d{3})(\d{0,3})/,
-"$1.$2"
-);
-
-}
-
-
-input.value=v;
+  input.value = v;
 
 }
 
 
 function cleanCPF(cpf){
 
-return onlyNumbers(cpf);
+  return onlyNumbers(cpf);
 
 }
 
 
 function validCPF(cpf){
 
-cpf=
-cleanCPF(cpf);
+  cpf = cleanCPF(cpf);
 
+  if(cpf.length !== 11) return false;
 
-if(cpf.length!==11)return false;
+  if(/^(\d)\1{10}$/.test(cpf)){
+    return false;
+  }
 
+  let sum = 0;
 
-if(/^(\d)\1{10}$/.test(cpf)){
+  for(let i=0;i<9;i++){
 
-return false;
+    sum +=
+      Number(cpf[i]) *
+      (10-i);
 
-}
+  }
 
+  let d1 =
+    (sum * 10) % 11;
 
-let sum=0;
+  if(d1 === 10) d1 = 0;
 
+  if(d1 !== Number(cpf[9])){
+    return false;
+  }
 
-for(let i=0;i<9;i++){
+  sum = 0;
 
-sum+=
-Number(cpf[i])*
-(10-i);
+  for(let i=0;i<10;i++){
 
-}
+    sum +=
+      Number(cpf[i]) *
+      (11-i);
 
+  }
 
-let d1=
-(sum*10)%11;
+  let d2 =
+    (sum * 10) % 11;
 
+  if(d2 === 10) d2 = 0;
 
-if(d1===10)d1=0;
-
-
-if(d1!==Number(cpf[9])){
-
-return false;
-
-}
-
-
-sum=0;
-
-
-for(let i=0;i<10;i++){
-
-sum+=
-Number(cpf[i])*
-(11-i);
+  return d2 ===
+    Number(cpf[10]);
 
 }
 
 
-let d2=
-(sum*10)%11;
-
-
-if(d2===10)d2=0;
-
-
-return d2===
-Number(cpf[10]);
-
-}
-
-
-/* =========================================================
-   CARREGAR JOGADOR
-   ========================================================= */
+/* =========================
+   JOGADOR
+========================= */
 
 async function loadPlayer(){
 
-if(!s.id)return;
+  if(!s.id) return;
 
+  const data =
+    await api(
+      "/api/jogador/" +
+      encodeURIComponent(s.id)
+    );
 
-const data=
-await api(
-"/api/jogador/"+
-encodeURIComponent(s.id)
-);
+  const j =
+    data.jogador ||
+    data;
 
+  if(!j || !j.id){
 
-const j=
-data.jogador||
-data;
+    throw new Error(
+      "Jogador não encontrado."
+    );
 
+  }
 
-if(!j||!j.id){
+  s.id = j.id;
 
-throw new Error(
-"Jogador não encontrado."
-);
+  s.email =
+    j.email ||
+    s.email;
 
-}
+  s.name =
+    j.nome ||
+    s.name;
 
+  s.cpf =
+    j.cpf ||
+    s.cpf;
 
-s.id=j.id;
+  s.points =
+    Number(j.pontos || 0);
 
-s.email=
-j.email||
-s.email;
+  s.balance =
+    Number(j.equilibrio || 0);
 
-s.name=
-j.nome||
-s.name;
+  s.code =
+    j.codigo_indicacao ||
+    s.code;
 
-s.cpf=
-j.cpf||
-s.cpf;
+  saveSession();
 
-s.points=
-Number(j.pontos||0);
-
-s.balance=
-Number(j.equilibrio||0);
-
-s.code=
-j.codigo_indicacao||
-s.code;
-
-
-saveSession();
-
-ui();
+  ui();
 
 }
 
-
-/* =========================================================
-   SALVAR JOGADOR
-   ========================================================= */
 
 async function savePlayer(){
 
-if(!s.id)return;
+  if(!s.id) return;
 
+  const data =
+    await api(
+      "/api/jogador/" +
+      encodeURIComponent(s.id),
+      {
+        method:"PUT",
 
-const data=
-await api(
-"/api/jogador/"+
-encodeURIComponent(s.id),
-{
-method:"PUT",
+        body:JSON.stringify({
 
-body:JSON.stringify({
+          pontos:
+            Number(s.points || 0),
 
-pontos:
-Number(s.points||0),
+          equilibrio:
+            Number(s.balance || 0)
 
-equilibrio:
-Number(s.balance||0)
+        })
 
-})
+      }
+    );
 
-}
-);
+  const j =
+    data.jogador ||
+    data;
 
+  if(j.pontos !== undefined){
 
-const j=
-data.jogador||
-data;
+    s.points =
+      Number(j.pontos || 0);
 
+  }
 
-if(j.pontos!==undefined){
+  if(j.equilibrio !== undefined){
 
-s.points=
-Number(j.pontos||0);
+    s.balance =
+      Number(j.equilibrio || 0);
 
-}
+  }
 
+  saveSession();
 
-if(j.equilibrio!==undefined){
-
-s.balance=
-Number(j.equilibrio||0);
-
-}
-
-
-saveSession();
-
-ui();
+  ui();
 
 }
 
 
-/* =========================================================
-   AUTH
-   ========================================================= */
+/* =========================
+   AUTENTICAÇÃO
+========================= */
 
-function authMode(m){
+function authMode(mode){
 
-stopMusic();
+  stopMusic();
 
+  document
+    .getElementById("registerBox")
+    .classList.toggle(
+      "hidden",
+      mode !== "register"
+    );
 
-document.getElementById(
-"registerBox"
-)
-.classList.toggle(
-"hidden",
-m!=="register"
-);
-
-
-document.getElementById(
-"loginBox"
-)
-.classList.toggle(
-"hidden",
-m!=="login"
-);
+  document
+    .getElementById("loginBox")
+    .classList.toggle(
+      "hidden",
+      mode !== "login"
+    );
 
 }
 
-
-/* =========================================================
-   CADASTRO
-   ========================================================= */
 
 async function register(){
 
-stopMusic();
+  stopMusic();
 
+  const button =
+    document.querySelector(
+      "#registerBox .primary"
+    );
 
-const button=
-document.querySelector(
-"#registerBox .primary"
-);
+  if(button){
 
+    button.disabled = true;
 
-if(button){
+    button.textContent =
+      "Cadastrando...";
 
-button.disabled=true;
+  }
 
-button.textContent=
-"Cadastrando...";
+  try{
+
+    const email =
+      document.getElementById(
+        "rEmail"
+      ).value
+        .trim()
+        .toLowerCase();
+
+    const password =
+      document.getElementById(
+        "rPass"
+      ).value;
+
+    const name =
+      document.getElementById(
+        "rName"
+      ).value
+        .trim();
+
+    const cpf =
+      cleanCPF(
+        document.getElementById(
+          "rCpf"
+        ).value
+      );
+
+    if(!email || !password || !name || !cpf){
+
+      throw new Error(
+        "Preencha todos os campos."
+      );
+
+    }
+
+    if(
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        .test(email)
+    ){
+
+      throw new Error(
+        "Digite um e-mail válido."
+      );
+
+    }
+
+    if(password.length < 6){
+
+      throw new Error(
+        "A senha deve ter pelo menos 6 caracteres."
+      );
+
+    }
+
+    if(
+      cpf.length !== 11 ||
+      !validCPF(cpf)
+    ){
+
+      throw new Error(
+        "Digite um CPF válido."
+      );
+
+    }
+
+    const referrer =
+      new URLSearchParams(
+        location.search
+      ).get("ref") || "";
+
+    const data =
+      await api(
+        "/api/cadastro",
+        {
+          method:"POST",
+
+          body:JSON.stringify({
+
+            email:email,
+            senha:password,
+            nome:name,
+            cpf:cpf,
+            referrer:referrer
+
+          })
+
+        }
+      );
+
+    const j =
+      data.jogador ||
+      data;
+
+    if(!j.id){
+
+      throw new Error(
+        "Cadastro criado, mas o servidor não retornou o jogador."
+      );
+
+    }
+
+    s = {
+
+      id:j.id,
+
+      email:
+        j.email ||
+        email,
+
+      name:
+        j.nome ||
+        name,
+
+      cpf:
+        j.cpf ||
+        cpf,
+
+      points:
+        Number(j.pontos || 0),
+
+      balance:
+        Number(j.equilibrio || 0),
+
+      round:1,
+
+      code:
+        j.codigo_indicacao ||
+        "",
+
+      referrer:
+        referrer,
+
+      dice:0,
+
+      question:null,
+
+      timer:QUESTION_TIME,
+
+      roundPoints:0
+
+    };
+
+    saveSession();
+
+    openGame(true);
+
+  }catch(error){
+
+    console.error(
+      "Erro no cadastro:",
+      error
+    );
+
+    alert(
+      error.message ||
+      "Não foi possível realizar o cadastro."
+    );
+
+  }finally{
+
+    if(button){
+
+      button.disabled = false;
+
+      button.textContent =
+        "Cadastrar";
+
+    }
+
+  }
 
 }
 
-
-try{
-
-let e=
-document.getElementById(
-"rEmail"
-)
-.value
-.trim()
-.toLowerCase();
-
-
-let p=
-document.getElementById(
-"rPass"
-)
-.value;
-
-
-let n=
-document.getElementById(
-"rName"
-)
-.value
-.trim();
-
-
-let cpf=
-cleanCPF(
-document.getElementById(
-"rCpf"
-).value
-);
-
-
-if(!e||!p||!n||!cpf){
-
-throw new Error(
-"Preencha todos os campos."
-);
-
-}
-
-
-if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){
-
-throw new Error(
-"Digite um e-mail válido."
-);
-
-}
-
-
-if(p.length<6){
-
-throw new Error(
-"A senha deve ter pelo menos 6 caracteres."
-);
-
-}
-
-
-if(cpf.length!==11||
-!validCPF(cpf)){
-
-throw new Error(
-"Digite um CPF válido."
-);
-
-}
-
-
-const referrer=
-new URLSearchParams(
-location.search
-).get("ref")||"";
-
-
-const data=
-await api(
-"/api/cadastro",
-{
-method:"POST",
-
-body:JSON.stringify({
-
-email:e,
-
-senha:p,
-
-nome:n,
-
-cpf:cpf,
-
-referrer:referrer
-
-})
-
-}
-);
-
-
-const j=
-data.jogador||
-data;
-
-
-if(!j.id){
-
-throw new Error(
-"Cadastro criado, mas o servidor não retornou o jogador."
-);
-
-}
-
-
-s={
-
-id:j.id,
-
-email:j.email||e,
-
-name:j.nome||n,
-
-cpf:j.cpf||cpf,
-
-points:Number(j.pontos||0),
-
-balance:Number(j.equilibrio||0),
-
-round:1,
-
-code:j.codigo_indicacao||"",
-
-referrer:referrer,
-
-dice:0,
-
-question:null,
-
-timer:5,
-
-answered:false,
-
-roundPoints:0
-
-};
-
-
-saveSession();
-
-openGame(true);
-
-
-}catch(error){
-
-console.error(
-"Erro no cadastro:",
-error
-);
-
-alert(
-error.message||
-"Não foi possível realizar o cadastro."
-);
-
-
-}finally{
-
-if(button){
-
-button.disabled=false;
-
-button.textContent=
-"Cadastrar";
-
-}
-
-}
-
-}
-
-
-/* =========================================================
-   LOGIN
-   ========================================================= */
 
 async function login(){
 
-stopMusic();
+  stopMusic();
 
+  const button =
+    document.querySelector(
+      "#loginBox .primary"
+    );
 
-const button=
-document.querySelector(
-"#loginBox .primary"
-);
+  if(button){
 
+    button.disabled = true;
 
-if(button){
+    button.textContent =
+      "Entrando...";
 
-button.disabled=true;
+  }
 
-button.textContent=
-"Entrando...";
+  try{
 
-}
+    const email =
+      document.getElementById(
+        "lEmail"
+      ).value
+        .trim()
+        .toLowerCase();
 
+    const password =
+      document.getElementById(
+        "lPass"
+      ).value;
 
-try{
+    if(!email || !password){
 
-let e=
-document.getElementById(
-"lEmail"
-)
-.value
-.trim()
-.toLowerCase();
+      throw new Error(
+        "Preencha e-mail e senha."
+      );
 
+    }
 
-let p=
-document.getElementById(
-"lPass"
-)
-.value;
+    const data =
+      await api(
+        "/api/login",
+        {
+          method:"POST",
 
+          body:JSON.stringify({
 
-if(!e||!p){
+            email:email,
+            senha:password
 
-throw new Error(
-"Preencha e-mail e senha."
-);
+          })
 
-}
+        }
+      );
 
+    const j =
+      data.jogador ||
+      data;
 
-const data=
-await api(
-"/api/login",
-{
-method:"POST",
+    if(!j.id){
 
-body:JSON.stringify({
+      throw new Error(
+        "Resposta inválida do servidor."
+      );
 
-email:e,
+    }
 
-senha:p
+    s = {
 
-})
+      id:j.id,
 
-}
-);
+      email:
+        j.email ||
+        email,
 
+      name:
+        j.nome ||
+        "",
 
-const j=
-data.jogador||
-data;
+      cpf:
+        j.cpf ||
+        "",
 
+      points:
+        Number(j.pontos || 0),
 
-if(!j.id){
+      balance:
+        Number(j.equilibrio || 0),
 
-throw new Error(
-"Resposta inválida do servidor."
-);
+      round:1,
 
-}
+      code:
+        j.codigo_indicacao ||
+        "",
 
+      referrer:"",
 
-s={
+      dice:0,
 
-id:j.id,
+      question:null,
 
-email:j.email||e,
+      timer:QUESTION_TIME,
 
-name:j.nome||"",
+      roundPoints:0
 
-cpf:j.cpf||"",
+    };
 
-points:Number(j.pontos||0),
+    saveSession();
 
-balance:Number(j.equilibrio||0),
+    openGame(true);
 
-round:1,
+  }catch(error){
 
-code:j.codigo_indicacao||"",
+    console.error(
+      "Erro no login:",
+      error
+    );
 
-referrer:"",
+    alert(
+      error.message ||
+      "E-mail ou senha incorretos."
+    );
 
-dice:0,
+  }finally{
 
-question:null,
+    if(button){
 
-timer:5,
+      button.disabled = false;
 
-answered:false,
+      button.textContent =
+        "Entrar";
 
-roundPoints:0
+    }
 
-};
-
-
-saveSession();
-
-openGame(true);
-
-
-}catch(error){
-
-console.error(
-"Erro no login:",
-error
-);
-
-alert(
-error.message||
-"E-mail ou senha incorretos."
-);
-
-
-}finally{
-
-if(button){
-
-button.disabled=false;
-
-button.textContent=
-"Entrar";
+  }
 
 }
 
-}
-
-}
-
-
-/* =========================================================
-   ESQUECEU A SENHA
-   ========================================================= */
 
 async function forgotPassword(){
 
-const email=
-prompt(
-"Digite o e-mail da sua conta:"
-);
+  const email =
+    prompt(
+      "Digite o e-mail da sua conta:"
+    );
 
+  if(!email) return;
 
-if(!email)return;
+  const cleanEmail =
+    email
+      .trim()
+      .toLowerCase();
 
+  if(!cleanEmail){
 
-const cleanEmail=
-email.trim().toLowerCase();
+    alert(
+      "Digite um e-mail válido."
+    );
 
+    return;
 
-if(!cleanEmail){
+  }
 
-alert(
-"Digite um e-mail válido."
-);
+  const cpfInput =
+    prompt(
+      "Digite o CPF da sua conta:"
+    );
 
-return;
+  if(!cpfInput) return;
 
-}
+  const cpf =
+    cleanCPF(cpfInput);
 
+  if(
+    cpf.length !== 11 ||
+    !validCPF(cpf)
+  ){
 
-const cpfInput=
-prompt(
-"Digite o CPF da sua conta:"
-);
+    alert(
+      "CPF inválido."
+    );
 
+    return;
 
-if(!cpfInput)return;
+  }
 
+  const newPassword =
+    prompt(
+      "Digite a nova senha (mínimo 6 caracteres):"
+    );
 
-const cpf=
-cleanCPF(cpfInput);
+  if(!newPassword) return;
 
+  if(newPassword.length < 6){
 
-if(cpf.length!==11||
-!validCPF(cpf)){
+    alert(
+      "A nova senha deve ter pelo menos 6 caracteres."
+    );
 
-alert(
-"CPF inválido."
-);
+    return;
 
-return;
+  }
 
-}
+  try{
 
+    await api(
+      "/api/recuperar-senha",
+      {
+        method:"POST",
 
-const newPassword=
-prompt(
-"Digite a nova senha (mínimo 6 caracteres):"
-);
+        body:JSON.stringify({
 
+          email:cleanEmail,
 
-if(!newPassword)return;
+          cpf:cpf,
 
+          nova_senha:newPassword,
 
-if(newPassword.length<6){
+          senha:newPassword
 
-alert(
-"A nova senha deve ter pelo menos 6 caracteres."
-);
+        })
 
-return;
+      }
+    );
 
-}
+    alert(
+      "Senha alterada com sucesso. Agora faça login com a nova senha."
+    );
 
+  }catch(error){
 
-try{
+    console.error(
+      "Erro na recuperação:",
+      error
+    );
 
-await api(
-"/api/recuperar-senha",
-{
-method:"POST",
+    alert(
+      error.message ||
+      "Não foi possível alterar a senha."
+    );
 
-body:JSON.stringify({
-
-email:cleanEmail,
-
-cpf:cpf,
-
-nova_senha:newPassword,
-
-senha:newPassword
-
-})
-
-}
-);
-
-
-alert(
-"Senha alterada com sucesso. Agora faça login com a nova senha."
-);
-
-
-}catch(error){
-
-console.error(
-"Erro na recuperação:",
-error
-);
-
-alert(
-error.message||
-"Não foi possível alterar a senha."
-);
-
-}
+  }
 
 }
 
 
-/* =========================================================
-   ABRIR JOGO
-   ========================================================= */
+/* =========================
+   ENTRAR NO JOGO
+========================= */
 
-function openGame(
-startMusic=false
-){
+function openGame(startMusic=false){
 
-document.getElementById(
-"auth"
-)
-.classList.add("hidden");
+  document
+    .getElementById("auth")
+    .classList.add("hidden");
 
+  document
+    .getElementById("game")
+    .classList.remove("hidden");
 
-document.getElementById(
-"game"
-)
-.classList.remove("hidden");
+  ui();
 
+  tab("quiz");
 
-ui();
+  if(startMusic){
 
-tab("quiz");
+    playMusic();
 
-
-if(startMusic){
-
-playMusic();
-
-}
+  }
 
 }
 
 
-/* =========================================================
-   LOGOUT
-   ========================================================= */
+/* =========================
+   SAIR
+========================= */
 
 function logout(){
 
-clearInterval(handle);
+  clearInterval(handle);
 
-clearTimeout(nextRoundHandle);
+  stopMusic();
 
-stopMusic();
+  clearSession();
 
-clearSession();
+  s = {
 
+    id:null,
+    email:"",
+    name:"",
+    cpf:"",
+    points:0,
+    balance:0,
+    round:1,
+    code:"",
+    referrer:"",
+    dice:0,
+    question:null,
+    timer:QUESTION_TIME,
+    roundPoints:0
 
-s={
+  };
 
-id:null,
+  document
+    .getElementById("game")
+    .classList.add("hidden");
 
-email:"",
+  document
+    .getElementById("auth")
+    .classList.remove("hidden");
 
-name:"",
-
-cpf:"",
-
-points:0,
-
-balance:0,
-
-round:1,
-
-code:"",
-
-referrer:"",
-
-dice:0,
-
-question:null,
-
-timer:5,
-
-answered:false,
-
-roundPoints:0
-
-};
-
-
-document.getElementById(
-"game"
-)
-.classList.add("hidden");
-
-
-document.getElementById(
-"auth"
-)
-.classList.remove("hidden");
-
-
-authMode("register");
+  authMode("register");
 
 }
 
 
-/* =========================================================
-   UI
-   ========================================================= */
+/* =========================
+   INTERFACE
+========================= */
 
 function ui(){
 
-document.getElementById(
-"points"
-)
-.textContent=
-Number(s.points||0);
+  document.getElementById(
+    "points"
+  ).textContent =
+    Number(s.points || 0);
 
+  document.getElementById(
+    "round"
+  ).textContent =
+    Number(s.round || 1);
 
-document.getElementById(
-"round"
-)
-.textContent=
-Number(s.round||1);
+  document.getElementById(
+    "totalScore"
+  ).textContent =
+    Number(s.points || 0);
 
+  document.getElementById(
+    "refCode"
+  ).value =
+    s.code || "";
 
-document.getElementById(
-"totalScore"
-)
-.textContent=
-Number(s.points||0);
-
-
-document.getElementById(
-"refCode"
-)
-.value=
-s.code||"";
-
-
-document.getElementById(
-"refLink"
-)
-.value=
-location.origin+
-location.pathname+
-"?ref="+
-encodeURIComponent(
-s.code||""
-);
+  document.getElementById(
+    "refLink"
+  ).value =
+    location.origin +
+    location.pathname +
+    "?ref=" +
+    encodeURIComponent(
+      s.code || ""
+    );
 
 }
 
 
-/* =========================================================
-   ABAS
-   ========================================================= */
+function tab(name){
 
-function tab(x){
+  [
+    "quiz",
+    "ref",
+    "cash",
+    "premium"
+  ].forEach(tabName => {
 
-["quiz","ref","cash","premium"]
-.forEach(a=>{
+    document
+      .getElementById(
+        tabName + "Tab"
+      )
+      .classList.toggle(
+        "hidden",
+        tabName !== name
+      );
 
-document.getElementById(
-a+"Tab"
-)
-.classList.toggle(
-"hidden",
-a!==x
-);
+  });
 
-});
+  if(name === "quiz"){
 
+    document
+      .getElementById("rollCard")
+      .classList.remove("hidden");
 
-if(x==="quiz"){
+    document
+      .getElementById("questionCard")
+      .classList.add("hidden");
 
-document.getElementById(
-"rollCard"
-)
-.classList.remove("hidden");
-
-
-document.getElementById(
-"questionCard"
-)
-.classList.add("hidden");
-
-}
+  }
 
 }
 
 
-/* =========================================================
-   PERGUNTA
-   ========================================================= */
+/* =========================
+   PERGUNTAS
+========================= */
+
+const Q = [
+
+[
+  "Quanto é 2 + 2?",
+  ["3","4","5","6"],
+  1
+],
+
+[
+  "Qual é a capital do Brasil?",
+  ["Brasília","São Paulo","Salvador","Recife"],
+  0
+],
+
+[
+  "Qual planeta é conhecido como Planeta Vermelho?",
+  ["Terra","Marte","Vênus","Saturno"],
+  1
+],
+
+[
+  "Quantos dias tem uma semana?",
+  ["5","6","7","8"],
+  2
+],
+
+[
+  "Qual animal é conhecido como rei da selva?",
+  ["Tigre","Elefante","Leão","Urso"],
+  2
+],
+
+[
+  "Quantos meses tem um ano?",
+  ["10","11","12","13"],
+  2
+],
+
+[
+  "Qual é a cor formada pela mistura de azul e amarelo?",
+  ["Verde","Roxo","Laranja","Rosa"],
+  0
+],
+
+[
+  "Qual é o maior planeta do Sistema Solar?",
+  ["Terra","Marte","Júpiter","Mercúrio"],
+  2
+],
+
+[
+  "Qual é o maior oceano da Terra?",
+  ["Atlântico","Índico","Pacífico","Ártico"],
+  2
+],
+
+[
+  "Quanto é 12 × 8?",
+  ["86","96","108","112"],
+  1
+],
+
+[
+  "Quem escreveu Dom Casmurro?",
+  [
+    "Machado de Assis",
+    "José de Alencar",
+    "Clarice Lispector",
+    "Cecília Meireles"
+  ],
+  0
+],
+
+[
+  "Qual é o símbolo químico do ouro?",
+  ["Ag","Fe","Au","Cu"],
+  2
+],
+
+[
+  "Qual destes números é primo?",
+  ["21","27","29","33"],
+  2
+],
+
+[
+  "Qual é a raiz quadrada de 144?",
+  ["10","11","12","14"],
+  2
+],
+
+[
+  "Qual é o maior país do mundo em área?",
+  ["China","Canadá","Brasil","Rússia"],
+  3
+],
+
+[
+  "Em que ano terminou a Segunda Guerra Mundial?",
+  ["1943","1944","1945","1946"],
+  2
+],
+
+[
+  "Qual é o elemento químico de número atômico 6?",
+  ["Oxigênio","Carbono","Nitrogênio","Ferro"],
+  1
+],
+
+[
+  "Qual é a velocidade aproximada da luz no vácuo?",
+  [
+    "30 mil km/s",
+    "300 mil km/s",
+    "3 milhões km/s",
+    "3 mil km/s"
+  ],
+  1
+],
+
+[
+  "Qual é a derivada de x³ − 4x?",
+  [
+    "3x² − 4",
+    "x² − 4",
+    "3x − 4",
+    "3x² + 4"
+  ],
+  0
+]
+
+];
+
 
 function pickQuestion(){
 
-return Q[
-Math.floor(
-Math.random()*Q.length
-)
-];
+  return Q[
+    Math.floor(
+      Math.random() * Q.length
+    )
+  ];
 
 }
 
 
-/* =========================================================
+/* =========================
    DADO
-   ========================================================= */
+========================= */
 
 function rollDice(){
 
-const music=
-document.getElementById(
-"backgroundMusic"
-);
+  const music =
+    document.getElementById(
+      "backgroundMusic"
+    );
 
+  if(
+    music &&
+    music.paused
+  ){
 
-if(music&&music.paused){
+    playMusic();
 
-playMusic();
+  }
 
-}
+  clearInterval(handle);
 
+  answered = false;
 
-clearInterval(handle);
+  let d;
 
-clearTimeout(nextRoundHandle);
+  if(s.round % 30 === 0){
 
+    d =
+      Math.floor(
+        Math.random() * 3
+      ) + 8;
 
-s.answered=false;
+  }else if(s.round % 10 === 0){
 
+    d =
+      Math.floor(
+        Math.random() * 3
+      ) + 5;
 
-let d;
+  }else{
 
+    d =
+      Math.floor(
+        Math.random() * 4
+      ) + 1;
 
-if(s.round%30===0){
+  }
 
-d=
-Math.floor(
-Math.random()*3
-)+8;
+  s.dice = d;
 
-}
+  s.roundPoints = d;
 
-else if(s.round%10===0){
+  s.question =
+    pickQuestion();
 
-d=
-Math.floor(
-Math.random()*3
-)+5;
+  document.getElementById(
+    "dice"
+  ).textContent =
+    "🎲 " + d;
 
-}
+  document.getElementById(
+    "diceResult"
+  ).textContent =
+    "Você tirou " +
+    d +
+    " • Esta pergunta vale " +
+    d +
+    (
+      d === 1
+      ? " ponto"
+      : " pontos"
+    );
 
-else{
+  document.getElementById(
+    "question"
+  ).textContent =
+    s.question[0];
 
-d=
-Math.floor(
-Math.random()*4
-)+1;
+  const answers =
+    document.getElementById(
+      "answers"
+    );
 
-}
+  answers.innerHTML = "";
 
+  s.question[1].forEach(
+    (answerText,index) => {
 
-s.dice=d;
+      const button =
+        document.createElement(
+          "button"
+        );
 
-s.roundPoints=d;
+      button.className =
+        "answer";
 
-s.question=
-pickQuestion();
+      button.textContent =
+        answerText;
 
+      button.onclick =
+        () => answer(index);
 
-document.getElementById(
-"dice"
-)
-.textContent=
-"🎲 "+d;
+      answers.appendChild(
+        button
+      );
 
+    }
+  );
 
-document.getElementById(
-"diceResult"
-)
-.textContent=
-"Você tirou "+
-d+
-" • Esta pergunta vale "+
-d+
-(
-d===1
-?" ponto"
-:" pontos"
-);
+  document
+    .getElementById("rollCard")
+    .classList.add("hidden");
 
+  document
+    .getElementById("questionCard")
+    .classList.remove("hidden");
 
-document.getElementById(
-"question"
-)
-.textContent=
-s.question[0];
+  document
+    .getElementById("feedback")
+    .classList.add("hidden");
 
+  document
+    .getElementById("nextWrap")
+    .classList.add("hidden");
 
-const answers=
-document.getElementById(
-"answers"
-);
-
-
-answers.innerHTML="";
-
-
-s.question[1]
-.forEach((a,i)=>{
-
-const b=
-document.createElement(
-"button"
-);
-
-
-b.className="answer";
-
-b.textContent=a;
-
-b.onclick=
-()=>answer(i);
-
-
-answers.appendChild(b);
-
-});
-
-
-document.getElementById(
-"rollCard"
-)
-.classList.add("hidden");
-
-
-document.getElementById(
-"questionCard"
-)
-.classList.remove("hidden");
-
-
-document.getElementById(
-"feedback"
-)
-.classList.add("hidden");
-
-
-startTimer();
+  startTimer();
 
 }
 
 
-/* =========================================================
-   TIMER
-   ========================================================= */
+/* =========================
+   TIMER 10 SEGUNDOS
+========================= */
 
 function startTimer(){
 
-clearInterval(handle);
+  clearInterval(handle);
 
+  s.timer =
+    QUESTION_TIME;
 
-s.timer=5;
+  document.getElementById(
+    "time"
+  ).textContent =
+    QUESTION_TIME;
 
+  document.getElementById(
+    "progress"
+  ).style.width =
+    "100%";
 
-document.getElementById(
-"time"
-)
-.textContent="5";
+  handle =
+    setInterval(() => {
 
+      s.timer--;
 
-document.getElementById(
-"progress"
-)
-.style.width="100%";
+      document.getElementById(
+        "time"
+      ).textContent =
+        Math.max(
+          0,
+          s.timer
+        );
 
+      document.getElementById(
+        "progress"
+      ).style.width =
+        Math.max(
+          0,
+          s.timer /
+          QUESTION_TIME *
+          100
+        ) + "%";
 
-handle=
-setInterval(()=>{
+      if(s.timer <= 0){
 
-s.timer--;
+        clearInterval(handle);
 
+        answer(-1);
 
-document.getElementById(
-"time"
-)
-.textContent=
-s.timer;
+      }
 
-
-document.getElementById(
-"progress"
-)
-.style.width=
-Math.max(
-0,
-s.timer/5*100
-)+"%";
-
-
-if(s.timer<=0){
-
-clearInterval(handle);
-
-answer(-1);
-
-}
-
-},1000);
+    },1000);
 
 }
 
 
-/* =========================================================
+/* =========================
    RESPOSTA
-   ========================================================= */
+========================= */
 
-async function answer(i){
+async function answer(index){
 
-if(s.answered)return;
+  if(answered) return;
 
+  answered = true;
 
-s.answered=true;
+  clearInterval(handle);
 
-clearInterval(handle);
+  const correct =
+    s.question[2];
 
+  const buttons =
+    [
+      ...document.querySelectorAll(
+        ".answer"
+      )
+    ];
 
-const c=
-s.question[2];
+  if(
+    index >= 0 &&
+    buttons[index]
+  ){
 
+    buttons[index]
+      .classList.add(
+        index === correct
+        ? "correct"
+        : "wrong"
+      );
 
-const bs=[
-...document.querySelectorAll(
-".answer"
-)
-];
+  }
 
+  if(buttons[correct]){
 
-if(i>=0&&bs[i]){
+    buttons[correct]
+      .classList.add(
+        "correct"
+      );
 
-bs[i].classList.add(
-i===c
-?"correct"
-:"wrong"
-);
+  }
 
-}
+  const isCorrect =
+    index === correct;
 
+  if(isCorrect){
 
-if(bs[c]){
+    s.points +=
+      Number(
+        s.roundPoints || 0
+      );
 
-bs[c].classList.add(
-"correct"
-);
+  }
 
-}
+  ui();
 
+  const feedback =
+    document.getElementById(
+      "feedback"
+    );
 
-const ok=
-i===c;
+  feedback
+    .classList
+    .remove("hidden");
 
+  if(isCorrect){
 
-if(ok){
+    feedback.textContent =
+      "✅ Correto! Você ganhou " +
+      s.roundPoints +
+      (
+        s.roundPoints === 1
+        ? " ponto!"
+        : " pontos!"
+      );
 
-s.points+=
-Number(s.roundPoints||0);
+  }else if(index === -1){
 
-}
+    feedback.textContent =
+      "⏰ Tempo esgotado! Você ganhou 0 pontos.";
 
+  }else{
 
-ui();
+    feedback.textContent =
+      "❌ Incorreto! Você ganhou 0 pontos.";
 
+  }
 
-const feedback=
-document.getElementById(
-"feedback"
-);
+  buttons.forEach(
+    button => {
+      button.disabled = true;
+    }
+  );
 
+  try{
 
-feedback.classList.remove(
-"hidden"
-);
+    await savePlayer();
 
+  }catch(error){
 
-if(ok){
+    console.error(
+      "Erro ao salvar pontuação:",
+      error
+    );
 
-feedback.textContent=
-"✅ Correto! Você ganhou "+
-s.roundPoints+
-(
-s.roundPoints===1
-?" ponto!"
-:" pontos!"
-);
+    feedback.textContent +=
+      " ⚠️ Não foi possível sincronizar agora.";
 
-}else{
+  }
 
-feedback.textContent=
-"❌ Incorreto! Você ganhou 0 pontos.";
-
-}
-
-
-bs.forEach(button=>{
-
-button.disabled=true;
-
-});
-
-
-/*
- Salva a pontuação no PostgreSQL.
- */
-
-try{
-
-await savePlayer();
-
-}catch(error){
-
-console.error(
-"Erro ao salvar pontuação:",
-error
-);
-
-feedback.textContent+=
-" ⚠️ Não foi possível sincronizar agora.";
-
-}
-
-
-/*
- Próxima rodada automática.
- */
-
-nextRoundHandle=
-setTimeout(
-finishQuestion,
-1500
-);
+  document
+    .getElementById("nextWrap")
+    .classList
+    .remove("hidden");
 
 }
 
 
-/* =========================================================
-   PRÓXIMA RODADA
-   ========================================================= */
+/* =========================
+   PRÓXIMA PERGUNTA
+========================= */
 
 function finishQuestion(){
 
-clearInterval(handle);
+  clearInterval(handle);
 
-clearTimeout(nextRoundHandle);
+  document
+    .getElementById("questionCard")
+    .classList.add("hidden");
 
+  document
+    .getElementById("rollCard")
+    .classList.remove("hidden");
 
-document.getElementById(
-"questionCard"
-)
-.classList.add("hidden");
+  document
+    .getElementById("dice")
+    .textContent =
+      "🎲";
 
+  document
+    .getElementById("diceResult")
+    .textContent =
+      "";
 
-document.getElementById(
-"rollCard"
-)
-.classList.remove("hidden");
+  document
+    .getElementById("feedback")
+    .classList
+    .add("hidden");
 
+  document
+    .getElementById("nextWrap")
+    .classList
+    .add("hidden");
 
-document.getElementById(
-"dice"
-)
-.textContent="🎲";
+  s.round++;
 
+  answered = false;
 
-document.getElementById(
-"diceResult"
-)
-.textContent="";
+  s.question = null;
 
+  s.timer =
+    QUESTION_TIME;
 
-document.getElementById(
-"feedback"
-)
-.classList.add("hidden");
-
-
-s.round++;
-
-
-saveSession();
-
-
-nextRoundHandle=
-setTimeout(
-rollDice,
-500
-);
+  saveSession();
 
 }
 
 
-/* =========================================================
+/* =========================
    INDICAÇÃO
-   ========================================================= */
+========================= */
 
 async function copyRef(){
 
-const link=
-document.getElementById(
-"refLink"
-)
-.value;
+  const link =
+    document.getElementById(
+      "refLink"
+    ).value;
 
+  try{
 
-try{
+    if(navigator.clipboard){
 
-if(navigator.clipboard){
+      await navigator.clipboard.writeText(
+        link
+      );
 
-await navigator.clipboard.writeText(
-link
-);
+    }else{
 
-}else{
+      throw new Error();
 
-throw new Error();
+    }
 
-}
+    document.getElementById(
+      "refMsg"
+    ).textContent =
+      "Link copiado!";
 
+  }catch(error){
 
-document.getElementById(
-"refMsg"
-)
-.textContent=
-"Link copiado!";
+    const input =
+      document.getElementById(
+        "refLink"
+      );
 
+    input.removeAttribute(
+      "readonly"
+    );
 
-}catch(error){
+    input.select();
 
-const input=
-document.getElementById(
-"refLink"
-);
+    document.execCommand(
+      "copy"
+    );
 
+    input.setAttribute(
+      "readonly",
+      ""
+    );
 
-input.removeAttribute(
-"readonly"
-);
+    document.getElementById(
+      "refMsg"
+    ).textContent =
+      "Link copiado!";
 
-input.select();
-
-document.execCommand(
-"copy"
-);
-
-input.setAttribute(
-"readonly",
-"");
-
-
-document.getElementById(
-"refMsg"
-)
-.textContent=
-"Link copiado!";
-
-}
+  }
 
 }
 
 
 async function shareRef(){
 
-const link=
-document.getElementById(
-"refLink"
-)
-.value;
+  const link =
+    document.getElementById(
+      "refLink"
+    ).value;
 
+  if(navigator.share){
 
-if(navigator.share){
+    try{
 
-try{
+      await navigator.share({
 
-await navigator.share({
+        title:"QuizUp",
 
-title:"QuizUp",
+        text:
+          "Venha jogar QuizUp comigo!",
 
-text:
-"Venha jogar QuizUp comigo!",
+        url:link
 
-url:link
+      });
 
-});
+    }catch(error){}
 
-}catch(error){}
+  }else{
 
-}else{
+    await copyRef();
 
-await copyRef();
-
-}
+  }
 
 }
 
 
-/* =========================================================
-   PAGAMENTO
-   ========================================================= */
+/* =========================
+   SAQUE
+========================= */
 
 function payFields(){
 
-const isPix=
-document.getElementById(
-"payMethod"
-)
-.value==="pix";
+  const isPix =
+    document.getElementById(
+      "payMethod"
+    ).value === "pix";
 
+  document
+    .getElementById("pix")
+    .classList
+    .toggle(
+      "hidden",
+      !isPix
+    );
 
-document.getElementById(
-"pix"
-)
-.classList.toggle(
-"hidden",
-!isPix
-);
-
-
-document.getElementById(
-"paypal"
-)
-.classList.toggle(
-"hidden",
-isPix
-);
+  document
+    .getElementById("paypal")
+    .classList
+    .toggle(
+      "hidden",
+      isPix
+    );
 
 }
 
 
-function need(v){
+function need(value){
 
-return v==="10"
-?11000
-:v==="5"
-?6000
-:2000;
+  return value === "10"
+    ? 11000
+    : value === "5"
+    ? 6000
+    : 2000;
 
 }
 
-
-/* =========================================================
-   SAQUE
-   =========================================================
-   O servidor controla:
-   - pontos
-   - limite de 2 saques por dia
-   - divisão 70/30
-   - registro no PostgreSQL
-   - desconto dos pontos
-   ========================================================= */
 
 async function withdraw(){
 
-const button=
-document.getElementById(
-"withdrawButton"
-);
+  const button =
+    document.getElementById(
+      "withdrawButton"
+    );
 
+  const msg =
+    document.getElementById(
+      "cashMsg"
+    );
 
-const msg=
-document.getElementById(
-"cashMsg"
-);
+  msg
+    .classList
+    .remove("hidden");
 
+  button.disabled = true;
 
-msg.classList.remove(
-"hidden"
-);
+  button.textContent =
+    "Enviando...";
 
+  try{
 
-button.disabled=true;
+    if(!s.id){
 
-button.textContent=
-"Enviando...";
+      throw new Error(
+        "Usuário não identificado."
+      );
 
+    }
 
-try{
+    const value =
+      document.getElementById(
+        "withdrawAmount"
+      ).value;
 
-if(!s.id){
+    const gross =
+      Number(value);
 
-throw new Error(
-"Usuário não identificado."
-);
+    const pointsNeeded =
+      need(value);
+
+    const method =
+      document.getElementById(
+        "payMethod"
+      ).value;
+
+    const paymentField =
+      method === "pix"
+      ?
+      document.getElementById(
+        "pixKey"
+      )
+      :
+      document.getElementById(
+        "paypalKey"
+      );
+
+    const paymentKey =
+      paymentField.value.trim();
+
+    if(!paymentKey){
+
+      throw new Error(
+        "Preencha o dado de pagamento."
+      );
+
+    }
+
+    if(
+      method !== "pix" &&
+      method !== "paypal"
+    ){
+
+      throw new Error(
+        "Método de pagamento inválido."
+      );
+
+    }
+
+    if(
+      Number(s.points) <
+      pointsNeeded
+    ){
+
+      throw new Error(
+        "Pontos insuficientes. Você precisa de " +
+        pointsNeeded +
+        " pontos."
+      );
+
+    }
+
+    const result =
+      await api(
+        "/api/saques",
+        {
+          method:"POST",
+
+          body:JSON.stringify({
+
+            jogador_id:
+              Number(s.id),
+
+            pix_key:
+              paymentKey,
+
+            quantia:
+              gross,
+
+            metodo:
+              method
+
+          })
+
+        }
+      );
+
+    const playerValue =
+      Number(
+        result.valor_jogador ??
+        result.jogador ??
+        (gross * 0.70)
+      );
+
+    const platformValue =
+      Number(
+        result.valor_plataforma ??
+        result.plataforma ??
+        (gross * 0.30)
+      );
+
+    await loadPlayer();
+
+    msg.innerHTML =
+      "✅ Solicitação enviada com sucesso!<br><br>" +
+
+      "Valor solicitado: <b>R$ " +
+      gross
+        .toFixed(2)
+        .replace(".",",") +
+      "</b><br>" +
+
+      "Jogador recebe: <b>R$ " +
+      playerValue
+        .toFixed(2)
+        .replace(".",",") +
+      "</b><br>" +
+
+      "Plataforma: <b>R$ " +
+      platformValue
+        .toFixed(2)
+        .replace(".",",") +
+      "</b><br><br>" +
+
+      "Status: <b>Pendente</b>";
+
+  }catch(error){
+
+    console.error(
+      "Erro no saque:",
+      error
+    );
+
+    msg.innerHTML =
+      "❌ " +
+      (
+        error?.message ||
+        "Não foi possível registrar o saque."
+      );
+
+  }finally{
+
+    button.disabled = false;
+
+    button.textContent =
+      "Solicitar saque";
+
+  }
 
 }
 
 
-const v=
-document.getElementById(
-"withdrawAmount"
-)
-.value;
-
-
-const gross=
-Number(v);
-
-
-const pointsNeeded=
-need(v);
-
-
-const method=
-document.getElementById(
-"payMethod"
-)
-.value;
-
-
-const paymentField=
-method==="pix"
-?
-document.getElementById(
-"pixKey"
-)
-:
-document.getElementById(
-"paypalKey"
-);
-
-
-const paymentKey=
-paymentField.value.trim();
-
-
-if(!paymentKey){
-
-throw new Error(
-"Preencha o dado de pagamento."
-);
-
-}
-
-
-if(
-method!=="pix"&&
-method!=="paypal"
-){
-
-throw new Error(
-"Método de pagamento inválido."
-);
-
-}
-
-
-if(Number(s.points)<pointsNeeded){
-
-throw new Error(
-"Pontos insuficientes. Você precisa de "+
-pointsNeeded+
-" pontos."
-);
-
-}
-
-
-/*
- O servidor calcula o 70/30.
- Não enviamos valores calculados pelo celular.
- */
-
-const result=
-await api(
-"/api/saques",
-{
-method:"POST",
-
-body:JSON.stringify({
-
-jogador_id:
-Number(s.id),
-
-pix_key:
-paymentKey,
-
-quantia:
-gross,
-
-metodo:
-method
-
-})
-
-}
-);
-
-
-/*
- Valores oficiais retornados pelo servidor.
- */
-
-const playerValue=
-Number(
-result.valor_jogador ??
-result.jogador ??
-(gross*0.70)
-);
-
-
-const platformValue=
-Number(
-result.valor_plataforma ??
-result.plataforma ??
-(gross*0.30)
-);
-
-
-/*
- Recarrega os pontos diretamente do PostgreSQL.
- */
-
-await loadPlayer();
-
-
-msg.innerHTML=
-"✅ Solicitação enviada com sucesso!<br><br>"+
-"Valor solicitado: <b>R$ "+
-gross
-.toFixed(2)
-.replace(".",",")+
-"</b><br>"+
-"Jogador recebe: <b>R$ "+
-playerValue
-.toFixed(2)
-.replace(".",",")+
-"</b><br>"+
-"Plataforma: <b>R$ "+
-platformValue
-.toFixed(2)
-.replace(".",",")+
-"</b><br><br>"+
-"Status: <b>Pendente</b>";
-
-
-}catch(error){
-
-console.error(
-"Erro no saque:",
-error
-);
-
-
-let text=
-error?.message||
-"Não foi possível registrar o saque.";
-
-
-msg.innerHTML=
-"❌ "+text;
-
-
-}finally{
-
-button.disabled=false;
-
-button.textContent=
-"Solicitar saque";
-
-}
-
-}
-
-
-/* =========================================================
+/* =========================
    INICIALIZAÇÃO
-   ========================================================= */
+========================= */
 
 (async function(){
 
-if(!restoreSession()){
+  if(!restoreSession()){
 
-authMode("register");
+    authMode("register");
 
-return;
+    return;
 
-}
+  }
 
+  try{
 
-try{
+    await loadPlayer();
 
-await loadPlayer();
+    openGame(false);
 
-openGame(false);
+  }catch(error){
 
-}catch(error){
+    console.error(
+      "Erro ao restaurar sessão:",
+      error
+    );
 
-console.error(
-"Erro ao restaurar sessão:",
-error
-);
+    clearSession();
 
-clearSession();
+    s = {
 
-s={
+      id:null,
+      email:"",
+      name:"",
+      cpf:"",
+      points:0,
+      balance:0,
+      round:1,
+      code:"",
+      referrer:"",
+      dice:0,
+      question:null,
+      timer:QUESTION_TIME,
+      roundPoints:0
 
-id:null,
+    };
 
-email:"",
+    document
+      .getElementById("game")
+      .classList
+      .add("hidden");
 
-name:"",
+    document
+      .getElementById("auth")
+      .classList
+      .remove("hidden");
 
-cpf:"",
+    authMode("register");
 
-points:0,
-
-balance:0,
-
-round:1,
-
-code:"",
-
-referrer:"",
-
-dice:0,
-
-question:null,
-
-timer:5,
-
-answered:false,
-
-roundPoints:0
-
-};
-
-
-document.getElementById(
-"game"
-)
-.classList.add("hidden");
-
-
-document.getElementById(
-"auth"
-)
-.classList.remove("hidden");
-
-
-authMode("register");
-
-}
+  }
 
 })();
 
-</script>
-
-</body>
+</script></body>
   </html>
