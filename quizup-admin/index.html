@@ -3,335 +3,291 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>QuizUp Admin</title>
 
   <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
     }
 
     body {
-      min-height: 100vh;
-      background: #f4f6fb;
-      color: #1f2937;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      color: #111827;
     }
 
-    #loginPage {
+    .hidden {
+      display: none !important;
+    }
+
+    .login {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
-      background: linear-gradient(135deg, #111827, #374151);
+      background: linear-gradient(135deg, #111827, #2563eb);
     }
 
     .login-box {
       width: 100%;
-      max-width: 410px;
+      max-width: 420px;
       background: white;
-      padding: 35px;
-      border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.25);
-    }
-
-    .logo {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .logo-icon {
-      width: 65px;
-      height: 65px;
-      margin: auto;
+      padding: 30px;
       border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #111827;
-      color: white;
-      font-size: 30px;
-      font-weight: bold;
+      box-shadow: 0 15px 40px rgba(0,0,0,.25);
     }
 
-    .logo h1 {
-      margin-top: 14px;
-      font-size: 27px;
-    }
-
-    .logo p {
-      margin-top: 6px;
-      color: #6b7280;
-      font-size: 14px;
-    }
-
-    .input-group {
-      margin-bottom: 18px;
-    }
-
-    .input-group label {
-      display: block;
-      margin-bottom: 7px;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .input-group input {
-      width: 100%;
-      padding: 14px;
-      border: 1px solid #d1d5db;
-      border-radius: 10px;
-      outline: none;
-      font-size: 15px;
-    }
-
-    .input-group input:focus {
-      border-color: #111827;
-    }
-
-    .login-btn {
-      width: 100%;
-      padding: 15px;
-      border: 0;
-      border-radius: 10px;
-      background: #111827;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .login-btn:disabled {
-      opacity: .7;
-      cursor: wait;
-    }
-
-    #loginMessage {
-      display: none;
-      margin-top: 15px;
-      padding: 12px;
-      border-radius: 8px;
-      background: #fee2e2;
-      color: #991b1b;
-      font-size: 14px;
+    .login-box h1 {
+      margin: 0 0 8px;
       text-align: center;
     }
 
-    #adminPage {
-      display: none;
-      min-height: 100vh;
+    .login-box p {
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 25px;
     }
 
-    .sidebar {
-      position: fixed;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 245px;
-      background: #111827;
-      color: white;
-      padding: 25px 15px;
-    }
-
-    .sidebar-logo {
-      padding: 0 12px 25px;
-      border-bottom: 1px solid #374151;
-      margin-bottom: 20px;
-    }
-
-    .sidebar-logo h2 {
-      font-size: 22px;
-    }
-
-    .sidebar-logo p {
-      color: #9ca3af;
-      font-size: 12px;
-      margin-top: 5px;
-    }
-
-    .menu button {
+    input {
       width: 100%;
       padding: 13px;
-      margin-bottom: 7px;
-      border: 0;
-      border-radius: 9px;
-      background: transparent;
-      color: #d1d5db;
-      text-align: left;
-      font-size: 14px;
-      cursor: pointer;
+      margin-bottom: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
     }
 
-    .menu button:hover,
-    .menu button.active {
-      background: #374151;
+    input:focus {
+      border-color: #2563eb;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 16px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .primary:hover {
+      background: #1d4ed8;
+    }
+
+    .danger {
+      background: #dc2626;
+      color: white;
+    }
+
+    .success {
+      background: #16a34a;
       color: white;
     }
 
     .logout {
-      position: absolute;
-      left: 15px;
-      right: 15px;
-      bottom: 20px;
-    }
-
-    .logout button {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #4b5563;
-      border-radius: 9px;
-      background: transparent;
+      background: #dc2626;
       color: white;
-      cursor: pointer;
     }
 
-    .content {
-      margin-left: 245px;
-      padding: 30px;
+    .login-box .primary {
+      width: 100%;
+      margin-top: 5px;
     }
 
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-
-    .topbar h1 {
-      font-size: 28px;
-    }
-
-    .admin-user {
-      padding: 10px 15px;
-      background: white;
+    .message {
+      padding: 12px;
       border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,.05);
-      font-size: 14px;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-    }
-
-    .card {
-      background: white;
-      padding: 22px;
-      border-radius: 15px;
-      box-shadow: 0 2px 12px rgba(0,0,0,.05);
-    }
-
-    .card-title {
-      color: #6b7280;
-      font-size: 13px;
-      margin-bottom: 10px;
-    }
-
-    .card-value {
-      font-size: 27px;
-      font-weight: bold;
-    }
-
-    .section {
-      margin-top: 25px;
-      background: white;
-      border-radius: 15px;
-      padding: 25px;
-      box-shadow: 0 2px 12px rgba(0,0,0,.05);
-    }
-
-    .section h2 {
-      font-size: 19px;
-      margin-bottom: 20px;
-    }
-
-    .welcome {
-      color: #6b7280;
-      line-height: 1.6;
-    }
-
-    .loading {
-      color: #6b7280;
-      padding: 20px 0;
-    }
-
-    .empty {
-      color: #6b7280;
-      padding: 20px 0;
+      margin-top: 12px;
+      word-break: break-word;
     }
 
     .error {
       background: #fee2e2;
       color: #991b1b;
-      padding: 15px;
-      border-radius: 10px;
-      margin-top: 15px;
     }
 
-    .table-wrapper {
+    .success-msg {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .info-msg {
+      background: #e0f2fe;
+      color: #075985;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    header small {
+      opacity: .85;
+      flex: 1;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.06);
+    }
+
+    .card strong {
+      display: block;
+      font-size: 28px;
+      margin-top: 8px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.06);
+    }
+
+    .section h2 {
+      margin-top: 0;
+    }
+
+    .table-wrap {
       overflow-x: auto;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 15px;
+      min-width: 700px;
     }
 
     th,
     td {
-      padding: 12px;
-      border-bottom: 1px solid #e5e7eb;
+      padding: 11px;
+      border-bottom: 1px solid #eee;
       text-align: left;
-      font-size: 14px;
+      vertical-align: middle;
     }
 
     th {
       background: #f9fafb;
+    }
+
+    .status {
       font-weight: bold;
     }
 
-    @media (max-width: 900px) {
-      .cards {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    .pendente {
+      color: #d97706;
     }
 
-    @media (max-width: 650px) {
-      .sidebar {
-        width: 70px;
-        padding: 15px 8px;
+    .aprovado,
+    .aprovada {
+      color: #16a34a;
+    }
+
+    .cancelado,
+    .cancelada {
+      color: #dc2626;
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #6b7280;
+    }
+
+    .menu {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .menu button {
+      background: white;
+      color: #111827;
+      border: 1px solid #e5e7eb;
+    }
+
+    .menu button.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .debug {
+      margin-top: 15px;
+      font-size: 12px;
+      word-break: break-word;
+      text-align: left;
+      background: #f3f4f6;
+      padding: 12px;
+      border-radius: 10px;
+      color: #4b5563;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 12px;
       }
 
-      .sidebar-logo h2,
-      .sidebar-logo p,
-      .menu span,
-      .logout span {
-        display: none;
+      .section {
+        padding: 15px;
       }
 
-      .menu button {
-        text-align: center;
-        font-size: 20px;
+      header {
+        padding: 14px;
       }
 
-      .content {
-        margin-left: 70px;
-        padding: 20px;
-      }
-
-      .cards {
-        grid-template-columns: 1fr;
-      }
-
-      .topbar {
-        align-items: flex-start;
-        gap: 15px;
-        flex-direction: column;
+      header small {
+        width: 100%;
+        flex: none;
       }
     }
   </style>
@@ -339,204 +295,546 @@
 
 <body>
 
-  <!-- LOGIN -->
+  <!-- =========================
+       LOGIN
+  ========================== -->
 
-  <div id="loginPage">
+  <div id="loginScreen" class="login">
 
     <div class="login-box">
 
-      <div class="logo">
-        <div class="logo-icon">Q</div>
-        <h1>QuizUp Admin</h1>
-        <p>Painel administrativo</p>
-      </div>
+      <h1>QuizUp Admin</h1>
 
-      <div class="input-group">
-        <label>E-mail</label>
+      <p>Acesso exclusivo do administrador</p>
 
-        <input
-          type="email"
-          id="email"
-          placeholder="Digite seu e-mail"
-          autocomplete="username"
-        >
-      </div>
+      <input
+        id="email"
+        type="email"
+        placeholder="E-mail"
+        autocomplete="username"
+      >
 
-      <div class="input-group">
-        <label>Senha</label>
+      <input
+        id="password"
+        type="password"
+        placeholder="Senha"
+        autocomplete="current-password"
+      >
 
-        <input
-          type="password"
-          id="password"
-          placeholder="Digite sua senha"
-          autocomplete="current-password"
-        >
-      </div>
-
-      <button class="login-btn" onclick="entrar()">
-        Entrar no painel
+      <button
+        id="loginButton"
+        class="primary"
+        type="button"
+      >
+        Entrar
       </button>
 
       <div id="loginMessage"></div>
+
+      <div class="debug">
+        Backend:<br>
+        https://quizup-api-qxn2.onrender.com
+      </div>
 
     </div>
 
   </div>
 
 
-  <!-- PAINEL -->
+  <!-- =========================
+       PAINEL ADMIN
+  ========================== -->
 
-  <div id="adminPage">
+  <div id="adminScreen" class="hidden">
 
-    <aside class="sidebar">
+    <header>
 
-      <div class="sidebar-logo">
-        <h2>QuizUp</h2>
-        <p>Painel Admin</p>
-      </div>
+      <h1>QuizUp Admin</h1>
+
+      <small id="adminUser"></small>
+
+      <button
+        id="logoutButton"
+        class="logout"
+        type="button"
+      >
+        Sair
+      </button>
+
+    </header>
+
+
+    <main class="container">
+
+      <div id="globalMessage"></div>
+
+
+      <!-- MENU -->
 
       <div class="menu">
 
-        <button class="active" onclick="abrirPagina('dashboard', this)">
-          📊 <span>Dashboard</span>
+        <button
+          class="active"
+          data-page="dashboardPage"
+        >
+          📊 Dashboard
         </button>
 
-        <button onclick="abrirPagina('jogadores', this)">
-          👥 <span>Jogadores</span>
+        <button
+          data-page="jogadoresPage"
+        >
+          👥 Jogadores
         </button>
 
-        <button onclick="abrirPagina('perguntas', this)">
-          ❓ <span>Perguntas</span>
+        <button
+          data-page="perguntasPage"
+        >
+          ❓ Perguntas
         </button>
 
-        <button onclick="abrirPagina('saques', this)">
-          💰 <span>Saques</span>
+        <button
+          data-page="saquesPage"
+        >
+          💸 Saques
         </button>
 
-        <button onclick="abrirPagina('parceiros', this)">
-          🤝 <span>Parceiros</span>
+        <button
+          data-page="parceirosPage"
+        >
+          🤝 Parceiros
         </button>
 
-        <button onclick="abrirPagina('movimentacoes', this)">
-          📈 <span>Movimentações</span>
+        <button
+          data-page="movimentacoesPage"
+        >
+          📊 Movimentações
         </button>
 
-        <button onclick="abrirPagina('configuracoes', this)">
-          ⚙️ <span>Configurações</span>
+        <button
+          data-page="configPage"
+        >
+          ⚙️ Configurações
         </button>
 
       </div>
 
-      <div class="logout">
 
-        <button onclick="sair()">
-          🚪 <span>Sair</span>
-        </button>
+      <!-- =========================
+           DASHBOARD
+      ========================== -->
 
-      </div>
-
-    </aside>
-
-
-    <main class="content">
-
-      <div class="topbar">
-
-        <div>
-          <h1 id="tituloPagina">Dashboard</h1>
-        </div>
-
-        <div class="admin-user">
-          👤 Administrador
-        </div>
-
-      </div>
-
-      <div id="conteudoPagina">
+      <section
+        id="dashboardPage"
+        class="page active"
+      >
 
         <div class="cards">
 
           <div class="card">
-            <div class="card-title">Jogadores</div>
-            <div class="card-value" id="totalJogadores">0</div>
+            Jogadores
+            <strong id="totalJogadores">0</strong>
           </div>
 
           <div class="card">
-            <div class="card-title">Pontos distribuídos</div>
-            <div class="card-value" id="totalPontos">0</div>
+            Parceiros
+            <strong id="totalParceiros">0</strong>
           </div>
 
           <div class="card">
-            <div class="card-title">Saques pendentes</div>
-            <div class="card-value" id="totalSaques">0</div>
+            Saques
+            <strong id="totalSaques">0</strong>
           </div>
 
           <div class="card">
-            <div class="card-title">Valor dos saques</div>
-            <div class="card-value" id="valorSaques">R$ 0,00</div>
+            Pendentes
+            <strong id="totalPendentes">0</strong>
+          </div>
+
+          <div class="card">
+            Aprovados
+            <strong id="totalAprovados">0</strong>
+          </div>
+
+          <div class="card">
+            Cancelados
+            <strong id="totalCancelados">0</strong>
           </div>
 
         </div>
 
+      </section>
+
+
+      <!-- =========================
+           JOGADORES
+      ========================== -->
+
+      <section
+        id="jogadoresPage"
+        class="page"
+      >
+
         <div class="section">
 
-          <h2>Visão geral</h2>
+          <h2>👥 Jogadores</h2>
 
-          <p class="welcome">
-            Bem-vindo ao painel administrativo do QuizUp.
-            Aqui você poderá administrar jogadores,
-            perguntas, saques, parceiros e demais informações do sistema.
+          <div class="table-wrap">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>ID</th>
+                  <th>E-mail</th>
+                  <th>Nome</th>
+                  <th>CPF</th>
+                  <th>Pontos</th>
+                  <th>Saldo</th>
+                  <th>Cadastro</th>
+                </tr>
+
+              </thead>
+
+              <tbody id="jogadoresBody">
+
+                <tr>
+                  <td
+                    colspan="7"
+                    class="loading"
+                  >
+                    Carregando jogadores...
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           PERGUNTAS
+      ========================== -->
+
+      <section
+        id="perguntasPage"
+        class="page"
+      >
+
+        <div class="section">
+
+          <h2>❓ Perguntas</h2>
+
+          <p>
+            O gerenciamento de perguntas será conectado ao banco de dados
+            nesta etapa.
           </p>
 
         </div>
 
-      </div>
+      </section>
+
+
+      <!-- =========================
+           SAQUES
+      ========================== -->
+
+      <section
+        id="saquesPage"
+        class="page"
+      >
+
+        <div class="section">
+
+          <h2>💸 Saques</h2>
+
+          <div class="table-wrap">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>ID</th>
+                  <th>Usuário</th>
+                  <th>E-mail</th>
+                  <th>Valor</th>
+                  <th>Pix</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+
+              </thead>
+
+              <tbody id="saquesBody">
+
+                <tr>
+                  <td
+                    colspan="7"
+                    class="loading"
+                  >
+                    Carregando saques...
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           PARCEIROS
+      ========================== -->
+
+      <section
+        id="parceirosPage"
+        class="page"
+      >
+
+        <div class="section">
+
+          <h2>🤝 Parceiros</h2>
+
+          <div class="table-wrap">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>E-mail</th>
+                  <th>Dados</th>
+                </tr>
+
+              </thead>
+
+              <tbody id="parceirosBody">
+
+                <tr>
+                  <td
+                    colspan="4"
+                    class="loading"
+                  >
+                    Carregando parceiros...
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           MOVIMENTAÇÕES
+      ========================== -->
+
+      <section
+        id="movimentacoesPage"
+        class="page"
+      >
+
+        <div class="section">
+
+          <h2>📊 Movimentações de parceiros</h2>
+
+          <div class="table-wrap">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>ID</th>
+                  <th>Parceiro</th>
+                  <th>Tipo</th>
+                  <th>Pontos</th>
+                  <th>Valor</th>
+                  <th>Descrição</th>
+                </tr>
+
+              </thead>
+
+              <tbody id="movimentacoesBody">
+
+                <tr>
+                  <td
+                    colspan="6"
+                    class="loading"
+                  >
+                    Carregando movimentações...
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           CONFIGURAÇÕES
+      ========================== -->
+
+      <section
+        id="configPage"
+        class="page"
+      >
+
+        <div class="section">
+
+          <h2>⚙️ Configurações</h2>
+
+          <p>
+            <strong>Backend:</strong>
+            https://quizup-api-qxn2.onrender.com
+          </p>
+
+          <p>
+            <strong>Banco:</strong>
+            PostgreSQL Aiven
+          </p>
+
+          <p>
+            <strong>Projeto:</strong>
+            QuizUp
+          </p>
+
+        </div>
+
+      </section>
 
     </main>
 
   </div>
 
 
-  <!-- JAVASCRIPT -->
-
   <script>
+    "use strict";
+
+
+    /* ==========================================
+       CONFIGURAÇÃO
+    ========================================== */
 
     const API_URL =
       "https://quizup-api-qxn2.onrender.com";
 
 
+    /* ==========================================
+       ELEMENTOS
+    ========================================== */
+
+    const $ = (id) =>
+      document.getElementById(id);
+
+
+    /* ==========================================
+       SEGURANÇA PARA HTML
+    ========================================== */
+
+    function esc(valor) {
+
+      return String(valor ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    /* ==========================================
+       MENSAGENS
+    ========================================== */
+
+    function loginMsg(texto, erro = true) {
+
+      $("loginMessage").innerHTML =
+        '<div class="message ' +
+        (erro ? "error" : "info-msg") +
+        '">' +
+        esc(texto) +
+        "</div>";
+
+    }
+
+
+    function globalMsg(texto, sucesso = true) {
+
+      $("globalMessage").innerHTML =
+        '<div class="message ' +
+        (sucesso ? "success-msg" : "error") +
+        '">' +
+        esc(texto) +
+        "</div>";
+
+    }
+
+
+    /* ==========================================
+       LOGIN ADMIN
+    ========================================== */
+
     async function entrar() {
 
       const email =
-        document.getElementById("email").value.trim();
+        $("email").value.trim();
 
       const password =
-        document.getElementById("password").value;
-
-      const message =
-        document.getElementById("loginMessage");
-
-      const button =
-        document.querySelector(".login-btn");
+        $("password").value;
 
 
-      message.style.display = "none";
+      if (!email) {
 
-
-      if (!email || !password) {
-
-        message.style.display = "block";
-
-        message.textContent =
-          "Preencha o e-mail e a senha.";
+        loginMsg("Digite o e-mail.");
 
         return;
+
       }
 
 
-      button.disabled = true;
+      if (!password) {
 
-      button.textContent =
+        loginMsg("Digite a senha.");
+
+        return;
+
+      }
+
+
+      const botao =
+        $("loginButton");
+
+
+      botao.disabled = true;
+
+      botao.textContent =
         "Entrando...";
 
 
@@ -544,17 +842,812 @@
 
         const resposta =
           await fetch(
-            `${API_URL}/api/admin/login`,
+            API_URL + "/api/admin/login",
             {
               method: "POST",
 
               headers: {
-                "Content-Type": "application/json"
+                "Content-Type":
+                  "application/json"
               },
 
               body: JSON.stringify({
+
                 email: email,
-                password: password
+
+                /*
+                 * CORREÇÃO PRINCIPAL:
+                 * o backend recebe "senha",
+                 * não "password".
+                 */
+                senha: password
+
+              })
+            }
+          );
+
+
+        let dados = {};
+
+        try {
+
+          dados =
+            await resposta.json();
+
+        } catch (e) {
+
+          dados = {};
+
+        }
+
+
+        if (!resposta.ok) {
+
+          throw new Error(
+            dados.message ||
+            dados.mensagem ||
+            "E-mail ou senha incorretos."
+          );
+
+        }
+
+
+        localStorage.setItem(
+          "quizup_admin",
+          JSON.stringify(
+            dados.admin || {
+              email: email
+            }
+          )
+        );
+
+
+        $("loginScreen")
+          .classList.add("hidden");
+
+        $("adminScreen")
+          .classList.remove("hidden");
+
+
+        const admin =
+          dados.admin || {};
+
+        $("adminUser").textContent =
+          admin.email || email;
+
+
+        globalMsg(
+          "Login realizado com sucesso.",
+          true
+        );
+
+
+        await carregarPainel();
+
+
+      } catch (erro) {
+
+        console.error(
+          "Erro no login:",
+          erro
+        );
+
+
+        loginMsg(
+          erro.message ||
+          "Não foi possível entrar."
+        );
+
+
+      } finally {
+
+        botao.disabled = false;
+
+        botao.textContent =
+          "Entrar";
+
+      }
+
+    }
+
+
+    /* ==========================================
+       SAIR
+    ========================================== */
+
+    function sair() {
+
+      localStorage.removeItem(
+        "quizup_admin"
+      );
+
+
+      $("adminScreen")
+        .classList.add("hidden");
+
+      $("loginScreen")
+        .classList.remove("hidden");
+
+
+      $("password").value = "";
+
+      $("loginMessage").innerHTML = "";
+
+    }
+
+
+    /* ==========================================
+       TESTAR SESSÃO
+    ========================================== */
+
+    function verificarSessao() {
+
+      const sessao =
+        localStorage.getItem(
+          "quizup_admin"
+        );
+
+
+      if (!sessao) {
+
+        return;
+
+      }
+
+
+      try {
+
+        const admin =
+          JSON.parse(sessao);
+
+
+        $("loginScreen")
+          .classList.add("hidden");
+
+        $("adminScreen")
+          .classList.remove("hidden");
+
+
+        $("adminUser").textContent =
+          admin.email || "";
+
+
+        carregarPainel();
+
+
+      } catch (erro) {
+
+        localStorage.removeItem(
+          "quizup_admin"
+        );
+
+      }
+
+    }
+
+
+    /* ==========================================
+       CARREGAR PAINEL
+    ========================================== */
+
+    async function carregarPainel() {
+
+      globalMsg(
+        "Carregando dados...",
+        true
+      );
+
+
+      try {
+
+        const resposta =
+          await fetch(
+            API_URL +
+            "/api/admin/dashboard"
+          );
+
+
+        if (resposta.ok) {
+
+          const dados =
+            await resposta.json();
+
+
+          atualizarResumo(
+            dados
+          );
+
+        }
+
+      } catch (erro) {
+
+        console.warn(
+          "Dashboard:",
+          erro
+        );
+
+      }
+
+
+      await carregarJogadores();
+
+      await carregarSaques();
+
+      await carregarParceiros();
+
+      await carregarMovimentacoes();
+
+
+      $("globalMessage")
+        .innerHTML = "";
+
+    }
+
+
+    /* ==========================================
+       RESUMO
+    ========================================== */
+
+    function atualizarResumo(dados) {
+
+      if (!dados) {
+        return;
+      }
+
+
+      const jogadores =
+        dados.jogadores ??
+        dados.totalJogadores ??
+        dados.total_jogadores;
+
+
+      const parceiros =
+        dados.parceiros ??
+        dados.totalParceiros ??
+        dados.total_parceiros;
+
+
+      const saques =
+        dados.saques ??
+        dados.totalSaques ??
+        dados.total_saques;
+
+
+      const pendentes =
+        dados.pendentes ??
+        dados.totalPendentes ??
+        dados.total_pendentes;
+
+
+      const aprovados =
+        dados.aprovados ??
+        dados.totalAprovados ??
+        dados.total_aprovados;
+
+
+      const cancelados =
+        dados.cancelados ??
+        dados.totalCancelados ??
+        dados.total_cancelados;
+
+
+      if (jogadores !== undefined) {
+
+        $("totalJogadores").textContent =
+          jogadores;
+
+      }
+
+
+      if (parceiros !== undefined) {
+
+        $("totalParceiros").textContent =
+          parceiros;
+
+      }
+
+
+      if (saques !== undefined) {
+
+        $("totalSaques").textContent =
+          saques;
+
+      }
+
+
+      if (pendentes !== undefined) {
+
+        $("totalPendentes").textContent =
+          pendentes;
+
+      }
+
+
+      if (aprovados !== undefined) {
+
+        $("totalAprovados").textContent =
+          aprovados;
+
+      }
+
+
+      if (cancelados !== undefined) {
+
+        $("totalCancelados").textContent =
+          cancelados;
+
+      }
+
+    }
+
+
+    /* ==========================================
+       JOGADORES
+    ========================================== */
+
+    async function carregarJogadores() {
+
+      const body =
+        $("jogadoresBody");
+
+
+      body.innerHTML =
+        '<tr><td colspan="7" class="loading">' +
+        "Carregando jogadores..." +
+        "</td></tr>";
+
+
+      try {
+
+        const resposta =
+          await fetch(
+            API_URL +
+            "/api/admin/jogadores"
+          );
+
+
+        const dados =
+          await resposta.json();
+
+
+        if (!resposta.ok) {
+
+          throw new Error(
+            dados.message ||
+            dados.mensagem ||
+            "Erro ao carregar jogadores."
+          );
+
+        }
+
+
+        const jogadores =
+          Array.isArray(dados)
+            ? dados
+            : (
+                dados.jogadores ||
+                dados.data ||
+                dados.rows ||
+                []
+              );
+
+
+        $("totalJogadores").textContent =
+          jogadores.length;
+
+
+        if (!jogadores.length) {
+
+          body.innerHTML =
+            '<tr><td colspan="7">' +
+            "Nenhum jogador encontrado." +
+            "</td></tr>";
+
+          return;
+
+        }
+
+
+        body.innerHTML =
+          jogadores.map(
+            jogador => {
+
+              const saldo =
+                jogador.equilibrio ??
+                jogador.saldo ??
+                0;
+
+
+              return `
+                <tr>
+
+                  <td>
+                    ${esc(
+                      jogador.id ??
+                      jogador.$id ??
+                      "-"
+                    )}
+                  </td>
+
+                  <td>
+                    ${esc(
+                      jogador.email ??
+                      jogador["E-mail"] ??
+                      "-"
+                    )}
+                  </td>
+
+                  <td>
+                    ${esc(
+                      jogador.nome ??
+                      jogador.name ??
+                      "-"
+                    )}
+                  </td>
+
+                  <td>
+                    ${esc(
+                      jogador.cpf ??
+                      "-"
+                    )}
+                  </td>
+
+                  <td>
+                    ${esc(
+                      jogador.pontos ??
+                      0
+                    )}
+                  </td>
+
+                  <td>
+                    R$ ${esc(
+                      Number(saldo || 0)
+                        .toFixed(2)
+                    )}
+                  </td>
+
+                  <td>
+                    ${esc(
+                      jogador.criado_em ??
+                      jogador.created_at ??
+                      "-"
+                    )}
+                  </td>
+
+                </tr>
+              `;
+
+            }
+          ).join("");
+
+
+      } catch (erro) {
+
+        console.error(
+          "Erro jogadores:",
+          erro
+        );
+
+
+        body.innerHTML =
+          '<tr><td colspan="7" class="error">' +
+          esc(
+            erro.message ||
+            "Erro ao carregar jogadores."
+          ) +
+          "</td></tr>";
+
+      }
+
+    }
+
+
+    /* ==========================================
+       SAQUES
+    ========================================== */
+
+    async function carregarSaques() {
+
+      const body =
+        $("saquesBody");
+
+
+      body.innerHTML =
+        '<tr><td colspan="7" class="loading">' +
+        "Carregando saques..." +
+        "</td></tr>";
+
+
+      try {
+
+        /*
+         * O endpoint de dashboard pode
+         * fornecer os dados.
+         *
+         * Caso o backend não tenha uma
+         * rota específica de listagem,
+         * mantemos a tabela vazia sem
+         * quebrar o painel.
+         */
+
+        const resposta =
+          await fetch(
+            API_URL +
+            "/api/admin/dashboard"
+          );
+
+
+        if (!resposta.ok) {
+
+          throw new Error(
+            "Não foi possível carregar os saques."
+          );
+
+        }
+
+
+        const dados =
+          await resposta.json();
+
+
+        const saques =
+          Array.isArray(dados.saques)
+            ? dados.saques
+            : (
+                dados.withdrawals ||
+                dados.saque ||
+                []
+              );
+
+
+        if (
+          dados.totalSaques !== undefined
+        ) {
+
+          $("totalSaques").textContent =
+            dados.totalSaques;
+
+        } else {
+
+          $("totalSaques").textContent =
+            saques.length;
+
+        }
+
+
+        $("totalPendentes").textContent =
+          saques.filter(
+            x =>
+              String(
+                x.status || ""
+              ).toLowerCase() === "pendente"
+          ).length;
+
+
+        $("totalAprovados").textContent =
+          saques.filter(
+            x =>
+              [
+                "aprovado",
+                "aprovada"
+              ].includes(
+                String(
+                  x.status || ""
+                ).toLowerCase()
+              )
+          ).length;
+
+
+        $("totalCancelados").textContent =
+          saques.filter(
+            x =>
+              [
+                "cancelado",
+                "cancelada"
+              ].includes(
+                String(
+                  x.status || ""
+                ).toLowerCase()
+              )
+          ).length;
+
+
+        if (!saques.length) {
+
+          body.innerHTML =
+            '<tr><td colspan="7">' +
+            "Nenhum saque encontrado." +
+            "</td></tr>";
+
+          return;
+
+        }
+
+
+        body.innerHTML =
+          saques.map(
+            saque => {
+
+              const status =
+                String(
+                  saque.status || ""
+                ).toLowerCase();
+
+
+              return `
+                <tr>
+
+                  <td>
+                    ${esc(
+                      saque.id ??
+                      saque.$id ??
+                      "-"
+                    )}
+                  </td>
+
+                  <td>
+                    ${esc(
+                      saque.jogador_id ??
+                      saque.usuario ??
+                      saque.userId ??
+                      "-"
+                    )}
+                  </td>
+
+                  <td>
+                    ${esc(
+                      saque.email ??
+                      "-"
+                    )}
+                  </td>
+
+                  <td>
+                    R$ ${esc(
+                      Number(
+                        saque.valor_jogador ??
+                        saque.quantia ??
+                        saque.valor ??
+                        0
+                      ).toFixed(2)
+                    )}
+                  </td>
+
+                  <td>
+                    ${esc(
+                      saque.pix_key ??
+                      saque.pix ??
+                      "-"
+                    )}
+                  </td>
+
+                  <td class="status ${esc(status)}">
+                    ${esc(
+                      saque.status ??
+                      "-"
+                    )}
+                  </td>
+
+                  <td>
+
+                    ${
+                      status === "pendente"
+                        ? `
+                          <div class="actions">
+
+                            <button
+                              class="success"
+                              onclick="alterarSaque(
+                                ${JSON.stringify(
+                                  saque.id ??
+                                  saque.$id
+                                )},
+                                'aprovado'
+                              )"
+                            >
+                              Aprovar
+                            </button>
+
+                            <button
+                              class="danger"
+                              onclick="alterarSaque(
+                                ${JSON.stringify(
+                                  saque.id ??
+                                  saque.$id
+                                )},
+                                'cancelado'
+                              )"
+                            >
+                              Cancelar
+                            </button>
+
+                          </div>
+                        `
+                        : "-"
+                    }
+
+                  </td>
+
+                </tr>
+              `;
+
+            }
+          ).join("");
+
+
+      } catch (erro) {
+
+        console.error(
+          "Erro saques:",
+          erro
+        );
+
+
+        body.innerHTML =
+          '<tr><td colspan="7">' +
+          "Nenhum saque disponível." +
+          "</td></tr>";
+
+      }
+
+    }
+
+
+    /* ==========================================
+       ALTERAR SAQUE
+    ========================================== */
+
+    async function alterarSaque(
+      id,
+      status
+    ) {
+
+      if (!id) {
+
+        alert(
+          "ID do saque não encontrado."
+        );
+
+        return;
+
+      }
+
+
+      const texto =
+        status === "aprovado"
+          ? "aprovar"
+          : "cancelar";
+
+
+      if (
+        !confirm(
+          "Tem certeza que deseja " +
+          texto +
+          " este saque?"
+        )
+      ) {
+
+        return;
+
+      }
+
+
+      try {
+
+        const resposta =
+          await fetch(
+            API_URL +
+            "/api/admin/saque/" +
+            encodeURIComponent(id),
+            {
+              method: "PUT",
+
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+
+              body: JSON.stringify({
+                status: status
               })
             }
           );
@@ -568,359 +1661,62 @@
 
           throw new Error(
             dados.message ||
-            "E-mail ou senha incorretos."
+            dados.mensagem ||
+            "Não foi possível atualizar o saque."
           );
 
         }
 
 
-        localStorage.setItem(
-          "quizup_admin",
-          JSON.stringify(dados.admin)
+        alert(
+          "Saque atualizado com sucesso."
         );
 
 
-        document.getElementById(
-          "loginPage"
-        ).style.display = "none";
+        await carregarPainel();
 
 
-        document.getElementById(
-          "adminPage"
-        ).style.display = "block";
+      } catch (erro) {
 
-
-        document.querySelector(
-          ".admin-user"
-        ).textContent =
-          "👤 " + dados.admin.email;
-
-
-      } catch (error) {
-
-        console.error(error);
-
-        message.style.display =
-          "block";
-
-        message.textContent =
-          error.message ||
-          "Erro ao conectar ao servidor.";
-
-      } finally {
-
-        button.disabled =
-          false;
-
-        button.textContent =
-          "Entrar no painel";
-
-      }
-
-    }
-
-
-    function sair() {
-
-      localStorage.removeItem(
-        "quizup_admin"
-      );
-
-
-      document.getElementById(
-        "adminPage"
-      ).style.display =
-        "none";
-
-
-      document.getElementById(
-        "loginPage"
-      ).style.display =
-        "flex";
-
-
-      document.getElementById(
-        "email"
-      ).value = "";
-
-
-      document.getElementById(
-        "password"
-      ).value = "";
-
-
-      document.getElementById(
-        "loginMessage"
-      ).style.display =
-        "none";
-
-    }
-
-
-    function abrirPagina(pagina, botao) {
-
-      document
-        .querySelectorAll(".menu button")
-        .forEach(function(item) {
-
-          item.classList.remove("active");
-
-        });
-
-
-      botao.classList.add("active");
-
-
-      const titulo =
-        document.getElementById("tituloPagina");
-
-      const conteudo =
-        document.getElementById("conteudoPagina");
-
-
-      if (pagina === "dashboard") {
-
-        titulo.textContent =
-          "Dashboard";
-
-        conteudo.innerHTML = `
-
-          <div class="cards">
-
-            <div class="card">
-              <div class="card-title">
-                Jogadores
-              </div>
-
-              <div class="card-value">
-                0
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-title">
-                Pontos distribuídos
-              </div>
-
-              <div class="card-value">
-                0
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-title">
-                Saques pendentes
-              </div>
-
-              <div class="card-value">
-                0
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-title">
-                Valor dos saques
-              </div>
-
-              <div class="card-value">
-                R$ 0,00
-              </div>
-            </div>
-
-          </div>
-
-          <div class="section">
-
-            <h2>Visão geral</h2>
-
-            <p class="welcome">
-              Bem-vindo ao painel administrativo do QuizUp.
-              Aqui você poderá administrar jogadores,
-              perguntas, saques, parceiros e demais informações do sistema.
-            </p>
-
-          </div>
-
-        `;
-
-        return;
-      }
-
-
-      if (pagina === "jogadores") {
-
-        titulo.textContent =
-          "Jogadores";
-
-        conteudo.innerHTML = `
-
-          <div class="section">
-
-            <h2>👥 Jogadores cadastrados</h2>
-
-            <p class="loading">
-              Carregando jogadores...
-            </p>
-
-            <div id="jogadoresResultado"></div>
-
-          </div>
-
-        `;
-
-        carregarJogadores();
-
-        return;
-      }
-
-
-      if (pagina === "perguntas") {
-
-        titulo.textContent =
-          "Perguntas";
-
-        conteudo.innerHTML = `
-
-          <div class="section">
-
-            <h2>❓ Perguntas</h2>
-
-            <p class="welcome">
-              Área de gerenciamento das perguntas do QuizUp.
-            </p>
-
-          </div>
-
-        `;
-
-        return;
-      }
-
-
-      if (pagina === "saques") {
-
-        titulo.textContent =
-          "Saques";
-
-        conteudo.innerHTML = `
-
-          <div class="section">
-
-            <h2>💰 Saques</h2>
-
-            <p class="welcome">
-              Área de gerenciamento dos saques dos jogadores.
-            </p>
-
-          </div>
-
-        `;
-
-        return;
-      }
-
-
-      if (pagina === "parceiros") {
-
-        titulo.textContent =
-          "Parceiros";
-
-        conteudo.innerHTML = `
-
-          <div class="section">
-
-            <h2>🤝 Parceiros</h2>
-
-            <p class="welcome">
-              Área de gerenciamento dos parceiros do QuizUp.
-            </p>
-
-          </div>
-
-        `;
-
-        return;
-      }
-
-
-      if (pagina === "movimentacoes") {
-
-        titulo.textContent =
-          "Movimentações";
-
-        conteudo.innerHTML = `
-
-          <div class="section">
-
-            <h2>📈 Movimentações</h2>
-
-            <p class="welcome">
-              Área de movimentações financeiras e de pontos.
-            </p>
-
-          </div>
-
-        `;
-
-        return;
-      }
-
-
-      if (pagina === "configuracoes") {
-
-        titulo.textContent =
-          "Configurações";
-
-        conteudo.innerHTML = `
-
-          <div class="section">
-
-            <h2>⚙️ Configurações</h2>
-
-            <p class="welcome">
-              Configurações administrativas do QuizUp.
-            </p>
-
-          </div>
-
-        `;
-
-      }
-
-    }
-
-
-    async function carregarJogadores() {
-
-      const resultado =
-        document.getElementById(
-          "jogadoresResultado"
+        alert(
+          erro.message ||
+          "Erro ao atualizar saque."
         );
 
-
-      if (!resultado) {
-        return;
       }
+
+    }
+
+
+    /* ==========================================
+       PARCEIROS
+    ========================================== */
+
+    async function carregarParceiros() {
+
+      const body =
+        $("parceirosBody");
+
+
+      body.innerHTML =
+        '<tr><td colspan="4" class="loading">' +
+        "Carregando parceiros..." +
+        "</td></tr>";
 
 
       try {
 
-        /*
-          Este endereço será usado quando
-          o endpoint de jogadores estiver
-          disponível no backend.
-        */
-
         const resposta =
           await fetch(
-            `${API_URL}/api/admin/jogadores`
+            API_URL +
+            "/api/admin/dashboard"
           );
 
 
         if (!resposta.ok) {
 
           throw new Error(
-            "O servidor não conseguiu carregar os jogadores."
+            "Erro ao carregar parceiros."
           );
 
         }
@@ -930,165 +1726,398 @@
           await resposta.json();
 
 
-        const jogadores =
-          Array.isArray(dados)
-            ? dados
-            : dados.jogadores;
+        const parceiros =
+          Array.isArray(
+            dados.parceiros
+          )
+            ? dados.parceiros
+            : [];
 
 
-        if (!jogadores || jogadores.length === 0) {
+        $("totalParceiros").textContent =
+          dados.totalParceiros ??
+          parceiros.length;
 
-          resultado.innerHTML = `
 
-            <div class="empty">
-              Nenhum jogador encontrado.
-            </div>
+        if (!parceiros.length) {
 
-          `;
+          body.innerHTML =
+            '<tr><td colspan="4">' +
+            "Nenhum parceiro encontrado." +
+            "</td></tr>";
 
           return;
+
         }
 
 
-        let html = `
+        body.innerHTML =
+          parceiros.map(
+            parceiro => `
 
-          <div class="table-wrapper">
+              <tr>
 
-            <table>
+                <td>
+                  ${esc(
+                    parceiro.id ??
+                    parceiro.$id ??
+                    "-"
+                  )}
+                </td>
 
-              <thead>
+                <td>
+                  ${esc(
+                    parceiro.nome ??
+                    parceiro.name ??
+                    "-"
+                  )}
+                </td>
 
-                <tr>
+                <td>
+                  ${esc(
+                    parceiro.email ??
+                    "-"
+                  )}
+                </td>
 
-                  <th>E-mail</th>
-                  <th>Pontos</th>
-                  <th>Saldo</th>
+                <td>
+                  ${esc(
+                    JSON.stringify(
+                      parceiro
+                    )
+                  )}
+                </td>
 
-                </tr>
+              </tr>
 
-              </thead>
-
-              <tbody>
-
-        `;
-
-
-        jogadores.forEach(function(jogador) {
-
-          html += `
-
-            <tr>
-
-              <td>
-                ${jogador.email || jogador["E-mail"] || "-"}
-              </td>
-
-              <td>
-                ${jogador.pontos ?? 0}
-              </td>
-
-              <td>
-                R$ ${Number(
-                  jogador.equilibrio ?? 0
-                ).toFixed(2).replace(".", ",")}
-              </td>
-
-            </tr>
-
-          `;
-
-        });
+            `
+          ).join("");
 
 
-        html += `
+      } catch (erro) {
 
-              </tbody>
-
-            </table>
-
-          </div>
-
-        `;
+        console.error(
+          "Erro parceiros:",
+          erro
+        );
 
 
-        resultado.innerHTML =
-          html;
-
-
-      } catch (error) {
-
-        console.error(error);
-
-        resultado.innerHTML = `
-
-          <div class="error">
-
-            Não foi possível carregar os jogadores.
-
-            <br><br>
-
-            ${error.message}
-
-          </div>
-
-        `;
+        body.innerHTML =
+          '<tr><td colspan="4">' +
+          "Nenhum parceiro disponível." +
+          "</td></tr>";
 
       }
 
     }
 
 
-    window.addEventListener(
-      "load",
-      function() {
+    /* ==========================================
+       MOVIMENTAÇÕES
+    ========================================== */
 
-        const adminSalvo =
-          localStorage.getItem(
-            "quizup_admin"
+    async function carregarMovimentacoes() {
+
+      const body =
+        $("movimentacoesBody");
+
+
+      body.innerHTML =
+        '<tr><td colspan="6" class="loading">' +
+        "Carregando movimentações..." +
+        "</td></tr>";
+
+
+      try {
+
+        const resposta =
+          await fetch(
+            API_URL +
+            "/api/admin/dashboard"
           );
 
 
-        if (!adminSalvo) {
+        if (!resposta.ok) {
+
+          throw new Error(
+            "Erro ao carregar movimentações."
+          );
+
+        }
+
+
+        const dados =
+          await resposta.json();
+
+
+        const movimentacoes =
+          Array.isArray(
+            dados.movimentacoes
+          )
+            ? dados.movimentacoes
+            : [];
+
+
+        if (!movimentacoes.length) {
+
+          body.innerHTML =
+            '<tr><td colspan="6">' +
+            "Nenhuma movimentação encontrada." +
+            "</td></tr>";
+
           return;
+
         }
 
 
-        try {
+        body.innerHTML =
+          movimentacoes.map(
+            item => `
 
-          const admin =
-            JSON.parse(adminSalvo);
+              <tr>
+
+                <td>
+                  ${esc(
+                    item.id ??
+                    item.$id ??
+                    "-"
+                  )}
+                </td>
+
+                <td>
+                  ${esc(
+                    item.parceiro_id ??
+                    "-"
+                  )}
+                </td>
+
+                <td>
+                  ${esc(
+                    item.tipo ??
+                    "-"
+                  )}
+                </td>
+
+                <td>
+                  ${esc(
+                    item.pontos ??
+                    0
+                  )}
+                </td>
+
+                <td>
+                  R$ ${esc(
+                    Number(
+                      item.valor || 0
+                    ).toFixed(2)
+                  )}
+                </td>
+
+                <td>
+                  ${esc(
+                    item.descricao ??
+                    "-"
+                  )}
+                </td>
+
+              </tr>
+
+            `
+          ).join("");
 
 
-          document.getElementById(
-            "loginPage"
-          ).style.display =
-            "none";
+      } catch (erro) {
+
+        console.error(
+          "Erro movimentações:",
+          erro
+        );
 
 
-          document.getElementById(
-            "adminPage"
-          ).style.display =
-            "block";
+        body.innerHTML =
+          '<tr><td colspan="6">' +
+          "Nenhuma movimentação disponível." +
+          "</td></tr>";
+
+      }
+
+    }
 
 
-          document.querySelector(
-            ".admin-user"
-          ).textContent =
-            "👤 " + admin.email;
+    /* ==========================================
+       MENU
+    ========================================== */
+
+    document
+      .querySelectorAll(".menu button")
+      .forEach(
+        botao => {
+
+          botao.addEventListener(
+            "click",
+            () => {
+
+              document
+                .querySelectorAll(
+                  ".menu button"
+                )
+                .forEach(
+                  b =>
+                    b.classList.remove(
+                      "active"
+                    )
+                );
 
 
-        } catch (error) {
+              botao.classList.add(
+                "active"
+              );
 
-          localStorage.removeItem(
-            "quizup_admin"
+
+              document
+                .querySelectorAll(
+                  ".page"
+                )
+                .forEach(
+                  pagina =>
+                    pagina.classList.remove(
+                      "active"
+                    )
+                );
+
+
+              const pagina =
+                $(botao.dataset.page);
+
+
+              if (pagina) {
+
+                pagina.classList.add(
+                  "active"
+                );
+
+              }
+
+
+              if (
+                botao.dataset.page ===
+                "jogadoresPage"
+              ) {
+
+                carregarJogadores();
+
+              }
+
+
+              if (
+                botao.dataset.page ===
+                "saquesPage"
+              ) {
+
+                carregarSaques();
+
+              }
+
+
+              if (
+                botao.dataset.page ===
+                "parceirosPage"
+              ) {
+
+                carregarParceiros();
+
+              }
+
+
+              if (
+                botao.dataset.page ===
+                "movimentacoesPage"
+              ) {
+
+                carregarMovimentacoes();
+
+              }
+
+            }
           );
 
         }
+      );
+
+
+    /* ==========================================
+       BOTÕES
+    ========================================== */
+
+    $("loginButton")
+      .addEventListener(
+        "click",
+        entrar
+      );
+
+
+    $("logoutButton")
+      .addEventListener(
+        "click",
+        sair
+      );
+
+
+    $("password")
+      .addEventListener(
+        "keydown",
+        evento => {
+
+          if (
+            evento.key === "Enter"
+          ) {
+
+            entrar();
+
+          }
+
+        }
+      );
+
+
+    /* ==========================================
+       ERROS
+    ========================================== */
+
+    window.addEventListener(
+      "error",
+      evento => {
+
+        console.error(
+          "Erro JavaScript:",
+          evento.error ||
+          evento.message
+        );
 
       }
     );
 
+
+    window.addEventListener(
+      "unhandledrejection",
+      evento => {
+
+        console.error(
+          "Erro Promise:",
+          evento.reason
+        );
+
+      }
+    );
+
+
+    /* ==========================================
+       INICIAR
+    ========================================== */
+
+    verificarSessao();
+
   </script>
 
 </body>
-</html>
+  </html>
