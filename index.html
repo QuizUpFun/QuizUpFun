@@ -5,10 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QuizUp</title>
 
+<script>
+(function(s){
+  s.dataset.zone='11646165';
+  s.src='https://nap5k.com/tag.min.js';
+})([document.documentElement, document.body]
+  .filter(Boolean).pop()
+  .appendChild(document.createElement('script')));
+</script>
+
 <style>
-*{
-  box-sizing:border-box
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
@@ -58,7 +65,8 @@ button{
 }
 
 button:disabled{
-  opacity:.5
+  opacity:.5;
+  cursor:not-allowed
 }
 
 .primary{
@@ -94,7 +102,8 @@ button:disabled{
 .nav{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:8px
+  gap:8px;
+  margin-bottom:14px
 }
 
 .dice{
@@ -293,6 +302,7 @@ Login
 <input
 id="rEmail"
 type="email"
+autocomplete="email"
 placeholder="Seu e-mail">
 
 
@@ -301,6 +311,7 @@ placeholder="Seu e-mail">
 <input
 id="rPass"
 type="password"
+autocomplete="new-password"
 placeholder="Sua senha">
 
 
@@ -309,6 +320,7 @@ placeholder="Sua senha">
 <input
 id="rName"
 type="text"
+autocomplete="name"
 placeholder="Seu nome completo">
 
 
@@ -319,12 +331,11 @@ id="rCpf"
 type="text"
 inputmode="numeric"
 maxlength="14"
+autocomplete="off"
 placeholder="000.000.000-00"
 oninput="formatCPF(this)">
 
-
 <button
-id="registerButton"
 class="primary"
 onclick="register()">
 Cadastrar
@@ -344,6 +355,7 @@ Cadastrar
 <input
 id="lEmail"
 type="email"
+autocomplete="email"
 placeholder="Seu e-mail">
 
 
@@ -352,11 +364,11 @@ placeholder="Seu e-mail">
 <input
 id="lPass"
 type="password"
+autocomplete="current-password"
 placeholder="Sua senha">
 
 
 <button
-id="loginButton"
 class="primary"
 onclick="login()">
 Entrar
@@ -725,11 +737,54 @@ Quero ser Premium
 <script>
 
 /* =========================================================
-   BACKEND POSTGRESQL
+   API — RENDER + AIVEN POSTGRESQL
    ========================================================= */
 
 const API_URL =
-"https://quizup-api.onrender.com";
+"https://quizup-api-qxn2.onrender.com";
+
+
+async function api(path,options={}){
+
+const response=
+await fetch(
+API_URL+path,
+{
+...options,
+headers:{
+"Content-Type":"application/json",
+...(options.headers||{})
+}
+}
+);
+
+
+let data={};
+
+try{
+
+data=
+await response.json();
+
+}catch(error){
+
+}
+
+
+if(!response.ok){
+
+throw new Error(
+data.error||
+data.message||
+"Erro de comunicação com o servidor."
+);
+
+}
+
+
+return data;
+
+}
 
 
 /* =========================================================
@@ -738,7 +793,8 @@ const API_URL =
 
 const Q=[
 
-["Quanto é 2 + 2?",["3","4","5","6"],1],
+["Quanto é 2 + 2?",
+["3","4","5","6"],1],
 
 ["Qual é a capital do Brasil?",
 ["Brasília","São Paulo","Salvador","Recife"],0],
@@ -803,66 +859,149 @@ const Q=[
 
 let s={
 
-id:"",
+id:null,
 
 email:"",
+
 name:"",
+
 cpf:"",
+
 points:0,
+
 balance:0,
+
 round:1,
+
 code:"",
+
 referrer:"",
+
 dice:0,
+
 question:null,
+
 timer:5,
+
 answered:false,
+
 roundPoints:0
 
 };
 
+
 let handle=null;
+
+let nextRoundHandle=null;
 
 
 /* =========================================================
-   REQUISIÇÃO AO BACKEND
+   SESSÃO
    ========================================================= */
 
-async function api(path,options={}){
+const SESSION_KEY=
+"quizup_session";
 
-const response=
-await fetch(
-API_URL+path,
-{
-...options,
-headers:{
-"Content-Type":"application/json",
-...(options.headers||{})
-}
-}
+
+function saveSession(){
+
+if(!s.id||!s.email)return;
+
+
+const session={
+
+id:s.id,
+
+email:s.email,
+
+name:s.name,
+
+cpf:s.cpf,
+
+points:Number(s.points||0),
+
+balance:Number(s.balance||0),
+
+round:Number(s.round||1),
+
+code:s.code||"",
+
+referrer:s.referrer||""
+
+};
+
+
+localStorage.setItem(
+SESSION_KEY,
+JSON.stringify(session)
 );
 
-let data={};
+ui();
+
+}
+
+
+function clearSession(){
+
+localStorage.removeItem(
+SESSION_KEY
+);
+
+}
+
+
+function restoreSession(){
 
 try{
 
-data=await response.json();
+const raw=
+localStorage.getItem(
+SESSION_KEY
+);
+
+if(!raw)return false;
+
+
+const saved=
+JSON.parse(raw);
+
+
+if(!saved.id||!saved.email){
+
+clearSession();
+
+return false;
+
+}
+
+
+s={
+
+...s,
+
+...saved,
+
+points:Number(saved.points||0),
+
+balance:Number(saved.balance||0),
+
+round:Number(saved.round||1)
+
+};
+
+
+return true;
+
 
 }catch(error){
 
-}
+console.error(error);
 
-if(!response.ok){
+clearSession();
 
-throw new Error(
-data.error||
-data.message||
-"Erro de comunicação com o servidor."
-);
+return false;
 
 }
-
-return data;
 
 }
 
@@ -874,14 +1013,20 @@ return data;
 function playMusic(){
 
 const music=
-document.getElementById("backgroundMusic");
+document.getElementById(
+"backgroundMusic"
+);
 
 if(!music)return;
 
 music.volume=.35;
 
 music.play().catch(()=>{
-console.log("Música aguardando interação.");
+
+console.log(
+"Música aguardando interação."
+);
+
 });
 
 }
@@ -890,7 +1035,9 @@ console.log("Música aguardando interação.");
 function stopMusic(){
 
 const music=
-document.getElementById("backgroundMusic");
+document.getElementById(
+"backgroundMusic"
+);
 
 if(!music)return;
 
@@ -919,30 +1066,37 @@ let v=
 onlyNumbers(input.value)
 .slice(0,11);
 
+
 if(v.length>9){
 
-v=v.replace(
+v=
+v.replace(
 /(\d{3})(\d{3})(\d{3})(\d{0,2})/,
 "$1.$2.$3-$4"
 );
 
 }
+
 else if(v.length>6){
 
-v=v.replace(
+v=
+v.replace(
 /(\d{3})(\d{3})(\d{0,3})/,
 "$1.$2.$3"
 );
 
 }
+
 else if(v.length>3){
 
-v=v.replace(
+v=
+v.replace(
 /(\d{3})(\d{0,3})/,
 "$1.$2"
 );
 
 }
+
 
 input.value=v;
 
@@ -956,19 +1110,24 @@ return onlyNumbers(cpf);
 }
 
 
-/* =========================================================
-   VALIDAR CPF
-   ========================================================= */
-
 function validCPF(cpf){
 
-cpf=cleanCPF(cpf);
+cpf=
+cleanCPF(cpf);
+
 
 if(cpf.length!==11)return false;
 
-if(/^(\d)\1{10}$/.test(cpf))return false;
+
+if(/^(\d)\1{10}$/.test(cpf)){
+
+return false;
+
+}
+
 
 let sum=0;
+
 
 for(let i=0;i<9;i++){
 
@@ -978,15 +1137,23 @@ Number(cpf[i])*
 
 }
 
+
 let d1=
 (sum*10)%11;
 
+
 if(d1===10)d1=0;
 
-if(d1!==Number(cpf[9]))
+
+if(d1!==Number(cpf[9])){
+
 return false;
 
+}
+
+
 sum=0;
+
 
 for(let i=0;i<10;i++){
 
@@ -996,79 +1163,74 @@ Number(cpf[i])*
 
 }
 
+
 let d2=
 (sum*10)%11;
 
+
 if(d2===10)d2=0;
 
-return d2===Number(cpf[10]);
+
+return d2===
+Number(cpf[10]);
 
 }
 
 
 /* =========================================================
-   SESSÃO LOCAL
-   ========================================================= */
-
-function saveSession(){
-
-if(!s.id)return;
-
-localStorage.setItem(
-"quizup_session",
-JSON.stringify({
-
-id:s.id,
-email:s.email,
-name:s.name,
-cpf:s.cpf,
-points:s.points,
-balance:s.balance,
-round:s.round,
-code:s.code,
-referrer:s.referrer
-
-})
-);
-
-}
-
-
-function clearSession(){
-
-localStorage.removeItem(
-"quizup_session"
-);
-
-}
-
-
-/* =========================================================
-   CARREGAR JOGADOR DO POSTGRESQL
+   CARREGAR JOGADOR
    ========================================================= */
 
 async function loadPlayer(){
 
 if(!s.id)return;
 
-try{
 
 const data=
 await api(
-"/api/jogador/"+encodeURIComponent(s.id)
+"/api/jogador/"+
+encodeURIComponent(s.id)
 );
 
-if(data.jogador){
 
-const j=data.jogador;
+const j=
+data.jogador||
+data;
+
+
+if(!j||!j.id){
+
+throw new Error(
+"Jogador não encontrado."
+);
+
+}
+
 
 s.id=j.id;
-s.email=j.email||"";
-s.name=j.nome||"";
-s.cpf=j.cpf||"";
-s.points=Number(j.pontos||0);
-s.balance=Number(j.equilibrio||0);
-s.code=j.codigo_indicacao||s.code||"";
+
+s.email=
+j.email||
+s.email;
+
+s.name=
+j.nome||
+s.name;
+
+s.cpf=
+j.cpf||
+s.cpf;
+
+s.points=
+Number(j.pontos||0);
+
+s.balance=
+Number(j.equilibrio||0);
+
+s.code=
+j.codigo_indicacao||
+s.code;
+
 
 saveSession();
 
@@ -1076,67 +1238,61 @@ ui();
 
 }
 
-}catch(error){
-
-console.error(
-"Erro ao carregar jogador:",
-error
-);
-
-}
-
-}
-
 
 /* =========================================================
-   SALVAR JOGADOR NO POSTGRESQL
+   SALVAR JOGADOR
    ========================================================= */
 
 async function savePlayer(){
 
 if(!s.id)return;
 
-try{
 
 const data=
 await api(
-"/api/jogador/"+encodeURIComponent(s.id),
+"/api/jogador/"+
+encodeURIComponent(s.id),
 {
 method:"PUT",
 
 body:JSON.stringify({
 
-pontos:Number(s.points||0),
+pontos:
+Number(s.points||0),
 
-equilibrio:Number(s.balance||0)
+equilibrio:
+Number(s.balance||0)
 
 })
 
 }
 );
 
-if(data.jogador){
+
+const j=
+data.jogador||
+data;
+
+
+if(j.pontos!==undefined){
 
 s.points=
-Number(data.jogador.pontos||0);
-
-s.balance=
-Number(data.jogador.equilibrio||0);
+Number(j.pontos||0);
 
 }
+
+
+if(j.equilibrio!==undefined){
+
+s.balance=
+Number(j.equilibrio||0);
+
+}
+
 
 saveSession();
 
 ui();
-
-}catch(error){
-
-console.error(
-"Erro ao salvar jogador:",
-error
-);
-
-}
 
 }
 
@@ -1149,15 +1305,19 @@ function authMode(m){
 
 stopMusic();
 
-document
-.getElementById("registerBox")
+
+document.getElementById(
+"registerBox"
+)
 .classList.toggle(
 "hidden",
 m!=="register"
 );
 
-document
-.getElementById("loginBox")
+
+document.getElementById(
+"loginBox"
+)
 .classList.toggle(
 "hidden",
 m!=="login"
@@ -1174,104 +1334,98 @@ async function register(){
 
 stopMusic();
 
+
 const button=
-document.getElementById(
-"registerButton"
-);
-
-let e=
-document
-.getElementById("rEmail")
-.value
-.trim()
-.toLowerCase();
-
-let p=
-document
-.getElementById("rPass")
-.value;
-
-let n=
-document
-.getElementById("rName")
-.value
-.trim();
-
-let cpf=
-cleanCPF(
-document
-.getElementById("rCpf")
-.value
+document.querySelector(
+"#registerBox .primary"
 );
 
 
-if(!e||!p||!n||!cpf){
-
-alert(
-"Preencha todos os campos."
-);
-
-return;
-
-}
-
-
-if(p.length<8){
-
-alert(
-"A senha precisa ter pelo menos 8 caracteres."
-);
-
-return;
-
-}
-
-
-if(cpf.length!==11){
-
-alert(
-"Digite um CPF válido."
-);
-
-return;
-
-}
-
-
-if(!validCPF(cpf)){
-
-alert(
-"CPF inválido."
-);
-
-return;
-
-}
-
+if(button){
 
 button.disabled=true;
 
 button.textContent=
 "Cadastrando...";
 
+}
+
 
 try{
 
-const params=
-new URLSearchParams(
-window.location.search
+let e=
+document.getElementById(
+"rEmail"
+)
+.value
+.trim()
+.toLowerCase();
+
+
+let p=
+document.getElementById(
+"rPass"
+)
+.value;
+
+
+let n=
+document.getElementById(
+"rName"
+)
+.value
+.trim();
+
+
+let cpf=
+cleanCPF(
+document.getElementById(
+"rCpf"
+).value
 );
 
+
+if(!e||!p||!n||!cpf){
+
+throw new Error(
+"Preencha todos os campos."
+);
+
+}
+
+
+if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){
+
+throw new Error(
+"Digite um e-mail válido."
+);
+
+}
+
+
+if(p.length<6){
+
+throw new Error(
+"A senha deve ter pelo menos 6 caracteres."
+);
+
+}
+
+
+if(cpf.length!==11||
+!validCPF(cpf)){
+
+throw new Error(
+"Digite um CPF válido."
+);
+
+}
+
+
 const referrer=
-params.get("ref")||"";
-
-
-const codigo=
-"QU"+
-Math.random()
-.toString(36)
-.slice(2,8)
-.toUpperCase();
+new URLSearchParams(
+location.search
+).get("ref")||"";
 
 
 const data=
@@ -1290,8 +1444,6 @@ nome:n,
 
 cpf:cpf,
 
-codigo_indicacao:codigo,
-
 referrer:referrer
 
 })
@@ -1300,24 +1452,37 @@ referrer:referrer
 );
 
 
+const j=
+data.jogador||
+data;
+
+
+if(!j.id){
+
+throw new Error(
+"Cadastro criado, mas o servidor não retornou o jogador."
+);
+
+}
+
+
 s={
 
-id:data.id,
+id:j.id,
 
-email:data.email||e,
+email:j.email||e,
 
-name:data.nome||n,
+name:j.nome||n,
 
-cpf:data.cpf||cpf,
+cpf:j.cpf||cpf,
 
-points:Number(data.pontos||0),
+points:Number(j.pontos||0),
 
-balance:Number(data.equilibrio||0),
+balance:Number(j.equilibrio||0),
 
 round:1,
 
-code:
-data.codigo_indicacao||codigo,
+code:j.codigo_indicacao||"",
 
 referrer:referrer,
 
@@ -1336,17 +1501,13 @@ roundPoints:0
 
 saveSession();
 
-alert(
-"Cadastro realizado com sucesso! 🎉"
-);
-
 openGame(true);
 
 
 }catch(error){
 
 console.error(
-"ERRO NO CADASTRO:",
+"Erro no cadastro:",
 error
 );
 
@@ -1355,12 +1516,17 @@ error.message||
 "Não foi possível realizar o cadastro."
 );
 
+
 }finally{
+
+if(button){
 
 button.disabled=false;
 
 button.textContent=
 "Cadastrar";
+
+}
 
 }
 
@@ -1375,42 +1541,49 @@ async function login(){
 
 stopMusic();
 
+
 const button=
-document.getElementById(
-"loginButton"
+document.querySelector(
+"#loginBox .primary"
 );
 
-let e=
-document
-.getElementById("lEmail")
-.value
-.trim()
-.toLowerCase();
 
-let p=
-document
-.getElementById("lPass")
-.value;
-
-
-if(!e||!p){
-
-alert(
-"Preencha e-mail e senha."
-);
-
-return;
-
-}
-
+if(button){
 
 button.disabled=true;
 
 button.textContent=
 "Entrando...";
 
+}
+
 
 try{
+
+let e=
+document.getElementById(
+"lEmail"
+)
+.value
+.trim()
+.toLowerCase();
+
+
+let p=
+document.getElementById(
+"lPass"
+)
+.value;
+
+
+if(!e||!p){
+
+throw new Error(
+"Preencha e-mail e senha."
+);
+
+}
+
 
 const data=
 await api(
@@ -1430,7 +1603,18 @@ senha:p
 );
 
 
-const j=data.jogador;
+const j=
+data.jogador||
+data;
+
+
+if(!j.id){
+
+throw new Error(
+"Resposta inválida do servidor."
+);
+
+}
 
 
 s={
@@ -1468,29 +1652,32 @@ roundPoints:0
 
 saveSession();
 
-await loadPlayer();
-
 openGame(true);
 
 
 }catch(error){
 
 console.error(
-"ERRO NO LOGIN:",
+"Erro no login:",
 error
 );
 
 alert(
 error.message||
-"Não foi possível entrar."
+"E-mail ou senha incorretos."
 );
 
+
 }finally{
+
+if(button){
 
 button.disabled=false;
 
 button.textContent=
 "Entrar";
+
+}
 
 }
 
@@ -1508,21 +1695,68 @@ prompt(
 "Digite o e-mail da sua conta:"
 );
 
+
 if(!email)return;
 
-const cpf=
+
+const cleanEmail=
+email.trim().toLowerCase();
+
+
+if(!cleanEmail){
+
+alert(
+"Digite um e-mail válido."
+);
+
+return;
+
+}
+
+
+const cpfInput=
 prompt(
 "Digite o CPF da sua conta:"
 );
 
-if(!cpf)return;
 
-const novaSenha=
-prompt(
-"Digite sua nova senha (mínimo 8 caracteres):"
+if(!cpfInput)return;
+
+
+const cpf=
+cleanCPF(cpfInput);
+
+
+if(cpf.length!==11||
+!validCPF(cpf)){
+
+alert(
+"CPF inválido."
 );
 
-if(!novaSenha)return;
+return;
+
+}
+
+
+const newPassword=
+prompt(
+"Digite a nova senha (mínimo 6 caracteres):"
+);
+
+
+if(!newPassword)return;
+
+
+if(newPassword.length<6){
+
+alert(
+"A nova senha deve ter pelo menos 6 caracteres."
+);
+
+return;
+
+}
 
 
 try{
@@ -1534,27 +1768,31 @@ method:"POST",
 
 body:JSON.stringify({
 
-email:
-email.trim().toLowerCase(),
+email:cleanEmail,
 
-cpf:
-cleanCPF(cpf),
+cpf:cpf,
 
-novaSenha:novaSenha
+nova_senha:newPassword,
+
+senha:newPassword
 
 })
 
 }
 );
 
+
 alert(
-"Senha alterada com sucesso! Agora você pode entrar."
+"Senha alterada com sucesso. Agora faça login com a nova senha."
 );
 
 
 }catch(error){
 
-console.error(error);
+console.error(
+"Erro na recuperação:",
+error
+);
 
 alert(
 error.message||
@@ -1570,19 +1808,26 @@ error.message||
    ABRIR JOGO
    ========================================================= */
 
-function openGame(startMusic=false){
+function openGame(
+startMusic=false
+){
 
-document
-.getElementById("auth")
+document.getElementById(
+"auth"
+)
 .classList.add("hidden");
 
-document
-.getElementById("game")
+
+document.getElementById(
+"game"
+)
 .classList.remove("hidden");
+
 
 ui();
 
 tab("quiz");
+
 
 if(startMusic){
 
@@ -1601,36 +1846,57 @@ function logout(){
 
 clearInterval(handle);
 
+clearTimeout(nextRoundHandle);
+
 stopMusic();
 
 clearSession();
 
+
 s={
 
-id:"",
+id:null,
+
 email:"",
+
 name:"",
+
 cpf:"",
+
 points:0,
+
 balance:0,
+
 round:1,
+
 code:"",
+
 referrer:"",
+
 dice:0,
+
 question:null,
+
 timer:5,
+
 answered:false,
+
 roundPoints:0
 
 };
 
-document
-.getElementById("game")
+
+document.getElementById(
+"game"
+)
 .classList.add("hidden");
 
-document
-.getElementById("auth")
+
+document.getElementById(
+"auth"
+)
 .classList.remove("hidden");
+
 
 authMode("register");
 
@@ -1643,28 +1909,37 @@ authMode("register");
 
 function ui(){
 
-document
-.getElementById("points")
+document.getElementById(
+"points"
+)
 .textContent=
 Number(s.points||0);
 
-document
-.getElementById("round")
+
+document.getElementById(
+"round"
+)
 .textContent=
 Number(s.round||1);
 
-document
-.getElementById("totalScore")
+
+document.getElementById(
+"totalScore"
+)
 .textContent=
 Number(s.points||0);
 
-document
-.getElementById("refCode")
+
+document.getElementById(
+"refCode"
+)
 .value=
 s.code||"";
 
-document
-.getElementById("refLink")
+
+document.getElementById(
+"refLink"
+)
 .value=
 location.origin+
 location.pathname+
@@ -1685,8 +1960,9 @@ function tab(x){
 ["quiz","ref","cash","premium"]
 .forEach(a=>{
 
-document
-.getElementById(a+"Tab")
+document.getElementById(
+a+"Tab"
+)
 .classList.toggle(
 "hidden",
 a!==x
@@ -1697,12 +1973,15 @@ a!==x
 
 if(x==="quiz"){
 
-document
-.getElementById("rollCard")
+document.getElementById(
+"rollCard"
+)
 .classList.remove("hidden");
 
-document
-.getElementById("questionCard")
+
+document.getElementById(
+"questionCard"
+)
 .classList.add("hidden");
 
 }
@@ -1736,13 +2015,18 @@ document.getElementById(
 "backgroundMusic"
 );
 
-if(music.paused){
+
+if(music&&music.paused){
 
 playMusic();
 
 }
 
+
 clearInterval(handle);
+
+clearTimeout(nextRoundHandle);
+
 
 s.answered=false;
 
@@ -1758,6 +2042,7 @@ Math.random()*3
 )+8;
 
 }
+
 else if(s.round%10===0){
 
 d=
@@ -1766,6 +2051,7 @@ Math.random()*3
 )+5;
 
 }
+
 else{
 
 d=
@@ -1784,69 +2070,81 @@ s.question=
 pickQuestion();
 
 
-document
-.getElementById("dice")
+document.getElementById(
+"dice"
+)
 .textContent=
 "🎲 "+d;
 
 
-document
-.getElementById("diceResult")
+document.getElementById(
+"diceResult"
+)
 .textContent=
 "Você tirou "+
 d+
 " • Esta pergunta vale "+
 d+
-(d===1?" ponto":" pontos");
+(
+d===1
+?" ponto"
+:" pontos"
+);
 
 
-document
-.getElementById("question")
+document.getElementById(
+"question"
+)
 .textContent=
 s.question[0];
 
 
-let answers=
+const answers=
 document.getElementById(
 "answers"
 );
 
+
 answers.innerHTML="";
 
 
-s.question[1].forEach(
-(a,i)=>{
+s.question[1]
+.forEach((a,i)=>{
 
-let b=
+const b=
 document.createElement(
 "button"
 );
 
-b.className=
-"answer";
+
+b.className="answer";
 
 b.textContent=a;
 
 b.onclick=
 ()=>answer(i);
 
+
 answers.appendChild(b);
 
-}
-);
+});
 
 
-document
-.getElementById("rollCard")
+document.getElementById(
+"rollCard"
+)
 .classList.add("hidden");
 
-document
-.getElementById("questionCard")
+
+document.getElementById(
+"questionCard"
+)
 .classList.remove("hidden");
 
 
-document
-.getElementById("feedback")
+document.getElementById(
+"feedback"
+)
 .classList.add("hidden");
 
 
@@ -1863,14 +2161,19 @@ function startTimer(){
 
 clearInterval(handle);
 
+
 s.timer=5;
 
-document
-.getElementById("time")
-.textContent=5;
 
-document
-.getElementById("progress")
+document.getElementById(
+"time"
+)
+.textContent="5";
+
+
+document.getElementById(
+"progress"
+)
 .style.width="100%";
 
 
@@ -1879,13 +2182,17 @@ setInterval(()=>{
 
 s.timer--;
 
-document
-.getElementById("time")
+
+document.getElementById(
+"time"
+)
 .textContent=
 s.timer;
 
-document
-.getElementById("progress")
+
+document.getElementById(
+"progress"
+)
 .style.width=
 Math.max(
 0,
@@ -1914,14 +2221,17 @@ async function answer(i){
 
 if(s.answered)return;
 
+
 s.answered=true;
 
 clearInterval(handle);
 
-let c=
+
+const c=
 s.question[2];
 
-let bs=[
+
+const bs=[
 ...document.querySelectorAll(
 ".answer"
 )
@@ -1931,9 +2241,9 @@ let bs=[
 if(i>=0&&bs[i]){
 
 bs[i].classList.add(
-i===c?
-"correct":
-"wrong"
+i===c
+?"correct"
+:"wrong"
 );
 
 }
@@ -1948,7 +2258,7 @@ bs[c].classList.add(
 }
 
 
-let ok=
+const ok=
 i===c;
 
 
@@ -1962,13 +2272,12 @@ Number(s.roundPoints||0);
 
 ui();
 
-await savePlayer();
 
-
-let feedback=
+const feedback=
 document.getElementById(
 "feedback"
 );
+
 
 feedback.classList.remove(
 "hidden"
@@ -1980,12 +2289,13 @@ if(ok){
 feedback.textContent=
 "✅ Correto! Você ganhou "+
 s.roundPoints+
-(s.roundPoints===1?
-" ponto!":
-" pontos!");
+(
+s.roundPoints===1
+?" ponto!"
+:" pontos!"
+);
 
-}
-else{
+}else{
 
 feedback.textContent=
 "❌ Incorreto! Você ganhou 0 pontos.";
@@ -2000,11 +2310,36 @@ button.disabled=true;
 });
 
 
-setTimeout(()=>{
+/*
+ Salva a pontuação no PostgreSQL.
+ */
 
-finishQuestion();
+try{
 
-},1500);
+await savePlayer();
+
+}catch(error){
+
+console.error(
+"Erro ao salvar pontuação:",
+error
+);
+
+feedback.textContent+=
+" ⚠️ Não foi possível sincronizar agora.";
+
+}
+
+
+/*
+ Próxima rodada automática.
+ */
+
+nextRoundHandle=
+setTimeout(
+finishQuestion,
+1500
+);
 
 }
 
@@ -2017,37 +2352,50 @@ function finishQuestion(){
 
 clearInterval(handle);
 
-document
-.getElementById("questionCard")
+clearTimeout(nextRoundHandle);
+
+
+document.getElementById(
+"questionCard"
+)
 .classList.add("hidden");
 
-document
-.getElementById("rollCard")
+
+document.getElementById(
+"rollCard"
+)
 .classList.remove("hidden");
 
-document
-.getElementById("dice")
+
+document.getElementById(
+"dice"
+)
 .textContent="🎲";
 
-document
-.getElementById("diceResult")
+
+document.getElementById(
+"diceResult"
+)
 .textContent="";
 
-document
-.getElementById("feedback")
+
+document.getElementById(
+"feedback"
+)
 .classList.add("hidden");
 
 
 s.round++;
 
+
 saveSession();
 
 
-setTimeout(()=>{
-
-rollDice();
-
-},500);
+nextRoundHandle=
+setTimeout(
+rollDice,
+500
+);
 
 }
 
@@ -2056,34 +2404,65 @@ rollDice();
    INDICAÇÃO
    ========================================================= */
 
-function copyRef(){
+async function copyRef(){
 
-let link=
-document
-.getElementById("refLink")
+const link=
+document.getElementById(
+"refLink"
+)
 .value;
 
 
+try{
+
 if(navigator.clipboard){
 
-navigator.clipboard
-.writeText(link)
-.then(()=>{
+await navigator.clipboard.writeText(
+link
+);
 
-document
-.getElementById("refMsg")
+}else{
+
+throw new Error();
+
+}
+
+
+document.getElementById(
+"refMsg"
+)
 .textContent=
 "Link copiado!";
 
-})
-.catch(()=>{
 
-document
-.getElementById("refMsg")
+}catch(error){
+
+const input=
+document.getElementById(
+"refLink"
+);
+
+
+input.removeAttribute(
+"readonly"
+);
+
+input.select();
+
+document.execCommand(
+"copy"
+);
+
+input.setAttribute(
+"readonly",
+"");
+
+
+document.getElementById(
+"refMsg"
+)
 .textContent=
-"Não foi possível copiar automaticamente.";
-
-});
+"Link copiado!";
 
 }
 
@@ -2092,9 +2471,10 @@ document
 
 async function shareRef(){
 
-let link=
-document
-.getElementById("refLink")
+const link=
+document.getElementById(
+"refLink"
+)
 .value;
 
 
@@ -2113,12 +2493,11 @@ url:link
 
 });
 
-}catch(e){}
+}catch(error){}
 
-}
-else{
+}else{
 
-copyRef();
+await copyRef();
 
 }
 
@@ -2131,32 +2510,32 @@ copyRef();
 
 function payFields(){
 
-let p=
-document
-.getElementById("payMethod")
+const isPix=
+document.getElementById(
+"payMethod"
+)
 .value==="pix";
 
 
-document
-.getElementById("pix")
+document.getElementById(
+"pix"
+)
 .classList.toggle(
 "hidden",
-!p
+!isPix
 );
 
-document
-.getElementById("paypal")
+
+document.getElementById(
+"paypal"
+)
 .classList.toggle(
 "hidden",
-p
+isPix
 );
 
 }
 
-
-/* =========================================================
-   SAQUES
-   ========================================================= */
 
 function need(v){
 
@@ -2169,135 +2548,40 @@ return v==="10"
 }
 
 
-function todayKey(){
-
-const d=
-new Date();
-
-return d.getFullYear()+
-"-"+
-String(
-d.getMonth()+1
-).padStart(2,"0")+
-"-"+
-String(
-d.getDate()
-).padStart(2,"0");
-
-}
-
-
-function withdrawalStorageKey(){
-
-return "quizup_withdrawals_"+
-cleanCPF(s.cpf);
-
-}
-
-
-function getLocalWithdrawals(){
-
-try{
-
-return JSON.parse(
-localStorage.getItem(
-withdrawalStorageKey()
-)||"[]"
-);
-
-}catch(e){
-
-return [];
-
-}
-
-}
-
-
-function withdrawalsToday(){
-
-const today=
-todayKey();
-
-return getLocalWithdrawals()
-.filter(
-x=>x.day===today
-);
-
-}
-
-
-function saveLocalWithdrawal(data){
-
-const list=
-getLocalWithdrawals();
-
-list.push(data);
-
-localStorage.setItem(
-withdrawalStorageKey(),
-JSON.stringify(list)
-);
-
-}
-
-
-/* =========================================================
-   DIVISÃO 70 / 30
-   ========================================================= */
-
-function calculateSplit(gross){
-
-gross=
-Number(gross);
-
-return{
-
-gross:gross,
-
-player:
-Number(
-(gross*.70)
-.toFixed(2)
-),
-
-platform:
-Number(
-(gross*.30)
-.toFixed(2)
-)
-
-};
-
-}
-
-
 /* =========================================================
    SAQUE
+   =========================================================
+   O servidor controla:
+   - pontos
+   - limite de 2 saques por dia
+   - divisão 70/30
+   - registro no PostgreSQL
+   - desconto dos pontos
    ========================================================= */
 
 async function withdraw(){
 
 const button=
-document
-.getElementById(
+document.getElementById(
 "withdrawButton"
 );
 
+
 const msg=
-document
-.getElementById(
+document.getElementById(
 "cashMsg"
 );
+
+
+msg.classList.remove(
+"hidden"
+);
+
 
 button.disabled=true;
 
 button.textContent=
 "Enviando...";
-
-msg.classList.remove(
-"hidden"
-);
 
 
 try{
@@ -2312,37 +2596,41 @@ throw new Error(
 
 
 const v=
-document
-.getElementById(
+document.getElementById(
 "withdrawAmount"
 )
 .value;
 
+
 const gross=
 Number(v);
+
 
 const pointsNeeded=
 need(v);
 
 
 const method=
-document
-.getElementById(
+document.getElementById(
 "payMethod"
 )
 .value;
 
 
-const paymentKey=
-(
+const paymentField=
 method==="pix"
 ?
-document.getElementById("pixKey")
-:
-document.getElementById("paypalKey")
+document.getElementById(
+"pixKey"
 )
-.value
-.trim();
+:
+document.getElementById(
+"paypalKey"
+);
+
+
+const paymentKey=
+paymentField.value.trim();
 
 
 if(!paymentKey){
@@ -2354,35 +2642,35 @@ throw new Error(
 }
 
 
+if(
+method!=="pix"&&
+method!=="paypal"
+){
+
+throw new Error(
+"Método de pagamento inválido."
+);
+
+}
+
+
 if(Number(s.points)<pointsNeeded){
 
 throw new Error(
-"Você precisa de "+
+"Pontos insuficientes. Você precisa de "+
 pointsNeeded+
-" pontos para este saque."
+" pontos."
 );
 
 }
 
 
-const today=
-withdrawalsToday();
+/*
+ O servidor calcula o 70/30.
+ Não enviamos valores calculados pelo celular.
+ */
 
-
-if(today.length>=2){
-
-throw new Error(
-"Você já solicitou 2 saques hoje. Tente novamente amanhã."
-);
-
-}
-
-
-const split=
-calculateSplit(gross);
-
-
-const data=
+const result=
 await api(
 "/api/saques",
 {
@@ -2390,21 +2678,17 @@ method:"POST",
 
 body:JSON.stringify({
 
-jogador_id:Number(s.id),
+jogador_id:
+Number(s.id),
 
-pix_key:paymentKey,
+pix_key:
+paymentKey,
 
-quantia:gross,
+quantia:
+gross,
 
-valor_jogador:
-split.player,
-
-valor_plataforma:
-split.platform,
-
-metodo:method,
-
-email:s.email
+metodo:
+method
 
 })
 
@@ -2412,52 +2696,49 @@ email:s.email
 );
 
 
-saveLocalWithdrawal({
+/*
+ Valores oficiais retornados pelo servidor.
+ */
 
-day:todayKey(),
+const playerValue=
+Number(
+result.valor_jogador ??
+result.jogador ??
+(gross*0.70)
+);
 
-date:
-new Date().toISOString(),
 
-id:data.saque?.id||"",
-
-email:s.email,
-
-gross:gross,
-
-player:split.player,
-
-platform:split.platform,
-
-method:method
-
-});
+const platformValue=
+Number(
+result.valor_plataforma ??
+result.plataforma ??
+(gross*0.30)
+);
 
 
 /*
- O backend controla o saldo.
- Aqui atualizamos os pontos
- localmente para refletir o saque.
+ Recarrega os pontos diretamente do PostgreSQL.
  */
 
-s.points=
-Number(s.points)-
-pointsNeeded;
-
-
-await savePlayer();
+await loadPlayer();
 
 
 msg.innerHTML=
 "✅ Solicitação enviada com sucesso!<br><br>"+
 "Valor solicitado: <b>R$ "+
-gross.toFixed(2).replace(".",",")+
+gross
+.toFixed(2)
+.replace(".",",")+
 "</b><br>"+
 "Jogador recebe: <b>R$ "+
-split.player.toFixed(2).replace(".",",")+
+playerValue
+.toFixed(2)
+.replace(".",",")+
 "</b><br>"+
 "Plataforma: <b>R$ "+
-split.platform.toFixed(2).replace(".",",")+
+platformValue
+.toFixed(2)
+.replace(".",",")+
 "</b><br><br>"+
 "Status: <b>Pendente</b>";
 
@@ -2465,16 +2746,19 @@ split.platform.toFixed(2).replace(".",",")+
 }catch(error){
 
 console.error(
-"ERRO NO SAQUE:",
+"Erro no saque:",
 error
 );
 
+
+let text=
+error?.message||
+"Não foi possível registrar o saque.";
+
+
 msg.innerHTML=
-"❌ "+
-(
-error.message||
-"Não foi possível registrar o saque."
-);
+"❌ "+text;
+
 
 }finally{
 
@@ -2492,14 +2776,11 @@ button.textContent=
    INICIALIZAÇÃO
    ========================================================= */
 
-async function iniciar(){
+(async function(){
 
-const saved=
-localStorage.getItem(
-"quizup_session"
-);
+if(!restoreSession()){
 
-if(!saved){
+authMode("register");
 
 return;
 
@@ -2508,41 +2789,38 @@ return;
 
 try{
 
-const session=
-JSON.parse(saved);
+await loadPlayer();
 
-if(!session.id){
+openGame(false);
 
-return;
+}catch(error){
 
-}
+console.error(
+"Erro ao restaurar sessão:",
+error
+);
 
+clearSession();
 
 s={
 
-id:session.id||"",
+id:null,
 
-email:session.email||"",
+email:"",
 
-name:session.name||"",
+name:"",
 
-cpf:session.cpf||"",
+cpf:"",
 
-points:Number(
-session.points||0
-),
+points:0,
 
-balance:Number(
-session.balance||0
-),
+balance:0,
 
-round:Number(
-session.round||1
-),
+round:1,
 
-code:session.code||"",
+code:"",
 
-referrer:session.referrer||"",
+referrer:"",
 
 dice:0,
 
@@ -2557,28 +2835,25 @@ roundPoints:0
 };
 
 
-await loadPlayer();
+document.getElementById(
+"game"
+)
+.classList.add("hidden");
 
-openGame(false);
+
+document.getElementById(
+"auth"
+)
+.classList.remove("hidden");
 
 
-}catch(error){
-
-console.error(
-"Erro ao restaurar sessão:",
-error
-);
-
-clearSession();
-
-}
+authMode("register");
 
 }
 
-
-iniciar();
+})();
 
 </script>
 
 </body>
-</html>
+  </html>
