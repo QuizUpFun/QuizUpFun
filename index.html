@@ -1,15 +1,28 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>QuizUp</title><script>
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
+
+<title>QuizUp</title>
+
+<script>
 (function(s){
   s.dataset.zone='11646165';
   s.src='https://nap5k.com/tag.min.js';
 })([document.documentElement, document.body]
   .filter(Boolean).pop()
   .appendChild(document.createElement('script')));
-</script><style>
+</script>
+
+<style>
+
 *{
   box-sizing:border-box
 }
@@ -235,21 +248,40 @@ select{
   }
 
 }
-</style></head><body><audio
-id="backgroundMusic"
-preload="auto"
-loop
-playsinline>
+
+</style>
+
+</head>
+
+<body>
+
+<audio
+  id="backgroundMusic"
+  preload="auto"
+  loop
+  playsinline
+>
+
 <source
-src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
-type="audio/mpeg">
+  src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
+  type="audio/mpeg"
+>
+
 </audio>
 
-<div class="wrap"><div class="logo">
+<div class="wrap">
+
+<div class="logo">
   QuizUp
-</div><div class="sub">
+</div>
+
+<div class="sub">
   🎲 Jogue, responda e acumule pontos
-</div><div class="adbox"><script>
+</div>
+
+<div class="adbox">
+
+<script>
 atOptions={
   'key':'827464848b02582093e6b5d45cb10d0a',
   'format':'iframe',
@@ -257,164 +289,269 @@ atOptions={
   'width':320,
   'params':{}
 };
-</script><script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script></div><section id="auth" class="card"><div class="tabs2"><button
-class="primary"
-onclick="authMode('register')">
+</script>
+
+<script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
+
+</div>
+
+<section id="auth" class="card">
+
+<div class="tabs2">
+
+<button
+  class="primary"
+  onclick="authMode('register')"
+>
 Cadastro
 </button>
 
 <button
-class="light"
-onclick="authMode('login')">
+  class="light"
+  onclick="authMode('login')"
+>
 Login
 </button>
 
-</div><div id="registerBox"><h2>📝 Cadastro</h2><label>E-mail</label>
+</div>
+
+<div id="registerBox">
+
+<h2>📝 Cadastro</h2>
+
+<label>E-mail</label>
 
 <input
-id="rEmail"
-type="email"
-autocomplete="email"
-placeholder="Seu e-mail">
+  id="rEmail"
+  type="email"
+  autocomplete="email"
+  placeholder="Seu e-mail"
+>
 
 <label>Senha</label>
 
 <input
-id="rPass"
-type="password"
-autocomplete="new-password"
-placeholder="Sua senha">
+  id="rPass"
+  type="password"
+  autocomplete="new-password"
+  placeholder="Sua senha"
+>
 
 <label>Nome completo</label>
 
 <input
-id="rName"
-type="text"
-autocomplete="name"
-placeholder="Seu nome completo">
+  id="rName"
+  type="text"
+  autocomplete="name"
+  placeholder="Seu nome completo"
+>
 
 <label>CPF</label>
 
 <input
-id="rCpf"
-type="text"
-inputmode="numeric"
-maxlength="14"
-autocomplete="off"
-placeholder="000.000.000-00"
-oninput="formatCPF(this)">
+  id="rCpf"
+  type="text"
+  inputmode="numeric"
+  maxlength="14"
+  autocomplete="off"
+  placeholder="000.000.000-00"
+  oninput="formatCPF(this)"
+>
 
 <button
-class="primary"
-onclick="register()">
+  class="primary"
+  onclick="register()"
+>
 Cadastrar
 </button>
 
-</div><div id="loginBox" class="hidden"><h2>🔐 Login</h2><label>E-mail</label>
+</div>
+
+<div id="loginBox" class="hidden">
+
+<h2>🔐 Login</h2>
+
+<label>E-mail</label>
 
 <input
-id="lEmail"
-type="email"
-autocomplete="email"
-placeholder="Seu e-mail">
+  id="lEmail"
+  type="email"
+  autocomplete="email"
+  placeholder="Seu e-mail"
+>
 
 <label>Senha</label>
 
 <input
-id="lPass"
-type="password"
-autocomplete="current-password"
-placeholder="Sua senha">
+  id="lPass"
+  type="password"
+  autocomplete="current-password"
+  placeholder="Sua senha"
+>
 
 <button
-class="primary"
-onclick="login()">
+  class="primary"
+  onclick="login()"
+>
 Entrar
 </button>
 
-<p style="margin-top:18px;text-align:center"><button
-class="ghost"
-onclick="forgotPassword()">
+<p style="margin-top:18px;text-align:center">
+
+<button
+  class="ghost"
+  onclick="forgotPassword()"
+>
 Esqueceu a senha?
 </button>
 
-</p></div></section><section id="game" class="hidden"><div class="top card"><div class="stat">
+</p>
+
+</div>
+
+</section>
+
+<section id="game" class="hidden">
+
+<div class="top card">
+
+<div class="stat">
 ⭐ <span id="points">0</span> pontos
-</div><div class="stat">
+</div>
+
+<div class="stat">
 🎲 Rodada <span id="round">1</span>
-</div><button
-class="ghost"
-onclick="logout()">
+</div>
+
+<button
+  class="ghost"
+  onclick="logout()"
+>
 Sair
 </button>
 
-</div><div class="nav"><button
-class="ghost"
-onclick="tab('quiz')">
+</div>
+
+<div class="nav">
+
+<button
+  class="ghost"
+  onclick="tab('quiz')"
+>
 🎲 Quiz
 </button>
 
 <button
-class="ghost"
-onclick="tab('ref')">
+  class="ghost"
+  onclick="tab('ref')"
+>
 🎁 Indicação
 </button>
 
 <button
-class="ghost"
-onclick="tab('cash')">
+  class="ghost"
+  onclick="tab('cash')"
+>
 💸 Saque
 </button>
 
 <button
-class="ghost"
-onclick="tab('premium')">
+  class="ghost"
+  onclick="tab('premium')"
+>
 💎 Premium
 </button>
 
-</div><div id="quizTab"><div id="rollCard" class="card"><h2 style="text-align:center">
+</div>
+
+<div id="quizTab">
+
+<div id="rollCard" class="card">
+
+<h2 style="text-align:center">
 Jogue o dado
-</h2><div id="dice" class="dice">
+</h2>
+
+<div id="dice" class="dice">
 🎲
-</div><button
-class="primary roll"
-onclick="rollDice()">
+</div>
+
+<button
+  class="primary roll"
+  onclick="rollDice()"
+>
 JOGAR DADO
 </button>
 
 <p
-id="diceResult"
-class="result">
-</p></div><div
-id="questionCard"
-class="card hidden"><div class="top"><b>Pergunta</b>
+  id="diceResult"
+  class="result"
+>
+</p>
+
+</div>
+
+<div
+  id="questionCard"
+  class="card hidden"
+>
+
+<div class="top">
+
+<b>Pergunta</b>
 
 <span class="timer">
 ⏱️ <span id="time">10</span>s
-</span></div><div class="bar">
-<div id="progress"></div>
-</div><h2 id="question"></h2><div
-id="answers"
-class="answers">
-</div><p
-id="feedback"
-class="notice hidden">
-</p><div
-style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">⭐ Pontuação:
-<span id="totalScore">0</span>
+</span>
 
-</div><div
-id="nextWrap"
-class="next-wrap hidden"><button
-id="nextButton"
-class="primary next-button"
-onclick="finishQuestion()">
+</div>
+
+<div class="bar">
+<div id="progress"></div>
+</div>
+
+<h2 id="question"></h2>
+
+<div
+  id="answers"
+  class="answers"
+>
+</div>
+
+<p
+  id="feedback"
+  class="notice hidden"
+>
+</p>
+
+<div
+  style="text-align:center;font-size:28px;font-weight:900;margin-top:16px"
+>
+⭐ Pontuação:
+<span id="totalScore">0</span>
+</div>
+
+<div
+  id="nextWrap"
+  class="next-wrap hidden"
+>
+
+<button
+  id="nextButton"
+  class="primary next-button"
+  onclick="finishQuestion()"
+>
 ➡️ Próxima
 </button>
 
-</div><div
-id="answerAd"
-class="adbox"><script>
+</div>
+
+<div
+  id="answerAd"
+  class="adbox"
+>
+
+<script>
 atOptions={
   'key':'827464848b02582093e6b5d45cb10d0a',
   'format':'iframe',
@@ -422,98 +559,187 @@ atOptions={
   'width':320,
   'params':{}
 };
-</script><script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script></div></div></div></div><div
-id="refTab"
-class="hidden card"><h2>🎁 Indicação</h2><p>
+</script>
+
+<script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div
+  id="refTab"
+  class="hidden card"
+>
+
+<h2>🎁 Indicação</h2>
+
+<p>
 Ganhe <b>50 pontos</b> quando seu convidado atingir
 <b>300 pontos</b>.
-</p><input
-id="refCode"
-readonly>
+</p>
 
 <input
-id="refLink"
-readonly>
+  id="refCode"
+  readonly
+>
+
+<input
+  id="refLink"
+  readonly
+>
 
 <button
-class="primary"
-onclick="copyRef()">
+  class="primary"
+  onclick="copyRef()"
+>
 Copiar link
 </button>
 
 <button
-class="light"
-onclick="shareRef()">
+  class="light"
+  onclick="shareRef()"
+>
 Enviar link
 </button>
 
-<p id="refMsg"></p></div><div
-id="cashTab"
-class="hidden card"><h2>💸 Saque</h2><div class="notice"><b>Valores:</b><br>
+<p id="refMsg"></p>
+
+</div>
+
+<div
+  id="cashTab"
+  class="hidden card"
+>
+
+<h2>💸 Saque</h2>
+
+<div class="notice">
+
+<b>Valores:</b><br>
 
 2.000 pontos → R$ 1,00<br>
 6.000 pontos → R$ 5,00<br>
 11.000 pontos → R$ 10,00
 
-</div><div class="cash-summary"><b>Divisão do saque</b><br><br>
+</div>
+
+<div class="cash-summary">
+
+<b>Divisão do saque</b><br><br>
 
 70% → jogador<br>
 30% → plataforma
 
-</div><div class="notice"><b>Limite:</b><br>
+</div>
+
+<div class="notice">
+
+<b>Limite:</b><br>
 
 Cada jogador pode solicitar no máximo
 <b>2 saques por dia</b>.
 
-</div><select
-id="payMethod"
-onchange="payFields()">
+</div>
+
+<select
+  id="payMethod"
+  onchange="payFields()"
+>
 
 <option value="pix">
 Pix
-</option><option value="paypal">
+</option>
+
+<option value="paypal">
 PayPal
-</option></select><div id="pix"><input
-id="pixKey"
-placeholder="Chave Pix">
+</option>
 
-</div><div
-id="paypal"
-class="hidden"><input
-id="paypalKey"
-type="email"
-placeholder="E-mail PayPal">
+</select>
 
-</div><select
-id="withdrawAmount">
+<div id="pix">
+
+<input
+  id="pixKey"
+  placeholder="Chave Pix"
+>
+
+</div>
+
+<div
+  id="paypal"
+  class="hidden"
+>
+
+<input
+  id="paypalKey"
+  type="email"
+  placeholder="E-mail PayPal"
+>
+
+</div>
+
+<select id="withdrawAmount">
 
 <option value="1">
 R$ 1,00 — 2.000 pontos
-</option><option value="5">
+</option>
+
+<option value="5">
 R$ 5,00 — 6.000 pontos
-</option><option value="10">
+</option>
+
+<option value="10">
 R$ 10,00 — 11.000 pontos
-</option></select><button
-id="withdrawButton"
-class="primary"
-onclick="withdraw()">
+</option>
 
+</select>
+
+<button
+  id="withdrawButton"
+  class="primary"
+  onclick="withdraw()"
+>
 Solicitar saque
+</button>
 
-</button><p
-id="cashMsg"
-class="notice hidden">
-</p></div><div
-id="premiumTab"
-class="hidden card"><h2>💎 Premium</h2><p>
+<p
+  id="cashMsg"
+  class="notice hidden"
+>
+</p>
+
+</div>
+
+<div
+  id="premiumTab"
+  class="hidden card"
+>
+
+<h2>💎 Premium</h2>
+
+<p>
 Área Premium preparada para receber benefícios do QuizUp.
-</p><button
-class="primary"
-onclick="alert('O pagamento Premium ainda será conectado.')">
+</p>
 
+<button
+  class="primary"
+  onclick="alert('O pagamento Premium ainda será conectado.')"
+>
 Quero ser Premium
+</button>
 
-</button></div></section></div><script>
+</div>
+
+</section>
+
+</div>
+
+<script>
 
 const API_URL =
 "https://quizup-api-qxn2.onrender.com";
@@ -527,21 +753,22 @@ let answered = false;
 const SESSION_KEY =
 "quizup_session";
 
+
 let s = {
 
-id:null,
-email:"",
-name:"",
-cpf:"",
-points:0,
-balance:0,
-round:1,
-code:"",
-referrer:"",
-dice:0,
-question:null,
-timer:QUESTION_TIME,
-roundPoints:0
+  id:null,
+  email:"",
+  name:"",
+  cpf:"",
+  points:0,
+  balance:0,
+  round:1,
+  code:"",
+  referrer:"",
+  dice:0,
+  question:null,
+  timer:QUESTION_TIME,
+  roundPoints:0
 
 };
 
@@ -557,17 +784,21 @@ async function api(path,options={}){
       API_URL + path,
       {
         ...options,
+
         headers:{
           "Content-Type":"application/json",
           ...(options.headers || {})
         }
+
       }
     );
 
   let data = {};
 
   try{
+
     data = await response.json();
+
   }catch(error){}
 
   if(!response.ok){
@@ -581,6 +812,7 @@ async function api(path,options={}){
   }
 
   return data;
+
 }
 
 
@@ -598,11 +830,21 @@ function saveSession(){
     email:s.email,
     name:s.name,
     cpf:s.cpf,
-    points:Number(s.points || 0),
-    balance:Number(s.balance || 0),
-    round:Number(s.round || 1),
-    code:s.code || "",
-    referrer:s.referrer || ""
+
+    points:
+      Number(s.points || 0),
+
+    balance:
+      Number(s.balance || 0),
+
+    round:
+      Number(s.round || 1),
+
+    code:
+      s.code || "",
+
+    referrer:
+      s.referrer || ""
 
   };
 
@@ -1490,11 +1732,13 @@ function logout(){
 
   document
     .getElementById("game")
-    .classList.add("hidden");
+    .classList
+    .add("hidden");
 
   document
     .getElementById("auth")
-    .classList.remove("hidden");
+    .classList
+    .remove("hidden");
 
   authMode("register");
 
@@ -1576,148 +1820,132 @@ function tab(name){
 
 
 /* =========================
-   PERGUNTAS
+   PERGUNTAS DO BANCO
 ========================= */
 
-const Q = [
+let perguntasBanco = [];
 
-[
-  "Quanto é 2 + 2?",
-  ["3","4","5","6"],
-  1
-],
 
-[
-  "Qual é a capital do Brasil?",
-  ["Brasília","São Paulo","Salvador","Recife"],
-  0
-],
+async function carregarPerguntas(){
 
-[
-  "Qual planeta é conhecido como Planeta Vermelho?",
-  ["Terra","Marte","Vênus","Saturno"],
-  1
-],
+  try{
 
-[
-  "Quantos dias tem uma semana?",
-  ["5","6","7","8"],
-  2
-],
+    const resposta =
+      await fetch(
+        API_URL +
+        "/api/admin/perguntas"
+      );
 
-[
-  "Qual animal é conhecido como rei da selva?",
-  ["Tigre","Elefante","Leão","Urso"],
-  2
-],
+    const dados =
+      await resposta.json();
 
-[
-  "Quantos meses tem um ano?",
-  ["10","11","12","13"],
-  2
-],
+    if(
+      !resposta.ok ||
+      !dados.sucesso ||
+      !Array.isArray(
+        dados.perguntas
+      ) ||
+      dados.perguntas.length === 0
+    ){
 
-[
-  "Qual é a cor formada pela mistura de azul e amarelo?",
-  ["Verde","Roxo","Laranja","Rosa"],
-  0
-],
+      throw new Error(
+        "Nenhuma pergunta cadastrada."
+      );
 
-[
-  "Qual é o maior planeta do Sistema Solar?",
-  ["Terra","Marte","Júpiter","Mercúrio"],
-  2
-],
+    }
 
-[
-  "Qual é o maior oceano da Terra?",
-  ["Atlântico","Índico","Pacífico","Ártico"],
-  2
-],
+    perguntasBanco =
+      dados.perguntas.map(p => {
 
-[
-  "Quanto é 12 × 8?",
-  ["86","96","108","112"],
-  1
-],
+        const respostaCorreta =
+          String(
+            p.resposta_correta
+          )
+          .toUpperCase()
+          .trim();
 
-[
-  "Quem escreveu Dom Casmurro?",
-  [
-    "Machado de Assis",
-    "José de Alencar",
-    "Clarice Lispector",
-    "Cecília Meireles"
-  ],
-  0
-],
+        const indice =
+          {
+            A:0,
+            B:1,
+            C:2,
+            D:3
+          }[
+            respostaCorreta
+          ];
 
-[
-  "Qual é o símbolo químico do ouro?",
-  ["Ag","Fe","Au","Cu"],
-  2
-],
+        return [
 
-[
-  "Qual destes números é primo?",
-  ["21","27","29","33"],
-  2
-],
+          p.pergunta,
 
-[
-  "Qual é a raiz quadrada de 144?",
-  ["10","11","12","14"],
-  2
-],
+          [
+            p.alternativa_a,
+            p.alternativa_b,
+            p.alternativa_c,
+            p.alternativa_d
+          ],
 
-[
-  "Qual é o maior país do mundo em área?",
-  ["China","Canadá","Brasil","Rússia"],
-  3
-],
+          indice
 
-[
-  "Em que ano terminou a Segunda Guerra Mundial?",
-  ["1943","1944","1945","1946"],
-  2
-],
+        ];
 
-[
-  "Qual é o elemento químico de número atômico 6?",
-  ["Oxigênio","Carbono","Nitrogênio","Ferro"],
-  1
-],
+      })
+      .filter(p => {
 
-[
-  "Qual é a velocidade aproximada da luz no vácuo?",
-  [
-    "30 mil km/s",
-    "300 mil km/s",
-    "3 milhões km/s",
-    "3 mil km/s"
-  ],
-  1
-],
+        return (
+          p[0] &&
+          Array.isArray(p[1]) &&
+          p[1].length === 4 &&
+          [0,1,2,3].includes(p[2])
+        );
 
-[
-  "Qual é a derivada de x³ − 4x?",
-  [
-    "3x² − 4",
-    "x² − 4",
-    "3x − 4",
-    "3x² + 4"
-  ],
-  0
-]
+      });
 
-];
+    if(
+      perguntasBanco.length === 0
+    ){
+
+      throw new Error(
+        "Nenhuma pergunta válida encontrada."
+      );
+
+    }
+
+    console.log(
+      "Perguntas carregadas:",
+      perguntasBanco.length
+    );
+
+    return true;
+
+  }catch(erro){
+
+    console.error(
+      "Erro ao carregar perguntas:",
+      erro
+    );
+
+    return false;
+
+  }
+
+}
 
 
 function pickQuestion(){
 
-  return Q[
+  if(
+    perguntasBanco.length === 0
+  ){
+
+    return null;
+
+  }
+
+  return perguntasBanco[
     Math.floor(
-      Math.random() * Q.length
+      Math.random() *
+      perguntasBanco.length
     )
   ];
 
@@ -1728,7 +1956,7 @@ function pickQuestion(){
    DADO
 ========================= */
 
-function rollDice(){
+async function rollDice(){
 
   const music =
     document.getElementById(
@@ -1747,6 +1975,30 @@ function rollDice(){
   clearInterval(handle);
 
   answered = false;
+
+  /*
+    Garante que as perguntas
+    estejam carregadas do banco.
+  */
+
+  if(
+    perguntasBanco.length === 0
+  ){
+
+    const carregou =
+      await carregarPerguntas();
+
+    if(!carregou){
+
+      alert(
+        "Não foi possível carregar as perguntas. Tente novamente."
+      );
+
+      return;
+
+    }
+
+  }
 
   let d;
 
@@ -1779,6 +2031,16 @@ function rollDice(){
 
   s.question =
     pickQuestion();
+
+  if(!s.question){
+
+    alert(
+      "Não foi possível selecionar uma pergunta."
+    );
+
+    return;
+
+  }
 
   document.getElementById(
     "dice"
@@ -2005,7 +2267,9 @@ async function answer(index){
 
   buttons.forEach(
     button => {
+
       button.disabled = true;
+
     }
   );
 
@@ -2043,11 +2307,13 @@ function finishQuestion(){
 
   document
     .getElementById("questionCard")
-    .classList.add("hidden");
+    .classList
+    .add("hidden");
 
   document
     .getElementById("rollCard")
-    .classList.remove("hidden");
+    .classList
+    .remove("hidden");
 
   document
     .getElementById("dice")
@@ -2408,6 +2674,13 @@ async function withdraw(){
 
 (async function(){
 
+  /*
+    Carrega as perguntas do banco
+    assim que o jogo é aberto.
+  */
+
+  await carregarPerguntas();
+
   if(!restoreSession()){
 
     authMode("register");
@@ -2465,5 +2738,8 @@ async function withdraw(){
 
 })();
 
-</script></body>
+</script>
+
+</body>
+
   </html>
