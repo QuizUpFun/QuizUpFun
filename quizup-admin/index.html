@@ -1,189 +1,218 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QuizUp Admin</title>
-
-  <style>
+  <title>QuizUp Admin</title>  <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
     }
 
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f3f4f6;
-      color: #111827;
+      background: #f4f6f9;
+      color: #222;
     }
 
     .hidden {
       display: none !important;
     }
 
-    .login {
+    /* LOGIN */
+    #loginPage {
       min-height: 100vh;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       padding: 20px;
-      background: linear-gradient(135deg, #111827, #2563eb);
     }
 
     .login-box {
       width: 100%;
-      max-width: 420px;
+      max-width: 400px;
       background: white;
       padding: 30px;
-      border-radius: 18px;
-      box-shadow: 0 15px 40px rgba(0,0,0,.25);
+      border-radius: 16px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.12);
     }
 
     .login-box h1 {
-      margin: 0 0 8px;
       text-align: center;
+      margin-bottom: 10px;
     }
 
     .login-box p {
       text-align: center;
-      color: #6b7280;
+      color: #777;
       margin-bottom: 25px;
     }
 
-    input {
+    input,
+    select,
+    textarea {
       width: 100%;
       padding: 13px;
-      margin-bottom: 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 10px;
-      font-size: 16px;
-      outline: none;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-top: 6px;
+      margin-bottom: 15px;
+      font-size: 15px;
     }
 
-    input:focus {
-      border-color: #2563eb;
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    label {
+      font-weight: bold;
+      font-size: 14px;
     }
 
     button {
       border: 0;
-      border-radius: 10px;
-      padding: 11px 16px;
-      cursor: pointer;
+      border-radius: 8px;
+      padding: 12px 18px;
       font-size: 15px;
       font-weight: bold;
+      cursor: pointer;
     }
 
-    .primary {
+    .btn-primary {
+      width: 100%;
       background: #2563eb;
       color: white;
     }
 
-    .primary:hover {
+    .btn-primary:hover {
       background: #1d4ed8;
     }
 
-    .danger {
+    .btn-success {
+      background: #16a34a;
+      color: white;
+    }
+
+    .btn-danger {
       background: #dc2626;
       color: white;
     }
 
-    .success {
-      background: #16a34a;
+    .message {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    /* ADMIN */
+    #adminPage {
+      min-height: 100vh;
+    }
+
+    .topbar {
+      background: #111827;
       color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .topbar h1 {
+      font-size: 20px;
+    }
+
+    .admin-email {
+      font-size: 13px;
+      opacity: 0.9;
     }
 
     .logout {
       background: #dc2626;
       color: white;
+      padding: 8px 12px;
     }
 
-    .login-box .primary {
-      width: 100%;
-      margin-top: 5px;
-    }
-
-    .message {
-      padding: 12px;
-      border-radius: 10px;
-      margin-top: 12px;
-      word-break: break-word;
-    }
-
-    .error {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .success-msg {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .info-msg {
-      background: #e0f2fe;
-      color: #075985;
-    }
-
-    header {
-      background: #111827;
-      color: white;
-      padding: 15px 20px;
+    .layout {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      flex-wrap: wrap;
+      min-height: calc(100vh - 60px);
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 22px;
+    .sidebar {
+      width: 230px;
+      background: white;
+      border-right: 1px solid #ddd;
+      padding: 15px;
     }
 
-    header small {
-      opacity: .85;
+    .menu-btn {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .menu-btn:hover,
+    .menu-btn.active {
+      background: #e8efff;
+      color: #2563eb;
+    }
+
+    .content {
       flex: 1;
+      padding: 25px;
+      overflow-x: auto;
     }
 
-    .container {
-      max-width: 1400px;
-      margin: auto;
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .section {
+      background: white;
+      border-radius: 12px;
       padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
+    .section h2 {
+      margin-bottom: 18px;
+    }
+
+    /* CARDS */
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 15px;
-      margin-bottom: 25px;
     }
 
     .card {
       background: white;
       padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.06);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .card h3 {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 10px;
     }
 
     .card strong {
-      display: block;
-      font-size: 28px;
-      margin-top: 8px;
+      font-size: 26px;
     }
 
-    .section {
-      background: white;
-      border-radius: 15px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.06);
-    }
-
-    .section h2 {
-      margin-top: 0;
-    }
-
-    .table-wrap {
+    /* TABLE */
+    .table-container {
       overflow-x: auto;
     }
 
@@ -195,571 +224,1082 @@
 
     th,
     td {
-      padding: 11px;
+      padding: 12px;
       border-bottom: 1px solid #eee;
       text-align: left;
-      vertical-align: middle;
+      font-size: 14px;
     }
 
     th {
-      background: #f9fafb;
+      background: #f8fafc;
     }
 
-    .status {
+    /* PERGUNTAS */
+    .question-form {
+      max-width: 800px;
+    }
+
+    .alternativas-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .question-item {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 15px;
+      background: #fafafa;
+    }
+
+    .question-item h3 {
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    .alternative {
+      padding: 8px 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      background: white;
+    }
+
+    .correct {
       font-weight: bold;
-    }
-
-    .pendente {
-      color: #d97706;
-    }
-
-    .aprovado,
-    .aprovada {
-      color: #16a34a;
-    }
-
-    .cancelado,
-    .cancelada {
-      color: #dc2626;
-    }
-
-    .actions {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
+      border: 1px solid #22c55e;
+      background: #f0fdf4;
     }
 
     .loading {
-      text-align: center;
-      padding: 20px;
-      color: #6b7280;
+      color: #777;
+      padding: 10px 0;
     }
 
-    .menu {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
+    .success {
+      color: #15803d;
     }
 
-    .menu button {
-      background: white;
-      color: #111827;
-      border: 1px solid #e5e7eb;
+    .error {
+      color: #dc2626;
     }
 
-    .menu button.active {
-      background: #2563eb;
-      color: white;
-    }
-
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    .debug {
-      margin-top: 15px;
-      font-size: 12px;
-      word-break: break-word;
-      text-align: left;
-      background: #f3f4f6;
-      padding: 12px;
-      border-radius: 10px;
-      color: #4b5563;
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        padding: 12px;
+    @media (max-width: 700px) {
+      .layout {
+        display: block;
       }
 
-      .section {
+      .sidebar {
+        width: 100%;
+        border-right: 0;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        overflow-x: auto;
+        gap: 5px;
+      }
+
+      .menu-btn {
+        width: auto;
+        white-space: nowrap;
+        margin-bottom: 0;
+      }
+
+      .content {
         padding: 15px;
       }
 
-      header {
-        padding: 14px;
+      .topbar {
+        flex-wrap: wrap;
       }
 
-      header small {
-        width: 100%;
-        flex: none;
+      .alternativas-grid {
+        grid-template-columns: 1fr;
       }
     }
-  </style>
-</head>
-
-<body>
-
-  <!-- =========================
-       LOGIN
-  ========================== -->
-
-  <div id="loginScreen" class="login">
-
+  </style></head><body>  <!-- LOGIN -->  <div id="loginPage">
     <div class="login-box">
-
       <h1>QuizUp Admin</h1>
+      <p>Painel administrativo</p>  <form id="loginForm">
+    <label for="email">E-mail</label>
+    <input
+      type="email"
+      id="email"
+      placeholder="Digite seu e-mail"
+      required
+    >
 
-      <p>Acesso exclusivo do administrador</p>
+    <label for="password">Senha</label>
+    <input
+      type="password"
+      id="password"
+      placeholder="Digite sua senha"
+      required
+    >
 
-      <input
-        id="email"
-        type="email"
-        placeholder="E-mail"
-        autocomplete="username"
-      >
+    <button type="submit" class="btn-primary">
+      Entrar
+    </button>
+  </form>
 
-      <input
-        id="password"
-        type="password"
-        placeholder="Senha"
-        autocomplete="current-password"
-      >
+  <div id="loginMessage" class="message"></div>
+</div>
 
-      <button
-        id="loginButton"
-        class="primary"
-        type="button"
-      >
-        Entrar
-      </button>
-
-      <div id="loginMessage"></div>
-
-      <div class="debug">
-        Backend:<br>
-        https://quizup-api-qxn2.onrender.com
-      </div>
-
-    </div>
-
+  </div>  <!-- ADMIN -->  <div id="adminPage" class="hidden"><div class="topbar">
+  <div>
+    <h1>QuizUp Admin</h1>
+    <div class="admin-email" id="adminEmail"></div>
   </div>
 
-
-  <!-- =========================
-       PAINEL ADMIN
-  ========================== -->
-
-  <div id="adminScreen" class="hidden">
-
-    <header>
-
-      <h1>QuizUp Admin</h1>
-
-      <small id="adminUser"></small>
-
-      <button
-        id="logoutButton"
-        class="logout"
-        type="button"
-      >
-        Sair
-      </button>
-
-    </header>
+  <button class="logout" onclick="logout()">
+    Sair
+  </button>
+</div>
 
 
-    <main class="container">
+<div class="layout">
 
-      <div id="globalMessage"></div>
+  <!-- MENU -->
+  <aside class="sidebar">
+
+    <button
+      class="menu-btn active"
+      onclick="mostrarPagina('dashboardPage', this)"
+    >
+      📊 Dashboard
+    </button>
+
+    <button
+      class="menu-btn"
+      onclick="mostrarPagina('jogadoresPage', this)"
+    >
+      👥 Jogadores
+    </button>
+
+    <button
+      class="menu-btn"
+      onclick="mostrarPagina('perguntasPage', this)"
+    >
+      ❓ Perguntas
+    </button>
+
+    <button
+      class="menu-btn"
+      onclick="mostrarPagina('saquesPage', this)"
+    >
+      💰 Saques
+    </button>
+
+    <button
+      class="menu-btn"
+      onclick="mostrarPagina('parceirosPage', this)"
+    >
+      🤝 Parceiros
+    </button>
+
+    <button
+      class="menu-btn"
+      onclick="mostrarPagina('movimentacoesPage', this)"
+    >
+      📈 Movimentações
+    </button>
+
+    <button
+      class="menu-btn"
+      onclick="mostrarPagina('configuracoesPage', this)"
+    >
+      ⚙️ Configurações
+    </button>
+
+  </aside>
 
 
-      <!-- MENU -->
+  <!-- CONTEÚDO -->
+  <main class="content">
 
-      <div class="menu">
+    <!-- DASHBOARD -->
+    <section id="dashboardPage" class="page active">
 
-        <button
-          class="active"
-          data-page="dashboardPage"
-        >
-          📊 Dashboard
-        </button>
-
-        <button
-          data-page="jogadoresPage"
-        >
-          👥 Jogadores
-        </button>
-
-        <button
-          data-page="perguntasPage"
-        >
-          ❓ Perguntas
-        </button>
-
-        <button
-          data-page="saquesPage"
-        >
-          💸 Saques
-        </button>
-
-        <button
-          data-page="parceirosPage"
-        >
-          🤝 Parceiros
-        </button>
-
-        <button
-          data-page="movimentacoesPage"
-        >
-          📊 Movimentações
-        </button>
-
-        <button
-          data-page="configPage"
-        >
-          ⚙️ Configurações
-        </button>
-
-      </div>
-
-
-      <!-- =========================
-           DASHBOARD
-      ========================== -->
-
-      <section
-        id="dashboardPage"
-        class="page active"
-      >
+      <div class="section">
+        <h2>📊 Dashboard</h2>
 
         <div class="cards">
 
           <div class="card">
-            Jogadores
+            <h3>Jogadores</h3>
             <strong id="totalJogadores">0</strong>
           </div>
 
           <div class="card">
-            Parceiros
-            <strong id="totalParceiros">0</strong>
+            <h3>Pontos distribuídos</h3>
+            <strong id="totalPontos">0</strong>
           </div>
 
           <div class="card">
-            Saques
-            <strong id="totalSaques">0</strong>
-          </div>
-
-          <div class="card">
-            Pendentes
-            <strong id="totalPendentes">0</strong>
-          </div>
-
-          <div class="card">
-            Aprovados
-            <strong id="totalAprovados">0</strong>
-          </div>
-
-          <div class="card">
-            Cancelados
-            <strong id="totalCancelados">0</strong>
+            <h3>Saldo total</h3>
+            <strong id="saldoTotal">R$ 0,00</strong>
           </div>
 
         </div>
+      </div>
 
-      </section>
+    </section>
 
 
-      <!-- =========================
-           JOGADORES
-      ========================== -->
+    <!-- JOGADORES -->
+    <section id="jogadoresPage" class="page">
 
-      <section
-        id="jogadoresPage"
-        class="page"
-      >
+      <div class="section">
 
-        <div class="section">
+        <h2>👥 Jogadores cadastrados</h2>
 
-          <h2>👥 Jogadores</h2>
+        <div id="jogadoresMessage" class="loading">
+          Carregando jogadores...
+        </div>
 
-          <div class="table-wrap">
+        <div class="table-container">
+          <table id="jogadoresTable" class="hidden">
 
-            <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>E-mail</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Pontos</th>
+                <th>Saldo</th>
+                <th>Cadastro</th>
+              </tr>
+            </thead>
 
-              <thead>
+            <tbody id="jogadoresBody"></tbody>
 
-                <tr>
-                  <th>ID</th>
-                  <th>E-mail</th>
-                  <th>Nome</th>
-                  <th>CPF</th>
-                  <th>Pontos</th>
-                  <th>Saldo</th>
-                  <th>Cadastro</th>
-                </tr>
+          </table>
+        </div>
 
-              </thead>
+      </div>
 
-              <tbody id="jogadoresBody">
+    </section>
 
-                <tr>
-                  <td
-                    colspan="7"
-                    class="loading"
-                  >
-                    Carregando jogadores...
-                  </td>
-                </tr>
 
-              </tbody>
+    <!-- PERGUNTAS -->
+    <section id="perguntasPage" class="page">
 
-            </table>
+      <div class="section">
+
+        <h2>❓ Cadastrar pergunta</h2>
+
+        <form id="questionForm" class="question-form">
+
+          <label for="pergunta">
+            Pergunta
+          </label>
+
+          <textarea
+            id="pergunta"
+            placeholder="Digite a pergunta"
+            required
+          ></textarea>
+
+
+          <div class="alternativas-grid">
+
+            <div>
+              <label for="alternativa_a">
+                Alternativa A
+              </label>
+
+              <input
+                type="text"
+                id="alternativa_a"
+                placeholder="Alternativa A"
+                required
+              >
+            </div>
+
+
+            <div>
+              <label for="alternativa_b">
+                Alternativa B
+              </label>
+
+              <input
+                type="text"
+                id="alternativa_b"
+                placeholder="Alternativa B"
+                required
+              >
+            </div>
+
+
+            <div>
+              <label for="alternativa_c">
+                Alternativa C
+              </label>
+
+              <input
+                type="text"
+                id="alternativa_c"
+                placeholder="Alternativa C"
+                required
+              >
+            </div>
+
+
+            <div>
+              <label for="alternativa_d">
+                Alternativa D
+              </label>
+
+              <input
+                type="text"
+                id="alternativa_d"
+                placeholder="Alternativa D"
+                required
+              >
+            </div>
 
           </div>
 
+
+          <label for="resposta_correta">
+            Resposta correta
+          </label>
+
+          <select id="resposta_correta" required>
+
+            <option value="">
+              Selecione a resposta correta
+            </option>
+
+            <option value="A">
+              A
+            </option>
+
+            <option value="B">
+              B
+            </option>
+
+            <option value="C">
+              C
+            </option>
+
+            <option value="D">
+              D
+            </option>
+
+          </select>
+
+
+          <button
+            type="submit"
+            class="btn-success"
+          >
+            ➕ Cadastrar pergunta
+          </button>
+
+          <div id="questionMessage" class="message"></div>
+
+        </form>
+
+      </div>
+
+
+      <div class="section">
+
+        <h2>📋 Perguntas cadastradas</h2>
+
+        <div
+          id="perguntasMessage"
+          class="loading"
+        >
+          Carregando perguntas...
         </div>
 
-      </section>
+        <div id="perguntasLista"></div>
 
+      </div>
 
-      <!-- =========================
-           PERGUNTAS
-      ========================== -->
+    </section>
 
-      <section
-        id="perguntasPage"
-        class="page"
-      >
 
-        <div class="section">
+    <!-- SAQUES -->
+    <section id="saquesPage" class="page">
 
-          <h2>❓ Perguntas</h2>
+      <div class="section">
+        <h2>💰 Saques</h2>
+        <p>Gerenciamento de saques.</p>
+      </div>
 
-          <p>
-            O gerenciamento de perguntas será conectado ao banco de dados
-            nesta etapa.
-          </p>
+    </section>
 
-        </div>
 
-      </section>
+    <!-- PARCEIROS -->
+    <section id="parceirosPage" class="page">
 
+      <div class="section">
+        <h2>🤝 Parceiros</h2>
+        <p>Gerenciamento de parceiros.</p>
+      </div>
 
-      <!-- =========================
-           SAQUES
-      ========================== -->
+    </section>
 
-      <section
-        id="saquesPage"
-        class="page"
-      >
 
-        <div class="section">
+    <!-- MOVIMENTAÇÕES -->
+    <section id="movimentacoesPage" class="page">
 
-          <h2>💸 Saques</h2>
+      <div class="section">
+        <h2>📈 Movimentações</h2>
+        <p>Gerenciamento de movimentações.</p>
+      </div>
 
-          <div class="table-wrap">
+    </section>
 
-            <table>
 
-              <thead>
+    <!-- CONFIGURAÇÕES -->
+    <section id="configuracoesPage" class="page">
 
-                <tr>
-                  <th>ID</th>
-                  <th>Usuário</th>
-                  <th>E-mail</th>
-                  <th>Valor</th>
-                  <th>Pix</th>
-                  <th>Status</th>
-                  <th>Ações</th>
-                </tr>
+      <div class="section">
+        <h2>⚙️ Configurações</h2>
+        <p>Configurações administrativas.</p>
+      </div>
 
-              </thead>
+    </section>
 
-              <tbody id="saquesBody">
+  </main>
 
-                <tr>
-                  <td
-                    colspan="7"
-                    class="loading"
-                  >
-                    Carregando saques...
-                  </td>
-                </tr>
+</div>
 
-              </tbody>
+  </div>  <script>
 
-            </table>
+    const API_URL = "https://quizup-api-qxn2.onrender.com";
 
-          </div>
 
-        </div>
+    /* =========================
+       LOGIN
+    ========================= */
 
-      </section>
+    const loginForm = document.getElementById("loginForm");
 
+    loginForm.addEventListener("submit", async function(event) {
 
-      <!-- =========================
-           PARCEIROS
-      ========================== -->
+      event.preventDefault();
 
-      <section
-        id="parceirosPage"
-        class="page"
-      >
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
 
-        <div class="section">
+      const message = document.getElementById("loginMessage");
 
-          <h2>🤝 Parceiros</h2>
+      message.textContent = "Entrando...";
+      message.className = "message";
 
-          <div class="table-wrap">
+      try {
 
-            <table>
+        const resposta = await fetch(
+          `${API_URL}/api/admin/login`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              email: email,
+              senha: password
+            })
+          }
+        );
 
-              <thead>
+        const dados = await resposta.json();
 
-                <tr>
-                  <th>ID</th>
-                  <th>Nome</th>
-                  <th>E-mail</th>
-                  <th>Dados</th>
-                </tr>
+        if (!resposta.ok || !dados.sucesso) {
 
-              </thead>
+          message.textContent =
+            dados.erro || "E-mail ou senha incorretos.";
 
-              <tbody id="parceirosBody">
+          message.className = "message error";
 
-                <tr>
-                  <td
-                    colspan="4"
-                    class="loading"
-                  >
-                    Carregando parceiros...
-                  </td>
-                </tr>
+          return;
+        }
 
-              </tbody>
+        localStorage.setItem(
+          "quizup_admin_email",
+          email
+        );
 
-            </table>
+        mostrarAdmin(email);
 
-          </div>
+      } catch (erro) {
 
-        </div>
+        console.error(erro);
 
-      </section>
+        message.textContent =
+          "Não foi possível conectar ao backend.";
 
+        message.className = "message error";
+      }
 
-      <!-- =========================
-           MOVIMENTAÇÕES
-      ========================== -->
+    });
 
-      <section
-        id="movimentacoesPage"
-        class="page"
-      >
 
-        <div class="section">
+    function mostrarAdmin(email) {
 
-          <h2>📊 Movimentações de parceiros</h2>
+      document.getElementById("loginPage")
+        .classList.add("hidden");
 
-          <div class="table-wrap">
+      document.getElementById("adminPage")
+        .classList.remove("hidden");
 
-            <table>
+      document.getElementById("adminEmail")
+        .textContent = email;
 
-              <thead>
+      carregarDashboard();
+      carregarJogadores();
+      carregarPerguntas();
 
-                <tr>
-                  <th>ID</th>
-                  <th>Parceiro</th>
-                  <th>Tipo</th>
-                  <th>Pontos</th>
-                  <th>Valor</th>
-                  <th>Descrição</th>
-                </tr>
+    }
 
-              </thead>
 
-              <tbody id="movimentacoesBody">
+    function logout() {
 
-                <tr>
-                  <td
-                    colspan="6"
-                    class="loading"
-                  >
-                    Carregando movimentações...
-                  </td>
-                </tr>
+      localStorage.removeItem(
+        "quizup_admin_email"
+      );
 
-              </tbody>
+      location.reload();
 
-            </table>
+    }
 
-          </div>
 
-        </div>
+    /* =========================
+       MENU
+    ========================= */
 
-      </section>
+    function mostrarPagina(pageId, botao) {
 
+      document
+        .querySelectorAll(".page")
+        .forEach(function(page) {
 
-      <!-- =========================
-           CONFIGURAÇÕES
-      ========================== -->
+          page.classList.remove("active");
 
-      <section
-        id="configPage"
-        class="page"
-      >
+        });
 
-        <div class="section">
 
-          <h2>⚙️ Configurações</h2>
+      const page =
+        document.getElementById(pageId);
 
-          <p>
-            <strong>Backend:</strong>
-            https://quizup-api-qxn2.onrender.com
-          </p>
+      if (page) {
+        page.classList.add("active");
+      }
 
-          <p>
-            <strong>Banco:</strong>
-            PostgreSQL Aiven
-          </p>
 
-          <p>
-            <strong>Projeto:</strong>
-            QuizUp
-          </p>
+      document
+        .querySelectorAll(".menu-btn")
+        .forEach(function(btn) {
 
-        </div>
+          btn.classList.remove("active");
 
-      </section>
+        });
 
-    </main>
 
-  </div>
+      if (botao) {
+        botao.classList.add("active");
+      }
 
 
-  <script>
-    "use strict";
+      if (pageId === "jogadoresPage") {
+        carregarJogadores();
+      }
 
 
-    /* ==========================================
-       CONFIGURAÇÃO
-    ========================================== */
+      if (pageId === "perguntasPage") {
+        carregarPerguntas();
+      }
 
-    const API_URL =
-      "https://quizup-api-qxn2.onrender.com";
 
+      if (pageId === "dashboardPage") {
+        carregarDashboard();
+      }
 
-    /* ==========================================
-       ELEMENTOS
-    ========================================== */
+    }
 
-    const $ = (id) =>
-      document.getElementById(id);
 
+    /* =========================
+       DASHBOARD
+    ========================= */
 
-    /* ==========================================
-       SEGURANÇA PARA HTML
-    ========================================== */
+    async function carregarDashboard() {
 
-    function esc(valor) {
+      try {
 
-      return String(valor ?? "")
+        const resposta = await fetch(
+          `${API_URL}/api/admin/dashboard`
+        );
+
+        if (!resposta.ok) {
+          return;
+        }
+
+        const dados = await resposta.json();
+
+        if (!dados.sucesso) {
+          return;
+        }
+
+        if (
+          dados.totalJogadores !== undefined
+        ) {
+
+          document.getElementById(
+            "totalJogadores"
+          ).textContent =
+            dados.totalJogadores;
+
+        }
+
+        if (
+          dados.totalPontos !== undefined
+        ) {
+
+          document.getElementById(
+            "totalPontos"
+          ).textContent =
+            dados.totalPontos;
+
+        }
+
+        if (
+          dados.saldoTotal !== undefined
+        ) {
+
+          document.getElementById(
+            "saldoTotal"
+          ).textContent =
+            "R$ " +
+            Number(dados.saldoTotal)
+              .toFixed(2)
+              .replace(".", ",");
+
+        }
+
+      } catch (erro) {
+
+        console.error(
+          "Erro no dashboard:",
+          erro
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       JOGADORES
+    ========================= */
+
+    async function carregarJogadores() {
+
+      const message =
+        document.getElementById(
+          "jogadoresMessage"
+        );
+
+      const table =
+        document.getElementById(
+          "jogadoresTable"
+        );
+
+      const body =
+        document.getElementById(
+          "jogadoresBody"
+        );
+
+
+      message.textContent =
+        "Carregando jogadores...";
+
+      message.className = "loading";
+
+      table.classList.add("hidden");
+
+      body.innerHTML = "";
+
+
+      try {
+
+        const resposta = await fetch(
+          `${API_URL}/api/admin/jogadores`
+        );
+
+        const dados = await resposta.json();
+
+
+        if (!resposta.ok || !dados.sucesso) {
+
+          message.textContent =
+            dados.erro ||
+            "Erro ao carregar jogadores.";
+
+          message.className =
+            "message error";
+
+          return;
+        }
+
+
+        const jogadores =
+          dados.jogadores || [];
+
+
+        if (jogadores.length === 0) {
+
+          message.textContent =
+            "Nenhum jogador encontrado.";
+
+          return;
+        }
+
+
+        jogadores.forEach(function(jogador) {
+
+          const tr =
+            document.createElement("tr");
+
+
+          const pontos =
+            jogador.pontos ?? 0;
+
+
+          const equilibrio =
+            jogador.equilibrio ?? 0;
+
+
+          const criado =
+            jogador.criado_em
+              ? new Date(
+                  jogador.criado_em
+                ).toLocaleString("pt-BR")
+              : "-";
+
+
+          tr.innerHTML = `
+            <td>${jogador.id ?? "-"}</td>
+            <td>${jogador.email ?? "-"}</td>
+            <td>${jogador.nome_completo ?? jogador.nome ?? "-"}</td>
+            <td>${jogador.cpf ?? "-"}</td>
+            <td>${pontos}</td>
+            <td>R$ ${Number(equilibrio).toFixed(2).replace(".", ",")}</td>
+            <td>${criado}</td>
+          `;
+
+
+          body.appendChild(tr);
+
+        });
+
+
+        message.textContent = "";
+
+        table.classList.remove("hidden");
+
+
+      } catch (erro) {
+
+        console.error(erro);
+
+        message.textContent =
+          "Erro ao conectar ao backend.";
+
+        message.className =
+          "message error";
+
+      }
+
+    }
+
+
+    /* =========================
+       PERGUNTAS
+    ========================= */
+
+    async function carregarPerguntas() {
+
+      const message =
+        document.getElementById(
+          "perguntasMessage"
+        );
+
+      const lista =
+        document.getElementById(
+          "perguntasLista"
+        );
+
+
+      message.textContent =
+        "Carregando perguntas...";
+
+      message.className = "loading";
+
+      lista.innerHTML = "";
+
+
+      try {
+
+        const resposta = await fetch(
+          `${API_URL}/api/admin/perguntas`
+        );
+
+        const dados = await resposta.json();
+
+
+        if (!resposta.ok || !dados.sucesso) {
+
+          message.textContent =
+            dados.erro ||
+            "Erro ao carregar perguntas.";
+
+          message.className =
+            "message error";
+
+          return;
+        }
+
+
+        const perguntas =
+          dados.perguntas || [];
+
+
+        if (perguntas.length === 0) {
+
+          message.textContent =
+            "Nenhuma pergunta cadastrada.";
+
+          return;
+        }
+
+
+        perguntas.forEach(function(pergunta) {
+
+          const item =
+            document.createElement("div");
+
+          item.className =
+            "question-item";
+
+
+          const respostaCorreta =
+            String(
+              pergunta.resposta_correta || ""
+            ).toUpperCase();
+
+
+          item.innerHTML = `
+
+            <h3>
+              ${pergunta.id}. ${escaparHTML(pergunta.pergunta)}
+            </h3>
+
+            <div class="alternative ${
+              respostaCorreta === "A"
+                ? "correct"
+                : ""
+            }">
+              A) ${escaparHTML(pergunta.alternativa_a)}
+            </div>
+
+            <div class="alternative ${
+              respostaCorreta === "B"
+                ? "correct"
+                : ""
+            }">
+              B) ${escaparHTML(pergunta.alternativa_b)}
+            </div>
+
+            <div class="alternative ${
+              respostaCorreta === "C"
+                ? "correct"
+                : ""
+            }">
+              C) ${escaparHTML(pergunta.alternativa_c)}
+            </div>
+
+            <div class="alternative ${
+              respostaCorreta === "D"
+                ? "correct"
+                : ""
+            }">
+              D) ${escaparHTML(pergunta.alternativa_d)}
+            </div>
+
+            <div style="margin-top:10px;font-size:13px;color:#666;">
+              Resposta correta: <strong>${respostaCorreta}</strong>
+            </div>
+
+          `;
+
+
+          lista.appendChild(item);
+
+        });
+
+
+        message.textContent = "";
+
+      } catch (erro) {
+
+        console.error(erro);
+
+        message.textContent =
+          "Erro ao conectar ao backend.";
+
+        message.className =
+          "message error";
+
+      }
+
+    }
+
+
+    /* =========================
+       CADASTRAR PERGUNTA
+    ========================= */
+
+    const questionForm =
+      document.getElementById(
+        "questionForm"
+      );
+
+
+    questionForm.addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+
+        const message =
+          document.getElementById(
+            "questionMessage"
+          );
+
+
+        const dados = {
+
+          pergunta:
+            document.getElementById(
+              "pergunta"
+            ).value.trim(),
+
+          alternativa_a:
+            document.getElementById(
+              "alternativa_a"
+            ).value.trim(),
+
+          alternativa_b:
+            document.getElementById(
+              "alternativa_b"
+            ).value.trim(),
+
+          alternativa_c:
+            document.getElementById(
+              "alternativa_c"
+            ).value.trim(),
+
+          alternativa_d:
+            document.getElementById(
+              "alternativa_d"
+            ).value.trim(),
+
+          resposta_correta:
+            document.getElementById(
+              "resposta_correta"
+            ).value
+
+        };
+
+
+        message.textContent =
+          "Cadastrando pergunta...";
+
+        message.className =
+          "message";
+
+
+        try {
+
+          const resposta = await fetch(
+            `${API_URL}/api/admin/perguntas`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(dados)
+            }
+          );
+
+
+          const resultado =
+            await resposta.json();
+
+
+          if (
+            !resposta.ok ||
+            !resultado.sucesso
+          ) {
+
+            message.textContent =
+              resultado.erro ||
+              "Erro ao cadastrar pergunta.";
+
+            message.className =
+              "message error";
+
+            return;
+          }
+
+
+          message.textContent =
+            "Pergunta cadastrada com sucesso!";
+
+          message.className =
+            "message success";
+
+
+          questionForm.reset();
+
+
+          carregarPerguntas();
+
+        } catch (erro) {
+
+          console.error(erro);
+
+          message.textContent =
+            "Erro ao conectar ao backend.";
+
+          message.className =
+            "message error";
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       SEGURANÇA DE TEXTO
+    ========================= */
+
+    function escaparHTML(texto) {
+
+      if (texto === null ||
+          texto === undefined) {
+        return "";
+      }
+
+
+      return String(texto)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
@@ -769,1355 +1309,19 @@
     }
 
 
-    /* ==========================================
-       MENSAGENS
-    ========================================== */
-
-    function loginMsg(texto, erro = true) {
-
-      $("loginMessage").innerHTML =
-        '<div class="message ' +
-        (erro ? "error" : "info-msg") +
-        '">' +
-        esc(texto) +
-        "</div>";
-
-    }
-
-
-    function globalMsg(texto, sucesso = true) {
-
-      $("globalMessage").innerHTML =
-        '<div class="message ' +
-        (sucesso ? "success-msg" : "error") +
-        '">' +
-        esc(texto) +
-        "</div>";
-
-    }
-
-
-    /* ==========================================
-       LOGIN ADMIN
-    ========================================== */
-
-    async function entrar() {
-
-      const email =
-        $("email").value.trim();
-
-      const password =
-        $("password").value;
-
-
-      if (!email) {
-
-        loginMsg("Digite o e-mail.");
-
-        return;
-
-      }
-
-
-      if (!password) {
-
-        loginMsg("Digite a senha.");
-
-        return;
-
-      }
-
-
-      const botao =
-        $("loginButton");
-
-
-      botao.disabled = true;
-
-      botao.textContent =
-        "Entrando...";
-
-
-      try {
-
-        const resposta =
-          await fetch(
-            API_URL + "/api/admin/login",
-            {
-              method: "POST",
-
-              headers: {
-                "Content-Type":
-                  "application/json"
-              },
-
-              body: JSON.stringify({
-
-                email: email,
-
-                /*
-                 * CORREÇÃO PRINCIPAL:
-                 * o backend recebe "senha",
-                 * não "password".
-                 */
-                senha: password
-
-              })
-            }
-          );
-
-
-        let dados = {};
-
-        try {
-
-          dados =
-            await resposta.json();
-
-        } catch (e) {
-
-          dados = {};
-
-        }
-
-
-        if (!resposta.ok) {
-
-          throw new Error(
-            dados.message ||
-            dados.mensagem ||
-            "E-mail ou senha incorretos."
-          );
-
-        }
-
-
-        localStorage.setItem(
-          "quizup_admin",
-          JSON.stringify(
-            dados.admin || {
-              email: email
-            }
-          )
-        );
-
-
-        $("loginScreen")
-          .classList.add("hidden");
-
-        $("adminScreen")
-          .classList.remove("hidden");
-
-
-        const admin =
-          dados.admin || {};
-
-        $("adminUser").textContent =
-          admin.email || email;
-
-
-        globalMsg(
-          "Login realizado com sucesso.",
-          true
-        );
-
-
-        await carregarPainel();
-
-
-      } catch (erro) {
-
-        console.error(
-          "Erro no login:",
-          erro
-        );
-
-
-        loginMsg(
-          erro.message ||
-          "Não foi possível entrar."
-        );
-
-
-      } finally {
-
-        botao.disabled = false;
-
-        botao.textContent =
-          "Entrar";
-
-      }
-
-    }
-
-
-    /* ==========================================
-       SAIR
-    ========================================== */
-
-    function sair() {
-
-      localStorage.removeItem(
-        "quizup_admin"
+    /* =========================
+       INICIALIZAÇÃO
+    ========================= */
+
+    const emailSalvo =
+      localStorage.getItem(
+        "quizup_admin_email"
       );
 
 
-      $("adminScreen")
-        .classList.add("hidden");
-
-      $("loginScreen")
-        .classList.remove("hidden");
-
-
-      $("password").value = "";
-
-      $("loginMessage").innerHTML = "";
-
+    if (emailSalvo) {
+      mostrarAdmin(emailSalvo);
     }
 
-
-    /* ==========================================
-       TESTAR SESSÃO
-    ========================================== */
-
-    function verificarSessao() {
-
-      const sessao =
-        localStorage.getItem(
-          "quizup_admin"
-        );
-
-
-      if (!sessao) {
-
-        return;
-
-      }
-
-
-      try {
-
-        const admin =
-          JSON.parse(sessao);
-
-
-        $("loginScreen")
-          .classList.add("hidden");
-
-        $("adminScreen")
-          .classList.remove("hidden");
-
-
-        $("adminUser").textContent =
-          admin.email || "";
-
-
-        carregarPainel();
-
-
-      } catch (erro) {
-
-        localStorage.removeItem(
-          "quizup_admin"
-        );
-
-      }
-
-    }
-
-
-    /* ==========================================
-       CARREGAR PAINEL
-    ========================================== */
-
-    async function carregarPainel() {
-
-      globalMsg(
-        "Carregando dados...",
-        true
-      );
-
-
-      try {
-
-        const resposta =
-          await fetch(
-            API_URL +
-            "/api/admin/dashboard"
-          );
-
-
-        if (resposta.ok) {
-
-          const dados =
-            await resposta.json();
-
-
-          atualizarResumo(
-            dados
-          );
-
-        }
-
-      } catch (erro) {
-
-        console.warn(
-          "Dashboard:",
-          erro
-        );
-
-      }
-
-
-      await carregarJogadores();
-
-      await carregarSaques();
-
-      await carregarParceiros();
-
-      await carregarMovimentacoes();
-
-
-      $("globalMessage")
-        .innerHTML = "";
-
-    }
-
-
-    /* ==========================================
-       RESUMO
-    ========================================== */
-
-    function atualizarResumo(dados) {
-
-      if (!dados) {
-        return;
-      }
-
-
-      const jogadores =
-        dados.jogadores ??
-        dados.totalJogadores ??
-        dados.total_jogadores;
-
-
-      const parceiros =
-        dados.parceiros ??
-        dados.totalParceiros ??
-        dados.total_parceiros;
-
-
-      const saques =
-        dados.saques ??
-        dados.totalSaques ??
-        dados.total_saques;
-
-
-      const pendentes =
-        dados.pendentes ??
-        dados.totalPendentes ??
-        dados.total_pendentes;
-
-
-      const aprovados =
-        dados.aprovados ??
-        dados.totalAprovados ??
-        dados.total_aprovados;
-
-
-      const cancelados =
-        dados.cancelados ??
-        dados.totalCancelados ??
-        dados.total_cancelados;
-
-
-      if (jogadores !== undefined) {
-
-        $("totalJogadores").textContent =
-          jogadores;
-
-      }
-
-
-      if (parceiros !== undefined) {
-
-        $("totalParceiros").textContent =
-          parceiros;
-
-      }
-
-
-      if (saques !== undefined) {
-
-        $("totalSaques").textContent =
-          saques;
-
-      }
-
-
-      if (pendentes !== undefined) {
-
-        $("totalPendentes").textContent =
-          pendentes;
-
-      }
-
-
-      if (aprovados !== undefined) {
-
-        $("totalAprovados").textContent =
-          aprovados;
-
-      }
-
-
-      if (cancelados !== undefined) {
-
-        $("totalCancelados").textContent =
-          cancelados;
-
-      }
-
-    }
-
-
-    /* ==========================================
-       JOGADORES
-    ========================================== */
-
-    async function carregarJogadores() {
-
-      const body =
-        $("jogadoresBody");
-
-
-      body.innerHTML =
-        '<tr><td colspan="7" class="loading">' +
-        "Carregando jogadores..." +
-        "</td></tr>";
-
-
-      try {
-
-        const resposta =
-          await fetch(
-            API_URL +
-            "/api/admin/jogadores"
-          );
-
-
-        const dados =
-          await resposta.json();
-
-
-        if (!resposta.ok) {
-
-          throw new Error(
-            dados.message ||
-            dados.mensagem ||
-            "Erro ao carregar jogadores."
-          );
-
-        }
-
-
-        const jogadores =
-          Array.isArray(dados)
-            ? dados
-            : (
-                dados.jogadores ||
-                dados.data ||
-                dados.rows ||
-                []
-              );
-
-
-        $("totalJogadores").textContent =
-          jogadores.length;
-
-
-        if (!jogadores.length) {
-
-          body.innerHTML =
-            '<tr><td colspan="7">' +
-            "Nenhum jogador encontrado." +
-            "</td></tr>";
-
-          return;
-
-        }
-
-
-        body.innerHTML =
-          jogadores.map(
-            jogador => {
-
-              const saldo =
-                jogador.equilibrio ??
-                jogador.saldo ??
-                0;
-
-
-              return `
-                <tr>
-
-                  <td>
-                    ${esc(
-                      jogador.id ??
-                      jogador.$id ??
-                      "-"
-                    )}
-                  </td>
-
-                  <td>
-                    ${esc(
-                      jogador.email ??
-                      jogador["E-mail"] ??
-                      "-"
-                    )}
-                  </td>
-
-                  <td>
-                    ${esc(
-                      jogador.nome ??
-                      jogador.name ??
-                      "-"
-                    )}
-                  </td>
-
-                  <td>
-                    ${esc(
-                      jogador.cpf ??
-                      "-"
-                    )}
-                  </td>
-
-                  <td>
-                    ${esc(
-                      jogador.pontos ??
-                      0
-                    )}
-                  </td>
-
-                  <td>
-                    R$ ${esc(
-                      Number(saldo || 0)
-                        .toFixed(2)
-                    )}
-                  </td>
-
-                  <td>
-                    ${esc(
-                      jogador.criado_em ??
-                      jogador.created_at ??
-                      "-"
-                    )}
-                  </td>
-
-                </tr>
-              `;
-
-            }
-          ).join("");
-
-
-      } catch (erro) {
-
-        console.error(
-          "Erro jogadores:",
-          erro
-        );
-
-
-        body.innerHTML =
-          '<tr><td colspan="7" class="error">' +
-          esc(
-            erro.message ||
-            "Erro ao carregar jogadores."
-          ) +
-          "</td></tr>";
-
-      }
-
-    }
-
-
-    /* ==========================================
-       SAQUES
-    ========================================== */
-
-    async function carregarSaques() {
-
-      const body =
-        $("saquesBody");
-
-
-      body.innerHTML =
-        '<tr><td colspan="7" class="loading">' +
-        "Carregando saques..." +
-        "</td></tr>";
-
-
-      try {
-
-        /*
-         * O endpoint de dashboard pode
-         * fornecer os dados.
-         *
-         * Caso o backend não tenha uma
-         * rota específica de listagem,
-         * mantemos a tabela vazia sem
-         * quebrar o painel.
-         */
-
-        const resposta =
-          await fetch(
-            API_URL +
-            "/api/admin/dashboard"
-          );
-
-
-        if (!resposta.ok) {
-
-          throw new Error(
-            "Não foi possível carregar os saques."
-          );
-
-        }
-
-
-        const dados =
-          await resposta.json();
-
-
-        const saques =
-          Array.isArray(dados.saques)
-            ? dados.saques
-            : (
-                dados.withdrawals ||
-                dados.saque ||
-                []
-              );
-
-
-        if (
-          dados.totalSaques !== undefined
-        ) {
-
-          $("totalSaques").textContent =
-            dados.totalSaques;
-
-        } else {
-
-          $("totalSaques").textContent =
-            saques.length;
-
-        }
-
-
-        $("totalPendentes").textContent =
-          saques.filter(
-            x =>
-              String(
-                x.status || ""
-              ).toLowerCase() === "pendente"
-          ).length;
-
-
-        $("totalAprovados").textContent =
-          saques.filter(
-            x =>
-              [
-                "aprovado",
-                "aprovada"
-              ].includes(
-                String(
-                  x.status || ""
-                ).toLowerCase()
-              )
-          ).length;
-
-
-        $("totalCancelados").textContent =
-          saques.filter(
-            x =>
-              [
-                "cancelado",
-                "cancelada"
-              ].includes(
-                String(
-                  x.status || ""
-                ).toLowerCase()
-              )
-          ).length;
-
-
-        if (!saques.length) {
-
-          body.innerHTML =
-            '<tr><td colspan="7">' +
-            "Nenhum saque encontrado." +
-            "</td></tr>";
-
-          return;
-
-        }
-
-
-        body.innerHTML =
-          saques.map(
-            saque => {
-
-              const status =
-                String(
-                  saque.status || ""
-                ).toLowerCase();
-
-
-              return `
-                <tr>
-
-                  <td>
-                    ${esc(
-                      saque.id ??
-                      saque.$id ??
-                      "-"
-                    )}
-                  </td>
-
-                  <td>
-                    ${esc(
-                      saque.jogador_id ??
-                      saque.usuario ??
-                      saque.userId ??
-                      "-"
-                    )}
-                  </td>
-
-                  <td>
-                    ${esc(
-                      saque.email ??
-                      "-"
-                    )}
-                  </td>
-
-                  <td>
-                    R$ ${esc(
-                      Number(
-                        saque.valor_jogador ??
-                        saque.quantia ??
-                        saque.valor ??
-                        0
-                      ).toFixed(2)
-                    )}
-                  </td>
-
-                  <td>
-                    ${esc(
-                      saque.pix_key ??
-                      saque.pix ??
-                      "-"
-                    )}
-                  </td>
-
-                  <td class="status ${esc(status)}">
-                    ${esc(
-                      saque.status ??
-                      "-"
-                    )}
-                  </td>
-
-                  <td>
-
-                    ${
-                      status === "pendente"
-                        ? `
-                          <div class="actions">
-
-                            <button
-                              class="success"
-                              onclick="alterarSaque(
-                                ${JSON.stringify(
-                                  saque.id ??
-                                  saque.$id
-                                )},
-                                'aprovado'
-                              )"
-                            >
-                              Aprovar
-                            </button>
-
-                            <button
-                              class="danger"
-                              onclick="alterarSaque(
-                                ${JSON.stringify(
-                                  saque.id ??
-                                  saque.$id
-                                )},
-                                'cancelado'
-                              )"
-                            >
-                              Cancelar
-                            </button>
-
-                          </div>
-                        `
-                        : "-"
-                    }
-
-                  </td>
-
-                </tr>
-              `;
-
-            }
-          ).join("");
-
-
-      } catch (erro) {
-
-        console.error(
-          "Erro saques:",
-          erro
-        );
-
-
-        body.innerHTML =
-          '<tr><td colspan="7">' +
-          "Nenhum saque disponível." +
-          "</td></tr>";
-
-      }
-
-    }
-
-
-    /* ==========================================
-       ALTERAR SAQUE
-    ========================================== */
-
-    async function alterarSaque(
-      id,
-      status
-    ) {
-
-      if (!id) {
-
-        alert(
-          "ID do saque não encontrado."
-        );
-
-        return;
-
-      }
-
-
-      const texto =
-        status === "aprovado"
-          ? "aprovar"
-          : "cancelar";
-
-
-      if (
-        !confirm(
-          "Tem certeza que deseja " +
-          texto +
-          " este saque?"
-        )
-      ) {
-
-        return;
-
-      }
-
-
-      try {
-
-        const resposta =
-          await fetch(
-            API_URL +
-            "/api/admin/saque/" +
-            encodeURIComponent(id),
-            {
-              method: "PUT",
-
-              headers: {
-                "Content-Type":
-                  "application/json"
-              },
-
-              body: JSON.stringify({
-                status: status
-              })
-            }
-          );
-
-
-        const dados =
-          await resposta.json();
-
-
-        if (!resposta.ok) {
-
-          throw new Error(
-            dados.message ||
-            dados.mensagem ||
-            "Não foi possível atualizar o saque."
-          );
-
-        }
-
-
-        alert(
-          "Saque atualizado com sucesso."
-        );
-
-
-        await carregarPainel();
-
-
-      } catch (erro) {
-
-        alert(
-          erro.message ||
-          "Erro ao atualizar saque."
-        );
-
-      }
-
-    }
-
-
-    /* ==========================================
-       PARCEIROS
-    ========================================== */
-
-    async function carregarParceiros() {
-
-      const body =
-        $("parceirosBody");
-
-
-      body.innerHTML =
-        '<tr><td colspan="4" class="loading">' +
-        "Carregando parceiros..." +
-        "</td></tr>";
-
-
-      try {
-
-        const resposta =
-          await fetch(
-            API_URL +
-            "/api/admin/dashboard"
-          );
-
-
-        if (!resposta.ok) {
-
-          throw new Error(
-            "Erro ao carregar parceiros."
-          );
-
-        }
-
-
-        const dados =
-          await resposta.json();
-
-
-        const parceiros =
-          Array.isArray(
-            dados.parceiros
-          )
-            ? dados.parceiros
-            : [];
-
-
-        $("totalParceiros").textContent =
-          dados.totalParceiros ??
-          parceiros.length;
-
-
-        if (!parceiros.length) {
-
-          body.innerHTML =
-            '<tr><td colspan="4">' +
-            "Nenhum parceiro encontrado." +
-            "</td></tr>";
-
-          return;
-
-        }
-
-
-        body.innerHTML =
-          parceiros.map(
-            parceiro => `
-
-              <tr>
-
-                <td>
-                  ${esc(
-                    parceiro.id ??
-                    parceiro.$id ??
-                    "-"
-                  )}
-                </td>
-
-                <td>
-                  ${esc(
-                    parceiro.nome ??
-                    parceiro.name ??
-                    "-"
-                  )}
-                </td>
-
-                <td>
-                  ${esc(
-                    parceiro.email ??
-                    "-"
-                  )}
-                </td>
-
-                <td>
-                  ${esc(
-                    JSON.stringify(
-                      parceiro
-                    )
-                  )}
-                </td>
-
-              </tr>
-
-            `
-          ).join("");
-
-
-      } catch (erro) {
-
-        console.error(
-          "Erro parceiros:",
-          erro
-        );
-
-
-        body.innerHTML =
-          '<tr><td colspan="4">' +
-          "Nenhum parceiro disponível." +
-          "</td></tr>";
-
-      }
-
-    }
-
-
-    /* ==========================================
-       MOVIMENTAÇÕES
-    ========================================== */
-
-    async function carregarMovimentacoes() {
-
-      const body =
-        $("movimentacoesBody");
-
-
-      body.innerHTML =
-        '<tr><td colspan="6" class="loading">' +
-        "Carregando movimentações..." +
-        "</td></tr>";
-
-
-      try {
-
-        const resposta =
-          await fetch(
-            API_URL +
-            "/api/admin/dashboard"
-          );
-
-
-        if (!resposta.ok) {
-
-          throw new Error(
-            "Erro ao carregar movimentações."
-          );
-
-        }
-
-
-        const dados =
-          await resposta.json();
-
-
-        const movimentacoes =
-          Array.isArray(
-            dados.movimentacoes
-          )
-            ? dados.movimentacoes
-            : [];
-
-
-        if (!movimentacoes.length) {
-
-          body.innerHTML =
-            '<tr><td colspan="6">' +
-            "Nenhuma movimentação encontrada." +
-            "</td></tr>";
-
-          return;
-
-        }
-
-
-        body.innerHTML =
-          movimentacoes.map(
-            item => `
-
-              <tr>
-
-                <td>
-                  ${esc(
-                    item.id ??
-                    item.$id ??
-                    "-"
-                  )}
-                </td>
-
-                <td>
-                  ${esc(
-                    item.parceiro_id ??
-                    "-"
-                  )}
-                </td>
-
-                <td>
-                  ${esc(
-                    item.tipo ??
-                    "-"
-                  )}
-                </td>
-
-                <td>
-                  ${esc(
-                    item.pontos ??
-                    0
-                  )}
-                </td>
-
-                <td>
-                  R$ ${esc(
-                    Number(
-                      item.valor || 0
-                    ).toFixed(2)
-                  )}
-                </td>
-
-                <td>
-                  ${esc(
-                    item.descricao ??
-                    "-"
-                  )}
-                </td>
-
-              </tr>
-
-            `
-          ).join("");
-
-
-      } catch (erro) {
-
-        console.error(
-          "Erro movimentações:",
-          erro
-        );
-
-
-        body.innerHTML =
-          '<tr><td colspan="6">' +
-          "Nenhuma movimentação disponível." +
-          "</td></tr>";
-
-      }
-
-    }
-
-
-    /* ==========================================
-       MENU
-    ========================================== */
-
-    document
-      .querySelectorAll(".menu button")
-      .forEach(
-        botao => {
-
-          botao.addEventListener(
-            "click",
-            () => {
-
-              document
-                .querySelectorAll(
-                  ".menu button"
-                )
-                .forEach(
-                  b =>
-                    b.classList.remove(
-                      "active"
-                    )
-                );
-
-
-              botao.classList.add(
-                "active"
-              );
-
-
-              document
-                .querySelectorAll(
-                  ".page"
-                )
-                .forEach(
-                  pagina =>
-                    pagina.classList.remove(
-                      "active"
-                    )
-                );
-
-
-              const pagina =
-                $(botao.dataset.page);
-
-
-              if (pagina) {
-
-                pagina.classList.add(
-                  "active"
-                );
-
-              }
-
-
-              if (
-                botao.dataset.page ===
-                "jogadoresPage"
-              ) {
-
-                carregarJogadores();
-
-              }
-
-
-              if (
-                botao.dataset.page ===
-                "saquesPage"
-              ) {
-
-                carregarSaques();
-
-              }
-
-
-              if (
-                botao.dataset.page ===
-                "parceirosPage"
-              ) {
-
-                carregarParceiros();
-
-              }
-
-
-              if (
-                botao.dataset.page ===
-                "movimentacoesPage"
-              ) {
-
-                carregarMovimentacoes();
-
-              }
-
-            }
-          );
-
-        }
-      );
-
-
-    /* ==========================================
-       BOTÕES
-    ========================================== */
-
-    $("loginButton")
-      .addEventListener(
-        "click",
-        entrar
-      );
-
-
-    $("logoutButton")
-      .addEventListener(
-        "click",
-        sair
-      );
-
-
-    $("password")
-      .addEventListener(
-        "keydown",
-        evento => {
-
-          if (
-            evento.key === "Enter"
-          ) {
-
-            entrar();
-
-          }
-
-        }
-      );
-
-
-    /* ==========================================
-       ERROS
-    ========================================== */
-
-    window.addEventListener(
-      "error",
-      evento => {
-
-        console.error(
-          "Erro JavaScript:",
-          evento.error ||
-          evento.message
-        );
-
-      }
-    );
-
-
-    window.addEventListener(
-      "unhandledrejection",
-      evento => {
-
-        console.error(
-          "Erro Promise:",
-          evento.reason
-        );
-
-      }
-    );
-
-
-    /* ==========================================
-       INICIAR
-    ========================================== */
-
-    verificarSessao();
-
-  </script>
-
-</body>
+  </script></body>
   </html>
