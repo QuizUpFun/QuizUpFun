@@ -1,18 +1,27 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QuizUp Admin</title>  <style>
+  <title>QuizUp Admin</title>
+
+  <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
     }
 
     body {
-      background: #f4f6f9;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
       color: #222;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
     }
 
     .hidden {
@@ -20,12 +29,14 @@
     }
 
     /* LOGIN */
+
     #loginPage {
       min-height: 100vh;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       padding: 20px;
+      background: #f4f6f8;
     }
 
     .login-box {
@@ -34,30 +45,37 @@
       background: white;
       padding: 30px;
       border-radius: 16px;
-      box-shadow: 0 5px 25px rgba(0,0,0,0.12);
+      box-shadow: 0 5px 25px rgba(0,0,0,.08);
     }
 
     .login-box h1 {
+      margin-top: 0;
       text-align: center;
-      margin-bottom: 10px;
     }
 
     .login-box p {
       text-align: center;
-      color: #777;
-      margin-bottom: 25px;
+      color: #666;
     }
 
-    input,
-    select,
-    textarea {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      margin-top: 6px;
+    .campo {
       margin-bottom: 15px;
-      font-size: 15px;
+    }
+
+    .campo label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    .campo input,
+    .campo select,
+    .campo textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: white;
     }
 
     textarea {
@@ -65,18 +83,12 @@
       resize: vertical;
     }
 
-    label {
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    button {
+    .btn {
       border: 0;
       border-radius: 8px;
-      padding: 12px 18px;
-      font-size: 15px;
-      font-weight: bold;
+      padding: 12px 16px;
       cursor: pointer;
+      font-weight: bold;
     }
 
     .btn-primary {
@@ -86,7 +98,12 @@
     }
 
     .btn-primary:hover {
-      background: #1d4ed8;
+      opacity: .9;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #222;
     }
 
     .btn-success {
@@ -100,39 +117,45 @@
     }
 
     .message {
-      margin-top: 15px;
+      margin-top: 12px;
       text-align: center;
-      font-size: 14px;
+      min-height: 20px;
+      color: #c00;
     }
 
     /* ADMIN */
+
     #adminPage {
       min-height: 100vh;
     }
 
     .topbar {
+      height: 60px;
       background: #111827;
       color: white;
-      padding: 15px 20px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 15px;
+      justify-content: space-between;
+      padding: 0 18px;
     }
 
-    .topbar h1 {
-      font-size: 20px;
+    .topbar strong {
+      font-size: 18px;
     }
 
-    .admin-email {
-      font-size: 13px;
-      opacity: 0.9;
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .logout {
+    .btn-sair {
       background: #dc2626;
       color: white;
+      border: 0;
       padding: 8px 12px;
+      border-radius: 7px;
+      cursor: pointer;
     }
 
     .layout {
@@ -144,15 +167,20 @@
       width: 230px;
       background: white;
       border-right: 1px solid #ddd;
-      padding: 15px;
+      padding: 15px 10px;
     }
 
     .menu-btn {
+      display: block;
       width: 100%;
       text-align: left;
+      border: 0;
       background: transparent;
-      margin-bottom: 8px;
-      color: #333;
+      padding: 12px;
+      margin-bottom: 5px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
     }
 
     .menu-btn:hover,
@@ -163,7 +191,7 @@
 
     .content {
       flex: 1;
-      padding: 25px;
+      padding: 20px;
       overflow-x: auto;
     }
 
@@ -175,118 +203,108 @@
       display: block;
     }
 
-    .section {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    .section h2 {
-      margin-bottom: 18px;
+    .page h2 {
+      margin-top: 0;
     }
 
     /* CARDS */
+
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 15px;
+      margin-bottom: 20px;
     }
 
     .card {
       background: white;
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 10px rgba(0,0,0,.05);
     }
 
-    .card h3 {
+    .card-title {
+      color: #666;
       font-size: 14px;
-      color: #777;
-      margin-bottom: 10px;
     }
 
-    .card strong {
-      font-size: 26px;
+    .card-value {
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: 8px;
     }
 
     /* TABLE */
-    .table-container {
+
+    .table-box {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
       overflow-x: auto;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 700px;
+      min-width: 750px;
     }
 
     th,
     td {
-      padding: 12px;
+      padding: 10px;
       border-bottom: 1px solid #eee;
       text-align: left;
-      font-size: 14px;
+      white-space: nowrap;
     }
 
     th {
       background: #f8fafc;
     }
 
-    /* PERGUNTAS */
-    .question-form {
-      max-width: 800px;
+    /* FORM */
+
+    .form-box {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 20px;
     }
 
-    .alternativas-grid {
+    .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 15px;
     }
 
-    .question-item {
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .acoes {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .import-info {
+      background: #f8fafc;
       border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 16px;
+      border-radius: 8px;
+      padding: 12px;
       margin-bottom: 15px;
-      background: #fafafa;
+      line-height: 1.5;
     }
 
-    .question-item h3 {
-      font-size: 16px;
-      margin-bottom: 12px;
-    }
-
-    .alternative {
-      padding: 8px 10px;
-      margin-top: 5px;
-      border-radius: 6px;
-      background: white;
-    }
-
-    .correct {
+    .status {
+      margin-top: 10px;
       font-weight: bold;
-      border: 1px solid #22c55e;
-      background: #f0fdf4;
     }
 
-    .loading {
-      color: #777;
-      padding: 10px 0;
-    }
+    /* MOBILE */
 
-    .success {
-      color: #15803d;
-    }
-
-    .error {
-      color: #dc2626;
-    }
-
-    @media (max-width: 700px) {
+    @media (max-width: 800px) {
       .layout {
-        display: block;
+        flex-direction: column;
       }
 
       .sidebar {
@@ -299,167 +317,234 @@
       }
 
       .menu-btn {
+        min-width: max-content;
         width: auto;
-        white-space: nowrap;
-        margin-bottom: 0;
+        margin: 0;
       }
 
-      .content {
-        padding: 15px;
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full {
+        grid-column: auto;
       }
 
       .topbar {
-        flex-wrap: wrap;
+        height: auto;
+        min-height: 60px;
+        gap: 10px;
       }
 
-      .alternativas-grid {
-        grid-template-columns: 1fr;
+      .topbar-right {
+        font-size: 12px;
       }
     }
-  </style></head><body>  <!-- LOGIN -->  <div id="loginPage">
-    <div class="login-box">
-      <h1>QuizUp Admin</h1>
-      <p>Painel administrativo</p>  <form id="loginForm">
-    <label for="email">E-mail</label>
-    <input
-      type="email"
-      id="email"
-      placeholder="Digite seu e-mail"
-      required
-    >
+  </style>
+</head>
 
-    <label for="password">Senha</label>
-    <input
-      type="password"
-      id="password"
-      placeholder="Digite sua senha"
-      required
-    >
+<body>
 
-    <button type="submit" class="btn-primary">
-      Entrar
-    </button>
-  </form>
+<!-- ========================= -->
+<!-- LOGIN -->
+<!-- ========================= -->
 
-  <div id="loginMessage" class="message"></div>
-</div>
+<div id="loginPage">
 
-  </div>  <!-- ADMIN -->  <div id="adminPage" class="hidden"><div class="topbar">
-  <div>
+  <div class="login-box">
+
     <h1>QuizUp Admin</h1>
-    <div class="admin-email" id="adminEmail"></div>
+    <p>Painel administrativo</p>
+
+    <form id="loginForm">
+
+      <div class="campo">
+        <label for="email">E-mail</label>
+        <input
+          type="email"
+          id="email"
+          placeholder="Digite seu e-mail"
+          required
+        >
+      </div>
+
+      <div class="campo">
+        <label for="password">Senha</label>
+        <input
+          type="password"
+          id="password"
+          placeholder="Digite sua senha"
+          required
+        >
+      </div>
+
+      <button class="btn btn-primary" type="submit">
+        Entrar
+      </button>
+
+      <div id="loginMessage" class="message"></div>
+
+    </form>
+
   </div>
 
-  <button class="logout" onclick="logout()">
-    Sair
-  </button>
 </div>
 
 
-<div class="layout">
+<!-- ========================= -->
+<!-- ADMIN -->
+<!-- ========================= -->
 
-  <!-- MENU -->
-  <aside class="sidebar">
+<div id="adminPage" class="hidden">
 
-    <button
-      class="menu-btn active"
-      onclick="mostrarPagina('dashboardPage', this)"
-    >
-      📊 Dashboard
-    </button>
+  <div class="topbar">
 
-    <button
-      class="menu-btn"
-      onclick="mostrarPagina('jogadoresPage', this)"
-    >
-      👥 Jogadores
-    </button>
+    <strong>QuizUp Admin</strong>
 
-    <button
-      class="menu-btn"
-      onclick="mostrarPagina('perguntasPage', this)"
-    >
-      ❓ Perguntas
-    </button>
+    <div class="topbar-right">
+      <span id="adminEmail"></span>
 
-    <button
-      class="menu-btn"
-      onclick="mostrarPagina('saquesPage', this)"
-    >
-      💰 Saques
-    </button>
+      <button class="btn-sair" onclick="logout()">
+        Sair
+      </button>
+    </div>
 
-    <button
-      class="menu-btn"
-      onclick="mostrarPagina('parceirosPage', this)"
-    >
-      🤝 Parceiros
-    </button>
-
-    <button
-      class="menu-btn"
-      onclick="mostrarPagina('movimentacoesPage', this)"
-    >
-      📈 Movimentações
-    </button>
-
-    <button
-      class="menu-btn"
-      onclick="mostrarPagina('configuracoesPage', this)"
-    >
-      ⚙️ Configurações
-    </button>
-
-  </aside>
+  </div>
 
 
-  <!-- CONTEÚDO -->
-  <main class="content">
+  <div class="layout">
 
-    <!-- DASHBOARD -->
-    <section id="dashboardPage" class="page active">
+    <!-- MENU -->
 
-      <div class="section">
+    <aside class="sidebar">
+
+      <button
+        class="menu-btn active"
+        onclick="mostrarPagina('dashboard', this)"
+      >
+        📊 Dashboard
+      </button>
+
+      <button
+        class="menu-btn"
+        onclick="mostrarPagina('jogadores', this)"
+      >
+        👥 Jogadores
+      </button>
+
+      <button
+        class="menu-btn"
+        onclick="mostrarPagina('perguntas', this)"
+      >
+        ❓ Perguntas
+      </button>
+
+      <button
+        class="menu-btn"
+        onclick="mostrarPagina('saques', this)"
+      >
+        💰 Saques
+      </button>
+
+      <button
+        class="menu-btn"
+        onclick="mostrarPagina('parceiros', this)"
+      >
+        🤝 Parceiros
+      </button>
+
+      <button
+        class="menu-btn"
+        onclick="mostrarPagina('movimentacoes', this)"
+      >
+        📈 Movimentações
+      </button>
+
+      <button
+        class="menu-btn"
+        onclick="mostrarPagina('configuracoes', this)"
+      >
+        ⚙️ Configurações
+      </button>
+
+    </aside>
+
+
+    <!-- CONTEÚDO -->
+
+    <main class="content">
+
+
+      <!-- DASHBOARD -->
+
+      <section id="dashboard" class="page active">
+
         <h2>📊 Dashboard</h2>
 
         <div class="cards">
 
           <div class="card">
-            <h3>Jogadores</h3>
-            <strong id="totalJogadores">0</strong>
+            <div class="card-title">
+              Jogadores cadastrados
+            </div>
+
+            <div
+              class="card-value"
+              id="totalJogadores"
+            >
+              0
+            </div>
           </div>
 
-          <div class="card">
-            <h3>Pontos distribuídos</h3>
-            <strong id="totalPontos">0</strong>
-          </div>
 
           <div class="card">
-            <h3>Saldo total</h3>
-            <strong id="saldoTotal">R$ 0,00</strong>
+            <div class="card-title">
+              Pontos distribuídos
+            </div>
+
+            <div
+              class="card-value"
+              id="totalPontos"
+            >
+              0
+            </div>
+          </div>
+
+
+          <div class="card">
+            <div class="card-title">
+              Saldo total
+            </div>
+
+            <div
+              class="card-value"
+              id="saldoTotal"
+            >
+              R$ 0,00
+            </div>
           </div>
 
         </div>
-      </div>
 
-    </section>
+      </section>
 
 
-    <!-- JOGADORES -->
-    <section id="jogadoresPage" class="page">
+      <!-- JOGADORES -->
 
-      <div class="section">
+      <section id="jogadores" class="page">
 
         <h2>👥 Jogadores cadastrados</h2>
 
-        <div id="jogadoresMessage" class="loading">
-          Carregando jogadores...
-        </div>
+        <div class="table-box">
 
-        <div class="table-container">
-          <table id="jogadoresTable" class="hidden">
+          <table>
 
             <thead>
+
               <tr>
                 <th>ID</th>
                 <th>E-mail</th>
@@ -469,228 +554,399 @@
                 <th>Saldo</th>
                 <th>Cadastro</th>
               </tr>
+
             </thead>
 
-            <tbody id="jogadoresBody"></tbody>
+            <tbody id="tabelaJogadores">
+
+              <tr>
+                <td colspan="7">
+                  Carregando jogadores...
+                </td>
+              </tr>
+
+            </tbody>
 
           </table>
+
         </div>
 
-      </div>
-
-    </section>
+      </section>
 
 
-    <!-- PERGUNTAS -->
-    <section id="perguntasPage" class="page">
+      <!-- PERGUNTAS -->
 
-      <div class="section">
+      <section id="perguntas" class="page">
 
-        <h2>❓ Cadastrar pergunta</h2>
-
-        <form id="questionForm" class="question-form">
-
-          <label for="pergunta">
-            Pergunta
-          </label>
-
-          <textarea
-            id="pergunta"
-            placeholder="Digite a pergunta"
-            required
-          ></textarea>
+        <h2>❓ Perguntas</h2>
 
 
-          <div class="alternativas-grid">
+        <!-- CADASTRO -->
 
-            <div>
-              <label for="alternativa_a">
-                Alternativa A
-              </label>
+        <div class="form-box">
 
-              <input
-                type="text"
-                id="alternativa_a"
-                placeholder="Alternativa A"
-                required
-              >
+          <h3>➕ Cadastrar pergunta</h3>
+
+          <form id="perguntaForm">
+
+            <div class="form-grid">
+
+              <div class="campo full">
+
+                <label for="pergunta">
+                  Pergunta
+                </label>
+
+                <textarea
+                  id="pergunta"
+                  placeholder="Digite a pergunta"
+                  required
+                ></textarea>
+
+              </div>
+
+
+              <div class="campo">
+
+                <label for="alternativa_a">
+                  Alternativa A
+                </label>
+
+                <input
+                  id="alternativa_a"
+                  placeholder="Alternativa A"
+                  required
+                >
+
+              </div>
+
+
+              <div class="campo">
+
+                <label for="alternativa_b">
+                  Alternativa B
+                </label>
+
+                <input
+                  id="alternativa_b"
+                  placeholder="Alternativa B"
+                  required
+                >
+
+              </div>
+
+
+              <div class="campo">
+
+                <label for="alternativa_c">
+                  Alternativa C
+                </label>
+
+                <input
+                  id="alternativa_c"
+                  placeholder="Alternativa C"
+                  required
+                >
+
+              </div>
+
+
+              <div class="campo">
+
+                <label for="alternativa_d">
+                  Alternativa D
+                </label>
+
+                <input
+                  id="alternativa_d"
+                  placeholder="Alternativa D"
+                  required
+                >
+
+              </div>
+
+
+              <div class="campo">
+
+                <label for="resposta_correta">
+                  Resposta correta
+                </label>
+
+                <select
+                  id="resposta_correta"
+                  required
+                >
+
+                  <option value="">
+                    Selecione a resposta correta
+                  </option>
+
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+
+                </select>
+
+              </div>
+
+
+              <div class="campo">
+
+                <label for="dificuldade">
+                  Dificuldade
+                </label>
+
+                <select id="dificuldade">
+
+                  <option value="facil">
+                    🟢 Fácil
+                  </option>
+
+                  <option value="medio">
+                    🟡 Médio
+                  </option>
+
+                  <option value="dificil">
+                    🔴 Difícil
+                  </option>
+
+                </select>
+
+              </div>
+
             </div>
 
 
-            <div>
-              <label for="alternativa_b">
-                Alternativa B
-              </label>
+            <div class="acoes">
 
-              <input
-                type="text"
-                id="alternativa_b"
-                placeholder="Alternativa B"
-                required
+              <button
+                type="submit"
+                class="btn btn-success"
               >
+                ➕ Cadastrar pergunta
+              </button>
+
             </div>
 
+            <div
+              id="perguntaMessage"
+              class="status"
+            ></div>
 
-            <div>
-              <label for="alternativa_c">
-                Alternativa C
-              </label>
+          </form>
 
-              <input
-                type="text"
-                id="alternativa_c"
-                placeholder="Alternativa C"
-                required
-              >
-            </div>
+        </div>
 
 
-            <div>
-              <label for="alternativa_d">
-                Alternativa D
-              </label>
+        <!-- IMPORTAÇÃO -->
 
-              <input
-                type="text"
-                id="alternativa_d"
-                placeholder="Alternativa D"
-                required
-              >
-            </div>
+        <div class="form-box">
+
+          <h3>📥 Importar perguntas em massa</h3>
+
+          <div class="import-info">
+
+            <strong>Formato do arquivo CSV:</strong><br><br>
+
+            O arquivo deve possuir estas colunas:
+
+            <br><br>
+
+            <code>
+              pergunta,alternativa_a,alternativa_b,alternativa_c,alternativa_d,resposta_correta,dificuldade
+            </code>
+
+            <br><br>
+
+            Exemplos de dificuldade:
+
+            <br>
+            <strong>facil</strong> = 1º ao 8º ano<br>
+            <strong>medio</strong> = científica intermediária<br>
+            <strong>dificil</strong> = faculdade de Farmácia
 
           </div>
 
 
-          <label for="resposta_correta">
-            Resposta correta
-          </label>
+          <div class="campo">
 
-          <select id="resposta_correta" required>
+            <label for="arquivoCSV">
+              Escolha o arquivo CSV
+            </label>
 
-            <option value="">
-              Selecione a resposta correta
-            </option>
+            <input
+              type="file"
+              id="arquivoCSV"
+              accept=".csv,text/csv"
+            >
 
-            <option value="A">
-              A
-            </option>
-
-            <option value="B">
-              B
-            </option>
-
-            <option value="C">
-              C
-            </option>
-
-            <option value="D">
-              D
-            </option>
-
-          </select>
+          </div>
 
 
-          <button
-            type="submit"
-            class="btn-success"
-          >
-            ➕ Cadastrar pergunta
-          </button>
+          <div class="acoes">
 
-          <div id="questionMessage" class="message"></div>
+            <button
+              type="button"
+              class="btn btn-success"
+              onclick="importarCSV()"
+            >
+              📥 Importar CSV
+            </button>
 
-        </form>
-
-      </div>
+          </div>
 
 
-      <div class="section">
+          <div
+            id="importMessage"
+            class="status"
+          ></div>
 
-        <h2>📋 Perguntas cadastradas</h2>
-
-        <div
-          id="perguntasMessage"
-          class="loading"
-        >
-          Carregando perguntas...
         </div>
 
-        <div id="perguntasLista"></div>
 
-      </div>
+        <!-- LISTA -->
 
-    </section>
+        <div class="table-box">
+
+          <h3>📋 Perguntas cadastradas</h3>
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>ID</th>
+                <th>Pergunta</th>
+                <th>A</th>
+                <th>B</th>
+                <th>C</th>
+                <th>D</th>
+                <th>Correta</th>
+                <th>Dificuldade</th>
+              </tr>
+
+            </thead>
+
+            <tbody id="tabelaPerguntas">
+
+              <tr>
+                <td colspan="8">
+                  Carregando perguntas...
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
 
 
-    <!-- SAQUES -->
-    <section id="saquesPage" class="page">
+      <!-- SAQUES -->
 
-      <div class="section">
+      <section id="saques" class="page">
+
         <h2>💰 Saques</h2>
-        <p>Gerenciamento de saques.</p>
-      </div>
 
-    </section>
+        <div class="card">
+          O gerenciamento de saques será conectado ao banco de dados nesta etapa.
+        </div>
+
+      </section>
 
 
-    <!-- PARCEIROS -->
-    <section id="parceirosPage" class="page">
+      <!-- PARCEIROS -->
 
-      <div class="section">
+      <section id="parceiros" class="page">
+
         <h2>🤝 Parceiros</h2>
-        <p>Gerenciamento de parceiros.</p>
-      </div>
 
-    </section>
+        <div class="card">
+          O gerenciamento de parceiros será conectado ao banco de dados nesta etapa.
+        </div>
+
+      </section>
 
 
-    <!-- MOVIMENTAÇÕES -->
-    <section id="movimentacoesPage" class="page">
+      <!-- MOVIMENTAÇÕES -->
 
-      <div class="section">
+      <section id="movimentacoes" class="page">
+
         <h2>📈 Movimentações</h2>
-        <p>Gerenciamento de movimentações.</p>
-      </div>
 
-    </section>
+        <div class="card">
+          O gerenciamento de movimentações será conectado ao banco de dados nesta etapa.
+        </div>
+
+      </section>
 
 
-    <!-- CONFIGURAÇÕES -->
-    <section id="configuracoesPage" class="page">
+      <!-- CONFIGURAÇÕES -->
 
-      <div class="section">
+      <section id="configuracoes" class="page">
+
         <h2>⚙️ Configurações</h2>
-        <p>Configurações administrativas.</p>
-      </div>
 
-    </section>
+        <div class="card">
 
-  </main>
+          <p>
+            <strong>Banco:</strong> PostgreSQL Aiven
+          </p>
+
+          <p>
+            <strong>Projeto:</strong> QuizUp
+          </p>
+
+          <p>
+            <strong>Backend:</strong>
+            quizup-api-qxn2.onrender.com
+          </p>
+
+        </div>
+
+      </section>
+
+
+    </main>
+
+  </div>
 
 </div>
 
-  </div>  <script>
 
-    const API_URL = "https://quizup-api-qxn2.onrender.com";
+<script>
+
+  const API_URL =
+    "https://quizup-api-qxn2.onrender.com";
 
 
-    /* =========================
-       LOGIN
-    ========================= */
+  /* =========================
+     LOGIN
+  ========================= */
 
-    const loginForm = document.getElementById("loginForm");
+  const loginForm =
+    document.getElementById("loginForm");
 
-    loginForm.addEventListener("submit", async function(event) {
+
+  loginForm.addEventListener(
+    "submit",
+    async function(event) {
 
       event.preventDefault();
 
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
+      const email =
+        document.getElementById("email").value.trim();
 
-      const message = document.getElementById("loginMessage");
+      const senha =
+        document.getElementById("password").value;
+
+      const message =
+        document.getElementById("loginMessage");
 
       message.textContent = "Entrando...";
-      message.className = "message";
 
       try {
 
@@ -698,479 +954,487 @@
           `${API_URL}/api/admin/login`,
           {
             method: "POST",
+
             headers: {
               "Content-Type": "application/json"
             },
+
             body: JSON.stringify({
               email: email,
-              senha: password
+              senha: senha
             })
           }
         );
 
-        const dados = await resposta.json();
 
-        if (!resposta.ok || !dados.sucesso) {
+        const dados =
+          await resposta.json();
+
+
+        if (
+          !resposta.ok ||
+          !dados.sucesso
+        ) {
 
           message.textContent =
-            dados.erro || "E-mail ou senha incorretos.";
-
-          message.className = "message error";
+            dados.erro ||
+            "E-mail ou senha incorretos.";
 
           return;
         }
 
+
         localStorage.setItem(
-          "quizup_admin_email",
+          "quizup_admin",
           email
         );
 
-        mostrarAdmin(email);
+
+        mostrarAdmin();
 
       } catch (erro) {
 
         console.error(erro);
 
         message.textContent =
-          "Não foi possível conectar ao backend.";
-
-        message.className = "message error";
+          "Erro ao conectar ao backend.";
       }
 
-    });
+    }
+  );
 
 
-    function mostrarAdmin(email) {
+  /* =========================
+     MOSTRAR ADMIN
+  ========================= */
 
-      document.getElementById("loginPage")
-        .classList.add("hidden");
+  function mostrarAdmin() {
 
-      document.getElementById("adminPage")
-        .classList.remove("hidden");
+    document
+      .getElementById("loginPage")
+      .classList.add("hidden");
 
-      document.getElementById("adminEmail")
-        .textContent = email;
+    document
+      .getElementById("adminPage")
+      .classList.remove("hidden");
+
+
+    document
+      .getElementById("adminEmail")
+      .textContent =
+      localStorage.getItem("quizup_admin") || "";
+
+
+    carregarDashboard();
+
+  }
+
+
+  /* =========================
+     LOGOUT
+  ========================= */
+
+  function logout() {
+
+    localStorage.removeItem(
+      "quizup_admin"
+    );
+
+    location.reload();
+
+  }
+
+
+  /* =========================
+     NAVEGAÇÃO
+  ========================= */
+
+  function mostrarPagina(
+    pagina,
+    botao
+  ) {
+
+    document
+      .querySelectorAll(".page")
+      .forEach(function(page) {
+
+        page.classList.remove("active");
+
+      });
+
+
+    const paginaElement =
+      document.getElementById(pagina);
+
+    if (paginaElement) {
+
+      paginaElement.classList.add(
+        "active"
+      );
+
+    }
+
+
+    document
+      .querySelectorAll(".menu-btn")
+      .forEach(function(btn) {
+
+        btn.classList.remove("active");
+
+      });
+
+
+    if (botao) {
+
+      botao.classList.add("active");
+
+    }
+
+
+    if (pagina === "dashboard") {
 
       carregarDashboard();
+
+    }
+
+
+    if (pagina === "jogadores") {
+
       carregarJogadores();
+
+    }
+
+
+    if (pagina === "perguntas") {
+
       carregarPerguntas();
 
     }
 
-
-    function logout() {
-
-      localStorage.removeItem(
-        "quizup_admin_email"
-      );
-
-      location.reload();
-
-    }
+  }
 
 
-    /* =========================
-       MENU
-    ========================= */
+  /* =========================
+     DASHBOARD
+  ========================= */
 
-    function mostrarPagina(pageId, botao) {
+  async function carregarDashboard() {
 
-      document
-        .querySelectorAll(".page")
-        .forEach(function(page) {
+    try {
 
-          page.classList.remove("active");
-
-        });
-
-
-      const page =
-        document.getElementById(pageId);
-
-      if (page) {
-        page.classList.add("active");
-      }
-
-
-      document
-        .querySelectorAll(".menu-btn")
-        .forEach(function(btn) {
-
-          btn.classList.remove("active");
-
-        });
-
-
-      if (botao) {
-        botao.classList.add("active");
-      }
-
-
-      if (pageId === "jogadoresPage") {
-        carregarJogadores();
-      }
-
-
-      if (pageId === "perguntasPage") {
-        carregarPerguntas();
-      }
-
-
-      if (pageId === "dashboardPage") {
-        carregarDashboard();
-      }
-
-    }
-
-
-    /* =========================
-       DASHBOARD
-    ========================= */
-
-    async function carregarDashboard() {
-
-      try {
-
-        const resposta = await fetch(
+      const resposta =
+        await fetch(
           `${API_URL}/api/admin/dashboard`
         );
 
-        if (!resposta.ok) {
-          return;
-        }
 
-        const dados = await resposta.json();
+      const dados =
+        await resposta.json();
 
-        if (!dados.sucesso) {
-          return;
-        }
 
-        if (
-          dados.totalJogadores !== undefined
-        ) {
+      if (!dados.sucesso) {
 
-          document.getElementById(
-            "totalJogadores"
-          ).textContent =
-            dados.totalJogadores;
-
-        }
-
-        if (
-          dados.totalPontos !== undefined
-        ) {
-
-          document.getElementById(
-            "totalPontos"
-          ).textContent =
-            dados.totalPontos;
-
-        }
-
-        if (
-          dados.saldoTotal !== undefined
-        ) {
-
-          document.getElementById(
-            "saldoTotal"
-          ).textContent =
-            "R$ " +
-            Number(dados.saldoTotal)
-              .toFixed(2)
-              .replace(".", ",");
-
-        }
-
-      } catch (erro) {
-
-        console.error(
-          "Erro no dashboard:",
-          erro
+        throw new Error(
+          dados.erro
         );
 
       }
 
-    }
+
+      document
+        .getElementById("totalJogadores")
+        .textContent =
+        dados.totalJogadores || 0;
 
 
-    /* =========================
-       JOGADORES
-    ========================= */
+      document
+        .getElementById("totalPontos")
+        .textContent =
+        dados.totalPontos || 0;
 
-    async function carregarJogadores() {
 
-      const message =
-        document.getElementById(
-          "jogadoresMessage"
+      document
+        .getElementById("saldoTotal")
+        .textContent =
+        formatarMoeda(
+          dados.saldoTotal || 0
         );
 
-      const table =
-        document.getElementById(
-          "jogadoresTable"
-        );
+    } catch (erro) {
 
-      const body =
-        document.getElementById(
-          "jogadoresBody"
-        );
-
-
-      message.textContent =
-        "Carregando jogadores...";
-
-      message.className = "loading";
-
-      table.classList.add("hidden");
-
-      body.innerHTML = "";
-
-
-      try {
-
-        const resposta = await fetch(
-          `${API_URL}/api/admin/jogadores`
-        );
-
-        const dados = await resposta.json();
-
-
-        if (!resposta.ok || !dados.sucesso) {
-
-          message.textContent =
-            dados.erro ||
-            "Erro ao carregar jogadores.";
-
-          message.className =
-            "message error";
-
-          return;
-        }
-
-
-        const jogadores =
-          dados.jogadores || [];
-
-
-        if (jogadores.length === 0) {
-
-          message.textContent =
-            "Nenhum jogador encontrado.";
-
-          return;
-        }
-
-
-        jogadores.forEach(function(jogador) {
-
-          const tr =
-            document.createElement("tr");
-
-
-          const pontos =
-            jogador.pontos ?? 0;
-
-
-          const equilibrio =
-            jogador.equilibrio ?? 0;
-
-
-          const criado =
-            jogador.criado_em
-              ? new Date(
-                  jogador.criado_em
-                ).toLocaleString("pt-BR")
-              : "-";
-
-
-          tr.innerHTML = `
-            <td>${jogador.id ?? "-"}</td>
-            <td>${jogador.email ?? "-"}</td>
-            <td>${jogador.nome_completo ?? jogador.nome ?? "-"}</td>
-            <td>${jogador.cpf ?? "-"}</td>
-            <td>${pontos}</td>
-            <td>R$ ${Number(equilibrio).toFixed(2).replace(".", ",")}</td>
-            <td>${criado}</td>
-          `;
-
-
-          body.appendChild(tr);
-
-        });
-
-
-        message.textContent = "";
-
-        table.classList.remove("hidden");
-
-
-      } catch (erro) {
-
-        console.error(erro);
-
-        message.textContent =
-          "Erro ao conectar ao backend.";
-
-        message.className =
-          "message error";
-
-      }
+      console.error(
+        "Erro no dashboard:",
+        erro
+      );
 
     }
 
-
-    /* =========================
-       PERGUNTAS
-    ========================= */
-
-    async function carregarPerguntas() {
-
-      const message =
-        document.getElementById(
-          "perguntasMessage"
-        );
-
-      const lista =
-        document.getElementById(
-          "perguntasLista"
-        );
+  }
 
 
-      message.textContent =
-        "Carregando perguntas...";
+  /* =========================
+     JOGADORES
+  ========================= */
 
-      message.className = "loading";
+  async function carregarJogadores() {
 
-      lista.innerHTML = "";
-
-
-      try {
-
-        const resposta = await fetch(
-          `${API_URL}/api/admin/perguntas`
-        );
-
-        const dados = await resposta.json();
-
-
-        if (!resposta.ok || !dados.sucesso) {
-
-          message.textContent =
-            dados.erro ||
-            "Erro ao carregar perguntas.";
-
-          message.className =
-            "message error";
-
-          return;
-        }
-
-
-        const perguntas =
-          dados.perguntas || [];
-
-
-        if (perguntas.length === 0) {
-
-          message.textContent =
-            "Nenhuma pergunta cadastrada.";
-
-          return;
-        }
-
-
-        perguntas.forEach(function(pergunta) {
-
-          const item =
-            document.createElement("div");
-
-          item.className =
-            "question-item";
-
-
-          const respostaCorreta =
-            String(
-              pergunta.resposta_correta || ""
-            ).toUpperCase();
-
-
-          item.innerHTML = `
-
-            <h3>
-              ${pergunta.id}. ${escaparHTML(pergunta.pergunta)}
-            </h3>
-
-            <div class="alternative ${
-              respostaCorreta === "A"
-                ? "correct"
-                : ""
-            }">
-              A) ${escaparHTML(pergunta.alternativa_a)}
-            </div>
-
-            <div class="alternative ${
-              respostaCorreta === "B"
-                ? "correct"
-                : ""
-            }">
-              B) ${escaparHTML(pergunta.alternativa_b)}
-            </div>
-
-            <div class="alternative ${
-              respostaCorreta === "C"
-                ? "correct"
-                : ""
-            }">
-              C) ${escaparHTML(pergunta.alternativa_c)}
-            </div>
-
-            <div class="alternative ${
-              respostaCorreta === "D"
-                ? "correct"
-                : ""
-            }">
-              D) ${escaparHTML(pergunta.alternativa_d)}
-            </div>
-
-            <div style="margin-top:10px;font-size:13px;color:#666;">
-              Resposta correta: <strong>${respostaCorreta}</strong>
-            </div>
-
-          `;
-
-
-          lista.appendChild(item);
-
-        });
-
-
-        message.textContent = "";
-
-      } catch (erro) {
-
-        console.error(erro);
-
-        message.textContent =
-          "Erro ao conectar ao backend.";
-
-        message.className =
-          "message error";
-
-      }
-
-    }
-
-
-    /* =========================
-       CADASTRAR PERGUNTA
-    ========================= */
-
-    const questionForm =
+    const tabela =
       document.getElementById(
-        "questionForm"
+        "tabelaJogadores"
       );
 
 
-    questionForm.addEventListener(
+    tabela.innerHTML = `
+      <tr>
+        <td colspan="7">
+          Carregando jogadores...
+        </td>
+      </tr>
+    `;
+
+
+    try {
+
+      const resposta =
+        await fetch(
+          `${API_URL}/api/admin/jogadores`
+        );
+
+
+      const dados =
+        await resposta.json();
+
+
+      if (
+        !resposta.ok ||
+        !dados.sucesso
+      ) {
+
+        throw new Error(
+          dados.erro ||
+          "Erro ao carregar jogadores."
+        );
+
+      }
+
+
+      if (
+        !dados.jogadores ||
+        dados.jogadores.length === 0
+      ) {
+
+        tabela.innerHTML = `
+          <tr>
+            <td colspan="7">
+              Nenhum jogador encontrado.
+            </td>
+          </tr>
+        `;
+
+        return;
+
+      }
+
+
+      tabela.innerHTML =
+        dados.jogadores
+          .map(function(jogador) {
+
+            return `
+              <tr>
+
+                <td>${jogador.id ?? ""}</td>
+
+                <td>${escapar(
+                  jogador.email ?? ""
+                )}</td>
+
+                <td>${escapar(
+                  jogador.nome_completo ??
+                  jogador.nome ??
+                  ""
+                )}</td>
+
+                <td>${escapar(
+                  jogador.cpf ?? ""
+                )}</td>
+
+                <td>${jogador.pontos ?? 0}</td>
+
+                <td>${formatarMoeda(
+                  jogador.equilibrio ?? 0
+                )}</td>
+
+                <td>${formatarData(
+                  jogador.criado_em
+                )}</td>
+
+              </tr>
+            `;
+
+          })
+          .join("");
+
+
+    } catch (erro) {
+
+      console.error(
+        "Erro ao carregar jogadores:",
+        erro
+      );
+
+
+      tabela.innerHTML = `
+        <tr>
+          <td colspan="7">
+            Erro ao carregar jogadores.
+          </td>
+        </tr>
+      `;
+
+    }
+
+  }
+
+
+  /* =========================
+     PERGUNTAS
+  ========================= */
+
+  async function carregarPerguntas() {
+
+    const tabela =
+      document.getElementById(
+        "tabelaPerguntas"
+      );
+
+
+    tabela.innerHTML = `
+      <tr>
+        <td colspan="8">
+          Carregando perguntas...
+        </td>
+      </tr>
+    `;
+
+
+    try {
+
+      const resposta =
+        await fetch(
+          `${API_URL}/api/admin/perguntas`
+        );
+
+
+      const dados =
+        await resposta.json();
+
+
+      if (
+        !resposta.ok ||
+        !dados.sucesso
+      ) {
+
+        throw new Error(
+          dados.erro ||
+          "Erro ao carregar perguntas."
+        );
+
+      }
+
+
+      if (
+        !dados.perguntas ||
+        dados.perguntas.length === 0
+      ) {
+
+        tabela.innerHTML = `
+          <tr>
+            <td colspan="8">
+              Nenhuma pergunta cadastrada.
+            </td>
+          </tr>
+        `;
+
+        return;
+
+      }
+
+
+      tabela.innerHTML =
+        dados.perguntas
+          .map(function(pergunta) {
+
+            return `
+              <tr>
+
+                <td>${pergunta.id ?? ""}</td>
+
+                <td>${escapar(
+                  pergunta.pergunta ?? ""
+                )}</td>
+
+                <td>${escapar(
+                  pergunta.alternativa_a ?? ""
+                )}</td>
+
+                <td>${escapar(
+                  pergunta.alternativa_b ?? ""
+                )}</td>
+
+                <td>${escapar(
+                  pergunta.alternativa_c ?? ""
+                )}</td>
+
+                <td>${escapar(
+                  pergunta.alternativa_d ?? ""
+                )}</td>
+
+                <td>
+                  ${pergunta.resposta_correta ?? ""}
+                </td>
+
+                <td>
+                  ${mostrarDificuldade(
+                    pergunta.dificuldade
+                  )}
+                </td>
+
+              </tr>
+            `;
+
+          })
+          .join("");
+
+
+    } catch (erro) {
+
+      console.error(
+        "Erro ao carregar perguntas:",
+        erro
+      );
+
+
+      tabela.innerHTML = `
+        <tr>
+          <td colspan="8">
+            Erro ao carregar perguntas.
+          </td>
+        </tr>
+      `;
+
+    }
+
+  }
+
+
+  /* =========================
+     CADASTRAR PERGUNTA
+  ========================= */
+
+  document
+    .getElementById("perguntaForm")
+    .addEventListener(
       "submit",
       async function(event) {
 
@@ -1179,64 +1443,76 @@
 
         const message =
           document.getElementById(
-            "questionMessage"
+            "perguntaMessage"
           );
+
+
+        message.textContent =
+          "Salvando pergunta...";
 
 
         const dados = {
 
           pergunta:
-            document.getElementById(
-              "pergunta"
-            ).value.trim(),
+            document
+              .getElementById("pergunta")
+              .value
+              .trim(),
 
           alternativa_a:
-            document.getElementById(
-              "alternativa_a"
-            ).value.trim(),
+            document
+              .getElementById("alternativa_a")
+              .value
+              .trim(),
 
           alternativa_b:
-            document.getElementById(
-              "alternativa_b"
-            ).value.trim(),
+            document
+              .getElementById("alternativa_b")
+              .value
+              .trim(),
 
           alternativa_c:
-            document.getElementById(
-              "alternativa_c"
-            ).value.trim(),
+            document
+              .getElementById("alternativa_c")
+              .value
+              .trim(),
 
           alternativa_d:
-            document.getElementById(
-              "alternativa_d"
-            ).value.trim(),
+            document
+              .getElementById("alternativa_d")
+              .value
+              .trim(),
 
           resposta_correta:
-            document.getElementById(
-              "resposta_correta"
-            ).value
+            document
+              .getElementById("resposta_correta")
+              .value,
+
+          dificuldade:
+            document
+              .getElementById("dificuldade")
+              .value
 
         };
 
 
-        message.textContent =
-          "Cadastrando pergunta...";
-
-        message.className =
-          "message";
-
-
         try {
 
-          const resposta = await fetch(
-            `${API_URL}/api/admin/perguntas`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify(dados)
-            }
-          );
+          const resposta =
+            await fetch(
+              `${API_URL}/api/admin/perguntas`,
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body:
+                  JSON.stringify(dados)
+              }
+            );
 
 
           const resultado =
@@ -1248,38 +1524,35 @@
             !resultado.sucesso
           ) {
 
-            message.textContent =
+            throw new Error(
               resultado.erro ||
-              "Erro ao cadastrar pergunta.";
+              "Erro ao cadastrar pergunta."
+            );
 
-            message.className =
-              "message error";
-
-            return;
           }
 
 
           message.textContent =
             "Pergunta cadastrada com sucesso!";
 
-          message.className =
-            "message success";
 
-
-          questionForm.reset();
+          document
+            .getElementById(
+              "perguntaForm"
+            )
+            .reset();
 
 
           carregarPerguntas();
+
 
         } catch (erro) {
 
           console.error(erro);
 
           message.textContent =
-            "Erro ao conectar ao backend.";
-
-          message.className =
-            "message error";
+            erro.message ||
+            "Erro ao cadastrar pergunta.";
 
         }
 
@@ -1287,41 +1560,501 @@
     );
 
 
-    /* =========================
-       SEGURANÇA DE TEXTO
-    ========================= */
+  /* =========================
+     IMPORTAR CSV
+  ========================= */
 
-    function escaparHTML(texto) {
+  async function importarCSV() {
 
-      if (texto === null ||
-          texto === undefined) {
-        return "";
-      }
-
-
-      return String(texto)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-    }
-
-
-    /* =========================
-       INICIALIZAÇÃO
-    ========================= */
-
-    const emailSalvo =
-      localStorage.getItem(
-        "quizup_admin_email"
+    const arquivoInput =
+      document.getElementById(
+        "arquivoCSV"
       );
 
 
-    if (emailSalvo) {
-      mostrarAdmin(emailSalvo);
+    const message =
+      document.getElementById(
+        "importMessage"
+      );
+
+
+    if (
+      !arquivoInput.files ||
+      arquivoInput.files.length === 0
+    ) {
+
+      message.textContent =
+        "Escolha um arquivo CSV primeiro.";
+
+      return;
+
     }
 
-  </script></body>
+
+    const arquivo =
+      arquivoInput.files[0];
+
+
+    message.textContent =
+      "Lendo arquivo...";
+
+
+    try {
+
+      const texto =
+        await arquivo.text();
+
+
+      const linhas =
+        texto
+          .replace(/^\uFEFF/, "")
+          .split(/\r?\n/)
+          .filter(
+            linha => linha.trim() !== ""
+          );
+
+
+      if (linhas.length < 2) {
+
+        throw new Error(
+          "O arquivo CSV não possui perguntas."
+        );
+
+      }
+
+
+      const cabecalho =
+        analisarCSV(linhas[0]);
+
+
+      const indice = {};
+
+      cabecalho.forEach(
+        function(nome, posicao) {
+
+          indice[
+            nome
+              .trim()
+              .toLowerCase()
+          ] = posicao;
+
+        }
+      );
+
+
+      const obrigatorias = [
+        "pergunta",
+        "alternativa_a",
+        "alternativa_b",
+        "alternativa_c",
+        "alternativa_d",
+        "resposta_correta",
+        "dificuldade"
+      ];
+
+
+      for (
+        const coluna of obrigatorias
+      ) {
+
+        if (
+          indice[coluna] === undefined
+        ) {
+
+          throw new Error(
+            `A coluna "${coluna}" não foi encontrada no CSV.`
+          );
+
+        }
+
+      }
+
+
+      const perguntas = [];
+
+
+      for (
+        let i = 1;
+        i < linhas.length;
+        i++
+      ) {
+
+        const colunas =
+          analisarCSV(
+            linhas[i]
+          );
+
+
+        if (
+          colunas.length === 0
+        ) {
+          continue;
+        }
+
+
+        const item = {
+
+          pergunta:
+            (colunas[
+              indice.pergunta
+            ] || "").trim(),
+
+          alternativa_a:
+            (colunas[
+              indice.alternativa_a
+            ] || "").trim(),
+
+          alternativa_b:
+            (colunas[
+              indice.alternativa_b
+            ] || "").trim(),
+
+          alternativa_c:
+            (colunas[
+              indice.alternativa_c
+            ] || "").trim(),
+
+          alternativa_d:
+            (colunas[
+              indice.alternativa_d
+            ] || "").trim(),
+
+          resposta_correta:
+            (colunas[
+              indice.resposta_correta
+            ] || "")
+              .trim()
+              .toUpperCase(),
+
+          dificuldade:
+            (colunas[
+              indice.dificuldade
+            ] || "facil")
+              .trim()
+              .toLowerCase()
+
+        };
+
+
+        if (
+          !item.pergunta ||
+          !item.alternativa_a ||
+          !item.alternativa_b ||
+          !item.alternativa_c ||
+          !item.alternativa_d ||
+          !["A","B","C","D"]
+            .includes(
+              item.resposta_correta
+            )
+        ) {
+
+          continue;
+
+        }
+
+
+        if (
+          !["facil","medio","dificil"]
+            .includes(
+              item.dificuldade
+            )
+        ) {
+
+          item.dificuldade =
+            "facil";
+
+        }
+
+
+        perguntas.push(item);
+
+      }
+
+
+      if (
+        perguntas.length === 0
+      ) {
+
+        throw new Error(
+          "Nenhuma pergunta válida foi encontrada."
+        );
+
+      }
+
+
+      /*
+       * Envia em lotes para evitar
+       * uma requisição gigantesca.
+       */
+
+      const TAMANHO_LOTE = 500;
+
+      let totalImportado = 0;
+
+
+      for (
+        let inicio = 0;
+        inicio < perguntas.length;
+        inicio += TAMANHO_LOTE
+      ) {
+
+        const lote =
+          perguntas.slice(
+            inicio,
+            inicio + TAMANHO_LOTE
+          );
+
+
+        message.textContent =
+          `Enviando ${Math.min(
+            inicio + lote.length,
+            perguntas.length
+          )} de ${perguntas.length} perguntas...`;
+
+
+        const resposta =
+          await fetch(
+            `${API_URL}/api/admin/perguntas/importar`,
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+
+              body: JSON.stringify({
+                perguntas: lote
+              })
+            }
+          );
+
+
+        const resultado =
+          await resposta.json();
+
+
+        if (
+          !resposta.ok ||
+          !resultado.sucesso
+        ) {
+
+          throw new Error(
+            resultado.erro ||
+            "Erro durante a importação."
+          );
+
+        }
+
+
+        totalImportado +=
+          resultado.quantidade || 0;
+
+      }
+
+
+      message.textContent =
+        `✅ ${totalImportado} perguntas importadas com sucesso!`;
+
+
+      arquivoInput.value = "";
+
+
+      carregarPerguntas();
+
+
+    } catch (erro) {
+
+      console.error(
+        "Erro na importação:",
+        erro
+      );
+
+
+      message.textContent =
+        `❌ ${erro.message}`;
+
+    }
+
+  }
+
+
+  /* =========================
+     ANALISAR CSV
+  ========================= */
+
+  function analisarCSV(linha) {
+
+    const resultado = [];
+
+    let atual = "";
+
+    let dentroDeAspas = false;
+
+
+    for (
+      let i = 0;
+      i < linha.length;
+      i++
+    ) {
+
+      const caractere =
+        linha[i];
+
+
+      if (
+        caractere === '"'
+      ) {
+
+        if (
+          dentroDeAspas &&
+          linha[i + 1] === '"'
+        ) {
+
+          atual += '"';
+
+          i++;
+
+        } else {
+
+          dentroDeAspas =
+            !dentroDeAspas;
+
+        }
+
+      }
+
+      else if (
+        caractere === "," &&
+        !dentroDeAspas
+      ) {
+
+        resultado.push(
+          atual
+        );
+
+        atual = "";
+
+      }
+
+      else {
+
+        atual += caractere;
+
+      }
+
+    }
+
+
+    resultado.push(atual);
+
+
+    return resultado;
+
+  }
+
+
+  /* =========================
+     UTILITÁRIOS
+  ========================= */
+
+  function formatarMoeda(valor) {
+
+    return Number(valor || 0)
+      .toLocaleString(
+        "pt-BR",
+        {
+          style: "currency",
+          currency: "BRL"
+        }
+      );
+
+  }
+
+
+  function formatarData(data) {
+
+    if (!data) {
+      return "";
+    }
+
+
+    const dataObj =
+      new Date(data);
+
+
+    if (
+      Number.isNaN(
+        dataObj.getTime()
+      )
+    ) {
+
+      return "";
+
+    }
+
+
+    return dataObj.toLocaleString(
+      "pt-BR"
+    );
+
+  }
+
+
+  function escapar(valor) {
+
+    return String(valor)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  function mostrarDificuldade(
+    dificuldade
+  ) {
+
+    if (
+      dificuldade === "dificil"
+    ) {
+
+      return "🔴 Difícil";
+
+    }
+
+
+    if (
+      dificuldade === "medio"
+    ) {
+
+      return "🟡 Médio";
+
+    }
+
+
+    return "🟢 Fácil";
+
+  }
+
+
+  /* =========================
+     VERIFICAR LOGIN
+  ========================= */
+
+  if (
+    localStorage.getItem(
+      "quizup_admin"
+    )
+  ) {
+
+    mostrarAdmin();
+
+  }
+
+</script>
+
+</body>
   </html>
