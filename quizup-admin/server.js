@@ -110,6 +110,12 @@ async function prepararBanco() {
       ON perguntas (dificuldade)
     `);
 
+    // Índice para o ID das perguntas
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_perguntas_id
+      ON perguntas (id)
+    `);
+
     console.log("Tabela admins pronta.");
     console.log("Tabela jogadores verificada.");
     console.log("Tabela perguntas verificada.");
@@ -317,7 +323,10 @@ app.get("/api/admin/perguntas", async (req, res) => {
   }
 });
 
-// Rota alternativa
+// ===============================
+// ROTA ALTERNATIVA DE PERGUNTAS
+// ===============================
+
 app.get("/api/perguntas", async (req, res) => {
   try {
     const resultado = await pool.query(`
@@ -346,6 +355,49 @@ app.get("/api/perguntas", async (req, res) => {
     res.status(500).json({
       sucesso: false,
       erro: "Erro ao carregar perguntas."
+    });
+  }
+});
+
+// ===============================
+// BUSCAR UMA PERGUNTA ALEATÓRIA
+// ===============================
+
+app.get("/api/pergunta-aleatoria", async (req, res) => {
+  try {
+    const resultado = await pool.query(`
+      SELECT
+        id,
+        pergunta,
+        resposta_a AS alternativa_a,
+        resposta_b AS alternativa_b,
+        resposta_c AS alternativa_c,
+        resposta_d AS alternativa_d,
+        resposta_correta,
+        dificuldade
+      FROM perguntas
+      ORDER BY RANDOM()
+      LIMIT 1
+    `);
+
+    if (resultado.rows.length === 0) {
+      return res.status(404).json({
+        sucesso: false,
+        erro: "Nenhuma pergunta cadastrada."
+      });
+    }
+
+    res.json({
+      sucesso: true,
+      pergunta: resultado.rows[0]
+    });
+
+  } catch (erro) {
+    console.error("Erro ao buscar pergunta aleatória:", erro);
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao buscar pergunta."
     });
   }
 });
