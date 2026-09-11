@@ -56,6 +56,18 @@ async function prepararBanco() {
 
     console.log("Tabela jogadores verificada.");
 
+    await pool.query(`
+      ALTER TABLE perguntas
+      ADD COLUMN IF NOT EXISTS dificuldade VARCHAR(10) DEFAULT 'facil'
+    `);
+
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_perguntas_id
+      ON perguntas (id)
+    `);
+
+    console.log("Tabela perguntas verificada.");
+
   } catch (erro) {
     console.error("Erro ao preparar banco:", erro);
   }
@@ -717,6 +729,7 @@ app.get("/api/admin/perguntas", async (req, res) => {
         alternativa_c,
         alternativa_d,
         resposta_correta,
+        dificuldade,
         criada_em
       FROM perguntas
       ORDER BY id DESC
@@ -745,7 +758,8 @@ app.post("/api/admin/perguntas", async (req, res) => {
       alternativa_b,
       alternativa_c,
       alternativa_d,
-      resposta_correta
+      resposta_correta,
+      dificuldade
     } = req.body;
 
     if (
@@ -762,12 +776,25 @@ app.post("/api/admin/perguntas", async (req, res) => {
       });
     }
 
-    const resposta = String(resposta_correta).toUpperCase();
+    const resposta = String(resposta_correta)
+      .toUpperCase()
+      .trim();
 
     if (!["A", "B", "C", "D"].includes(resposta)) {
       return res.status(400).json({
         sucesso: false,
         erro: "Resposta correta inválida."
+      });
+    }
+
+    const nivel = String(dificuldade || "facil")
+      .toLowerCase()
+      .trim();
+
+    if (!["facil", "medio", "dificil"].includes(nivel)) {
+      return res.status(400).json({
+        sucesso: false,
+        erro: "Dificuldade inválida."
       });
     }
 
@@ -780,9 +807,10 @@ app.post("/api/admin/perguntas", async (req, res) => {
         alternativa_b,
         alternativa_c,
         alternativa_d,
-        resposta_correta
+        resposta_correta,
+        dificuldade
       )
-      VALUES ($1, $2, $3, $4, $5, $6)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *
       `,
       [
@@ -791,7 +819,8 @@ app.post("/api/admin/perguntas", async (req, res) => {
         alternativa_b.trim(),
         alternativa_c.trim(),
         alternativa_d.trim(),
-        resposta
+        resposta,
+        nivel
       ]
     );
 
@@ -806,6 +835,121 @@ app.post("/api/admin/perguntas", async (req, res) => {
     res.status(500).json({
       sucesso: false,
       erro: "Erro ao criar pergunta."
+    });
+  }
+});
+
+// ======================================================
+// IMPORTAÇÃO DE PERGUNTAS EM LOTE
+// ======================================================
+
+app.post("/api/admin/perguntas/importar", async (req, res) => {
+  try {
+    const { perguntas } = req.body;
+
+    if (!Array.isArray(perguntas) || perguntas.length === 0) {
+      return res.status(400).json({
+        sucesso: false,
+        erro: "Nenhuma pergunta enviada."
+      });
+    }
+
+    if (perguntas.length > 1000) {
+      return res.status(400).json({
+        sucesso: false,
+        erro: "O máximo por lote é 1000 perguntas."
+      });
+    }
+
+    const client = await pool.connect();
+
+    try {
+      await client.query("BEGIN");
+
+      let inseridas = 0;
+
+      for (const p of perguntas) {
+        const pergunta = String(p.pergunta || "").trim();
+        const alternativaA = String(p.alternativa_a || "").trim();
+        const alternativaB = String(p.alternativa_b || "").trim();
+        const alternativaC = String(p.alternativa_c || "").trim();
+        const alternativaD = String(p.alternativa_d || "").trim();
+
+        const resposta = String(p.resposta_correta || "")
+          .toUpperCase()
+          .trim();
+
+        const dificuldade = String(p.dificuldade || "facil")
+          .toLowerCase()
+          .trim();
+
+        if (
+          !pergunta ||
+          !alternativaA ||
+          !alternativaB ||
+          !alternativaC ||
+          !alternativaD
+        ) {
+          continue;
+        }
+
+        if (!["A", "B", "C", "D"].includes(resposta)) {
+          continue;
+        }
+
+        if (!["facil", "medio", "dificil"].includes(dificuldade)) {
+          continue;
+        }
+
+        await client.query(
+          `
+          INSERT INTO perguntas
+          (
+            pergunta,
+            alternativa_a,
+            alternativa_b,
+            alternativa_c,
+            alternativa_d,
+            resposta_correta,
+            dificuldade
+          )
+          VALUES ($1, $2, $3, $4, $5, $6, $7)
+          `,
+          [
+            pergunta,
+            alternativaA,
+            alternativaB,
+            alternativaC,
+            alternativaD,
+            resposta,
+            dificuldade
+          ]
+        );
+
+        inseridas++;
+      }
+
+      await client.query("COMMIT");
+
+      res.json({
+        sucesso: true,
+        inseridas
+      });
+
+    } catch (erro) {
+      await client.query("ROLLBACK");
+      throw erro;
+
+    } finally {
+      client.release();
+    }
+
+  } catch (erro) {
+    console.error("Erro ao importar perguntas:", erro);
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao importar perguntas."
     });
   }
 });
