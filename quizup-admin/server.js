@@ -6,7 +6,7 @@ const { Pool } = require("pg");
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "20mb" }));
 
 const PORT = process.env.PORT || 10000;
 
@@ -18,7 +18,7 @@ const pool = new Pool({
 });
 
 // ===============================
-// TESTE DO SERVIDOR
+// INÍCIO
 // ===============================
 
 app.get("/", (req, res) => {
@@ -34,18 +34,19 @@ app.get("/", (req, res) => {
 
 app.get("/api/test-db", async (req, res) => {
   try {
-    const result = await pool.query("SELECT NOW() AS time");
+    const result = await pool.query("SELECT NOW() AS agora");
 
     res.json({
       status: "ok",
-      time: result.rows[0].time
+      banco: "conectado",
+      hora: result.rows[0].agora
     });
-  } catch (error) {
-    console.error("Erro no banco:", error);
+  } catch (erro) {
+    console.error("Erro no banco:", erro);
 
     res.status(500).json({
-      status: "error",
-      message: error.message
+      status: "erro",
+      erro: erro.message
     });
   }
 });
@@ -65,8 +66,6 @@ async function prepararBanco() {
       )
     `);
 
-    console.log("Tabela admins pronta.");
-
     await pool.query(`
       CREATE TABLE IF NOT EXISTS jogadores (
         id SERIAL PRIMARY KEY,
@@ -79,8 +78,6 @@ async function prepararBanco() {
         criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
-
-    console.log("Tabela jogadores verificada.");
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS perguntas (
@@ -95,10 +92,29 @@ async function prepararBanco() {
       )
     `);
 
-    console.log("Tabela perguntas verificada.");
+    // Garante que perguntas antigas também tenham dificuldade
+    await pool.query(`
+      ALTER TABLE perguntas
+      ADD COLUMN IF NOT EXISTS dificuldade VARCHAR(10) DEFAULT 'facil'
+    `);
 
-  } catch (error) {
-    console.error("Erro ao preparar banco:", error);
+    // Garante que jogadores tenham saldo
+    await pool.query(`
+      ALTER TABLE jogadores
+      ADD COLUMN IF NOT EXISTS saldo NUMERIC(10,2) DEFAULT 0
+    `);
+
+    // Índice para buscas rápidas por dificuldade
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_perguntas_dificuldade
+      ON perguntas (dificuldade)
+    `);
+
+    console.log("Tabela admins pronta.");
+    console.log("Tabela jogadores verificada.");
+    console.log("Tabela perguntas verificada.");
+  } catch (erro) {
+    console.error("Erro ao preparar banco:", erro);
   }
 }
 
@@ -117,19 +133,19 @@ app.post("/api/admin/login", async (req, res) => {
       });
     }
 
-    const result = await pool.query(
-      "SELECT * FROM admins WHERE LOWER(email) = LOWER($1) LIMIT 1",
+    const resultado = await pool.query(
+      "SELECT * FROM admins WHERE email = $1 LIMIT 1",
       [email]
     );
 
-    if (result.rows.length === 0) {
+    if (resultado.rows.length === 0) {
       return res.status(401).json({
         sucesso: false,
         erro: "E-mail ou senha incorretos."
       });
     }
 
-    const admin = result.rows[0];
+    const admin = resultado.rows[0];
 
     const senhaCorreta = await bcrypt.compare(
       senha,
@@ -145,19 +161,19 @@ app.post("/api/admin/login", async (req, res) => {
 
     res.json({
       sucesso: true,
-      mensagem: "Login realizado com sucesso!",
+      mensagem: "Login realizado com sucesso.",
       admin: {
         id: admin.id,
         email: admin.email
       }
     });
 
-  } catch (error) {
-    console.error("Erro no login:", error);
+  } catch (erro) {
+    console.error("Erro no login:", erro);
 
     res.status(500).json({
       sucesso: false,
-      erro: "Erro interno do servidor."
+      erro: "Erro interno no servidor."
     });
   }
 });
@@ -168,27 +184,30 @@ app.post("/api/admin/login", async (req, res) => {
 
 app.get("/api/admin/dashboard", async (req, res) => {
   try {
-    const jogadores = await pool.query(
-      "SELECT COUNT(*)::int AS total FROM jogadores"
-    );
+    const jogadores = await pool.query(`
+      SELECT COUNT(*) AS total
+      FROM jogadores
+    `);
 
-    const pontos = await pool.query(
-      "SELECT COALESCE(SUM(pontos), 0)::int AS total FROM jogadores"
-    );
+    const pontos = await pool.query(`
+      SELECT COALESCE(SUM(pontos), 0) AS total
+      FROM jogadores
+    `);
 
-    const saldo = await pool.query(
-      "SELECT COALESCE(SUM(saldo), 0)::numeric AS total FROM jogadores"
-    );
+    const saldo = await pool.query(`
+      SELECT COALESCE(SUM(saldo), 0) AS total
+      FROM jogadores
+    `);
 
     res.json({
       sucesso: true,
-      totalJogadores: jogadores.rows[0].total,
-      totalPontos: pontos.rows[0].total,
-      saldoTotal: saldo.rows[0].total
+      totalJogadores: Number(jogadores.rows[0].total),
+      totalPontos: Number(pontos.rows[0].total),
+      saldoTotal: Number(saldo.rows[0].total)
     });
 
-  } catch (error) {
-    console.error("Erro no dashboard:", error);
+  } catch (erro) {
+    console.error("Erro no dashboard:", erro);
 
     res.status(500).json({
       sucesso: false,
@@ -198,12 +217,12 @@ app.get("/api/admin/dashboard", async (req, res) => {
 });
 
 // ===============================
-// JOGADORES - PAINEL ADMIN
+// JOGADORES
 // ===============================
 
 app.get("/api/admin/jogadores", async (req, res) => {
   try {
-    const result = await pool.query(`
+    const resultado = await pool.query(`
       SELECT
         id,
         email,
@@ -218,11 +237,42 @@ app.get("/api/admin/jogadores", async (req, res) => {
 
     res.json({
       sucesso: true,
-      jogadores: result.rows
+      jogadores: resultado.rows
     });
 
-  } catch (error) {
-    console.error("Erro ao buscar jogadores:", error);
+  } catch (erro) {
+    console.error("Erro ao buscar jogadores:", erro);
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao carregar jogadores."
+    });
+  }
+});
+
+// Rota alternativa
+app.get("/api/jogadores", async (req, res) => {
+  try {
+    const resultado = await pool.query(`
+      SELECT
+        id,
+        email,
+        nome AS nome_completo,
+        cpf,
+        pontos,
+        saldo AS equilibrio,
+        criado_em
+      FROM jogadores
+      ORDER BY id DESC
+    `);
+
+    res.json({
+      sucesso: true,
+      jogadores: resultado.rows
+    });
+
+  } catch (erro) {
+    console.error("Erro ao buscar jogadores:", erro);
 
     res.status(500).json({
       sucesso: false,
@@ -232,43 +282,12 @@ app.get("/api/admin/jogadores", async (req, res) => {
 });
 
 // ===============================
-// JOGADORES - ROTA SIMPLES
-// ===============================
-
-app.get("/api/jogadores", async (req, res) => {
-  try {
-    const result = await pool.query(`
-      SELECT
-        id,
-        email,
-        nome AS nome_completo,
-        cpf,
-        pontos,
-        saldo AS equilibrio,
-        criado_em
-      FROM jogadores
-      ORDER BY id DESC
-    `);
-
-    res.json(result.rows);
-
-  } catch (error) {
-    console.error("Erro ao buscar jogadores:", error);
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro ao buscar jogadores."
-    });
-  }
-});
-
-// ===============================
-// PERGUNTAS - LISTAR
+// LISTAR PERGUNTAS
 // ===============================
 
 app.get("/api/admin/perguntas", async (req, res) => {
   try {
-    const result = await pool.query(`
+    const resultado = await pool.query(`
       SELECT
         id,
         pergunta,
@@ -277,6 +296,7 @@ app.get("/api/admin/perguntas", async (req, res) => {
         resposta_c AS alternativa_c,
         resposta_d AS alternativa_d,
         resposta_correta,
+        dificuldade,
         criado_em
       FROM perguntas
       ORDER BY id DESC
@@ -284,11 +304,44 @@ app.get("/api/admin/perguntas", async (req, res) => {
 
     res.json({
       sucesso: true,
-      perguntas: result.rows
+      perguntas: resultado.rows
     });
 
-  } catch (error) {
-    console.error("Erro ao buscar perguntas:", error);
+  } catch (erro) {
+    console.error("Erro ao buscar perguntas:", erro);
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao carregar perguntas."
+    });
+  }
+});
+
+// Rota alternativa
+app.get("/api/perguntas", async (req, res) => {
+  try {
+    const resultado = await pool.query(`
+      SELECT
+        id,
+        pergunta,
+        resposta_a AS alternativa_a,
+        resposta_b AS alternativa_b,
+        resposta_c AS alternativa_c,
+        resposta_d AS alternativa_d,
+        resposta_correta,
+        dificuldade,
+        criado_em
+      FROM perguntas
+      ORDER BY id DESC
+    `);
+
+    res.json({
+      sucesso: true,
+      perguntas: resultado.rows
+    });
+
+  } catch (erro) {
+    console.error("Erro ao buscar perguntas:", erro);
 
     res.status(500).json({
       sucesso: false,
@@ -298,39 +351,7 @@ app.get("/api/admin/perguntas", async (req, res) => {
 });
 
 // ===============================
-// PERGUNTAS - ROTA SIMPLES
-// ===============================
-
-app.get("/api/perguntas", async (req, res) => {
-  try {
-    const result = await pool.query(`
-      SELECT
-        id,
-        pergunta,
-        resposta_a AS alternativa_a,
-        resposta_b AS alternativa_b,
-        resposta_c AS alternativa_c,
-        resposta_d AS alternativa_d,
-        resposta_correta,
-        criado_em
-      FROM perguntas
-      ORDER BY id DESC
-    `);
-
-    res.json(result.rows);
-
-  } catch (error) {
-    console.error("Erro ao buscar perguntas:", error);
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro ao buscar perguntas."
-    });
-  }
-});
-
-// ===============================
-// PERGUNTAS - CADASTRAR
+// CADASTRAR UMA PERGUNTA
 // ===============================
 
 app.post("/api/admin/perguntas", async (req, res) => {
@@ -341,7 +362,8 @@ app.post("/api/admin/perguntas", async (req, res) => {
       alternativa_b,
       alternativa_c,
       alternativa_d,
-      resposta_correta
+      resposta_correta,
+      dificuldade
     } = req.body;
 
     if (
@@ -358,8 +380,9 @@ app.post("/api/admin/perguntas", async (req, res) => {
       });
     }
 
-    const result = await pool.query(
-      `
+    const dificuldadeFinal = dificuldade || "facil";
+
+    const resultado = await pool.query(`
       INSERT INTO perguntas
       (
         pergunta,
@@ -367,29 +390,29 @@ app.post("/api/admin/perguntas", async (req, res) => {
         resposta_b,
         resposta_c,
         resposta_d,
-        resposta_correta
+        resposta_correta,
+        dificuldade
       )
-      VALUES ($1, $2, $3, $4, $5, $6)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *
-      `,
-      [
-        pergunta,
-        alternativa_a,
-        alternativa_b,
-        alternativa_c,
-        alternativa_d,
-        resposta_correta
-      ]
-    );
+    `, [
+      pergunta,
+      alternativa_a,
+      alternativa_b,
+      alternativa_c,
+      alternativa_d,
+      resposta_correta,
+      dificuldadeFinal
+    ]);
 
     res.json({
       sucesso: true,
-      mensagem: "Pergunta cadastrada com sucesso!",
-      pergunta: result.rows[0]
+      mensagem: "Pergunta cadastrada com sucesso.",
+      pergunta: resultado.rows[0]
     });
 
-  } catch (error) {
-    console.error("Erro ao cadastrar pergunta:", error);
+  } catch (erro) {
+    console.error("Erro ao cadastrar pergunta:", erro);
 
     res.status(500).json({
       sucesso: false,
@@ -399,17 +422,94 @@ app.post("/api/admin/perguntas", async (req, res) => {
 });
 
 // ===============================
+// IMPORTAÇÃO EM MASSA
+// ===============================
+
+app.post("/api/admin/perguntas/importar", async (req, res) => {
+  const perguntas = req.body.perguntas;
+
+  if (!Array.isArray(perguntas) || perguntas.length === 0) {
+    return res.status(400).json({
+      sucesso: false,
+      erro: "Envie uma lista de perguntas."
+    });
+  }
+
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    let quantidade = 0;
+
+    for (const item of perguntas) {
+      if (
+        !item.pergunta ||
+        !item.alternativa_a ||
+        !item.alternativa_b ||
+        !item.alternativa_c ||
+        !item.alternativa_d ||
+        !item.resposta_correta
+      ) {
+        continue;
+      }
+
+      const dificuldade = item.dificuldade || "facil";
+
+      await client.query(`
+        INSERT INTO perguntas
+        (
+          pergunta,
+          resposta_a,
+          resposta_b,
+          resposta_c,
+          resposta_d,
+          resposta_correta,
+          dificuldade
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `, [
+        item.pergunta,
+        item.alternativa_a,
+        item.alternativa_b,
+        item.alternativa_c,
+        item.alternativa_d,
+        item.resposta_correta,
+        dificuldade
+      ]);
+
+      quantidade++;
+    }
+
+    await client.query("COMMIT");
+
+    res.json({
+      sucesso: true,
+      mensagem: "Perguntas importadas com sucesso.",
+      quantidade
+    });
+
+  } catch (erro) {
+    await client.query("ROLLBACK");
+
+    console.error("Erro na importação:", erro);
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao importar perguntas."
+    });
+
+  } finally {
+    client.release();
+  }
+});
+
+// ===============================
 // INICIAR SERVIDOR
 // ===============================
 
-async function iniciar() {
-  await prepararBanco();
-
+prepararBanco().finally(() => {
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(
-      `QuizUp Admin Backend rodando na porta ${PORT}`
-    );
+    console.log(`QuizUp Admin Backend rodando na porta ${PORT}`);
   });
-}
-
-iniciar();
+});
