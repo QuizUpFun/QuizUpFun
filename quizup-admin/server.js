@@ -51,7 +51,7 @@ app.get("/api/test-db", async (req, res) => {
 });
 
 // ===============================
-// CRIAR TABELAS NECESSÁRIAS
+// PREPARAR BANCO
 // ===============================
 
 async function prepararBanco() {
@@ -103,7 +103,7 @@ async function prepararBanco() {
 }
 
 // ===============================
-// LOGIN ADMINISTRATIVO
+// LOGIN ADMIN
 // ===============================
 
 app.post("/api/admin/login", async (req, res) => {
@@ -113,7 +113,7 @@ app.post("/api/admin/login", async (req, res) => {
     if (!email || !senha) {
       return res.status(400).json({
         sucesso: false,
-        mensagem: "E-mail e senha são obrigatórios."
+        erro: "E-mail e senha são obrigatórios."
       });
     }
 
@@ -125,7 +125,7 @@ app.post("/api/admin/login", async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(401).json({
         sucesso: false,
-        mensagem: "E-mail ou senha incorretos."
+        erro: "E-mail ou senha incorretos."
       });
     }
 
@@ -139,7 +139,7 @@ app.post("/api/admin/login", async (req, res) => {
     if (!senhaCorreta) {
       return res.status(401).json({
         sucesso: false,
-        mensagem: "E-mail ou senha incorretos."
+        erro: "E-mail ou senha incorretos."
       });
     }
 
@@ -157,13 +157,82 @@ app.post("/api/admin/login", async (req, res) => {
 
     res.status(500).json({
       sucesso: false,
-      mensagem: "Erro interno do servidor."
+      erro: "Erro interno do servidor."
     });
   }
 });
 
 // ===============================
-// LISTAR JOGADORES
+// DASHBOARD
+// ===============================
+
+app.get("/api/admin/dashboard", async (req, res) => {
+  try {
+    const jogadores = await pool.query(
+      "SELECT COUNT(*)::int AS total FROM jogadores"
+    );
+
+    const pontos = await pool.query(
+      "SELECT COALESCE(SUM(pontos), 0)::int AS total FROM jogadores"
+    );
+
+    const saldo = await pool.query(
+      "SELECT COALESCE(SUM(saldo), 0)::numeric AS total FROM jogadores"
+    );
+
+    res.json({
+      sucesso: true,
+      totalJogadores: jogadores.rows[0].total,
+      totalPontos: pontos.rows[0].total,
+      saldoTotal: saldo.rows[0].total
+    });
+
+  } catch (error) {
+    console.error("Erro no dashboard:", error);
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao carregar dashboard."
+    });
+  }
+});
+
+// ===============================
+// JOGADORES - PAINEL ADMIN
+// ===============================
+
+app.get("/api/admin/jogadores", async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT
+        id,
+        email,
+        nome AS nome_completo,
+        cpf,
+        pontos,
+        saldo AS equilibrio,
+        criado_em
+      FROM jogadores
+      ORDER BY id DESC
+    `);
+
+    res.json({
+      sucesso: true,
+      jogadores: result.rows
+    });
+
+  } catch (error) {
+    console.error("Erro ao buscar jogadores:", error);
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao carregar jogadores."
+    });
+  }
+});
+
+// ===============================
+// JOGADORES - ROTA SIMPLES
 // ===============================
 
 app.get("/api/jogadores", async (req, res) => {
@@ -171,12 +240,11 @@ app.get("/api/jogadores", async (req, res) => {
     const result = await pool.query(`
       SELECT
         id,
-        nome,
         email,
+        nome AS nome_completo,
         cpf,
-        codigo_de_indicacao,
         pontos,
-        saldo,
+        saldo AS equilibrio,
         criado_em
       FROM jogadores
       ORDER BY id DESC
@@ -189,19 +257,62 @@ app.get("/api/jogadores", async (req, res) => {
 
     res.status(500).json({
       sucesso: false,
-      mensagem: "Erro ao buscar jogadores."
+      erro: "Erro ao buscar jogadores."
     });
   }
 });
 
 // ===============================
-// LISTAR PERGUNTAS
+// PERGUNTAS - LISTAR
+// ===============================
+
+app.get("/api/admin/perguntas", async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT
+        id,
+        pergunta,
+        resposta_a AS alternativa_a,
+        resposta_b AS alternativa_b,
+        resposta_c AS alternativa_c,
+        resposta_d AS alternativa_d,
+        resposta_correta,
+        criado_em
+      FROM perguntas
+      ORDER BY id DESC
+    `);
+
+    res.json({
+      sucesso: true,
+      perguntas: result.rows
+    });
+
+  } catch (error) {
+    console.error("Erro ao buscar perguntas:", error);
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao carregar perguntas."
+    });
+  }
+});
+
+// ===============================
+// PERGUNTAS - ROTA SIMPLES
 // ===============================
 
 app.get("/api/perguntas", async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT *
+      SELECT
+        id,
+        pergunta,
+        resposta_a AS alternativa_a,
+        resposta_b AS alternativa_b,
+        resposta_c AS alternativa_c,
+        resposta_d AS alternativa_d,
+        resposta_correta,
+        criado_em
       FROM perguntas
       ORDER BY id DESC
     `);
@@ -213,20 +324,91 @@ app.get("/api/perguntas", async (req, res) => {
 
     res.status(500).json({
       sucesso: false,
-      mensagem: "Erro ao buscar perguntas."
+      erro: "Erro ao buscar perguntas."
     });
   }
 });
 
 // ===============================
-// INICIAR
+// PERGUNTAS - CADASTRAR
+// ===============================
+
+app.post("/api/admin/perguntas", async (req, res) => {
+  try {
+    const {
+      pergunta,
+      alternativa_a,
+      alternativa_b,
+      alternativa_c,
+      alternativa_d,
+      resposta_correta
+    } = req.body;
+
+    if (
+      !pergunta ||
+      !alternativa_a ||
+      !alternativa_b ||
+      !alternativa_c ||
+      !alternativa_d ||
+      !resposta_correta
+    ) {
+      return res.status(400).json({
+        sucesso: false,
+        erro: "Preencha todos os campos da pergunta."
+      });
+    }
+
+    const result = await pool.query(
+      `
+      INSERT INTO perguntas
+      (
+        pergunta,
+        resposta_a,
+        resposta_b,
+        resposta_c,
+        resposta_d,
+        resposta_correta
+      )
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *
+      `,
+      [
+        pergunta,
+        alternativa_a,
+        alternativa_b,
+        alternativa_c,
+        alternativa_d,
+        resposta_correta
+      ]
+    );
+
+    res.json({
+      sucesso: true,
+      mensagem: "Pergunta cadastrada com sucesso!",
+      pergunta: result.rows[0]
+    });
+
+  } catch (error) {
+    console.error("Erro ao cadastrar pergunta:", error);
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao cadastrar pergunta."
+    });
+  }
+});
+
+// ===============================
+// INICIAR SERVIDOR
 // ===============================
 
 async function iniciar() {
   await prepararBanco();
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`QuizUp Admin Backend rodando na porta ${PORT}`);
+    console.log(
+      `QuizUp Admin Backend rodando na porta ${PORT}`
+    );
   });
 }
 
