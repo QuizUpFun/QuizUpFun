@@ -2,9 +2,9 @@
   "name": "quizup-admin",
   "version": "1.0.0",
   "description": "QuizUp Admin Backend",
-  "main": "server.js",
+  "main": "servidor.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node servidor.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
