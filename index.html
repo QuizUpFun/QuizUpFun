@@ -16,11 +16,13 @@
   .appendChild(document.createElement('script')));
 </script>
 
-<!-- HILLTOPADS / GOOGLE IMA -->
+<!-- GOOGLE IMA -->
 <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box
+}
 
 body{
   margin:0;
@@ -208,60 +210,74 @@ input,select{
 }
 
 /* =====================================================
-   HILLTOPADS
+   PLAYER VAST — GOOGLE IMA
 ===================================================== */
 
-#hilltopAdOverlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.94);
-  z-index:999999;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:12px
+#quizAdArea{
+  margin-top:18px;
+  padding:14px;
+  background:rgba(0,0,0,.35);
+  border-radius:16px;
+  text-align:center
 }
 
-#hilltopAdContainer{
+#quizAdTitle{
+  font-weight:800;
+  margin-bottom:10px
+}
+
+#quizAdContainer{
   position:relative;
   width:100%;
   max-width:640px;
   height:360px;
+  margin:auto;
   background:#000;
   border-radius:14px;
   overflow:hidden
 }
 
-#hilltopVideo{
+#quizAdVideo{
   width:100%;
   height:100%;
   display:block;
   background:#000
 }
 
-#hilltopAdMessage{
-  position:absolute;
-  left:0;
-  right:0;
-  top:10px;
-  text-align:center;
-  font-size:13px;
-  color:#fff;
-  pointer-events:none;
-  text-shadow:0 1px 3px #000;
-  z-index:2
-}
-
-#hilltopLoading{
+#quizAdLoading{
   position:absolute;
   left:0;
   right:0;
   top:50%;
   transform:translateY(-50%);
-  text-align:center;
-  font-size:16px;
   color:#fff;
-  z-index:1
+  font-size:15px;
+  text-align:center;
+  z-index:3;
+  pointer-events:none
+}
+
+#quizAdPlay{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  z-index:5;
+  min-width:190px;
+  font-size:18px;
+  padding:16px 22px
+}
+
+#quizAdStatus{
+  margin-top:10px;
+  font-size:13px;
+  opacity:.8
+}
+
+#quizAdContinue{
+  width:100%;
+  margin-top:12px;
+  font-size:17px
 }
 
 @media(max-width:560px){
@@ -278,8 +294,13 @@ input,select{
     font-size:38px
   }
 
-  #hilltopAdContainer{
+  #quizAdContainer{
     height:220px
+  }
+
+  #quizAdPlay{
+    min-width:170px;
+    font-size:16px
   }
 }
 </style>
@@ -288,37 +309,16 @@ input,select{
 <body>
 
 <!-- MÚSICA -->
-<audio id="backgroundMusic"
-       preload="auto"
-       loop>
+<audio
+  id="backgroundMusic"
+  preload="auto"
+  loop>
+
   <source
     src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
     type="audio/mpeg">
+
 </audio>
-
-<!-- HILLTOPADS -->
-<div id="hilltopAdOverlay">
-
-  <div id="hilltopAdContainer">
-
-    <div id="hilltopAdMessage">
-      Anúncio
-    </div>
-
-    <div id="hilltopLoading">
-      Carregando anúncio...
-    </div>
-
-    <video
-      id="hilltopVideo"
-      playsinline
-      webkit-playsinline
-      preload="auto">
-    </video>
-
-  </div>
-
-</div>
 
 <div class="wrap">
 
@@ -559,6 +559,54 @@ atOptions={
 
 </div>
 
+<!-- ANÚNCIO VAST NA PERGUNTA -->
+<div
+  id="quizAdArea"
+  class="hidden">
+
+<div id="quizAdTitle">
+  🎬 Assista ao anúncio para continuar
+</div>
+
+<div id="quizAdContainer">
+
+<video
+  id="quizAdVideo"
+  playsinline
+  webkit-playsinline
+  preload="auto">
+</video>
+
+<div id="quizAdLoading">
+  Preparando anúncio...
+</div>
+
+<button
+  id="quizAdPlay"
+  class="primary"
+  onclick="startQuizAd()">
+
+▶️ ASSISTIR ANÚNCIO
+
+</button>
+
+</div>
+
+<div id="quizAdStatus">
+  Toque no botão para iniciar o anúncio.
+</div>
+
+<button
+  id="quizAdContinue"
+  class="primary hidden"
+  onclick="finishQuestion()">
+
+CONTINUAR
+
+</button>
+
+</div>
+
 <!-- HIGHREVENUEFORMAT -->
 <div
   id="answerAd"
@@ -575,23 +623,6 @@ atOptions={
 </script>
 
 <script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
-
-</div>
-
-<div
-  id="rewardBox"
-  class="hidden"
-  style="text-align:center">
-
-<button
-  id="continueButton"
-  class="primary"
-  style="width:100%"
-  onclick="finishQuestion()">
-
-CONTINUAR
-
-</button>
 
 </div>
 
@@ -761,147 +792,67 @@ const QUESTION_TIME = 10;
 
 
 /* =====================================================
-   HILLTOPADS — VAST
+   HILLTOPADS / GOOGLE IMA
 ===================================================== */
 
 /*
-   URL VAST ATUAL DA HILLTOPADS.
+   ZONA OFICIAL DA HILLTOPADS
 
-   Esta é a URL que você abriu e confirmou
-   que retorna XML VAST com anúncios reais.
+   QuizUp Vídeo
+   Zone ID: 7349677
+   Tipo: VAST
 */
 
 const HILLTOP_VAST =
-"https://smooth-survey.com/d.mqFBzsdlG-NavHZ/GRUc/-eDm/9euQZYUSlAkUPQTocFz/NqDzku2ONrzzchtuNpzuM/0dO/ToYU4GMzQi";
+"https://smooth-survey.com/dgmfF.zodhGtN/vLZlGHUb/Oejm/9CucZoUOl/kTPYT/cZz/NrDwkP2HN/zucktJNYz/MZ0TOGT/Yh4zMmS/Zts/a/WU1epxd/DE0bxc";
 
 
-let hilltopAdDisplayContainer=null;
-let hilltopAdsLoader=null;
-let hilltopAdsManager=null;
+let adsLoader=null;
+let adsManager=null;
+let adDisplayContainer=null;
 
-let hilltopAdReady=false;
-let hilltopAdRequested=false;
-let hilltopAdPlaying=false;
-
-let hilltopAdTimeout=null;
-let hilltopAdFallbackTimer=null;
-
-let hilltopAdFinishedCallback=null;
+let adStarted=false;
+let adFinished=false;
+let adLoading=false;
 
 
 /* =====================================================
-   ELEMENTOS HILLTOP
+   ELEMENTOS DO PLAYER
 ===================================================== */
 
-const hilltopOverlay=
-document.getElementById("hilltopAdOverlay");
+const quizAdArea=
+document.getElementById("quizAdArea");
 
-const hilltopContainer=
-document.getElementById("hilltopAdContainer");
+const quizAdContainer=
+document.getElementById("quizAdContainer");
 
-const hilltopVideo=
-document.getElementById("hilltopVideo");
+const quizAdVideo=
+document.getElementById("quizAdVideo");
 
-const hilltopLoading=
-document.getElementById("hilltopLoading");
+const quizAdLoading=
+document.getElementById("quizAdLoading");
+
+const quizAdPlay=
+document.getElementById("quizAdPlay");
+
+const quizAdStatus=
+document.getElementById("quizAdStatus");
+
+const quizAdContinue=
+document.getElementById("quizAdContinue");
 
 
 /* =====================================================
-   MOBILE
+   RESETAR PLAYER
 ===================================================== */
 
-function hilltopIsMobile(){
-
-return window.matchMedia(
-"(max-width:768px)"
-).matches;
-
-}
-
-
-/* =====================================================
-   MOSTRAR ANÚNCIO
-===================================================== */
-
-function hilltopShow(){
-
-hilltopOverlay.style.display="flex";
-
-hilltopLoading.style.display="none";
-
-hilltopAdPlaying=true;
-
-}
-
-
-/* =====================================================
-   ESCONDER ANÚNCIO
-===================================================== */
-
-function hilltopHide(){
-
-hilltopOverlay.style.display="none";
-
-hilltopLoading.style.display="none";
-
-hilltopAdPlaying=false;
-
-}
-
-
-/* =====================================================
-   LIMPAR MANAGER
-===================================================== */
-
-function hilltopReset(){
-
-clearTimeout(hilltopAdTimeout);
-clearTimeout(hilltopAdFallbackTimer);
-
-hilltopAdTimeout=null;
-hilltopAdFallbackTimer=null;
-
-hilltopAdReady=false;
-hilltopAdRequested=false;
-hilltopAdPlaying=false;
-
-hilltopAdsManager=null;
-hilltopAdsLoader=null;
-hilltopAdDisplayContainer=null;
+function resetQuizAd(){
 
 try{
 
-hilltopVideo.pause();
+if(adsManager){
 
-}catch(error){}
-
-}
-
-
-/* =====================================================
-   FINALIZAR ANÚNCIO
-===================================================== */
-
-function hilltopFinish(){
-
-clearTimeout(hilltopAdTimeout);
-clearTimeout(hilltopAdFallbackTimer);
-
-hilltopAdTimeout=null;
-hilltopAdFallbackTimer=null;
-
-hilltopHide();
-
-const callback=
-hilltopAdFinishedCallback;
-
-hilltopAdFinishedCallback=null;
-
-try{
-
-if(hilltopAdsManager){
-
-hilltopAdsManager.destroy();
+adsManager.destroy();
 
 }
 
@@ -914,28 +865,71 @@ error
 
 }
 
-hilltopAdsManager=null;
-hilltopAdsLoader=null;
-hilltopAdDisplayContainer=null;
+adsManager=null;
+adsLoader=null;
+adDisplayContainer=null;
 
-hilltopAdReady=false;
-hilltopAdRequested=false;
+adStarted=false;
+adFinished=false;
+adLoading=false;
+
+quizAdPlay.disabled=false;
+
+quizAdPlay.classList.remove("hidden");
+
+quizAdContinue.classList.add("hidden");
+
+quizAdLoading.classList.remove("hidden");
+
+quizAdLoading.textContent=
+"Preparando anúncio...";
+
+quizAdStatus.textContent=
+"Toque no botão para iniciar o anúncio.";
 
 try{
 
-hilltopVideo.pause();
+quizAdVideo.pause();
 
-hilltopVideo.removeAttribute("src");
+quizAdVideo.removeAttribute("src");
 
-hilltopVideo.load();
+quizAdVideo.load();
 
 }catch(error){}
 
-if(typeof callback==="function"){
+}
 
-callback();
+
+/* =====================================================
+   MOSTRAR ÁREA DO ANÚNCIO
+===================================================== */
+
+function showQuizAd(){
+
+resetQuizAd();
+
+quizAdArea.classList.remove("hidden");
+
+quizAdLoading.classList.remove("hidden");
+
+quizAdLoading.textContent=
+"Anúncio pronto.";
+
+quizAdPlay.classList.remove("hidden");
+
+quizAdStatus.textContent=
+"Toque em ▶️ para assistir ao anúncio.";
 
 }
+
+
+/* =====================================================
+   ESCONDER PLAYER
+===================================================== */
+
+function hideQuizAd(){
+
+quizAdArea.classList.add("hidden");
 
 }
 
@@ -944,121 +938,177 @@ callback();
    ERRO DO ANÚNCIO
 ===================================================== */
 
-function hilltopOnAdError(event){
+function quizAdError(event){
 
 console.warn(
-"Anúncio HilltopAds indisponível.",
+"Erro no anúncio VAST:",
 event
 );
 
-hilltopFinish();
+adLoading=false;
+
+quizAdPlay.disabled=false;
+
+quizAdLoading.classList.remove("hidden");
+
+quizAdLoading.textContent=
+"Não foi possível carregar o anúncio.";
+
+quizAdStatus.textContent=
+"Você pode continuar.";
+
+quizAdContinue.classList.remove("hidden");
 
 }
 
 
 /* =====================================================
-   ADS MANAGER CARREGADO
+   ANÚNCIO INICIADO
 ===================================================== */
 
-function hilltopOnAdsManagerLoaded(event){
+function quizAdStarted(){
+
+adStarted=true;
+adLoading=false;
+
+quizAdPlay.classList.add("hidden");
+
+quizAdLoading.classList.add("hidden");
+
+quizAdStatus.textContent=
+"▶️ Anúncio em reprodução...";
+
+}
+
+
+/* =====================================================
+   ANÚNCIO FINALIZADO
+===================================================== */
+
+function quizAdComplete(){
+
+adFinished=true;
+adLoading=false;
+
+quizAdPlay.classList.add("hidden");
+
+quizAdLoading.classList.add("hidden");
+
+quizAdStatus.textContent=
+"✅ Anúncio concluído.";
+
+quizAdContinue.classList.remove("hidden");
 
 try{
 
-hilltopAdsManager=
+if(adsManager){
+
+adsManager.destroy();
+
+}
+
+}catch(error){}
+
+adsManager=null;
+
+}
+
+
+/* =====================================================
+   ADS MANAGER
+===================================================== */
+
+function onAdsManagerLoaded(event){
+
+try{
+
+adsManager=
 event.getAdsManager(
-hilltopVideo
+quizAdVideo
 );
 
 
 /*
-   CORREÇÃO IMPORTANTE:
-
-   O evento correto é:
-   google.ima.AdErrorEvent.Type.AD_ERROR
+   Erros
 */
 
-hilltopAdsManager.addEventListener(
+adsManager.addEventListener(
 google.ima.AdErrorEvent.Type.AD_ERROR,
-hilltopOnAdError
+quizAdError
 );
-
-
-hilltopAdsManager.addEventListener(
-google.ima.AdEvent.Type.STARTED,
-function(){
-
-hilltopAdReady=true;
-
-hilltopShow();
-
-}
-);
-
-
-hilltopAdsManager.addEventListener(
-google.ima.AdEvent.Type.COMPLETE,
-function(){
-
-hilltopFinish();
-
-}
-);
-
-
-hilltopAdsManager.addEventListener(
-google.ima.AdEvent.Type.SKIPPED,
-function(){
-
-hilltopFinish();
-
-}
-);
-
-
-hilltopAdsManager.addEventListener(
-google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
-function(){
-
-hilltopFinish();
-
-}
-);
-
-
-hilltopAdsManager.addEventListener(
-google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
-function(){
-
-hilltopFinish();
-
-}
-);
-
-
-hilltopAdReady=true;
 
 
 /*
-   O usuário já respondeu e o VAST
-   terminou de carregar.
-
-   Então inicia o anúncio.
+   Início
 */
 
-if(hilltopAdFinishedCallback){
+adsManager.addEventListener(
+google.ima.AdEvent.Type.STARTED,
+quizAdStarted
+);
 
-hilltopPlayManager();
 
-}
+/*
+   Finalização
+*/
+
+adsManager.addEventListener(
+google.ima.AdEvent.Type.COMPLETE,
+quizAdComplete
+);
+
+
+adsManager.addEventListener(
+google.ima.AdEvent.Type.SKIPPED,
+quizAdComplete
+);
+
+
+adsManager.addEventListener(
+google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
+quizAdComplete
+);
+
+
+adsManager.addEventListener(
+google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
+quizAdComplete
+);
+
+
+/*
+   Agora o IMA está pronto.
+*/
+
+const width=
+quizAdContainer.clientWidth||320;
+
+const height=
+quizAdContainer.clientHeight||220;
+
+
+adsManager.init(
+width,
+height,
+google.ima.ViewMode.NORMAL
+);
+
+
+/*
+   Inicia o anúncio somente depois
+   que o jogador tocou no botão Play.
+*/
+
+adsManager.start();
 
 }catch(error){
 
 console.error(
-"Erro ao preparar HilltopAds:",
+"Erro ao iniciar AdsManager:",
 error
 );
 
-hilltopOnAdError();
+quizAdError(error);
 
 }
 
@@ -1066,16 +1116,12 @@ hilltopOnAdError();
 
 
 /* =====================================================
-   PREPARAR VAST
+   INICIAR ANÚNCIO
 ===================================================== */
 
-function hilltopPrepare(){
+function startQuizAd(){
 
-/*
-   Não preparar duas vezes na mesma rodada.
-*/
-
-if(hilltopAdRequested){
+if(adLoading || adStarted){
 
 return;
 
@@ -1086,221 +1132,128 @@ typeof google==="undefined" ||
 !google.ima
 ){
 
-console.warn(
-"Google IMA não disponível."
+quizAdError(
+"Google IMA não carregado."
 );
 
 return;
 
 }
 
+adLoading=true;
+
+quizAdPlay.disabled=true;
+
+quizAdPlay.classList.add("hidden");
+
+quizAdLoading.classList.remove("hidden");
+
+quizAdLoading.textContent=
+"Carregando anúncio...";
+
+quizAdStatus.textContent=
+"Conectando ao anúncio...";
+
+
 try{
-
-hilltopAdDisplayContainer=
-new google.ima.AdDisplayContainer(
-hilltopContainer,
-hilltopVideo
-);
-
 
 /*
    IMPORTANTE:
 
-   O initialize() acontece dentro
-   do clique em JOGAR DADO.
+   O initialize acontece diretamente
+   dentro do clique do jogador.
+
+   Isso é necessário especialmente
+   em celulares.
 */
 
-hilltopAdDisplayContainer.initialize();
+adDisplayContainer=
+new google.ima.AdDisplayContainer(
+quizAdContainer,
+quizAdVideo
+);
+
+adDisplayContainer.initialize();
 
 
-hilltopAdsLoader=
+/*
+   Criar AdsLoader
+*/
+
+adsLoader=
 new google.ima.AdsLoader(
-hilltopAdDisplayContainer
+adDisplayContainer
 );
 
 
-hilltopAdsLoader.addEventListener(
+/*
+   Eventos
+*/
+
+adsLoader.addEventListener(
 google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
-hilltopOnAdsManagerLoaded
+onAdsManagerLoaded
 );
 
-
-hilltopAdsLoader.addEventListener(
+adsLoader.addEventListener(
 google.ima.AdErrorEvent.Type.AD_ERROR,
-hilltopOnAdError
+quizAdError
 );
 
 
-const adsRequest=
+/*
+   Solicitação VAST
+*/
+
+const request=
 new google.ima.AdsRequest();
 
-
-adsRequest.adTagUrl=
+request.adTagUrl=
 HILLTOP_VAST;
 
 
+/*
+   Tamanho do player
+*/
+
 const width=
-hilltopContainer.clientWidth||320;
+quizAdContainer.clientWidth||320;
 
 const height=
-hilltopContainer.clientHeight||220;
+quizAdContainer.clientHeight||220;
 
 
-adsRequest.linearAdSlotWidth=
+request.linearAdSlotWidth=
 width;
 
-adsRequest.linearAdSlotHeight=
+request.linearAdSlotHeight=
 height;
 
-adsRequest.nonLinearAdSlotWidth=
+request.nonLinearAdSlotWidth=
 width;
 
-adsRequest.nonLinearAdSlotHeight=
+request.nonLinearAdSlotHeight=
 height;
 
 
-hilltopAdRequested=true;
+/*
+   Solicitar anúncio
+*/
 
-
-hilltopAdsLoader.requestAds(
-adsRequest
+adsLoader.requestAds(
+request
 );
 
 }catch(error){
 
 console.error(
-"Erro ao solicitar VAST HilltopAds:",
+"Erro ao solicitar VAST:",
 error
 );
 
-hilltopOnAdError();
+quizAdError(error);
 
 }
-
-}
-
-
-/* =====================================================
-   INICIAR ADS MANAGER
-===================================================== */
-
-function hilltopPlayManager(){
-
-if(
-!hilltopAdsManager ||
-!hilltopAdReady ||
-hilltopAdPlaying
-){
-
-return;
-
-}
-
-try{
-
-hilltopShow();
-
-
-const width=
-hilltopContainer.clientWidth||320;
-
-const height=
-hilltopContainer.clientHeight||220;
-
-
-hilltopAdsManager.init(
-width,
-height,
-google.ima.ViewMode.NORMAL
-);
-
-
-hilltopAdsManager.start();
-
-
-clearTimeout(hilltopAdTimeout);
-
-
-hilltopAdTimeout=
-setTimeout(function(){
-
-console.warn(
-"Tempo máximo do anúncio atingido."
-);
-
-hilltopFinish();
-
-},30000);
-
-}catch(error){
-
-console.error(
-"Erro ao iniciar anúncio:",
-error
-);
-
-hilltopFinish();
-
-}
-
-}
-
-
-/* =====================================================
-   TOCAR ANÚNCIO DEPOIS DA RESPOSTA
-===================================================== */
-
-function hilltopPlay(afterAd){
-
-clearTimeout(hilltopAdFallbackTimer);
-
-
-hilltopAdFinishedCallback=
-typeof afterAd==="function"
-?afterAd
-:null;
-
-
-/*
-   Se o anúncio já estiver pronto,
-   começa imediatamente.
-*/
-
-if(
-hilltopAdsManager &&
-hilltopAdReady
-){
-
-hilltopPlayManager();
-
-return;
-
-}
-
-
-/*
-   O VAST ainda está carregando.
-*/
-
-hilltopLoading.style.display="block";
-
-hilltopOverlay.style.display="flex";
-
-
-/*
-   Aguarda até 15 segundos para o VAST.
-*/
-
-hilltopAdFallbackTimer=
-setTimeout(function(){
-
-console.warn(
-"VAST não ficou pronto a tempo."
-);
-
-hilltopFinish();
-
-},15000);
 
 }
 
@@ -1745,7 +1698,7 @@ function logout(){
 
 clearInterval(handle);
 
-hilltopFinish();
+resetQuizAd();
 
 document
 .getElementById("game")
@@ -1877,15 +1830,12 @@ s.answered=false;
 
 
 /*
-   Prepara o Hilltop durante o toque
-   do jogador.
+   Não inicia o anúncio aqui.
 
-   Isso permite que o IMA inicialize
-   o AdDisplayContainer dentro de
-   uma ação do usuário.
+   O anúncio será iniciado somente
+   quando o jogador tocar em
+   "ASSISTIR ANÚNCIO".
 */
-
-hilltopPrepare();
 
 
 let dice;
@@ -2000,10 +1950,7 @@ document
 .classList
 .add("hidden");
 
-document
-.getElementById("rewardBox")
-.classList
-.add("hidden");
+hideQuizAd();
 
 startTimer();
 
@@ -2142,20 +2089,13 @@ s.roundPoints+
 
 
 /*
-   O anúncio começa somente depois
-   que o jogador responde.
+   Mostra o player dentro da própria
+   tela da pergunta.
+
+   O jogador decide quando iniciar.
 */
 
-hilltopPlay(
-function(){
-
-document
-.getElementById("rewardBox")
-.classList
-.remove("hidden");
-
-}
-);
+showQuizAd();
 
 }
 
@@ -2166,7 +2106,7 @@ document
 
 function finishQuestion(){
 
-hilltopFinish();
+resetQuizAd();
 
 document
 .getElementById("questionCard")
@@ -2188,11 +2128,6 @@ document
 
 document
 .getElementById("feedback")
-.classList
-.add("hidden");
-
-document
-.getElementById("rewardBox")
 .classList
 .add("hidden");
 
@@ -2432,16 +2367,16 @@ error
 
 
 /* =====================================================
-   SEGURANÇA EXTRA DO ANÚNCIO
+   LIMPEZA AO SAIR DA PÁGINA
 ===================================================== */
 
 window.addEventListener(
 "beforeunload",
 function(){
 
-clearTimeout(hilltopAdTimeout);
+clearInterval(handle);
 
-clearTimeout(hilltopAdFallbackTimer);
+resetQuizAd();
 
 });
 
