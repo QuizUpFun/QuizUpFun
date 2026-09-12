@@ -795,14 +795,6 @@ const QUESTION_TIME = 10;
    HILLTOPADS / GOOGLE IMA
 ===================================================== */
 
-/*
-   ZONA OFICIAL DA HILLTOPADS
-
-   QuizUp Vídeo
-   Zone ID: 7349677
-   Tipo: VAST
-*/
-
 const HILLTOP_VAST =
 "https://smooth-survey.com/dgmfF.zodhGtN/vLZlGHUb/Oejm/9CucZoUOl/kTPYT/cZz/NrDwkP2HN/zucktJNYz/MZ0TOGT/Yh4zMmS/Zts/a/WU1epxd/DE0bxc";
 
@@ -815,10 +807,6 @@ let adStarted=false;
 let adFinished=false;
 let adLoading=false;
 
-
-/* =====================================================
-   ELEMENTOS DO PLAYER
-===================================================== */
 
 const quizAdArea=
 document.getElementById("quizAdArea");
@@ -842,18 +830,12 @@ const quizAdContinue=
 document.getElementById("quizAdContinue");
 
 
-/* =====================================================
-   RESETAR PLAYER
-===================================================== */
-
 function resetQuizAd(){
 
 try{
 
 if(adsManager){
-
 adsManager.destroy();
-
 }
 
 }catch(error){
@@ -900,10 +882,6 @@ quizAdVideo.load();
 }
 
 
-/* =====================================================
-   MOSTRAR ÁREA DO ANÚNCIO
-===================================================== */
-
 function showQuizAd(){
 
 resetQuizAd();
@@ -923,20 +901,12 @@ quizAdStatus.textContent=
 }
 
 
-/* =====================================================
-   ESCONDER PLAYER
-===================================================== */
-
 function hideQuizAd(){
 
 quizAdArea.classList.add("hidden");
 
 }
 
-
-/* =====================================================
-   ERRO DO ANÚNCIO
-===================================================== */
 
 function quizAdError(event){
 
@@ -962,10 +932,6 @@ quizAdContinue.classList.remove("hidden");
 }
 
 
-/* =====================================================
-   ANÚNCIO INICIADO
-===================================================== */
-
 function quizAdStarted(){
 
 adStarted=true;
@@ -980,10 +946,6 @@ quizAdStatus.textContent=
 
 }
 
-
-/* =====================================================
-   ANÚNCIO FINALIZADO
-===================================================== */
 
 function quizAdComplete(){
 
@@ -1002,9 +964,7 @@ quizAdContinue.classList.remove("hidden");
 try{
 
 if(adsManager){
-
 adsManager.destroy();
-
 }
 
 }catch(error){}
@@ -1013,10 +973,6 @@ adsManager=null;
 
 }
 
-
-/* =====================================================
-   ADS MANAGER
-===================================================== */
 
 function onAdsManagerLoaded(event){
 
@@ -1027,58 +983,35 @@ event.getAdsManager(
 quizAdVideo
 );
 
-
-/*
-   Erros
-*/
-
 adsManager.addEventListener(
 google.ima.AdErrorEvent.Type.AD_ERROR,
 quizAdError
 );
-
-
-/*
-   Início
-*/
 
 adsManager.addEventListener(
 google.ima.AdEvent.Type.STARTED,
 quizAdStarted
 );
 
-
-/*
-   Finalização
-*/
-
 adsManager.addEventListener(
 google.ima.AdEvent.Type.COMPLETE,
 quizAdComplete
 );
-
 
 adsManager.addEventListener(
 google.ima.AdEvent.Type.SKIPPED,
 quizAdComplete
 );
 
-
 adsManager.addEventListener(
 google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
 quizAdComplete
 );
 
-
 adsManager.addEventListener(
 google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
 quizAdComplete
 );
-
-
-/*
-   Agora o IMA está pronto.
-*/
 
 const width=
 quizAdContainer.clientWidth||320;
@@ -1086,18 +1019,11 @@ quizAdContainer.clientWidth||320;
 const height=
 quizAdContainer.clientHeight||220;
 
-
 adsManager.init(
 width,
 height,
 google.ima.ViewMode.NORMAL
 );
-
-
-/*
-   Inicia o anúncio somente depois
-   que o jogador tocou no botão Play.
-*/
 
 adsManager.start();
 
@@ -1115,16 +1041,10 @@ quizAdError(error);
 }
 
 
-/* =====================================================
-   INICIAR ANÚNCIO
-===================================================== */
-
 function startQuizAd(){
 
 if(adLoading || adStarted){
-
 return;
-
 }
 
 if(
@@ -1154,18 +1074,7 @@ quizAdLoading.textContent=
 quizAdStatus.textContent=
 "Conectando ao anúncio...";
 
-
 try{
-
-/*
-   IMPORTANTE:
-
-   O initialize acontece diretamente
-   dentro do clique do jogador.
-
-   Isso é necessário especialmente
-   em celulares.
-*/
 
 adDisplayContainer=
 new google.ima.AdDisplayContainer(
@@ -1175,20 +1084,10 @@ quizAdVideo
 
 adDisplayContainer.initialize();
 
-
-/*
-   Criar AdsLoader
-*/
-
 adsLoader=
 new google.ima.AdsLoader(
 adDisplayContainer
 );
-
-
-/*
-   Eventos
-*/
 
 adsLoader.addEventListener(
 google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
@@ -1200,28 +1099,17 @@ google.ima.AdErrorEvent.Type.AD_ERROR,
 quizAdError
 );
 
-
-/*
-   Solicitação VAST
-*/
-
 const request=
 new google.ima.AdsRequest();
 
 request.adTagUrl=
 HILLTOP_VAST;
 
-
-/*
-   Tamanho do player
-*/
-
 const width=
 quizAdContainer.clientWidth||320;
 
 const height=
 quizAdContainer.clientHeight||220;
-
 
 request.linearAdSlotWidth=
 width;
@@ -1234,11 +1122,6 @@ width;
 
 request.nonLinearAdSlotHeight=
 height;
-
-
-/*
-   Solicitar anúncio
-*/
 
 adsLoader.requestAds(
 request
@@ -1828,23 +1711,7 @@ clearInterval(handle);
 
 s.answered=false;
 
-
-/*
-   Não inicia o anúncio aqui.
-
-   O anúncio será iniciado somente
-   quando o jogador tocar em
-   "ASSISTIR ANÚNCIO".
-*/
-
-
 let dice;
-
-
-/*
-   A cada 30 rodadas:
-   8–10
-*/
 
 if(s.round%30===0){
 
@@ -1853,24 +1720,12 @@ Math.floor(
 Math.random()*3
 )+8;
 
-
-/*
-   A cada 10 rodadas:
-   5–7
-*/
-
 }else if(s.round%10===0){
 
 dice=
 Math.floor(
 Math.random()*3
 )+5;
-
-
-/*
-   Rodadas normais:
-   1–4
-*/
 
 }else{
 
@@ -1881,19 +1736,16 @@ Math.random()*4
 
 }
 
-
 s.dice=dice;
 
 s.roundPoints=dice;
 
 s.question=pickQuestion();
 
-
 document
 .getElementById("dice")
 .textContent=
 "🎲 "+dice;
-
 
 document
 .getElementById("diceResult")
@@ -1904,18 +1756,15 @@ dice+
 dice+
 (dice===1?" ponto":" pontos");
 
-
 document
 .getElementById("question")
 .textContent=
 s.question[0];
 
-
 const answers=
 document.getElementById("answers");
 
 answers.innerHTML="";
-
 
 s.question[1].forEach(
 (a,i)=>{
@@ -1933,7 +1782,6 @@ answers.appendChild(b);
 
 }
 );
-
 
 document
 .getElementById("rollCard")
@@ -1977,7 +1825,6 @@ document
 .style
 .width="100%";
 
-
 handle=
 setInterval(()=>{
 
@@ -1996,7 +1843,6 @@ Math.max(
 0,
 (s.timer/QUESTION_TIME)*100
 )+"%";
-
 
 if(s.timer<=0){
 
@@ -2033,7 +1879,6 @@ const buttons=
 ...document.querySelectorAll(".answer")
 ];
 
-
 if(i>=0 && buttons[i]){
 
 buttons[i]
@@ -2046,7 +1891,6 @@ i===correct
 
 }
 
-
 if(buttons[correct]){
 
 buttons[correct]
@@ -2055,10 +1899,8 @@ buttons[correct]
 
 }
 
-
 const ok=
 i===correct;
-
 
 if(ok){
 
@@ -2066,11 +1908,9 @@ s.points+=s.roundPoints;
 
 }
 
-
 ui();
 
 save();
-
 
 const feedback=
 document.getElementById("feedback");
@@ -2079,21 +1919,12 @@ feedback
 .classList
 .remove("hidden");
 
-
 feedback.textContent=
 ok
 ?"✅ Correto! Você ganhou "+
 s.roundPoints+
 " pontos!"
 :"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
-
-
-/*
-   Mostra o player dentro da própria
-   tela da pergunta.
-
-   O jogador decide quando iniciar.
-*/
 
 showQuizAd();
 
@@ -2233,6 +2064,11 @@ return v==="10"
 }
 
 
+/* =====================================================
+   SAQUE
+   70% JOGADOR / 30% PLATAFORMA
+===================================================== */
+
 function withdraw(){
 
 const v=
@@ -2290,6 +2126,26 @@ return;
 }
 
 
+/* VALORES */
+
+const valorBruto=
+Number(v);
+
+const valorJogador=
+Number(
+(valorBruto*0.70)
+.toFixed(2)
+);
+
+const valorPlataforma=
+Number(
+(valorBruto*0.30)
+.toFixed(2)
+);
+
+
+/* REGISTRO */
+
 const arr=
 JSON.parse(
 localStorage.getItem(
@@ -2297,19 +2153,25 @@ localStorage.getItem(
 )||"[]"
 );
 
-
 arr.push({
 
 email:s.email,
 
-value:v,
+pontos:n,
+
+valorBruto:valorBruto,
+
+valorJogador:valorJogador,
+
+valorPlataforma:valorPlataforma,
 
 method:method,
+
+chave:k,
 
 date:new Date().toISOString()
 
 });
-
 
 localStorage.setItem(
 "quizup_withdrawals",
@@ -2317,8 +2179,21 @@ JSON.stringify(arr)
 );
 
 
+/* DESCONTAR PONTOS */
+
+s.points-=n;
+
+save();
+
+
+/* MENSAGEM */
+
 msg.textContent=
-"Solicitação registrada.";
+"Solicitação registrada! Você receberá R$ "+
+valorJogador
+.toFixed(2)
+.replace(".",",")+
+".";
 
 }
 
@@ -2335,7 +2210,6 @@ Object.keys(localStorage)
 k.startsWith("quizup_") &&
 !k.includes("withdrawals")
 );
-
 
 if(k){
 
