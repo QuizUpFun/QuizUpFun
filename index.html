@@ -1,15 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width,initial-scale=1"
->
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QuizUp</title>
 
 <script>
@@ -22,11 +15,7 @@
 </script>
 
 <style>
-
-*{
-  box-sizing:border-box
-}
-
+*{box-sizing:border-box}
 body{
   margin:0;
   font-family:Arial,sans-serif;
@@ -34,26 +23,9 @@ body{
   color:#fff;
   min-height:100vh
 }
-
-.wrap{
-  max-width:760px;
-  margin:auto;
-  padding:16px
-}
-
-.logo{
-  text-align:center;
-  font-size:42px;
-  font-weight:900;
-  margin:10px
-}
-
-.sub{
-  text-align:center;
-  opacity:.8;
-  margin-bottom:16px
-}
-
+.wrap{max-width:760px;margin:auto;padding:16px}
+.logo{text-align:center;font-size:42px;font-weight:900;margin:10px}
+.sub{text-align:center;opacity:.8;margin-bottom:16px}
 .card{
   background:rgba(255,255,255,.1);
   border:1px solid rgba(255,255,255,.15);
@@ -61,11 +33,7 @@ body{
   padding:20px;
   margin:14px 0
 }
-
-.hidden{
-  display:none!important
-}
-
+.hidden{display:none!important}
 button{
   border:0;
   border-radius:12px;
@@ -73,90 +41,46 @@ button{
   font-weight:700;
   cursor:pointer
 }
-
-button:disabled{
-  opacity:.5;
-  cursor:not-allowed
-}
-
-.primary{
-  background:#ffd43b;
-  color:#171717
-}
-
-.light{
-  background:#fff;
-  color:#171717
-}
-
-.ghost{
-  background:rgba(255,255,255,.12);
-  color:#fff
-}
-
-.top,
-.row{
+button:disabled{opacity:.5;cursor:not-allowed}
+.primary{background:#ffd43b;color:#171717}
+.light{background:#fff;color:#171717}
+.ghost{background:rgba(255,255,255,.12);color:#fff}
+.top,.row{
   display:flex;
   gap:10px;
   align-items:center;
   justify-content:space-between;
   flex-wrap:wrap
 }
-
 .stat{
   padding:10px 14px;
   background:rgba(255,255,255,.1);
   border-radius:12px
 }
-
 .nav{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:8px;
   margin-bottom:14px
 }
-
 .dice{
   font-size:90px;
   text-align:center;
   line-height:1.1;
   margin:8px
 }
-
-.roll{
-  display:block;
-  margin:auto;
-  font-size:18px
-}
-
-.result{
-  text-align:center;
-  font-size:21px;
-  font-weight:800
-}
-
-.answers{
-  display:grid;
-  gap:10px
-}
-
+.roll{display:block;margin:auto;font-size:18px}
+.result{text-align:center;font-size:21px;font-weight:800}
+.answers{display:grid;gap:10px}
 .answer{
   background:#fff;
   color:#111;
   text-align:left;
   width:100%
 }
-
-.answer.correct{
-  outline:4px solid #4ade80
-}
-
-.answer.wrong{
-  outline:4px solid #fb7185
-}
-
-input,
-select{
+.answer.correct{outline:4px solid #4ade80}
+.answer.wrong{outline:4px solid #fb7185}
+input,select{
   width:100%;
   padding:13px;
   border:0;
@@ -164,13 +88,7 @@ select{
   margin:5px 0 12px;
   font-size:16px
 }
-
-.timer{
-  text-align:center;
-  font-size:22px;
-  font-weight:800
-}
-
+.timer{text-align:center;font-size:22px;font-weight:800}
 .bar{
   height:9px;
   background:rgba(255,255,255,.15);
@@ -178,32 +96,20 @@ select{
   overflow:hidden;
   margin-top:12px
 }
-
 .bar div{
   height:100%;
   background:#ffd43b;
   width:100%;
   transition:width .2s linear
 }
-
 .notice{
   padding:12px;
   border-radius:12px;
   background:rgba(255,212,59,.12);
   border:1px solid rgba(255,212,59,.3)
 }
-
-.small{
-  font-size:13px;
-  opacity:.75
-}
-
-.tabs2{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px
-}
-
+.small{font-size:13px;opacity:.75}
+.tabs2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .adbox{
   width:100%;
   min-height:60px;
@@ -214,7 +120,6 @@ select{
   margin:12px auto;
   border-radius:10px
 }
-
 .cash-summary{
   background:rgba(74,222,128,.10);
   border:1px solid rgba(74,222,128,.25);
@@ -222,65 +127,29 @@ select{
   border-radius:12px;
   margin:12px 0
 }
-
-.next-wrap{
-  text-align:center;
-  margin-top:16px
-}
-
-.next-button{
-  width:100%;
-  font-size:18px
-}
+.next-wrap{text-align:center;margin-top:16px}
+.next-button{width:100%;font-size:18px}
 
 @media(max-width:560px){
-
-  .nav{
-    grid-template-columns:1fr 1fr
-  }
-
-  .dice{
-    font-size:75px
-  }
-
-  .logo{
-    font-size:38px
-  }
-
+  .nav{grid-template-columns:1fr 1fr}
+  .dice{font-size:75px}
+  .logo{font-size:38px}
 }
-
 </style>
-
 </head>
 
 <body>
 
-<audio
-  id="backgroundMusic"
-  preload="auto"
-  loop
-  playsinline
->
-
-<source
-  src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
-  type="audio/mpeg"
->
-
+<audio id="backgroundMusic" preload="auto" loop playsinline>
+<source src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3" type="audio/mpeg">
 </audio>
 
 <div class="wrap">
 
-<div class="logo">
-  QuizUp
-</div>
-
-<div class="sub">
-  🎲 Jogue, responda e acumule pontos
-</div>
+<div class="logo">QuizUp</div>
+<div class="sub">🎲 Jogue, responda e acumule pontos</div>
 
 <div class="adbox">
-
 <script>
 atOptions={
   'key':'827464848b02582093e6b5d45cb10d0a',
@@ -290,29 +159,14 @@ atOptions={
   'params':{}
 };
 </script>
-
 <script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
-
 </div>
 
 <section id="auth" class="card">
 
 <div class="tabs2">
-
-<button
-  class="primary"
-  onclick="authMode('register')"
->
-Cadastro
-</button>
-
-<button
-  class="light"
-  onclick="authMode('login')"
->
-Login
-</button>
-
+<button class="primary" onclick="authMode('register')">Cadastro</button>
+<button class="light" onclick="authMode('login')">Login</button>
 </div>
 
 <div id="registerBox">
@@ -320,50 +174,19 @@ Login
 <h2>📝 Cadastro</h2>
 
 <label>E-mail</label>
-
-<input
-  id="rEmail"
-  type="email"
-  autocomplete="email"
-  placeholder="Seu e-mail"
->
+<input id="rEmail" type="email" autocomplete="email" placeholder="Seu e-mail">
 
 <label>Senha</label>
-
-<input
-  id="rPass"
-  type="password"
-  autocomplete="new-password"
-  placeholder="Sua senha"
->
+<input id="rPass" type="password" autocomplete="new-password" placeholder="Sua senha">
 
 <label>Nome completo</label>
-
-<input
-  id="rName"
-  type="text"
-  autocomplete="name"
-  placeholder="Seu nome completo"
->
+<input id="rName" type="text" autocomplete="name" placeholder="Seu nome completo">
 
 <label>CPF</label>
+<input id="rCpf" type="text" inputmode="numeric" maxlength="14" autocomplete="off"
+placeholder="000.000.000-00" oninput="formatCPF(this)">
 
-<input
-  id="rCpf"
-  type="text"
-  inputmode="numeric"
-  maxlength="14"
-  autocomplete="off"
-  placeholder="000.000.000-00"
-  oninput="formatCPF(this)"
->
-
-<button
-  class="primary"
-  onclick="register()"
->
-Cadastrar
-</button>
+<button class="primary" onclick="register()">Cadastrar</button>
 
 </div>
 
@@ -372,95 +195,38 @@ Cadastrar
 <h2>🔐 Login</h2>
 
 <label>E-mail</label>
-
-<input
-  id="lEmail"
-  type="email"
-  autocomplete="email"
-  placeholder="Seu e-mail"
->
+<input id="lEmail" type="email" autocomplete="email" placeholder="Seu e-mail">
 
 <label>Senha</label>
+<input id="lPass" type="password" autocomplete="current-password" placeholder="Sua senha">
 
-<input
-  id="lPass"
-  type="password"
-  autocomplete="current-password"
-  placeholder="Sua senha"
->
-
-<button
-  class="primary"
-  onclick="login()"
->
-Entrar
-</button>
+<button class="primary" onclick="login()">Entrar</button>
 
 <p style="margin-top:18px;text-align:center">
-
-<button
-  class="ghost"
-  onclick="forgotPassword()"
->
-Esqueceu a senha?
-</button>
-
+<button class="ghost" onclick="forgotPassword()">Esqueceu a senha?</button>
 </p>
 
 </div>
-
 </section>
 
 <section id="game" class="hidden">
 
 <div class="top card">
 
-<div class="stat">
-⭐ <span id="points">0</span> pontos
-</div>
+<div class="stat">⭐ <span id="points">0</span> pontos</div>
 
-<div class="stat">
-🎲 Rodada <span id="round">1</span>
-</div>
+<div class="stat">🎲 Rodada <span id="round">1</span></div>
 
-<button
-  class="ghost"
-  onclick="logout()"
->
-Sair
-</button>
+<button class="ghost" onclick="logout()">Sair</button>
 
 </div>
 
 <div class="nav">
 
-<button
-  class="ghost"
-  onclick="tab('quiz')"
->
-🎲 Quiz
-</button>
-
-<button
-  class="ghost"
-  onclick="tab('ref')"
->
-🎁 Indicação
-</button>
-
-<button
-  class="ghost"
-  onclick="tab('cash')"
->
-💸 Saque
-</button>
-
-<button
-  class="ghost"
-  onclick="tab('premium')"
->
-💎 Premium
-</button>
+<button class="ghost" onclick="tab('quiz')">🎲 Quiz</button>
+<button class="ghost" onclick="tab('ref')">🎁 Indicação</button>
+<button class="ghost" onclick="tab('cash')">💸 Saque</button>
+<button class="ghost" onclick="tab('premium')">💎 Premium</button>
 
 </div>
 
@@ -468,89 +234,43 @@ Sair
 
 <div id="rollCard" class="card">
 
-<h2 style="text-align:center">
-Jogue o dado
-</h2>
+<h2 style="text-align:center">Jogue o dado</h2>
 
-<div id="dice" class="dice">
-🎲
-</div>
+<div id="dice" class="dice">🎲</div>
 
-<button
-  class="primary roll"
-  onclick="rollDice()"
->
-JOGAR DADO
-</button>
+<button class="primary roll" onclick="rollDice()">JOGAR DADO</button>
 
-<p
-  id="diceResult"
-  class="result"
->
-</p>
+<p id="diceResult" class="result"></p>
 
 </div>
 
-<div
-  id="questionCard"
-  class="card hidden"
->
+<div id="questionCard" class="card hidden">
 
 <div class="top">
-
 <b>Pergunta</b>
-
-<span class="timer">
-⏱️ <span id="time">10</span>s
-</span>
-
+<span class="timer">⏱️ <span id="time">10</span>s</span>
 </div>
 
-<div class="bar">
-<div id="progress"></div>
-</div>
+<div class="bar"><div id="progress"></div></div>
 
 <h2 id="question"></h2>
 
-<div
-  id="answers"
-  class="answers"
->
-</div>
+<div id="answers" class="answers"></div>
 
-<p
-  id="feedback"
-  class="notice hidden"
->
-</p>
+<p id="feedback" class="notice hidden"></p>
 
-<div
-  style="text-align:center;font-size:28px;font-weight:900;margin-top:16px"
->
+<div style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
 ⭐ Pontuação:
 <span id="totalScore">0</span>
 </div>
 
-<div
-  id="nextWrap"
-  class="next-wrap hidden"
->
-
-<button
-  id="nextButton"
-  class="primary next-button"
-  onclick="finishQuestion()"
->
+<div id="nextWrap" class="next-wrap hidden">
+<button id="nextButton" class="primary next-button" onclick="finishQuestion()">
 ➡️ Próxima
 </button>
-
 </div>
 
-<div
-  id="answerAd"
-  class="adbox"
->
-
+<div id="answerAd" class="adbox">
 <script>
 atOptions={
   'key':'827464848b02582093e6b5d45cb10d0a',
@@ -560,21 +280,13 @@ atOptions={
   'params':{}
 };
 </script>
-
 <script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
-
 </div>
 
 </div>
-
 </div>
 
-</div>
-
-<div
-  id="refTab"
-  class="hidden card"
->
+<div id="refTab" class="hidden card">
 
 <h2>🎁 Indicação</h2>
 
@@ -583,179 +295,92 @@ Ganhe <b>50 pontos</b> quando seu convidado atingir
 <b>300 pontos</b>.
 </p>
 
-<input
-  id="refCode"
-  readonly
->
+<input id="refCode" readonly>
+<input id="refLink" readonly>
 
-<input
-  id="refLink"
-  readonly
->
-
-<button
-  class="primary"
-  onclick="copyRef()"
->
-Copiar link
-</button>
-
-<button
-  class="light"
-  onclick="shareRef()"
->
-Enviar link
-</button>
+<button class="primary" onclick="copyRef()">Copiar link</button>
+<button class="light" onclick="shareRef()">Enviar link</button>
 
 <p id="refMsg"></p>
 
 </div>
 
-<div
-  id="cashTab"
-  class="hidden card"
->
+<div id="cashTab" class="hidden card">
 
 <h2>💸 Saque</h2>
 
 <div class="notice">
-
 <b>Valores:</b><br>
-
 2.000 pontos → R$ 1,00<br>
 6.000 pontos → R$ 5,00<br>
 11.000 pontos → R$ 10,00
-
 </div>
 
 <div class="cash-summary">
-
 <b>Divisão do saque</b><br><br>
-
 70% → jogador<br>
 30% → plataforma
-
 </div>
 
 <div class="notice">
-
 <b>Limite:</b><br>
-
-Cada jogador pode solicitar no máximo
-<b>2 saques por dia</b>.
-
+Cada jogador pode solicitar no máximo <b>2 saques por dia</b>.
 </div>
 
-<select
-  id="payMethod"
-  onchange="payFields()"
->
-
-<option value="pix">
-Pix
-</option>
-
-<option value="paypal">
-PayPal
-</option>
-
+<select id="payMethod" onchange="payFields()">
+<option value="pix">Pix</option>
+<option value="paypal">PayPal</option>
 </select>
 
 <div id="pix">
-
-<input
-  id="pixKey"
-  placeholder="Chave Pix"
->
-
+<input id="pixKey" placeholder="Chave Pix">
 </div>
 
-<div
-  id="paypal"
-  class="hidden"
->
-
-<input
-  id="paypalKey"
-  type="email"
-  placeholder="E-mail PayPal"
->
-
+<div id="paypal" class="hidden">
+<input id="paypalKey" type="email" placeholder="E-mail PayPal">
 </div>
 
 <select id="withdrawAmount">
-
-<option value="1">
-R$ 1,00 — 2.000 pontos
-</option>
-
-<option value="5">
-R$ 5,00 — 6.000 pontos
-</option>
-
-<option value="10">
-R$ 10,00 — 11.000 pontos
-</option>
-
+<option value="1">R$ 1,00 — 2.000 pontos</option>
+<option value="5">R$ 5,00 — 6.000 pontos</option>
+<option value="10">R$ 10,00 — 11.000 pontos</option>
 </select>
 
-<button
-  id="withdrawButton"
-  class="primary"
-  onclick="withdraw()"
->
+<button id="withdrawButton" class="primary" onclick="withdraw()">
 Solicitar saque
 </button>
 
-<p
-  id="cashMsg"
-  class="notice hidden"
->
-</p>
+<p id="cashMsg" class="notice hidden"></p>
 
 </div>
 
-<div
-  id="premiumTab"
-  class="hidden card"
->
+<div id="premiumTab" class="hidden card">
 
 <h2>💎 Premium</h2>
 
-<p>
-Área Premium preparada para receber benefícios do QuizUp.
-</p>
+<p>Área Premium preparada para receber benefícios do QuizUp.</p>
 
-<button
-  class="primary"
-  onclick="alert('O pagamento Premium ainda será conectado.')"
->
+<button class="primary"
+onclick="alert('O pagamento Premium ainda será conectado.')">
 Quero ser Premium
 </button>
 
 </div>
 
 </section>
-
 </div>
 
 <script>
 
-const API_URL =
-"https://quizup-api-qxn2.onrender.com";
+const API_URL="https://quizup-api-qxn2.onrender.com";
+const QUESTION_TIME=10;
 
-const QUESTION_TIME = 10;
+let handle=null;
+let answered=false;
 
-let handle = null;
+const SESSION_KEY="quizup_session";
 
-let answered = false;
-
-const SESSION_KEY =
-"quizup_session";
-
-
-let s = {
-
+let s={
   id:null,
   email:"",
   name:"",
@@ -769,7 +394,6 @@ let s = {
   question:null,
   timer:QUESTION_TIME,
   roundPoints:0
-
 };
 
 
@@ -779,40 +403,32 @@ let s = {
 
 async function api(path,options={}){
 
-  const response =
-    await fetch(
-      API_URL + path,
-      {
-        ...options,
-
-        headers:{
-          "Content-Type":"application/json",
-          ...(options.headers || {})
-        }
-
+  const response=await fetch(
+    API_URL+path,
+    {
+      ...options,
+      headers:{
+        "Content-Type":"application/json",
+        ...(options.headers||{})
       }
-    );
+    }
+  );
 
-  let data = {};
+  let data={};
 
   try{
-
-    data = await response.json();
-
+    data=await response.json();
   }catch(error){}
 
   if(!response.ok){
-
     throw new Error(
-      data.error ||
-      data.message ||
+      data.error||
+      data.message||
       "Erro de comunicação com o servidor."
     );
-
   }
 
   return data;
-
 }
 
 
@@ -822,48 +438,29 @@ async function api(path,options={}){
 
 function saveSession(){
 
-  if(!s.id || !s.email) return;
-
-  const session = {
-
-    id:s.id,
-    email:s.email,
-    name:s.name,
-    cpf:s.cpf,
-
-    points:
-      Number(s.points || 0),
-
-    balance:
-      Number(s.balance || 0),
-
-    round:
-      Number(s.round || 1),
-
-    code:
-      s.code || "",
-
-    referrer:
-      s.referrer || ""
-
-  };
+  if(!s.id||!s.email)return;
 
   localStorage.setItem(
     SESSION_KEY,
-    JSON.stringify(session)
+    JSON.stringify({
+      id:s.id,
+      email:s.email,
+      name:s.name,
+      cpf:s.cpf,
+      points:Number(s.points||0),
+      balance:Number(s.balance||0),
+      round:Number(s.round||1),
+      code:s.code||"",
+      referrer:s.referrer||""
+    })
   );
 
   ui();
-
 }
 
 
 function clearSession(){
-
-  localStorage.removeItem(
-    SESSION_KEY
-  );
-
+  localStorage.removeItem(SESSION_KEY);
 }
 
 
@@ -871,38 +468,23 @@ function restoreSession(){
 
   try{
 
-    const raw =
-      localStorage.getItem(
-        SESSION_KEY
-      );
+    const raw=localStorage.getItem(SESSION_KEY);
 
-    if(!raw) return false;
+    if(!raw)return false;
 
-    const saved =
-      JSON.parse(raw);
+    const saved=JSON.parse(raw);
 
-    if(!saved.id || !saved.email){
-
+    if(!saved.id||!saved.email){
       clearSession();
-
       return false;
-
     }
 
-    s = {
-
+    s={
       ...s,
       ...saved,
-
-      points:
-        Number(saved.points || 0),
-
-      balance:
-        Number(saved.balance || 0),
-
-      round:
-        Number(saved.round || 1)
-
+      points:Number(saved.points||0),
+      balance:Number(saved.balance||0),
+      round:Number(saved.round||1)
     };
 
     return true;
@@ -910,11 +492,9 @@ function restoreSession(){
   }catch(error){
 
     clearSession();
-
     return false;
 
   }
-
 }
 
 
@@ -924,76 +504,42 @@ function restoreSession(){
 
 function playMusic(){
 
-  const music =
-    document.getElementById(
-      "backgroundMusic"
-    );
+  const music=document.getElementById("backgroundMusic");
 
-  if(!music) return;
+  if(!music)return;
 
-  music.volume = 0.35;
+  music.volume=.35;
 
-  const tocar = () => {
+  const tocar=()=>{
 
     music.play()
-      .then(() => {
+    .then(()=>{
 
-        document.removeEventListener(
-          "click",
-          tocar
-        );
+      document.removeEventListener("click",tocar);
+      document.removeEventListener("touchstart",tocar);
+      document.removeEventListener("pointerdown",tocar);
 
-        document.removeEventListener(
-          "touchstart",
-          tocar
-        );
-
-        document.removeEventListener(
-          "pointerdown",
-          tocar
-        );
-
-      })
-      .catch(() => {});
+    })
+    .catch(()=>{});
 
   };
 
   tocar();
 
-  document.addEventListener(
-    "click",
-    tocar,
-    {once:true}
-  );
-
-  document.addEventListener(
-    "touchstart",
-    tocar,
-    {once:true}
-  );
-
-  document.addEventListener(
-    "pointerdown",
-    tocar,
-    {once:true}
-  );
-
+  document.addEventListener("click",tocar,{once:true});
+  document.addEventListener("touchstart",tocar,{once:true});
+  document.addEventListener("pointerdown",tocar,{once:true});
 }
 
 
 function stopMusic(){
 
-  const music =
-    document.getElementById(
-      "backgroundMusic"
-    );
+  const music=document.getElementById("backgroundMusic");
 
-  if(!music) return;
+  if(!music)return;
 
   music.pause();
-
-  music.currentTime = 0;
-
+  music.currentTime=0;
 }
 
 
@@ -1002,104 +548,68 @@ function stopMusic(){
 ========================= */
 
 function onlyNumbers(value){
-
-  return String(value || "")
-    .replace(/\D/g,"");
-
+  return String(value||"").replace(/\D/g,"");
 }
 
 
 function formatCPF(input){
 
-  let v =
-    onlyNumbers(input.value)
-      .slice(0,11);
+  let v=onlyNumbers(input.value).slice(0,11);
 
-  if(v.length > 9){
-
-    v =
-      v.replace(
-        /(\d{3})(\d{3})(\d{3})(\d{0,2})/,
-        "$1.$2.$3-$4"
-      );
-
-  }else if(v.length > 6){
-
-    v =
-      v.replace(
-        /(\d{3})(\d{3})(\d{0,3})/,
-        "$1.$2.$3"
-      );
-
-  }else if(v.length > 3){
-
-    v =
-      v.replace(
-        /(\d{3})(\d{0,3})/,
-        "$1.$2"
-      );
-
+  if(v.length>9){
+    v=v.replace(
+      /(\d{3})(\d{3})(\d{3})(\d{0,2})/,
+      "$1.$2.$3-$4"
+    );
+  }else if(v.length>6){
+    v=v.replace(
+      /(\d{3})(\d{3})(\d{0,3})/,
+      "$1.$2.$3"
+    );
+  }else if(v.length>3){
+    v=v.replace(
+      /(\d{3})(\d{0,3})/,
+      "$1.$2"
+    );
   }
 
-  input.value = v;
-
+  input.value=v;
 }
 
 
 function cleanCPF(cpf){
-
   return onlyNumbers(cpf);
-
 }
 
 
 function validCPF(cpf){
 
-  cpf = cleanCPF(cpf);
+  cpf=cleanCPF(cpf);
 
-  if(cpf.length !== 11) return false;
+  if(cpf.length!==11)return false;
+  if(/^(\d)\1{10}$/.test(cpf))return false;
 
-  if(/^(\d)\1{10}$/.test(cpf)){
-    return false;
-  }
-
-  let sum = 0;
+  let sum=0;
 
   for(let i=0;i<9;i++){
-
-    sum +=
-      Number(cpf[i]) *
-      (10-i);
-
+    sum+=Number(cpf[i])*(10-i);
   }
 
-  let d1 =
-    (sum * 10) % 11;
+  let d1=(sum*10)%11;
+  if(d1===10)d1=0;
 
-  if(d1 === 10) d1 = 0;
+  if(d1!==Number(cpf[9]))return false;
 
-  if(d1 !== Number(cpf[9])){
-    return false;
-  }
-
-  sum = 0;
+  sum=0;
 
   for(let i=0;i<10;i++){
-
-    sum +=
-      Number(cpf[i]) *
-      (11-i);
-
+    sum+=Number(cpf[i])*(11-i);
   }
 
-  let d2 =
-    (sum * 10) % 11;
+  let d2=(sum*10)%11;
+  if(d2===10)d2=0;
 
-  if(d2 === 10) d2 = 0;
-
-  return d2 ===
-    Number(cpf[10]);
-
+  return d2===Number(cpf[10]);
 }
 
 
@@ -1109,103 +619,56 @@ function validCPF(cpf){
 
 async function loadPlayer(){
 
-  if(!s.id) return;
+  if(!s.id)return;
 
-  const data =
-    await api(
-      "/api/jogador/" +
-      encodeURIComponent(s.id)
-    );
+  const data=await api(
+    "/api/jogador/"+encodeURIComponent(s.id)
+  );
 
-  const j =
-    data.jogador ||
-    data;
+  const j=data.jogador||data;
 
-  if(!j || !j.id){
-
-    throw new Error(
-      "Jogador não encontrado."
-    );
-
+  if(!j||!j.id){
+    throw new Error("Jogador não encontrado.");
   }
 
-  s.id = j.id;
-
-  s.email =
-    j.email ||
-    s.email;
-
-  s.name =
-    j.nome ||
-    s.name;
-
-  s.cpf =
-    j.cpf ||
-    s.cpf;
-
-  s.points =
-    Number(j.pontos || 0);
-
-  s.balance =
-    Number(j.equilibrio || 0);
-
-  s.code =
-    j.codigo_indicacao ||
-    s.code;
+  s.id=j.id;
+  s.email=j.email||s.email;
+  s.name=j.nome||s.name;
+  s.cpf=j.cpf||s.cpf;
+  s.points=Number(j.pontos||0);
+  s.balance=Number(j.equilibrio||0);
+  s.code=j.codigo_indicacao||s.code;
 
   saveSession();
-
   ui();
-
 }
 
 
 async function savePlayer(){
 
-  if(!s.id) return;
+  if(!s.id)return;
 
-  const data =
-    await api(
-      "/api/jogador/" +
-      encodeURIComponent(s.id),
-      {
-        method:"PUT",
+  const data=await api(
+    "/api/jogador/"+encodeURIComponent(s.id),
+    {
+      method:"PUT",
+      body:JSON.stringify({
+        pontos:Number(s.points||0),
+        equilibrio:Number(s.balance||0)
+      })
+    }
+  );
 
-        body:JSON.stringify({
+  const j=data.jogador||data;
 
-          pontos:
-            Number(s.points || 0),
+  if(j.pontos!==undefined)
+    s.points=Number(j.pontos||0);
 
-          equilibrio:
-            Number(s.balance || 0)
-
-        })
-
-      }
-    );
-
-  const j =
-    data.jogador ||
-    data;
-
-  if(j.pontos !== undefined){
-
-    s.points =
-      Number(j.pontos || 0);
-
-  }
-
-  if(j.equilibrio !== undefined){
-
-    s.balance =
-      Number(j.equilibrio || 0);
-
-  }
+  if(j.equilibrio!==undefined)
+    s.balance=Number(j.equilibrio||0);
 
   saveSession();
-
   ui();
-
 }
 
 
@@ -1217,20 +680,11 @@ function authMode(mode){
 
   stopMusic();
 
-  document
-    .getElementById("registerBox")
-    .classList.toggle(
-      "hidden",
-      mode !== "register"
-    );
+  document.getElementById("registerBox")
+    .classList.toggle("hidden",mode!=="register");
 
-  document
-    .getElementById("loginBox")
-    .classList.toggle(
-      "hidden",
-      mode !== "login"
-    );
-
+  document.getElementById("loginBox")
+    .classList.toggle("hidden",mode!=="login");
 }
 
 
@@ -1238,191 +692,89 @@ async function register(){
 
   stopMusic();
 
-  const button =
-    document.querySelector(
-      "#registerBox .primary"
-    );
+  const button=document.querySelector("#registerBox .primary");
 
   if(button){
-
-    button.disabled = true;
-
-    button.textContent =
-      "Cadastrando...";
-
+    button.disabled=true;
+    button.textContent="Cadastrando...";
   }
 
   try{
 
-    const email =
-      document.getElementById(
-        "rEmail"
-      ).value
-        .trim()
-        .toLowerCase();
+    const email=document.getElementById("rEmail").value.trim().toLowerCase();
+    const password=document.getElementById("rPass").value;
+    const name=document.getElementById("rName").value.trim();
+    const cpf=cleanCPF(document.getElementById("rCpf").value);
 
-    const password =
-      document.getElementById(
-        "rPass"
-      ).value;
+    if(!email||!password||!name||!cpf)
+      throw new Error("Preencha todos os campos.");
 
-    const name =
-      document.getElementById(
-        "rName"
-      ).value
-        .trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      throw new Error("Digite um e-mail válido.");
 
-    const cpf =
-      cleanCPF(
-        document.getElementById(
-          "rCpf"
-        ).value
-      );
+    if(password.length<6)
+      throw new Error("A senha deve ter pelo menos 6 caracteres.");
 
-    if(!email || !password || !name || !cpf){
+    if(cpf.length!==11||!validCPF(cpf))
+      throw new Error("Digite um CPF válido.");
 
-      throw new Error(
-        "Preencha todos os campos."
-      );
+    const referrer=new URLSearchParams(location.search).get("ref")||"";
 
-    }
+    const data=await api(
+      "/api/cadastro",
+      {
+        method:"POST",
+        body:JSON.stringify({
+          email,
+          senha:password,
+          nome:name,
+          cpf,
+          referrer
+        })
+      }
+    );
 
-    if(
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        .test(email)
-    ){
+    const j=data.jogador||data;
 
-      throw new Error(
-        "Digite um e-mail válido."
-      );
+    if(!j.id)
+      throw new Error("Cadastro criado, mas o servidor não retornou o jogador.");
 
-    }
-
-    if(password.length < 6){
-
-      throw new Error(
-        "A senha deve ter pelo menos 6 caracteres."
-      );
-
-    }
-
-    if(
-      cpf.length !== 11 ||
-      !validCPF(cpf)
-    ){
-
-      throw new Error(
-        "Digite um CPF válido."
-      );
-
-    }
-
-    const referrer =
-      new URLSearchParams(
-        location.search
-      ).get("ref") || "";
-
-    const data =
-      await api(
-        "/api/cadastro",
-        {
-          method:"POST",
-
-          body:JSON.stringify({
-
-            email:email,
-            senha:password,
-            nome:name,
-            cpf:cpf,
-            referrer:referrer
-
-          })
-
-        }
-      );
-
-    const j =
-      data.jogador ||
-      data;
-
-    if(!j.id){
-
-      throw new Error(
-        "Cadastro criado, mas o servidor não retornou o jogador."
-      );
-
-    }
-
-    s = {
-
+    s={
       id:j.id,
-
-      email:
-        j.email ||
-        email,
-
-      name:
-        j.nome ||
-        name,
-
-      cpf:
-        j.cpf ||
-        cpf,
-
-      points:
-        Number(j.pontos || 0),
-
-      balance:
-        Number(j.equilibrio || 0),
-
+      email:j.email||email,
+      name:j.nome||name,
+      cpf:j.cpf||cpf,
+      points:Number(j.pontos||0),
+      balance:Number(j.equilibrio||0),
       round:1,
-
-      code:
-        j.codigo_indicacao ||
-        "",
-
-      referrer:
-        referrer,
-
+      code:j.codigo_indicacao||"",
+      referrer,
       dice:0,
-
       question:null,
-
       timer:QUESTION_TIME,
-
       roundPoints:0
-
     };
 
     saveSession();
-
     openGame(true);
 
   }catch(error){
 
-    console.error(
-      "Erro no cadastro:",
-      error
-    );
+    console.error("Erro no cadastro:",error);
 
     alert(
-      error.message ||
+      error.message||
       "Não foi possível realizar o cadastro."
     );
 
   }finally{
 
     if(button){
-
-      button.disabled = false;
-
-      button.textContent =
-        "Cadastrar";
-
+      button.disabled=false;
+      button.textContent="Cadastrar";
     }
 
   }
-
 }
 
 
@@ -1430,204 +782,107 @@ async function login(){
 
   stopMusic();
 
-  const button =
-    document.querySelector(
-      "#loginBox .primary"
-    );
+  const button=document.querySelector("#loginBox .primary");
 
   if(button){
-
-    button.disabled = true;
-
-    button.textContent =
-      "Entrando...";
-
+    button.disabled=true;
+    button.textContent="Entrando...";
   }
 
   try{
 
-    const email =
-      document.getElementById(
-        "lEmail"
-      ).value
-        .trim()
-        .toLowerCase();
+    const email=document.getElementById("lEmail").value.trim().toLowerCase();
+    const password=document.getElementById("lPass").value;
 
-    const password =
-      document.getElementById(
-        "lPass"
-      ).value;
+    if(!email||!password)
+      throw new Error("Preencha e-mail e senha.");
 
-    if(!email || !password){
+    const data=await api(
+      "/api/login",
+      {
+        method:"POST",
+        body:JSON.stringify({
+          email,
+          senha:password
+        })
+      }
+    );
 
-      throw new Error(
-        "Preencha e-mail e senha."
-      );
+    const j=data.jogador||data;
 
-    }
+    if(!j.id)
+      throw new Error("Resposta inválida do servidor.");
 
-    const data =
-      await api(
-        "/api/login",
-        {
-          method:"POST",
-
-          body:JSON.stringify({
-
-            email:email,
-            senha:password
-
-          })
-
-        }
-      );
-
-    const j =
-      data.jogador ||
-      data;
-
-    if(!j.id){
-
-      throw new Error(
-        "Resposta inválida do servidor."
-      );
-
-    }
-
-    s = {
-
+    s={
       id:j.id,
-
-      email:
-        j.email ||
-        email,
-
-      name:
-        j.nome ||
-        "",
-
-      cpf:
-        j.cpf ||
-        "",
-
-      points:
-        Number(j.pontos || 0),
-
-      balance:
-        Number(j.equilibrio || 0),
-
+      email:j.email||email,
+      name:j.nome||"",
+      cpf:j.cpf||"",
+      points:Number(j.pontos||0),
+      balance:Number(j.equilibrio||0),
       round:1,
-
-      code:
-        j.codigo_indicacao ||
-        "",
-
+      code:j.codigo_indicacao||"",
       referrer:"",
-
       dice:0,
-
       question:null,
-
       timer:QUESTION_TIME,
-
       roundPoints:0
-
     };
 
     saveSession();
-
     openGame(true);
 
   }catch(error){
 
-    console.error(
-      "Erro no login:",
-      error
-    );
+    console.error("Erro no login:",error);
 
     alert(
-      error.message ||
+      error.message||
       "E-mail ou senha incorretos."
     );
 
   }finally{
 
     if(button){
-
-      button.disabled = false;
-
-      button.textContent =
-        "Entrar";
-
+      button.disabled=false;
+      button.textContent="Entrar";
     }
 
   }
-
 }
 
 
 async function forgotPassword(){
 
-  const email =
-    prompt(
-      "Digite o e-mail da sua conta:"
-    );
+  const email=prompt("Digite o e-mail da sua conta:");
+  if(!email)return;
 
-  if(!email) return;
-
-  const cleanEmail =
-    email
-      .trim()
-      .toLowerCase();
+  const cleanEmail=email.trim().toLowerCase();
 
   if(!cleanEmail){
-
-    alert(
-      "Digite um e-mail válido."
-    );
-
+    alert("Digite um e-mail válido.");
     return;
-
   }
 
-  const cpfInput =
-    prompt(
-      "Digite o CPF da sua conta:"
-    );
+  const cpfInput=prompt("Digite o CPF da sua conta:");
+  if(!cpfInput)return;
 
-  if(!cpfInput) return;
+  const cpf=cleanCPF(cpfInput);
 
-  const cpf =
-    cleanCPF(cpfInput);
-
-  if(
-    cpf.length !== 11 ||
-    !validCPF(cpf)
-  ){
-
-    alert(
-      "CPF inválido."
-    );
-
+  if(cpf.length!==11||!validCPF(cpf)){
+    alert("CPF inválido.");
     return;
-
   }
 
-  const newPassword =
-    prompt(
-      "Digite a nova senha (mínimo 6 caracteres):"
-    );
+  const newPassword=prompt(
+    "Digite a nova senha (mínimo 6 caracteres):"
+  );
 
-  if(!newPassword) return;
+  if(!newPassword)return;
 
-  if(newPassword.length < 6){
-
-    alert(
-      "A nova senha deve ter pelo menos 6 caracteres."
-    );
-
+  if(newPassword.length<6){
+    alert("A nova senha deve ter pelo menos 6 caracteres.");
     return;
-
   }
 
   try{
@@ -1636,19 +891,12 @@ async function forgotPassword(){
       "/api/recuperar-senha",
       {
         method:"POST",
-
         body:JSON.stringify({
-
           email:cleanEmail,
-
-          cpf:cpf,
-
+          cpf,
           nova_senha:newPassword,
-
           senha:newPassword
-
         })
-
       }
     );
 
@@ -1658,62 +906,39 @@ async function forgotPassword(){
 
   }catch(error){
 
-    console.error(
-      "Erro na recuperação:",
-      error
-    );
+    console.error("Erro na recuperação:",error);
 
     alert(
-      error.message ||
+      error.message||
       "Não foi possível alterar a senha."
     );
-
   }
-
 }
 
 
 /* =========================
-   ENTRAR NO JOGO
+   JOGO
 ========================= */
 
 function openGame(startMusic=false){
 
-  document
-    .getElementById("auth")
-    .classList.add("hidden");
-
-  document
-    .getElementById("game")
-    .classList.remove("hidden");
+  document.getElementById("auth").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
 
   ui();
-
   tab("quiz");
 
-  if(startMusic){
-
-    playMusic();
-
-  }
-
+  if(startMusic)playMusic();
 }
 
-
-/* =========================
-   SAIR
-========================= */
 
 function logout(){
 
   clearInterval(handle);
-
   stopMusic();
-
   clearSession();
 
-  s = {
-
+  s={
     id:null,
     email:"",
     name:"",
@@ -1727,228 +952,127 @@ function logout(){
     question:null,
     timer:QUESTION_TIME,
     roundPoints:0
-
   };
 
-  document
-    .getElementById("game")
-    .classList
-    .add("hidden");
-
-  document
-    .getElementById("auth")
-    .classList
-    .remove("hidden");
+  document.getElementById("game").classList.add("hidden");
+  document.getElementById("auth").classList.remove("hidden");
 
   authMode("register");
-
 }
 
 
-/* =========================
-   INTERFACE
-========================= */
-
 function ui(){
 
-  document.getElementById(
-    "points"
-  ).textContent =
-    Number(s.points || 0);
+  document.getElementById("points").textContent=Number(s.points||0);
+  document.getElementById("round").textContent=Number(s.round||1);
+  document.getElementById("totalScore").textContent=Number(s.points||0);
 
-  document.getElementById(
-    "round"
-  ).textContent =
-    Number(s.round || 1);
+  document.getElementById("refCode").value=s.code||"";
 
-  document.getElementById(
-    "totalScore"
-  ).textContent =
-    Number(s.points || 0);
-
-  document.getElementById(
-    "refCode"
-  ).value =
-    s.code || "";
-
-  document.getElementById(
-    "refLink"
-  ).value =
-    location.origin +
-    location.pathname +
-    "?ref=" +
-    encodeURIComponent(
-      s.code || ""
-    );
-
+  document.getElementById("refLink").value=
+    location.origin+
+    location.pathname+
+    "?ref="+
+    encodeURIComponent(s.code||"");
 }
 
 
 function tab(name){
 
-  [
-    "quiz",
-    "ref",
-    "cash",
-    "premium"
-  ].forEach(tabName => {
-
-    document
-      .getElementById(
-        tabName + "Tab"
-      )
-      .classList.toggle(
-        "hidden",
-        tabName !== name
-      );
-
+  ["quiz","ref","cash","premium"].forEach(tabName=>{
+    document.getElementById(tabName+"Tab")
+      .classList.toggle("hidden",tabName!==name);
   });
 
-  if(name === "quiz"){
-
-    document
-      .getElementById("rollCard")
-      .classList.remove("hidden");
-
-    document
-      .getElementById("questionCard")
-      .classList.add("hidden");
-
+  if(name==="quiz"){
+    document.getElementById("rollCard").classList.remove("hidden");
+    document.getElementById("questionCard").classList.add("hidden");
   }
-
 }
 
 
 /* =========================
-   PERGUNTAS DO BANCO
+   PERGUNTA — UMA POR VEZ
 ========================= */
 
-let perguntasBanco = [];
-
-
-async function carregarPerguntas(){
+async function carregarPerguntaPorDificuldade(dificuldade){
 
   try{
 
-    const resposta =
-      await fetch(
-        API_URL +
-        "/api/admin/perguntas"
-      );
-
-    const dados =
-      await resposta.json();
-
-    if(
-      !resposta.ok ||
-      !dados.sucesso ||
-      !Array.isArray(
-        dados.perguntas
-      ) ||
-      dados.perguntas.length === 0
-    ){
-
-      throw new Error(
-        "Nenhuma pergunta cadastrada."
-      );
-
-    }
-
-    perguntasBanco =
-      dados.perguntas.map(p => {
-
-        const respostaCorreta =
-          String(
-            p.resposta_correta
-          )
-          .toUpperCase()
-          .trim();
-
-        const indice =
-          {
-            A:0,
-            B:1,
-            C:2,
-            D:3
-          }[
-            respostaCorreta
-          ];
-
-        return [
-
-          p.pergunta,
-
-          [
-            p.alternativa_a,
-            p.alternativa_b,
-            p.alternativa_c,
-            p.alternativa_d
-          ],
-
-          indice
-
-        ];
-
-      })
-      .filter(p => {
-
-        return (
-          p[0] &&
-          Array.isArray(p[1]) &&
-          p[1].length === 4 &&
-          [0,1,2,3].includes(p[2])
-        );
-
-      });
-
-    if(
-      perguntasBanco.length === 0
-    ){
-
-      throw new Error(
-        "Nenhuma pergunta válida encontrada."
-      );
-
-    }
-
-    console.log(
-      "Perguntas carregadas:",
-      perguntasBanco.length
+    const resposta=await fetch(
+      API_URL+
+      "/api/pergunta-aleatoria?dificuldade="+
+      encodeURIComponent(dificuldade)
     );
 
-    return true;
+    const dados=await resposta.json();
 
-  }catch(erro){
+    if(
+      !resposta.ok||
+      !dados.sucesso||
+      !dados.pergunta
+    ){
+      throw new Error(
+        dados.erro||
+        "Nenhuma pergunta encontrada."
+      );
+    }
+
+    const p=dados.pergunta;
+
+    const respostaCorreta=String(
+      p.resposta_correta
+    ).toUpperCase().trim();
+
+    const indice={
+      A:0,
+      B:1,
+      C:2,
+      D:3
+    }[respostaCorreta];
+
+    /*
+      O servidor poderá devolver as alternativas
+      com os nomes alternativa_a/b/c/d.
+    */
+
+    const alternativas=[
+      p.alternativa_a ?? p.resposta_a,
+      p.alternativa_b ?? p.resposta_b,
+      p.alternativa_c ?? p.resposta_c,
+      p.alternativa_d ?? p.resposta_d
+    ];
+
+    if(
+      !p.pergunta||
+      !alternativas.every(Boolean)||
+      ![0,1,2,3].includes(indice)
+    ){
+      throw new Error(
+        "Pergunta inválida recebida do servidor."
+      );
+    }
+
+    return[
+      p.pergunta,
+      alternativas,
+      indice
+    ];
+
+  }catch(error){
 
     console.error(
-      "Erro ao carregar perguntas:",
-      erro
+      "Erro ao carregar pergunta:",
+      error
     );
 
-    return false;
-
-  }
-
-}
-
-
-function pickQuestion(){
-
-  if(
-    perguntasBanco.length === 0
-  ){
+    alert(
+      error.message||
+      "Não foi possível carregar a pergunta."
+    );
 
     return null;
-
   }
-
-  return perguntasBanco[
-    Math.floor(
-      Math.random() *
-      perguntasBanco.length
-    )
-  ];
-
 }
 
 
@@ -1958,219 +1082,130 @@ function pickQuestion(){
 
 async function rollDice(){
 
-  const music =
-    document.getElementById(
-      "backgroundMusic"
-    );
+  const music=document.getElementById("backgroundMusic");
 
-  if(
-    music &&
-    music.paused
-  ){
-
+  if(music&&music.paused)
     playMusic();
 
-  }
-
   clearInterval(handle);
-
-  answered = false;
-
-  /*
-    Garante que as perguntas
-    estejam carregadas do banco.
-  */
-
-  if(
-    perguntasBanco.length === 0
-  ){
-
-    const carregou =
-      await carregarPerguntas();
-
-    if(!carregou){
-
-      alert(
-        "Não foi possível carregar as perguntas. Tente novamente."
-      );
-
-      return;
-
-    }
-
-  }
+  answered=false;
 
   let d;
 
-  if(s.round % 30 === 0){
+  if(s.round%30===0){
 
-    d =
-      Math.floor(
-        Math.random() * 3
-      ) + 8;
+    d=Math.floor(Math.random()*3)+8;
 
-  }else if(s.round % 10 === 0){
+  }else if(s.round%10===0){
 
-    d =
-      Math.floor(
-        Math.random() * 3
-      ) + 5;
+    d=Math.floor(Math.random()*3)+5;
 
   }else{
 
-    d =
-      Math.floor(
-        Math.random() * 4
-      ) + 1;
+    d=Math.floor(Math.random()*4)+1;
 
   }
 
-  s.dice = d;
+  /*
+    1-4 = fácil
+    5-7 = médio
+    8-10 = difícil
+  */
 
-  s.roundPoints = d;
+  let dificuldade;
 
-  s.question =
-    pickQuestion();
-
-  if(!s.question){
-
-    alert(
-      "Não foi possível selecionar uma pergunta."
-    );
-
-    return;
-
+  if(d>=8){
+    dificuldade="dificil";
+  }else if(d>=5){
+    dificuldade="medio";
+  }else{
+    dificuldade="facil";
   }
 
-  document.getElementById(
-    "dice"
-  ).textContent =
-    "🎲 " + d;
+  s.dice=d;
+  s.roundPoints=d;
 
-  document.getElementById(
-    "diceResult"
-  ).textContent =
-    "Você tirou " +
-    d +
-    " • Esta pergunta vale " +
-    d +
-    (
-      d === 1
-      ? " ponto"
-      : " pontos"
+  const pergunta=
+    await carregarPerguntaPorDificuldade(
+      dificuldade
     );
 
-  document.getElementById(
-    "question"
-  ).textContent =
+  if(!pergunta)return;
+
+  s.question=pergunta;
+
+  document.getElementById("dice").textContent="🎲 "+d;
+
+  document.getElementById("diceResult").textContent=
+    "Você tirou "+
+    d+
+    " • Esta pergunta vale "+
+    d+
+    (d===1?" ponto":" pontos");
+
+  document.getElementById("question").textContent=
     s.question[0];
 
-  const answers =
-    document.getElementById(
-      "answers"
-    );
+  const answers=document.getElementById("answers");
 
-  answers.innerHTML = "";
+  answers.innerHTML="";
 
-  s.question[1].forEach(
-    (answerText,index) => {
+  s.question[1].forEach((answerText,index)=>{
 
-      const button =
-        document.createElement(
-          "button"
-        );
+    const button=document.createElement("button");
 
-      button.className =
-        "answer";
+    button.className="answer";
+    button.textContent=answerText;
+    button.onclick=()=>answer(index);
 
-      button.textContent =
-        answerText;
+    answers.appendChild(button);
 
-      button.onclick =
-        () => answer(index);
+  });
 
-      answers.appendChild(
-        button
-      );
+  document.getElementById("rollCard").classList.add("hidden");
+  document.getElementById("questionCard").classList.remove("hidden");
 
-    }
-  );
-
-  document
-    .getElementById("rollCard")
-    .classList.add("hidden");
-
-  document
-    .getElementById("questionCard")
-    .classList.remove("hidden");
-
-  document
-    .getElementById("feedback")
-    .classList.add("hidden");
-
-  document
-    .getElementById("nextWrap")
-    .classList.add("hidden");
+  document.getElementById("feedback").classList.add("hidden");
+  document.getElementById("nextWrap").classList.add("hidden");
 
   startTimer();
-
 }
 
 
 /* =========================
-   TIMER 10 SEGUNDOS
+   TIMER
 ========================= */
 
 function startTimer(){
 
   clearInterval(handle);
 
-  s.timer =
-    QUESTION_TIME;
+  s.timer=QUESTION_TIME;
 
-  document.getElementById(
-    "time"
-  ).textContent =
-    QUESTION_TIME;
+  document.getElementById("time").textContent=QUESTION_TIME;
+  document.getElementById("progress").style.width="100%";
 
-  document.getElementById(
-    "progress"
-  ).style.width =
-    "100%";
+  handle=setInterval(()=>{
 
-  handle =
-    setInterval(() => {
+    s.timer--;
 
-      s.timer--;
+    document.getElementById("time").textContent=
+      Math.max(0,s.timer);
 
-      document.getElementById(
-        "time"
-      ).textContent =
-        Math.max(
-          0,
-          s.timer
-        );
+    document.getElementById("progress").style.width=
+      Math.max(
+        0,
+        s.timer/QUESTION_TIME*100
+      )+"%";
 
-      document.getElementById(
-        "progress"
-      ).style.width =
-        Math.max(
-          0,
-          s.timer /
-          QUESTION_TIME *
-          100
-        ) + "%";
+    if(s.timer<=0){
 
-      if(s.timer <= 0){
+      clearInterval(handle);
+      answer(-1);
 
-        clearInterval(handle);
+    }
 
-        answer(-1);
-
-      }
-
-    },1000);
-
+  },1000);
 }
 
 
@@ -2180,98 +1215,62 @@ function startTimer(){
 
 async function answer(index){
 
-  if(answered) return;
+  if(answered)return;
 
-  answered = true;
+  answered=true;
 
   clearInterval(handle);
 
-  const correct =
-    s.question[2];
+  const correct=s.question[2];
 
-  const buttons =
-    [
-      ...document.querySelectorAll(
-        ".answer"
-      )
-    ];
+  const buttons=[
+    ...document.querySelectorAll(".answer")
+  ];
 
-  if(
-    index >= 0 &&
-    buttons[index]
-  ){
+  if(index>=0&&buttons[index]){
 
-    buttons[index]
-      .classList.add(
-        index === correct
-        ? "correct"
-        : "wrong"
-      );
+    buttons[index].classList.add(
+      index===correct?"correct":"wrong"
+    );
 
   }
 
-  if(buttons[correct]){
+  if(buttons[correct])
+    buttons[correct].classList.add("correct");
 
-    buttons[correct]
-      .classList.add(
-        "correct"
-      );
+  const isCorrect=index===correct;
 
-  }
-
-  const isCorrect =
-    index === correct;
-
-  if(isCorrect){
-
-    s.points +=
-      Number(
-        s.roundPoints || 0
-      );
-
-  }
+  if(isCorrect)
+    s.points+=Number(s.roundPoints||0);
 
   ui();
 
-  const feedback =
-    document.getElementById(
-      "feedback"
-    );
+  const feedback=document.getElementById("feedback");
 
-  feedback
-    .classList
-    .remove("hidden");
+  feedback.classList.remove("hidden");
 
   if(isCorrect){
 
-    feedback.textContent =
-      "✅ Correto! Você ganhou " +
-      s.roundPoints +
-      (
-        s.roundPoints === 1
-        ? " ponto!"
-        : " pontos!"
-      );
+    feedback.textContent=
+      "✅ Correto! Você ganhou "+
+      s.roundPoints+
+      (s.roundPoints===1?" ponto!":" pontos!");
 
-  }else if(index === -1){
+  }else if(index===-1){
 
-    feedback.textContent =
+    feedback.textContent=
       "⏰ Tempo esgotado! Você ganhou 0 pontos.";
 
   }else{
 
-    feedback.textContent =
+    feedback.textContent=
       "❌ Incorreto! Você ganhou 0 pontos.";
 
   }
 
-  buttons.forEach(
-    button => {
-
-      button.disabled = true;
-
-    }
-  );
+  buttons.forEach(button=>{
+    button.disabled=true;
+  });
 
   try{
 
@@ -2284,68 +1283,44 @@ async function answer(index){
       error
     );
 
-    feedback.textContent +=
+    feedback.textContent+=
       " ⚠️ Não foi possível sincronizar agora.";
-
   }
 
-  document
-    .getElementById("nextWrap")
-    .classList
-    .remove("hidden");
-
+  document.getElementById("nextWrap")
+    .classList.remove("hidden");
 }
 
 
 /* =========================
-   PRÓXIMA PERGUNTA
+   PRÓXIMA
 ========================= */
 
 function finishQuestion(){
 
   clearInterval(handle);
 
-  document
-    .getElementById("questionCard")
-    .classList
-    .add("hidden");
+  document.getElementById("questionCard")
+    .classList.add("hidden");
 
-  document
-    .getElementById("rollCard")
-    .classList
-    .remove("hidden");
+  document.getElementById("rollCard")
+    .classList.remove("hidden");
 
-  document
-    .getElementById("dice")
-    .textContent =
-      "🎲";
+  document.getElementById("dice").textContent="🎲";
+  document.getElementById("diceResult").textContent="";
 
-  document
-    .getElementById("diceResult")
-    .textContent =
-      "";
+  document.getElementById("feedback")
+    .classList.add("hidden");
 
-  document
-    .getElementById("feedback")
-    .classList
-    .add("hidden");
-
-  document
-    .getElementById("nextWrap")
-    .classList
-    .add("hidden");
+  document.getElementById("nextWrap")
+    .classList.add("hidden");
 
   s.round++;
-
-  answered = false;
-
-  s.question = null;
-
-  s.timer =
-    QUESTION_TIME;
+  answered=false;
+  s.question=null;
+  s.timer=QUESTION_TIME;
 
   saveSession();
-
 }
 
 
@@ -2355,18 +1330,13 @@ function finishQuestion(){
 
 async function copyRef(){
 
-  const link =
-    document.getElementById(
-      "refLink"
-    ).value;
+  const link=document.getElementById("refLink").value;
 
   try{
 
     if(navigator.clipboard){
 
-      await navigator.clipboard.writeText(
-        link
-      );
+      await navigator.clipboard.writeText(link);
 
     }else{
 
@@ -2374,63 +1344,36 @@ async function copyRef(){
 
     }
 
-    document.getElementById(
-      "refMsg"
-    ).textContent =
-      "Link copiado!";
+    document.getElementById("refMsg").textContent="Link copiado!";
 
   }catch(error){
 
-    const input =
-      document.getElementById(
-        "refLink"
-      );
+    const input=document.getElementById("refLink");
 
-    input.removeAttribute(
-      "readonly"
-    );
-
+    input.removeAttribute("readonly");
     input.select();
 
-    document.execCommand(
-      "copy"
-    );
+    document.execCommand("copy");
 
-    input.setAttribute(
-      "readonly",
-      ""
-    );
+    input.setAttribute("readonly","");
 
-    document.getElementById(
-      "refMsg"
-    ).textContent =
-      "Link copiado!";
-
+    document.getElementById("refMsg").textContent="Link copiado!";
   }
-
 }
 
 
 async function shareRef(){
 
-  const link =
-    document.getElementById(
-      "refLink"
-    ).value;
+  const link=document.getElementById("refLink").value;
 
   if(navigator.share){
 
     try{
 
       await navigator.share({
-
         title:"QuizUp",
-
-        text:
-          "Venha jogar QuizUp comigo!",
-
+        text:"Venha jogar QuizUp comigo!",
         url:link
-
       });
 
     }catch(error){}
@@ -2440,7 +1383,6 @@ async function shareRef(){
     await copyRef();
 
   }
-
 }
 
 
@@ -2450,221 +1392,129 @@ async function shareRef(){
 
 function payFields(){
 
-  const isPix =
-    document.getElementById(
-      "payMethod"
-    ).value === "pix";
+  const isPix=
+    document.getElementById("payMethod").value==="pix";
 
-  document
-    .getElementById("pix")
-    .classList
-    .toggle(
-      "hidden",
-      !isPix
-    );
+  document.getElementById("pix")
+    .classList.toggle("hidden",!isPix);
 
-  document
-    .getElementById("paypal")
-    .classList
-    .toggle(
-      "hidden",
-      isPix
-    );
-
+  document.getElementById("paypal")
+    .classList.toggle("hidden",isPix);
 }
 
 
 function need(value){
 
-  return value === "10"
-    ? 11000
-    : value === "5"
-    ? 6000
-    : 2000;
-
+  return value==="10"
+    ?11000
+    :value==="5"
+    ?6000
+    :2000;
 }
 
 
 async function withdraw(){
 
-  const button =
-    document.getElementById(
-      "withdrawButton"
-    );
+  const button=document.getElementById("withdrawButton");
+  const msg=document.getElementById("cashMsg");
 
-  const msg =
-    document.getElementById(
-      "cashMsg"
-    );
+  msg.classList.remove("hidden");
 
-  msg
-    .classList
-    .remove("hidden");
-
-  button.disabled = true;
-
-  button.textContent =
-    "Enviando...";
+  button.disabled=true;
+  button.textContent="Enviando...";
 
   try{
 
-    if(!s.id){
+    if(!s.id)
+      throw new Error("Usuário não identificado.");
+
+    const value=
+      document.getElementById("withdrawAmount").value;
+
+    const gross=Number(value);
+    const pointsNeeded=need(value);
+
+    const method=
+      document.getElementById("payMethod").value;
+
+    const paymentField=
+      method==="pix"
+      ?document.getElementById("pixKey")
+      :document.getElementById("paypalKey");
+
+    const paymentKey=paymentField.value.trim();
+
+    if(!paymentKey)
+      throw new Error("Preencha o dado de pagamento.");
+
+    if(method!=="pix"&&method!=="paypal")
+      throw new Error("Método de pagamento inválido.");
+
+    if(Number(s.points)<pointsNeeded){
 
       throw new Error(
-        "Usuário não identificado."
-      );
-
-    }
-
-    const value =
-      document.getElementById(
-        "withdrawAmount"
-      ).value;
-
-    const gross =
-      Number(value);
-
-    const pointsNeeded =
-      need(value);
-
-    const method =
-      document.getElementById(
-        "payMethod"
-      ).value;
-
-    const paymentField =
-      method === "pix"
-      ?
-      document.getElementById(
-        "pixKey"
-      )
-      :
-      document.getElementById(
-        "paypalKey"
-      );
-
-    const paymentKey =
-      paymentField.value.trim();
-
-    if(!paymentKey){
-
-      throw new Error(
-        "Preencha o dado de pagamento."
-      );
-
-    }
-
-    if(
-      method !== "pix" &&
-      method !== "paypal"
-    ){
-
-      throw new Error(
-        "Método de pagamento inválido."
-      );
-
-    }
-
-    if(
-      Number(s.points) <
-      pointsNeeded
-    ){
-
-      throw new Error(
-        "Pontos insuficientes. Você precisa de " +
-        pointsNeeded +
+        "Pontos insuficientes. Você precisa de "+
+        pointsNeeded+
         " pontos."
       );
 
     }
 
-    const result =
-      await api(
-        "/api/saques",
-        {
-          method:"POST",
+    const result=await api(
+      "/api/saques",
+      {
+        method:"POST",
+        body:JSON.stringify({
+          jogador_id:Number(s.id),
+          pix_key:paymentKey,
+          quantia:gross,
+          metodo:method
+        })
+      }
+    );
 
-          body:JSON.stringify({
+    const playerValue=Number(
+      result.valor_jogador??
+      result.jogador??
+      gross*.70
+    );
 
-            jogador_id:
-              Number(s.id),
-
-            pix_key:
-              paymentKey,
-
-            quantia:
-              gross,
-
-            metodo:
-              method
-
-          })
-
-        }
-      );
-
-    const playerValue =
-      Number(
-        result.valor_jogador ??
-        result.jogador ??
-        (gross * 0.70)
-      );
-
-    const platformValue =
-      Number(
-        result.valor_plataforma ??
-        result.plataforma ??
-        (gross * 0.30)
-      );
+    const platformValue=Number(
+      result.valor_plataforma??
+      result.plataforma??
+      gross*.30
+    );
 
     await loadPlayer();
 
-    msg.innerHTML =
-      "✅ Solicitação enviada com sucesso!<br><br>" +
-
-      "Valor solicitado: <b>R$ " +
-      gross
-        .toFixed(2)
-        .replace(".",",") +
-      "</b><br>" +
-
-      "Jogador recebe: <b>R$ " +
-      playerValue
-        .toFixed(2)
-        .replace(".",",") +
-      "</b><br>" +
-
-      "Plataforma: <b>R$ " +
-      platformValue
-        .toFixed(2)
-        .replace(".",",") +
-      "</b><br><br>" +
-
+    msg.innerHTML=
+      "✅ Solicitação enviada com sucesso!<br><br>"+
+      "Valor solicitado: <b>R$ "+
+      gross.toFixed(2).replace(".",",")+
+      "</b><br>"+
+      "Jogador recebe: <b>R$ "+
+      playerValue.toFixed(2).replace(".",",")+
+      "</b><br>"+
+      "Plataforma: <b>R$ "+
+      platformValue.toFixed(2).replace(".",",")+
+      "</b><br><br>"+
       "Status: <b>Pendente</b>";
 
   }catch(error){
 
-    console.error(
-      "Erro no saque:",
-      error
-    );
+    console.error("Erro no saque:",error);
 
-    msg.innerHTML =
-      "❌ " +
-      (
-        error?.message ||
-        "Não foi possível registrar o saque."
-      );
+    msg.innerHTML=
+      "❌ "+
+      (error?.message||
+      "Não foi possível registrar o saque.");
 
   }finally{
 
-    button.disabled = false;
-
-    button.textContent =
-      "Solicitar saque";
+    button.disabled=false;
+    button.textContent="Solicitar saque";
 
   }
-
 }
 
 
@@ -2675,16 +1525,14 @@ async function withdraw(){
 (async function(){
 
   /*
-    Carrega as perguntas do banco
-    assim que o jogo é aberto.
+    NÃO carrega mais todas as perguntas.
+    O jogo busca somente uma pergunta
+    quando o jogador joga o dado.
   */
-
-  await carregarPerguntas();
 
   if(!restoreSession()){
 
     authMode("register");
-
     return;
 
   }
@@ -2692,7 +1540,6 @@ async function withdraw(){
   try{
 
     await loadPlayer();
-
     openGame(false);
 
   }catch(error){
@@ -2704,8 +1551,7 @@ async function withdraw(){
 
     clearSession();
 
-    s = {
-
+    s={
       id:null,
       email:"",
       name:"",
@@ -2719,21 +1565,15 @@ async function withdraw(){
       question:null,
       timer:QUESTION_TIME,
       roundPoints:0
-
     };
 
-    document
-      .getElementById("game")
-      .classList
-      .add("hidden");
+    document.getElementById("game")
+      .classList.add("hidden");
 
-    document
-      .getElementById("auth")
-      .classList
-      .remove("hidden");
+    document.getElementById("auth")
+      .classList.remove("hidden");
 
     authMode("register");
-
   }
 
 })();
@@ -2741,5 +1581,4 @@ async function withdraw(){
 </script>
 
 </body>
-
   </html>
