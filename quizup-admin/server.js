@@ -17,7 +17,6 @@ const pool = new Pool({
   }
 });
 
-
 // =====================================================
 // ROTA PRINCIPAL
 // =====================================================
@@ -28,7 +27,6 @@ app.get("/", (req, res) => {
     message: "QuizUp Admin Backend funcionando!"
   });
 });
-
 
 // =====================================================
 // TESTE DO BANCO
@@ -43,6 +41,7 @@ app.get("/api/test-db", async (req, res) => {
       banco: "PostgreSQL",
       hora: resultado.rows[0].agora
     });
+
   } catch (erro) {
     console.error("Erro no banco:", erro);
 
@@ -52,7 +51,6 @@ app.get("/api/test-db", async (req, res) => {
     });
   }
 });
-
 
 // =====================================================
 // PREPARAR BANCO
@@ -72,7 +70,6 @@ async function prepararBanco() {
 
     console.log("Tabela admins pronta.");
 
-
     await pool.query(`
       CREATE TABLE IF NOT EXISTS jogadores (
         id SERIAL PRIMARY KEY,
@@ -89,12 +86,10 @@ async function prepararBanco() {
 
     console.log("Tabela jogadores verificada.");
 
-
     await pool.query(`
       ALTER TABLE jogadores
       ADD COLUMN IF NOT EXISTS saldo NUMERIC(12,2) DEFAULT 0
     `);
-
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS perguntas (
@@ -117,7 +112,6 @@ async function prepararBanco() {
 
     console.log("Tabela perguntas verificada.");
 
-
     await pool.query(`
       CREATE INDEX IF NOT EXISTS idx_perguntas_dificuldade
       ON perguntas(dificuldade)
@@ -134,7 +128,6 @@ async function prepararBanco() {
     console.error("Erro ao preparar banco:", erro);
   }
 }
-
 
 // =====================================================
 // LOGIN ADMINISTRATIVO
@@ -201,7 +194,6 @@ app.post("/api/admin/login", async (req, res) => {
   }
 });
 
-
 // =====================================================
 // DASHBOARD
 // =====================================================
@@ -234,7 +226,6 @@ app.get("/api/admin/dashboard", async (req, res) => {
     });
   }
 });
-
 
 // =====================================================
 // LISTAR JOGADORES NO ADMIN
@@ -271,7 +262,6 @@ app.get("/api/admin/jogadores", async (req, res) => {
     });
   }
 });
-
 
 // =====================================================
 // DADOS DO JOGADOR
@@ -320,6 +310,74 @@ app.get("/api/jogador/:id", async (req, res) => {
   }
 });
 
+// =====================================================
+// ATUALIZAR DADOS DO JOGADOR
+// =====================================================
+
+app.put("/api/jogador/:id", async (req, res) => {
+  try {
+
+    const { pontos, equilibrio, saldo } = req.body;
+
+    const novoPontos =
+      Number.isFinite(Number(pontos))
+        ? Number(pontos)
+        : 0;
+
+    const novoSaldo =
+      equilibrio !== undefined
+        ? Number(equilibrio)
+        : Number(saldo || 0);
+
+    const resultado = await pool.query(
+      `
+      UPDATE jogadores
+      SET
+        pontos = $1,
+        saldo = $2
+      WHERE id = $3
+      RETURNING
+        id,
+        email,
+        nome_completo,
+        cpf,
+        codigo_indicacao,
+        pontos,
+        saldo,
+        criado_em
+      `,
+      [
+        novoPontos,
+        novoSaldo,
+        req.params.id
+      ]
+    );
+
+    if (resultado.rows.length === 0) {
+      return res.status(404).json({
+        sucesso: false,
+        erro: "Jogador não encontrado."
+      });
+    }
+
+    res.json({
+      sucesso: true,
+      jogador: resultado.rows[0]
+    });
+
+  } catch (erro) {
+
+    console.error(
+      "Erro ao atualizar jogador:",
+      erro
+    );
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao atualizar jogador."
+    });
+  }
+});
 
 // =====================================================
 // CADASTRO DE JOGADOR
@@ -359,7 +417,10 @@ app.post("/api/cadastro", async (req, res) => {
          OR cpf = $2
       LIMIT 1
       `,
-      [emailLimpo, cpfLimpo]
+      [
+        emailLimpo,
+        cpfLimpo
+      ]
     );
 
     if (existente.rows.length > 0) {
@@ -369,7 +430,10 @@ app.post("/api/cadastro", async (req, res) => {
       });
     }
 
-    const senhaHash = await bcrypt.hash(senha, 12);
+    const senhaHash = await bcrypt.hash(
+      senha,
+      12
+    );
 
     const resultado = await pool.query(
       `
@@ -417,7 +481,6 @@ app.post("/api/cadastro", async (req, res) => {
     });
   }
 });
-
 
 // =====================================================
 // LOGIN DO JOGADOR
@@ -490,7 +553,6 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-
 // =====================================================
 // RECUPERAÇÃO DE SENHA
 // =====================================================
@@ -543,7 +605,6 @@ app.post("/api/recuperar-senha", async (req, res) => {
   }
 });
 
-
 // =====================================================
 // LISTAR PERGUNTAS NO ADMIN
 // =====================================================
@@ -581,7 +642,6 @@ app.get("/api/admin/perguntas", async (req, res) => {
   }
 });
 
-
 // =====================================================
 // LISTAR PERGUNTAS
 // =====================================================
@@ -617,7 +677,6 @@ app.get("/api/perguntas", async (req, res) => {
     });
   }
 });
-
 
 // =====================================================
 // CRIAR PERGUNTA PELO ADMIN
@@ -671,7 +730,9 @@ app.post("/api/admin/perguntas", async (req, res) => {
         alternativa_b,
         alternativa_c,
         alternativa_d,
-        String(resposta_correta).toUpperCase().trim(),
+        String(resposta_correta)
+          .toUpperCase()
+          .trim(),
         dificuldade
       ]
     );
@@ -692,7 +753,6 @@ app.post("/api/admin/perguntas", async (req, res) => {
   }
 });
 
-
 // =====================================================
 // IMPORTAR PERGUNTAS EM LOTE
 // =====================================================
@@ -702,7 +762,10 @@ app.post("/api/admin/perguntas/importar", async (req, res) => {
 
     const perguntas = req.body.perguntas;
 
-    if (!Array.isArray(perguntas) || perguntas.length === 0) {
+    if (
+      !Array.isArray(perguntas) ||
+      perguntas.length === 0
+    ) {
       return res.status(400).json({
         sucesso: false,
         erro: "Nenhuma pergunta foi enviada."
@@ -783,7 +846,6 @@ app.post("/api/admin/perguntas/importar", async (req, res) => {
   }
 });
 
-
 // =====================================================
 // PERGUNTA ALEATÓRIA POR DIFICULDADE
 // =====================================================
@@ -806,7 +868,11 @@ app.get("/api/pergunta-aleatoria", async (req, res) => {
       "difícil"
     ];
 
-    if (!dificuldadesValidas.includes(dificuldadeRecebida)) {
+    if (
+      !dificuldadesValidas.includes(
+        dificuldadeRecebida
+      )
+    ) {
       return res.status(400).json({
         sucesso: false,
         erro: "Dificuldade inválida. Use facil, medio ou dificil."
@@ -815,21 +881,15 @@ app.get("/api/pergunta-aleatoria", async (req, res) => {
 
     let dificuldade = dificuldadeRecebida;
 
-    if (
-      dificuldade === "fácil"
-    ) {
+    if (dificuldade === "fácil") {
       dificuldade = "facil";
     }
 
-    if (
-      dificuldade === "médio"
-    ) {
+    if (dificuldade === "médio") {
       dificuldade = "medio";
     }
 
-    if (
-      dificuldade === "difícil"
-    ) {
+    if (dificuldade === "difícil") {
       dificuldade = "dificil";
     }
 
@@ -892,7 +952,6 @@ app.get("/api/pergunta-aleatoria", async (req, res) => {
   }
 });
 
-
 // =====================================================
 // SAQUES
 // =====================================================
@@ -909,7 +968,11 @@ app.post("/api/saques", async (req, res) => {
       email
     } = req.body;
 
-    if (!jogador_id || !pix_key || !valor) {
+    if (
+      !jogador_id ||
+      !pix_key ||
+      !valor
+    ) {
       return res.status(400).json({
         sucesso: false,
         erro: "Dados do saque incompletos."
@@ -939,7 +1002,6 @@ app.post("/api/saques", async (req, res) => {
     });
   }
 });
-
 
 // =====================================================
 // INICIAR SERVIDOR
