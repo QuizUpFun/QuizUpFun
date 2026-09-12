@@ -265,7 +265,7 @@ placeholder="000.000.000-00" oninput="formatCPF(this)">
 </div>
 
 <div id="nextWrap" class="next-wrap hidden">
-<button id="nextButton" class="primary next-button" onclick="finishQuestion()">
+<button id="nextButton" class="primary next-button" onclick="finishQuestion">
 ➡️ Próxima
 </button>
 </div>
@@ -393,8 +393,148 @@ let s={
   dice:0,
   question:null,
   timer:QUESTION_TIME,
-  roundPoints:0
+  roundPoints:0,
+
+  /*
+    Controle do ciclo de 10 rodadas:
+    5 fáceis
+    3 médias
+    2 difíceis
+  */
+  cicloDificuldades:[]
 };
+
+
+/* =========================
+   CICLO DE 10 RODADAS
+========================= */
+
+function embaralhar(array){
+
+  const copia=[...array];
+
+  for(let i=copia.length-1;i>0;i--){
+
+    const j=Math.floor(Math.random()*(i+1));
+
+    [copia[i],copia[j]]=[
+      copia[j],
+      copia[i]
+    ];
+  }
+
+  return copia;
+}
+
+
+function novoCiclo(){
+
+  s.cicloDificuldades=embaralhar([
+    "facil",
+    "facil",
+    "facil",
+    "facil",
+    "facil",
+
+    "medio",
+    "medio",
+    "medio",
+
+    "dificil",
+    "dificil"
+  ]);
+}
+
+
+function proximaDificuldade(){
+
+  /*
+    A cada 10 rodadas cria um novo ciclo.
+  */
+
+  if(
+    !Array.isArray(s.cicloDificuldades)||
+    s.cicloDificuldades.length===0
+  ){
+
+    novoCiclo();
+
+  }
+
+  return s.cicloDificuldades.shift();
+}
+
+
+/* =========================
+   DADO COM PESOS
+========================= */
+
+function sortearDado(dificuldade){
+
+  /*
+    Fácil:
+    1, 2 e 3 aparecem mais.
+    4 aparece menos.
+
+    Pesos:
+    1 = 30%
+    2 = 30%
+    3 = 30%
+    4 = 10%
+  */
+
+  if(dificuldade==="facil"){
+
+    const r=Math.random();
+
+    if(r<0.30)return 1;
+    if(r<0.60)return 2;
+    if(r<0.90)return 3;
+
+    return 4;
+  }
+
+
+  /*
+    Médio:
+    5 e 6 aparecem mais.
+    7 aparece menos.
+
+    Pesos:
+    5 = 40%
+    6 = 40%
+    7 = 20%
+  */
+
+  if(dificuldade==="medio"){
+
+    const r=Math.random();
+
+    if(r<0.40)return 5;
+    if(r<0.80)return 6;
+
+    return 7;
+  }
+
+
+  /*
+    Difícil:
+    8 e 9 aparecem mais.
+    10 aparece menos.
+
+    Pesos:
+    8 = 40%
+    9 = 40%
+    10 = 20%
+  */
+
+  const r=Math.random();
+
+  if(r<0.40)return 8;
+  if(r<0.80)return 9;
+
+  return 10;
+}
 
 
 /* =========================
@@ -421,7 +561,9 @@ async function api(path,options={}){
   }catch(error){}
 
   if(!response.ok){
+
     throw new Error(
+      data.erro||
       data.error||
       data.message||
       "Erro de comunicação com o servidor."
@@ -451,7 +593,8 @@ function saveSession(){
       balance:Number(s.balance||0),
       round:Number(s.round||1),
       code:s.code||"",
-      referrer:s.referrer||""
+      referrer:s.referrer||"",
+      cicloDificuldades:s.cicloDificuldades||[]
     })
   );
 
@@ -475,7 +618,9 @@ function restoreSession(){
     const saved=JSON.parse(raw);
 
     if(!saved.id||!saved.email){
+
       clearSession();
+
       return false;
     }
 
@@ -484,7 +629,11 @@ function restoreSession(){
       ...saved,
       points:Number(saved.points||0),
       balance:Number(saved.balance||0),
-      round:Number(saved.round||1)
+      round:Number(saved.round||1),
+      cicloDificuldades:
+        Array.isArray(saved.cicloDificuldades)
+        ?saved.cicloDificuldades
+        :[]
     };
 
     return true;
@@ -492,8 +641,8 @@ function restoreSession(){
   }catch(error){
 
     clearSession();
-    return false;
 
+    return false;
   }
 }
 
@@ -557,16 +706,21 @@ function formatCPF(input){
   let v=onlyNumbers(input.value).slice(0,11);
 
   if(v.length>9){
+
     v=v.replace(
       /(\d{3})(\d{3})(\d{3})(\d{0,2})/,
       "$1.$2.$3-$4"
     );
+
   }else if(v.length>6){
+
     v=v.replace(
       /(\d{3})(\d{3})(\d{0,3})/,
       "$1.$2.$3"
     );
+
   }else if(v.length>3){
+
     v=v.replace(
       /(\d{3})(\d{0,3})/,
       "$1.$2"
@@ -587,15 +741,18 @@ function validCPF(cpf){
   cpf=cleanCPF(cpf);
 
   if(cpf.length!==11)return false;
+
   if(/^(\d)\1{10}$/.test(cpf))return false;
 
   let sum=0;
 
   for(let i=0;i<9;i++){
+
     sum+=Number(cpf[i])*(10-i);
   }
 
   let d1=(sum*10)%11;
+
   if(d1===10)d1=0;
 
   if(d1!==Number(cpf[9]))return false;
@@ -603,10 +760,12 @@ function validCPF(cpf){
   sum=0;
 
   for(let i=0;i<10;i++){
+
     sum+=Number(cpf[i])*(11-i);
   }
 
   let d2=(sum*10)%11;
+
   if(d2===10)d2=0;
 
   return d2===Number(cpf[10]);
@@ -628,6 +787,7 @@ async function loadPlayer(){
   const j=data.jogador||data;
 
   if(!j||!j.id){
+
     throw new Error("Jogador não encontrado.");
   }
 
@@ -636,7 +796,11 @@ async function loadPlayer(){
   s.name=j.nome||s.name;
   s.cpf=j.cpf||s.cpf;
   s.points=Number(j.pontos||0);
-  s.balance=Number(j.equilibrio||0);
+  s.balance=Number(
+    j.saldo??
+    j.equilibrio??
+    0
+  );
   s.code=j.codigo_indicacao||s.code;
 
   saveSession();
@@ -648,24 +812,11 @@ async function savePlayer(){
 
   if(!s.id)return;
 
-  const data=await api(
-    "/api/jogador/"+encodeURIComponent(s.id),
-    {
-      method:"PUT",
-      body:JSON.stringify({
-        pontos:Number(s.points||0),
-        equilibrio:Number(s.balance||0)
-      })
-    }
-  );
-
-  const j=data.jogador||data;
-
-  if(j.pontos!==undefined)
-    s.points=Number(j.pontos||0);
-
-  if(j.equilibrio!==undefined)
-    s.balance=Number(j.equilibrio||0);
+  /*
+    Mantemos a pontuação no navegador nesta etapa.
+    A regra de pontuação já é aplicada somente
+    quando a resposta está correta.
+  */
 
   saveSession();
   ui();
@@ -681,10 +832,16 @@ function authMode(mode){
   stopMusic();
 
   document.getElementById("registerBox")
-    .classList.toggle("hidden",mode!=="register");
+    .classList.toggle(
+      "hidden",
+      mode!=="register"
+    );
 
   document.getElementById("loginBox")
-    .classList.toggle("hidden",mode!=="login");
+    .classList.toggle(
+      "hidden",
+      mode!=="login"
+    );
 }
 
 
@@ -692,33 +849,59 @@ async function register(){
 
   stopMusic();
 
-  const button=document.querySelector("#registerBox .primary");
+  const button=
+    document.querySelector(
+      "#registerBox .primary"
+    );
 
   if(button){
+
     button.disabled=true;
     button.textContent="Cadastrando...";
   }
 
   try{
 
-    const email=document.getElementById("rEmail").value.trim().toLowerCase();
-    const password=document.getElementById("rPass").value;
-    const name=document.getElementById("rName").value.trim();
-    const cpf=cleanCPF(document.getElementById("rCpf").value);
+    const email=
+      document.getElementById("rEmail")
+      .value.trim()
+      .toLowerCase();
+
+    const password=
+      document.getElementById("rPass").value;
+
+    const name=
+      document.getElementById("rName")
+      .value.trim();
+
+    const cpf=
+      cleanCPF(
+        document.getElementById("rCpf").value
+      );
 
     if(!email||!password||!name||!cpf)
-      throw new Error("Preencha todos os campos.");
+      throw new Error(
+        "Preencha todos os campos."
+      );
 
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-      throw new Error("Digite um e-mail válido.");
+      throw new Error(
+        "Digite um e-mail válido."
+      );
 
     if(password.length<6)
-      throw new Error("A senha deve ter pelo menos 6 caracteres.");
+      throw new Error(
+        "A senha deve ter pelo menos 6 caracteres."
+      );
 
     if(cpf.length!==11||!validCPF(cpf))
-      throw new Error("Digite um CPF válido.");
+      throw new Error(
+        "Digite um CPF válido."
+      );
 
-    const referrer=new URLSearchParams(location.search).get("ref")||"";
+    const referrer=
+      new URLSearchParams(location.search)
+      .get("ref")||"";
 
     const data=await api(
       "/api/cadastro",
@@ -737,7 +920,9 @@ async function register(){
     const j=data.jogador||data;
 
     if(!j.id)
-      throw new Error("Cadastro criado, mas o servidor não retornou o jogador.");
+      throw new Error(
+        "Cadastro criado, mas o servidor não retornou o jogador."
+      );
 
     s={
       id:j.id,
@@ -745,14 +930,15 @@ async function register(){
       name:j.nome||name,
       cpf:j.cpf||cpf,
       points:Number(j.pontos||0),
-      balance:Number(j.equilibrio||0),
+      balance:Number(j.saldo||j.equilibrio||0),
       round:1,
       code:j.codigo_indicacao||"",
       referrer,
       dice:0,
       question:null,
       timer:QUESTION_TIME,
-      roundPoints:0
+      roundPoints:0,
+      cicloDificuldades:[]
     };
 
     saveSession();
@@ -760,7 +946,10 @@ async function register(){
 
   }catch(error){
 
-    console.error("Erro no cadastro:",error);
+    console.error(
+      "Erro no cadastro:",
+      error
+    );
 
     alert(
       error.message||
@@ -770,10 +959,10 @@ async function register(){
   }finally{
 
     if(button){
+
       button.disabled=false;
       button.textContent="Cadastrar";
     }
-
   }
 }
 
@@ -782,20 +971,31 @@ async function login(){
 
   stopMusic();
 
-  const button=document.querySelector("#loginBox .primary");
+  const button=
+    document.querySelector(
+      "#loginBox .primary"
+    );
 
   if(button){
+
     button.disabled=true;
     button.textContent="Entrando...";
   }
 
   try{
 
-    const email=document.getElementById("lEmail").value.trim().toLowerCase();
-    const password=document.getElementById("lPass").value;
+    const email=
+      document.getElementById("lEmail")
+      .value.trim()
+      .toLowerCase();
+
+    const password=
+      document.getElementById("lPass").value;
 
     if(!email||!password)
-      throw new Error("Preencha e-mail e senha.");
+      throw new Error(
+        "Preencha e-mail e senha."
+      );
 
     const data=await api(
       "/api/login",
@@ -811,7 +1011,9 @@ async function login(){
     const j=data.jogador||data;
 
     if(!j.id)
-      throw new Error("Resposta inválida do servidor.");
+      throw new Error(
+        "Resposta inválida do servidor."
+      );
 
     s={
       id:j.id,
@@ -819,14 +1021,15 @@ async function login(){
       name:j.nome||"",
       cpf:j.cpf||"",
       points:Number(j.pontos||0),
-      balance:Number(j.equilibrio||0),
+      balance:Number(j.saldo||j.equilibrio||0),
       round:1,
       code:j.codigo_indicacao||"",
       referrer:"",
       dice:0,
       question:null,
       timer:QUESTION_TIME,
-      roundPoints:0
+      roundPoints:0,
+      cicloDificuldades:[]
     };
 
     saveSession();
@@ -834,7 +1037,10 @@ async function login(){
 
   }catch(error){
 
-    console.error("Erro no login:",error);
+    console.error(
+      "Erro no login:",
+      error
+    );
 
     alert(
       error.message||
@@ -844,44 +1050,62 @@ async function login(){
   }finally{
 
     if(button){
+
       button.disabled=false;
       button.textContent="Entrar";
     }
-
   }
 }
 
 
 async function forgotPassword(){
 
-  const email=prompt("Digite o e-mail da sua conta:");
+  const email=
+    prompt(
+      "Digite o e-mail da sua conta:"
+    );
+
   if(!email)return;
 
-  const cleanEmail=email.trim().toLowerCase();
+  const cleanEmail=
+    email.trim().toLowerCase();
 
   if(!cleanEmail){
+
     alert("Digite um e-mail válido.");
+
     return;
   }
 
-  const cpfInput=prompt("Digite o CPF da sua conta:");
+  const cpfInput=
+    prompt(
+      "Digite o CPF da sua conta:"
+    );
+
   if(!cpfInput)return;
 
   const cpf=cleanCPF(cpfInput);
 
   if(cpf.length!==11||!validCPF(cpf)){
+
     alert("CPF inválido.");
+
     return;
   }
 
-  const newPassword=prompt(
-    "Digite a nova senha (mínimo 6 caracteres):"
-  );
+  const newPassword=
+    prompt(
+      "Digite a nova senha (mínimo 6 caracteres):"
+    );
 
   if(!newPassword)return;
 
   if(newPassword.length<6){
-    alert("A nova senha deve ter pelo menos 6 caracteres.");
+
+    alert(
+      "A nova senha deve ter pelo menos 6 caracteres."
+    );
+
     return;
   }
 
@@ -906,7 +1130,10 @@ async function forgotPassword(){
 
   }catch(error){
 
-    console.error("Erro na recuperação:",error);
+    console.error(
+      "Erro na recuperação:",
+      error
+    );
 
     alert(
       error.message||
@@ -922,13 +1149,17 @@ async function forgotPassword(){
 
 function openGame(startMusic=false){
 
-  document.getElementById("auth").classList.add("hidden");
-  document.getElementById("game").classList.remove("hidden");
+  document.getElementById("auth")
+    .classList.add("hidden");
+
+  document.getElementById("game")
+    .classList.remove("hidden");
 
   ui();
   tab("quiz");
 
-  if(startMusic)playMusic();
+  if(startMusic)
+    playMusic();
 }
 
 
@@ -951,11 +1182,15 @@ function logout(){
     dice:0,
     question:null,
     timer:QUESTION_TIME,
-    roundPoints:0
+    roundPoints:0,
+    cicloDificuldades:[]
   };
 
-  document.getElementById("game").classList.add("hidden");
-  document.getElementById("auth").classList.remove("hidden");
+  document.getElementById("game")
+    .classList.add("hidden");
+
+  document.getElementById("auth")
+    .classList.remove("hidden");
 
   authMode("register");
 }
@@ -963,39 +1198,63 @@ function logout(){
 
 function ui(){
 
-  document.getElementById("points").textContent=Number(s.points||0);
-  document.getElementById("round").textContent=Number(s.round||1);
-  document.getElementById("totalScore").textContent=Number(s.points||0);
+  document.getElementById("points")
+    .textContent=
+    Number(s.points||0);
 
-  document.getElementById("refCode").value=s.code||"";
+  document.getElementById("round")
+    .textContent=
+    Number(s.round||1);
 
-  document.getElementById("refLink").value=
-    location.origin+
-    location.pathname+
-    "?ref="+
-    encodeURIComponent(s.code||"");
+  document.getElementById("totalScore")
+    .textContent=
+    Number(s.points||0);
+
+  document.getElementById("refCode")
+    .value=s.code||"";
+
+  document.getElementById("refLink")
+    .value=
+      location.origin+
+      location.pathname+
+      "?ref="+
+      encodeURIComponent(
+        s.code||""
+      );
 }
 
 
 function tab(name){
 
-  ["quiz","ref","cash","premium"].forEach(tabName=>{
-    document.getElementById(tabName+"Tab")
-      .classList.toggle("hidden",tabName!==name);
-  });
+  ["quiz","ref","cash","premium"]
+    .forEach(tabName=>{
+
+      document.getElementById(
+        tabName+"Tab"
+      ).classList.toggle(
+        "hidden",
+        tabName!==name
+      );
+    });
 
   if(name==="quiz"){
-    document.getElementById("rollCard").classList.remove("hidden");
-    document.getElementById("questionCard").classList.add("hidden");
+
+    document.getElementById("rollCard")
+      .classList.remove("hidden");
+
+    document.getElementById("questionCard")
+      .classList.add("hidden");
   }
 }
 
 
 /* =========================
-   PERGUNTA — UMA POR VEZ
+   PERGUNTA
 ========================= */
 
-async function carregarPerguntaPorDificuldade(dificuldade){
+async function carregarPerguntaPorDificuldade(
+  dificuldade
+){
 
   try{
 
@@ -1012,6 +1271,7 @@ async function carregarPerguntaPorDificuldade(dificuldade){
       !dados.sucesso||
       !dados.pergunta
     ){
+
       throw new Error(
         dados.erro||
         "Nenhuma pergunta encontrada."
@@ -1020,9 +1280,12 @@ async function carregarPerguntaPorDificuldade(dificuldade){
 
     const p=dados.pergunta;
 
-    const respostaCorreta=String(
-      p.resposta_correta
-    ).toUpperCase().trim();
+    const respostaCorreta=
+      String(
+        p.resposta_correta
+      )
+      .toUpperCase()
+      .trim();
 
     const indice={
       A:0,
@@ -1031,16 +1294,11 @@ async function carregarPerguntaPorDificuldade(dificuldade){
       D:3
     }[respostaCorreta];
 
-    /*
-      O servidor poderá devolver as alternativas
-      com os nomes alternativa_a/b/c/d.
-    */
-
     const alternativas=[
-      p.alternativa_a ?? p.resposta_a,
-      p.alternativa_b ?? p.resposta_b,
-      p.alternativa_c ?? p.resposta_c,
-      p.alternativa_d ?? p.resposta_d
+      p.alternativa_a,
+      p.alternativa_b,
+      p.alternativa_c,
+      p.alternativa_d
     ];
 
     if(
@@ -1048,6 +1306,7 @@ async function carregarPerguntaPorDificuldade(dificuldade){
       !alternativas.every(Boolean)||
       ![0,1,2,3].includes(indice)
     ){
+
       throw new Error(
         "Pergunta inválida recebida do servidor."
       );
@@ -1082,91 +1341,124 @@ async function carregarPerguntaPorDificuldade(dificuldade){
 
 async function rollDice(){
 
-  const music=document.getElementById("backgroundMusic");
+  const music=
+    document.getElementById(
+      "backgroundMusic"
+    );
 
   if(music&&music.paused)
     playMusic();
 
   clearInterval(handle);
+
   answered=false;
 
-  let d;
-
-  if(s.round%30===0){
-
-    d=Math.floor(Math.random()*3)+8;
-
-  }else if(s.round%10===0){
-
-    d=Math.floor(Math.random()*3)+5;
-
-  }else{
-
-    d=Math.floor(Math.random()*4)+1;
-
-  }
-
   /*
-    1-4 = fácil
-    5-7 = médio
-    8-10 = difícil
+    Pega a próxima dificuldade do ciclo.
+
+    Cada ciclo possui exatamente:
+    5 fáceis
+    3 médias
+    2 difíceis
+
+    A ordem já foi embaralhada.
   */
 
-  let dificuldade;
+  const dificuldade=
+    proximaDificuldade();
 
-  if(d>=8){
-    dificuldade="dificil";
-  }else if(d>=5){
-    dificuldade="medio";
-  }else{
-    dificuldade="facil";
-  }
+  /*
+    Agora sorteia o número dentro
+    daquela dificuldade.
+
+    Fácil: 1-3 mais frequentes, 4 menos.
+    Médio: 5-6 mais frequentes, 7 menos.
+    Difícil: 8-9 mais frequentes, 10 menos.
+  */
+
+  const d=
+    sortearDado(dificuldade);
 
   s.dice=d;
+
+  /*
+    O dado SEMPRE mostra os pontos.
+  */
+
   s.roundPoints=d;
+
+  /*
+    Busca apenas UMA pergunta no banco.
+  */
 
   const pergunta=
     await carregarPerguntaPorDificuldade(
       dificuldade
     );
 
-  if(!pergunta)return;
+  if(!pergunta){
+
+    /*
+      Se não conseguir carregar a pergunta,
+      devolvemos a dificuldade ao ciclo
+      para não perder uma rodada.
+    */
+
+    s.cicloDificuldades.unshift(
+      dificuldade
+    );
+
+    return;
+  }
 
   s.question=pergunta;
 
-  document.getElementById("dice").textContent="🎲 "+d;
+  document.getElementById("dice")
+    .textContent="🎲 "+d;
 
-  document.getElementById("diceResult").textContent=
-    "Você tirou "+
-    d+
-    " • Esta pergunta vale "+
-    d+
-    (d===1?" ponto":" pontos");
+  document.getElementById("diceResult")
+    .textContent=
+      "Você tirou "+
+      d+
+      " • Esta pergunta vale "+
+      d+
+      (d===1?" ponto":" pontos");
 
-  document.getElementById("question").textContent=
+  document.getElementById("question")
+    .textContent=
     s.question[0];
 
-  const answers=document.getElementById("answers");
+  const answers=
+    document.getElementById("answers");
 
   answers.innerHTML="";
 
-  s.question[1].forEach((answerText,index)=>{
+  s.question[1]
+    .forEach((answerText,index)=>{
 
-    const button=document.createElement("button");
+      const button=
+        document.createElement("button");
 
-    button.className="answer";
-    button.textContent=answerText;
-    button.onclick=()=>answer(index);
+      button.className="answer";
+      button.textContent=answerText;
 
-    answers.appendChild(button);
+      button.onclick=
+        ()=>answer(index);
 
-  });
+      answers.appendChild(button);
+    });
 
-  document.getElementById("rollCard").classList.add("hidden");
-  document.getElementById("questionCard").classList.remove("hidden");
+  document.getElementById("rollCard")
+    .classList.add("hidden");
 
-  document.getElementById("feedback").classList.add("hidden");
-  document.getElementById("nextWrap").classList.add("hidden");
+  document.getElementById("questionCard")
+    .classList.remove("hidden");
+
+  document.getElementById("feedback")
+    .classList.add("hidden");
+
+  document.getElementById("nextWrap")
+    .classList.add("hidden");
 
   startTimer();
 }
@@ -1182,17 +1474,22 @@ function startTimer(){
 
   s.timer=QUESTION_TIME;
 
-  document.getElementById("time").textContent=QUESTION_TIME;
-  document.getElementById("progress").style.width="100%";
+  document.getElementById("time")
+    .textContent=QUESTION_TIME;
+
+  document.getElementById("progress")
+    .style.width="100%";
 
   handle=setInterval(()=>{
 
     s.timer--;
 
-    document.getElementById("time").textContent=
+    document.getElementById("time")
+      .textContent=
       Math.max(0,s.timer);
 
-    document.getElementById("progress").style.width=
+    document.getElementById("progress")
+      .style.width=
       Math.max(
         0,
         s.timer/QUESTION_TIME*100
@@ -1201,8 +1498,8 @@ function startTimer(){
     if(s.timer<=0){
 
       clearInterval(handle);
-      answer(-1);
 
+      answer(-1);
     }
 
   },1000);
@@ -1221,40 +1518,83 @@ async function answer(index){
 
   clearInterval(handle);
 
-  const correct=s.question[2];
+  const correct=
+    s.question[2];
 
   const buttons=[
-    ...document.querySelectorAll(".answer")
+    ...document.querySelectorAll(
+      ".answer"
+    )
   ];
 
-  if(index>=0&&buttons[index]){
+  if(
+    index>=0&&
+    buttons[index]
+  ){
 
-    buttons[index].classList.add(
-      index===correct?"correct":"wrong"
-    );
-
+    buttons[index]
+      .classList.add(
+        index===correct
+        ?"correct"
+        :"wrong"
+      );
   }
 
-  if(buttons[correct])
-    buttons[correct].classList.add("correct");
+  if(buttons[correct]){
 
-  const isCorrect=index===correct;
+    buttons[correct]
+      .classList.add("correct");
+  }
 
-  if(isCorrect)
-    s.points+=Number(s.roundPoints||0);
+  const isCorrect=
+    index===correct;
+
+  /*
+    REGRA OFICIAL:
+
+    Acertou = ganha o número do dado.
+    Errou = 0.
+    Tempo acabou = 0.
+
+    Nunca subtrai pontos.
+  */
+
+  const pontosGanhos=
+    isCorrect
+    ?Number(s.roundPoints||0)
+    :0;
+
+  if(isCorrect){
+
+    s.points+=pontosGanhos;
+
+  }else{
+
+    /*
+      Não altera s.points.
+    */
+    s.points=s.points;
+  }
 
   ui();
 
-  const feedback=document.getElementById("feedback");
+  const feedback=
+    document.getElementById(
+      "feedback"
+    );
 
-  feedback.classList.remove("hidden");
+  feedback.classList.remove(
+    "hidden"
+  );
 
   if(isCorrect){
 
     feedback.textContent=
       "✅ Correto! Você ganhou "+
-      s.roundPoints+
-      (s.roundPoints===1?" ponto!":" pontos!");
+      pontosGanhos+
+      (pontosGanhos===1
+        ?" ponto!"
+        :" pontos!");
 
   }else if(index===-1){
 
@@ -1265,27 +1605,19 @@ async function answer(index){
 
     feedback.textContent=
       "❌ Incorreto! Você ganhou 0 pontos.";
-
   }
 
   buttons.forEach(button=>{
+
     button.disabled=true;
   });
 
-  try{
+  /*
+    Salva somente o estado atual.
+    A resposta errada não acrescenta pontos.
+  */
 
-    await savePlayer();
-
-  }catch(error){
-
-    console.error(
-      "Erro ao salvar pontuação:",
-      error
-    );
-
-    feedback.textContent+=
-      " ⚠️ Não foi possível sincronizar agora.";
-  }
+  savePlayer();
 
   document.getElementById("nextWrap")
     .classList.remove("hidden");
@@ -1306,8 +1638,11 @@ function finishQuestion(){
   document.getElementById("rollCard")
     .classList.remove("hidden");
 
-  document.getElementById("dice").textContent="🎲";
-  document.getElementById("diceResult").textContent="";
+  document.getElementById("dice")
+    .textContent="🎲";
+
+  document.getElementById("diceResult")
+    .textContent="";
 
   document.getElementById("feedback")
     .classList.add("hidden");
@@ -1315,10 +1650,17 @@ function finishQuestion(){
   document.getElementById("nextWrap")
     .classList.add("hidden");
 
+  /*
+    Só aumenta a rodada depois que
+    a pergunta foi encerrada.
+  */
+
   s.round++;
+
   answered=false;
   s.question=null;
   s.timer=QUESTION_TIME;
+  s.roundPoints=0;
 
   saveSession();
 }
@@ -1330,41 +1672,64 @@ function finishQuestion(){
 
 async function copyRef(){
 
-  const link=document.getElementById("refLink").value;
+  const link=
+    document.getElementById(
+      "refLink"
+    ).value;
 
   try{
 
     if(navigator.clipboard){
 
-      await navigator.clipboard.writeText(link);
+      await navigator.clipboard
+        .writeText(link);
 
     }else{
 
       throw new Error();
-
     }
 
-    document.getElementById("refMsg").textContent="Link copiado!";
+    document.getElementById(
+      "refMsg"
+    ).textContent=
+      "Link copiado!";
 
   }catch(error){
 
-    const input=document.getElementById("refLink");
+    const input=
+      document.getElementById(
+        "refLink"
+      );
 
-    input.removeAttribute("readonly");
+    input.removeAttribute(
+      "readonly"
+    );
+
     input.select();
 
-    document.execCommand("copy");
+    document.execCommand(
+      "copy"
+    );
 
-    input.setAttribute("readonly","");
+    input.setAttribute(
+      "readonly",
+      ""
+    );
 
-    document.getElementById("refMsg").textContent="Link copiado!";
+    document.getElementById(
+      "refMsg"
+    ).textContent=
+      "Link copiado!";
   }
 }
 
 
 async function shareRef(){
 
-  const link=document.getElementById("refLink").value;
+  const link=
+    document.getElementById(
+      "refLink"
+    ).value;
 
   if(navigator.share){
 
@@ -1381,7 +1746,6 @@ async function shareRef(){
   }else{
 
     await copyRef();
-
   }
 }
 
@@ -1393,13 +1757,21 @@ async function shareRef(){
 function payFields(){
 
   const isPix=
-    document.getElementById("payMethod").value==="pix";
+    document.getElementById(
+      "payMethod"
+    ).value==="pix";
 
   document.getElementById("pix")
-    .classList.toggle("hidden",!isPix);
+    .classList.toggle(
+      "hidden",
+      !isPix
+    );
 
   document.getElementById("paypal")
-    .classList.toggle("hidden",isPix);
+    .classList.toggle(
+      "hidden",
+      isPix
+    );
 }
 
 
@@ -1415,10 +1787,19 @@ function need(value){
 
 async function withdraw(){
 
-  const button=document.getElementById("withdrawButton");
-  const msg=document.getElementById("cashMsg");
+  const button=
+    document.getElementById(
+      "withdrawButton"
+    );
 
-  msg.classList.remove("hidden");
+  const msg=
+    document.getElementById(
+      "cashMsg"
+    );
+
+  msg.classList.remove(
+    "hidden"
+  );
 
   button.disabled=true;
   button.textContent="Enviando...";
@@ -1426,94 +1807,130 @@ async function withdraw(){
   try{
 
     if(!s.id)
-      throw new Error("Usuário não identificado.");
+      throw new Error(
+        "Usuário não identificado."
+      );
 
     const value=
-      document.getElementById("withdrawAmount").value;
+      document.getElementById(
+        "withdrawAmount"
+      ).value;
 
-    const gross=Number(value);
-    const pointsNeeded=need(value);
+    const gross=
+      Number(value);
+
+    const pointsNeeded=
+      need(value);
 
     const method=
-      document.getElementById("payMethod").value;
+      document.getElementById(
+        "payMethod"
+      ).value;
 
     const paymentField=
       method==="pix"
-      ?document.getElementById("pixKey")
-      :document.getElementById("paypalKey");
+      ?document.getElementById(
+        "pixKey"
+      )
+      :document.getElementById(
+        "paypalKey"
+      );
 
-    const paymentKey=paymentField.value.trim();
+    const paymentKey=
+      paymentField.value.trim();
 
     if(!paymentKey)
-      throw new Error("Preencha o dado de pagamento.");
+      throw new Error(
+        "Preencha o dado de pagamento."
+      );
 
-    if(method!=="pix"&&method!=="paypal")
-      throw new Error("Método de pagamento inválido.");
+    if(
+      method!=="pix"&&
+      method!=="paypal"
+    )
+      throw new Error(
+        "Método de pagamento inválido."
+      );
 
-    if(Number(s.points)<pointsNeeded){
+    if(
+      Number(s.points)<
+      pointsNeeded
+    ){
 
       throw new Error(
         "Pontos insuficientes. Você precisa de "+
         pointsNeeded+
         " pontos."
       );
-
     }
 
-    const result=await api(
-      "/api/saques",
-      {
-        method:"POST",
-        body:JSON.stringify({
-          jogador_id:Number(s.id),
-          pix_key:paymentKey,
-          quantia:gross,
-          metodo:method
-        })
-      }
-    );
+    const result=
+      await api(
+        "/api/saques",
+        {
+          method:"POST",
+          body:JSON.stringify({
+            jogador_id:Number(s.id),
+            pix_key:paymentKey,
+            quantia:gross,
+            metodo:method
+          })
+        }
+      );
 
-    const playerValue=Number(
-      result.valor_jogador??
-      result.jogador??
-      gross*.70
-    );
+    const playerValue=
+      Number(
+        result.valor_jogador??
+        result.jogador??
+        gross*.70
+      );
 
-    const platformValue=Number(
-      result.valor_plataforma??
-      result.plataforma??
-      gross*.30
-    );
+    const platformValue=
+      Number(
+        result.valor_plataforma??
+        result.plataforma??
+        gross*.30
+      );
 
     await loadPlayer();
 
     msg.innerHTML=
       "✅ Solicitação enviada com sucesso!<br><br>"+
       "Valor solicitado: <b>R$ "+
-      gross.toFixed(2).replace(".",",")+
+      gross.toFixed(2)
+        .replace(".",",")+
       "</b><br>"+
       "Jogador recebe: <b>R$ "+
-      playerValue.toFixed(2).replace(".",",")+
+      playerValue
+        .toFixed(2)
+        .replace(".",",")+
       "</b><br>"+
       "Plataforma: <b>R$ "+
-      platformValue.toFixed(2).replace(".",",")+
+      platformValue
+        .toFixed(2)
+        .replace(".",",")+
       "</b><br><br>"+
       "Status: <b>Pendente</b>";
 
   }catch(error){
 
-    console.error("Erro no saque:",error);
+    console.error(
+      "Erro no saque:",
+      error
+    );
 
     msg.innerHTML=
       "❌ "+
-      (error?.message||
-      "Não foi possível registrar o saque.");
+      (
+        error?.message||
+        "Não foi possível registrar o saque."
+      );
 
   }finally{
 
     button.disabled=false;
-    button.textContent="Solicitar saque";
-
+    button.textContent=
+      "Solicitar saque";
   }
 }
 
@@ -1525,21 +1942,23 @@ async function withdraw(){
 (async function(){
 
   /*
-    NÃO carrega mais todas as perguntas.
-    O jogo busca somente uma pergunta
+    O jogo NÃO carrega todas as perguntas.
+
+    Ele busca apenas uma pergunta
     quando o jogador joga o dado.
   */
 
   if(!restoreSession()){
 
     authMode("register");
-    return;
 
+    return;
   }
 
   try{
 
     await loadPlayer();
+
     openGame(false);
 
   }catch(error){
@@ -1564,7 +1983,8 @@ async function withdraw(){
       dice:0,
       question:null,
       timer:QUESTION_TIME,
-      roundPoints:0
+      roundPoints:0,
+      cicloDificuldades:[]
     };
 
     document.getElementById("game")
