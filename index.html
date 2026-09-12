@@ -207,7 +207,9 @@ input,select{
   border-radius:10px
 }
 
-/* HILLTOPADS */
+/* =====================================================
+   HILLTOPADS
+===================================================== */
 
 #hilltopAdOverlay{
   position:fixed;
@@ -296,6 +298,7 @@ input,select{
 
 <!-- HILLTOPADS -->
 <div id="hilltopAdOverlay">
+
   <div id="hilltopAdContainer">
 
     <div id="hilltopAdMessage">
@@ -314,6 +317,7 @@ input,select{
     </video>
 
   </div>
+
 </div>
 
 <div class="wrap">
@@ -368,24 +372,28 @@ atOptions={
 <h2>📝 Cadastro</h2>
 
 <label>E-mail</label>
+
 <input
   id="rEmail"
   type="email"
   placeholder="Seu e-mail">
 
 <label>Senha</label>
+
 <input
   id="rPass"
   type="password"
   placeholder="Sua senha">
 
 <label>Nome completo</label>
+
 <input
   id="rName"
   type="text"
   placeholder="Seu nome completo">
 
 <label>CPF</label>
+
 <input
   id="rCpf"
   type="text"
@@ -411,12 +419,14 @@ atOptions={
 <h2>🔐 Login</h2>
 
 <label>E-mail</label>
+
 <input
   id="lEmail"
   type="email"
   placeholder="Seu e-mail">
 
 <label>Senha</label>
+
 <input
   id="lPass"
   type="password"
@@ -754,11 +764,15 @@ const QUESTION_TIME = 10;
    HILLTOPADS — VAST
 ===================================================== */
 
-const HILLTOP_VAST_DESKTOP =
-"https://smooth-survey.com/dRm.Fyz-dQG/NBvzZqGKUV/-eomU9uuXZhUMlkk/PjT/c/zDNQDTkd2NNszmcYtoNgzvMq0TOATIYM4zMaQi";
+/*
+   URL VAST ATUAL DA HILLTOPADS.
 
-const HILLTOP_VAST_MOBILE =
-"https://smooth-survey.com/d.meFezZdaGwNLvHZuG/Ue/meVmc9/uBZhULlTkuPqTMcyzHN-DVk_2_NazBcztbNMzpMl0jOWTeYq4OMLQK";
+   Esta é a URL que você abriu e confirmou
+   que retorna XML VAST com anúncios reais.
+*/
+
+const HILLTOP_VAST =
+"https://smooth-survey.com/d.mqFBzsdlG-NavHZ/GRUc/-eDm/9euQZYUSlAkUPQTocFz/NqDzku2ONrzzchtuNpzuM/0dO/ToYU4GMzQi";
 
 
 let hilltopAdDisplayContainer=null;
@@ -799,21 +813,8 @@ document.getElementById("hilltopLoading");
 function hilltopIsMobile(){
 
 return window.matchMedia(
-"(max-width: 768px)"
+"(max-width:768px)"
 ).matches;
-
-}
-
-
-/* =====================================================
-   VAST CORRETO
-===================================================== */
-
-function hilltopVastUrl(){
-
-return hilltopIsMobile()
-?HILLTOP_VAST_MOBILE
-:HILLTOP_VAST_DESKTOP;
 
 }
 
@@ -849,6 +850,35 @@ hilltopAdPlaying=false;
 
 
 /* =====================================================
+   LIMPAR MANAGER
+===================================================== */
+
+function hilltopReset(){
+
+clearTimeout(hilltopAdTimeout);
+clearTimeout(hilltopAdFallbackTimer);
+
+hilltopAdTimeout=null;
+hilltopAdFallbackTimer=null;
+
+hilltopAdReady=false;
+hilltopAdRequested=false;
+hilltopAdPlaying=false;
+
+hilltopAdsManager=null;
+hilltopAdsLoader=null;
+hilltopAdDisplayContainer=null;
+
+try{
+
+hilltopVideo.pause();
+
+}catch(error){}
+
+}
+
+
+/* =====================================================
    FINALIZAR ANÚNCIO
 ===================================================== */
 
@@ -867,8 +897,44 @@ hilltopAdFinishedCallback;
 
 hilltopAdFinishedCallback=null;
 
+try{
+
+if(hilltopAdsManager){
+
+hilltopAdsManager.destroy();
+
+}
+
+}catch(error){
+
+console.warn(
+"Não foi possível destruir o AdsManager.",
+error
+);
+
+}
+
+hilltopAdsManager=null;
+hilltopAdsLoader=null;
+hilltopAdDisplayContainer=null;
+
+hilltopAdReady=false;
+hilltopAdRequested=false;
+
+try{
+
+hilltopVideo.pause();
+
+hilltopVideo.removeAttribute("src");
+
+hilltopVideo.load();
+
+}catch(error){}
+
 if(typeof callback==="function"){
+
 callback();
+
 }
 
 }
@@ -878,13 +944,12 @@ callback();
    ERRO DO ANÚNCIO
 ===================================================== */
 
-function hilltopOnAdError(){
+function hilltopOnAdError(event){
 
 console.warn(
-"Anúncio HilltopAds indisponível."
+"Anúncio HilltopAds indisponível.",
+event
 );
-
-hilltopAdReady=false;
 
 hilltopFinish();
 
@@ -904,10 +969,19 @@ event.getAdsManager(
 hilltopVideo
 );
 
+
+/*
+   CORREÇÃO IMPORTANTE:
+
+   O evento correto é:
+   google.ima.AdErrorEvent.Type.AD_ERROR
+*/
+
 hilltopAdsManager.addEventListener(
-google.ima.AdErrorEvent.AD_ERROR,
+google.ima.AdErrorEvent.Type.AD_ERROR,
 hilltopOnAdError
 );
+
 
 hilltopAdsManager.addEventListener(
 google.ima.AdEvent.Type.STARTED,
@@ -920,6 +994,7 @@ hilltopShow();
 }
 );
 
+
 hilltopAdsManager.addEventListener(
 google.ima.AdEvent.Type.COMPLETE,
 function(){
@@ -928,6 +1003,7 @@ hilltopFinish();
 
 }
 );
+
 
 hilltopAdsManager.addEventListener(
 google.ima.AdEvent.Type.SKIPPED,
@@ -938,6 +1014,7 @@ hilltopFinish();
 }
 );
 
+
 hilltopAdsManager.addEventListener(
 google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
 function(){
@@ -946,6 +1023,7 @@ hilltopFinish();
 
 }
 );
+
 
 hilltopAdsManager.addEventListener(
 google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
@@ -956,24 +1034,20 @@ hilltopFinish();
 }
 );
 
+
 hilltopAdReady=true;
 
 
 /*
-   IMPORTANTE:
+   O usuário já respondeu e o VAST
+   terminou de carregar.
 
-   Se o jogador já respondeu enquanto o
-   anúncio estava carregando, iniciamos
-   imediatamente agora.
+   Então inicia o anúncio.
 */
 
 if(hilltopAdFinishedCallback){
 
-setTimeout(function(){
-
 hilltopPlayManager();
-
-},50);
 
 }
 
@@ -997,8 +1071,14 @@ hilltopOnAdError();
 
 function hilltopPrepare(){
 
+/*
+   Não preparar duas vezes na mesma rodada.
+*/
+
 if(hilltopAdRequested){
+
 return;
+
 }
 
 if(
@@ -1024,49 +1104,63 @@ hilltopVideo
 
 
 /*
-   O initialize() precisa acontecer
-   durante uma ação do usuário.
+   IMPORTANTE:
 
-   rollDice() é acionado pelo toque
-   do jogador, então é o local correto.
+   O initialize() acontece dentro
+   do clique em JOGAR DADO.
 */
 
 hilltopAdDisplayContainer.initialize();
+
 
 hilltopAdsLoader=
 new google.ima.AdsLoader(
 hilltopAdDisplayContainer
 );
 
+
 hilltopAdsLoader.addEventListener(
 google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
 hilltopOnAdsManagerLoaded
 );
+
 
 hilltopAdsLoader.addEventListener(
 google.ima.AdErrorEvent.Type.AD_ERROR,
 hilltopOnAdError
 );
 
+
 const adsRequest=
 new google.ima.AdsRequest();
 
+
 adsRequest.adTagUrl=
-hilltopVastUrl();
+HILLTOP_VAST;
+
+
+const width=
+hilltopContainer.clientWidth||320;
+
+const height=
+hilltopContainer.clientHeight||220;
+
 
 adsRequest.linearAdSlotWidth=
-hilltopContainer.clientWidth||320;
+width;
 
 adsRequest.linearAdSlotHeight=
-hilltopContainer.clientHeight||220;
+height;
 
 adsRequest.nonLinearAdSlotWidth=
-hilltopContainer.clientWidth||320;
+width;
 
 adsRequest.nonLinearAdSlotHeight=
-hilltopContainer.clientHeight||220;
+height;
+
 
 hilltopAdRequested=true;
+
 
 hilltopAdsLoader.requestAds(
 adsRequest
@@ -1087,7 +1181,7 @@ hilltopOnAdError();
 
 
 /* =====================================================
-   INICIAR MANAGER
+   INICIAR ADS MANAGER
 ===================================================== */
 
 function hilltopPlayManager(){
@@ -1106,15 +1200,26 @@ try{
 
 hilltopShow();
 
+
+const width=
+hilltopContainer.clientWidth||320;
+
+const height=
+hilltopContainer.clientHeight||220;
+
+
 hilltopAdsManager.init(
-320,
-220,
+width,
+height,
 google.ima.ViewMode.NORMAL
 );
 
+
 hilltopAdsManager.start();
 
+
 clearTimeout(hilltopAdTimeout);
+
 
 hilltopAdTimeout=
 setTimeout(function(){
@@ -1125,7 +1230,7 @@ console.warn(
 
 hilltopFinish();
 
-},20000);
+},30000);
 
 }catch(error){
 
@@ -1148,6 +1253,7 @@ hilltopFinish();
 function hilltopPlay(afterAd){
 
 clearTimeout(hilltopAdFallbackTimer);
+
 
 hilltopAdFinishedCallback=
 typeof afterAd==="function"
@@ -1173,17 +1279,17 @@ return;
 
 
 /*
-   Ainda está carregando.
-
-   Agora NÃO usamos mais o antigo
-   fallback de 1,5 segundo.
-
-   Esperamos até 8 segundos.
+   O VAST ainda está carregando.
 */
 
 hilltopLoading.style.display="block";
 
 hilltopOverlay.style.display="flex";
+
+
+/*
+   Aguarda até 15 segundos para o VAST.
+*/
 
 hilltopAdFallbackTimer=
 setTimeout(function(){
@@ -1194,7 +1300,7 @@ console.warn(
 
 hilltopFinish();
 
-},8000);
+},15000);
 
 }
 
@@ -1209,6 +1315,7 @@ document.getElementById(
 );
 
 backgroundMusic.volume=0.35;
+
 
 function startMusic(){
 
@@ -1770,10 +1877,12 @@ s.answered=false;
 
 
 /*
-   PREPARA O HILLTOP DURANTE O
-   TOQUE DO USUÁRIO.
+   Prepara o Hilltop durante o toque
+   do jogador.
 
-   Isso é importante para o IMA.
+   Isso permite que o IMA inicialize
+   o AdDisplayContainer dentro de
+   uma ação do usuário.
 */
 
 hilltopPrepare();
@@ -2033,14 +2142,8 @@ s.roundPoints+
 
 
 /*
-   O anúncio Hilltop começa
-   DEPOIS da resposta.
-
-   Se ainda estiver carregando,
-   aguarda até 8 segundos.
-
-   Não existe mais o antigo
-   fallback de 1,5 segundo.
+   O anúncio começa somente depois
+   que o jogador responde.
 */
 
 hilltopPlay(
@@ -2337,10 +2440,10 @@ window.addEventListener(
 function(){
 
 clearTimeout(hilltopAdTimeout);
+
 clearTimeout(hilltopAdFallbackTimer);
 
-}
-);
+});
 
 </script>
 
