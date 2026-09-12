@@ -12,6 +12,7 @@
 
 <title>QuizUp</title>
 
+<!-- MONETAG -->
 <script>
 (function(s){
   s.dataset.zone='11646165';
@@ -20,6 +21,9 @@
   .filter(Boolean).pop()
   .appendChild(document.createElement('script')));
 </script>
+
+<!-- HILLTOPADS / IMA SDK -->
+<script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
 
 <style>
 
@@ -244,6 +248,50 @@ select{
   border:1px solid rgba(255,212,59,.35)
 }
 
+/* =========================
+   HILLTOPADS
+========================= */
+
+#hilltopAdOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.92);
+  z-index:999999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:12px
+}
+
+#hilltopAdContainer{
+  position:relative;
+  width:100%;
+  max-width:640px;
+  height:360px;
+  background:#000;
+  border-radius:14px;
+  overflow:hidden
+}
+
+#hilltopVideo{
+  width:100%;
+  height:100%;
+  display:block;
+  background:#000
+}
+
+#hilltopAdMessage{
+  position:absolute;
+  left:0;
+  right:0;
+  top:10px;
+  text-align:center;
+  font-size:13px;
+  color:#fff;
+  pointer-events:none;
+  text-shadow:0 1px 3px #000
+}
+
 @media(max-width:560px){
 
   .nav{
@@ -256,6 +304,10 @@ select{
 
   .logo{
     font-size:38px
+  }
+
+  #hilltopAdContainer{
+    height:220px
   }
 
 }
@@ -279,6 +331,31 @@ select{
 >
 
 </audio>
+
+
+<!-- =========================
+     HILLTOPADS VIDEO
+========================= -->
+
+<div id="hilltopAdOverlay">
+
+  <div id="hilltopAdContainer">
+
+    <div id="hilltopAdMessage">
+      Anúncio
+    </div>
+
+    <video
+      id="hilltopVideo"
+      playsinline
+      webkit-playsinline
+      preload="auto"
+    ></video>
+
+  </div>
+
+</div>
+
 
 <div class="wrap">
 
@@ -520,8 +597,6 @@ JOGAR DADO
 <div class="bar">
 <div id="progress"></div>
 </div>
-
-<!-- NOVO: VALOR DO DADO FICA VISÍVEL DURANTE A PERGUNTA -->
 
 <div
   id="questionDiceValue"
@@ -773,6 +848,347 @@ const SESSION_KEY =
 
 const DIFFICULTY_KEY =
 "quizup_difficulty_block";
+
+
+/* =========================
+   HILLTOPADS
+========================= */
+
+const HILLTOP_VAST_DESKTOP =
+"https://smooth-survey.com/dRm.Fyz-dQG/NBvzZqGKUV/-eomU9uuXZhUMlkk/PjT/c/zDNQDTkd2NNszmcYtoNgzvMq0TOATIYM4zMaQi";
+
+const HILLTOP_VAST_MOBILE =
+"https://smooth-survey.com/d.meFezZdaGwNLvHZuG/Ue/meVmc9/uBZhULlTkuPqTMcyzHN-DVk_2_NazBcztbNMzpMl0jOWTeYq4OMLQK";
+
+let hilltopAdDisplayContainer = null;
+
+let hilltopAdsLoader = null;
+
+let hilltopAdsManager = null;
+
+let hilltopAdReady = false;
+
+let hilltopAdRequested = false;
+
+let hilltopAdPlaying = false;
+
+let hilltopAdTimeout = null;
+
+
+function hilltopIsMobile(){
+
+  return window.matchMedia(
+    "(max-width: 768px)"
+  ).matches;
+
+}
+
+
+function hilltopVastUrl(){
+
+  return hilltopIsMobile()
+    ? HILLTOP_VAST_MOBILE
+    : HILLTOP_VAST_DESKTOP;
+
+}
+
+
+function hilltopHide(){
+
+  const overlay =
+    document.getElementById(
+      "hilltopAdOverlay"
+    );
+
+  if(overlay){
+
+    overlay.style.display =
+      "none";
+
+  }
+
+  hilltopAdPlaying = false;
+
+}
+
+
+function hilltopShow(){
+
+  const overlay =
+    document.getElementById(
+      "hilltopAdOverlay"
+    );
+
+  if(overlay){
+
+    overlay.style.display =
+      "flex";
+
+  }
+
+  hilltopAdPlaying = true;
+
+}
+
+
+function hilltopFinish(){
+
+  if(hilltopAdTimeout){
+
+    clearTimeout(
+      hilltopAdTimeout
+    );
+
+    hilltopAdTimeout = null;
+
+  }
+
+  hilltopHide();
+
+  document
+    .getElementById("nextWrap")
+    .classList
+    .remove("hidden");
+
+}
+
+
+function hilltopPrepare(){
+
+  if(
+    hilltopAdRequested ||
+    typeof google === "undefined" ||
+    !google.ima
+  ){
+
+    return;
+
+  }
+
+  try{
+
+    const video =
+      document.getElementById(
+        "hilltopVideo"
+      );
+
+    const container =
+      document.getElementById(
+        "hilltopAdContainer"
+      );
+
+    hilltopAdDisplayContainer =
+      new google.ima.AdDisplayContainer(
+        container,
+        video
+      );
+
+    /*
+      O initialize acontece somente
+      depois do clique em JOGAR DADO.
+      Isso é importante para dispositivos móveis.
+    */
+
+    hilltopAdDisplayContainer.initialize();
+
+    hilltopAdsLoader =
+      new google.ima.AdsLoader(
+        hilltopAdDisplayContainer
+      );
+
+    hilltopAdsLoader.addEventListener(
+      google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
+      hilltopOnAdsManagerLoaded,
+      false
+    );
+
+    hilltopAdsLoader.addEventListener(
+      google.ima.AdErrorEvent.Type.AD_ERROR,
+      hilltopOnAdError,
+      false
+    );
+
+    const adsRequest =
+      new google.ima.AdsRequest();
+
+    adsRequest.adTagUrl =
+      hilltopVastUrl();
+
+    adsRequest.linearAdSlotWidth =
+      container.clientWidth || 320;
+
+    adsRequest.linearAdSlotHeight =
+      container.clientHeight || 220;
+
+    adsRequest.nonLinearAdSlotWidth =
+      container.clientWidth || 320;
+
+    adsRequest.nonLinearAdSlotHeight =
+      150;
+
+    hilltopAdRequested = true;
+
+    hilltopAdsLoader.requestAds(
+      adsRequest
+    );
+
+  }catch(error){
+
+    console.error(
+      "HilltopAds prepare error:",
+      error
+    );
+
+    hilltopAdRequested = false;
+
+  }
+
+}
+
+
+function hilltopOnAdsManagerLoaded(
+  event
+){
+
+  try{
+
+    hilltopAdsManager =
+      event.getAdsManager(
+        document.getElementById(
+          "hilltopVideo"
+        )
+      );
+
+    const manager =
+      hilltopAdsManager;
+
+    manager.addEventListener(
+      google.ima.AdErrorEvent.Type.AD_ERROR,
+      hilltopOnAdError
+    );
+
+    manager.addEventListener(
+      google.ima.AdEvent.Type.STARTED,
+      () => {
+
+        hilltopAdReady = true;
+
+        hilltopShow();
+
+      }
+    );
+
+    manager.addEventListener(
+      google.ima.AdEvent.Type.COMPLETE,
+      hilltopFinish
+    );
+
+    manager.addEventListener(
+      google.ima.AdEvent.Type.SKIPPED,
+      hilltopFinish
+    );
+
+    manager.addEventListener(
+      google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
+      hilltopFinish
+    );
+
+    manager.addEventListener(
+      google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
+      hilltopFinish
+    );
+
+    hilltopAdReady = true;
+
+  }catch(error){
+
+    console.error(
+      "HilltopAds manager error:",
+      error
+    );
+
+    hilltopOnAdError();
+
+  }
+
+}
+
+
+function hilltopOnAdError(){
+
+  console.warn(
+    "HilltopAds: anúncio indisponível."
+  );
+
+  hilltopAdReady = false;
+
+  hilltopFinish();
+
+}
+
+
+function hilltopPlay(){
+
+  if(
+    !hilltopAdsManager ||
+    !hilltopAdReady
+  ){
+
+    hilltopFinish();
+
+    return;
+
+  }
+
+  try{
+
+    hilltopShow();
+
+    hilltopAdsManager.init(
+      320,
+      220,
+      google.ima.ViewMode.NORMAL
+    );
+
+    hilltopAdsManager.start();
+
+    /*
+      Segurança:
+      se o provedor não responder,
+      o jogo não fica travado.
+    */
+
+    hilltopAdTimeout =
+      setTimeout(
+        () => {
+
+          if(hilltopAdPlaying){
+
+            hilltopFinish();
+
+          }
+
+        },
+        20000
+      );
+
+  }catch(error){
+
+    console.error(
+      "HilltopAds play error:",
+      error
+    );
+
+    hilltopOnAdError();
+
+  }
+
+}
+
+
+/* =========================
+   ESTADO DO JOGO
+========================= */
 
 let handle = null;
 
@@ -2031,6 +2447,8 @@ function logout(){
 
   stopMusic();
 
+  hilltopHide();
+
   clearSession();
 
   localStorage.removeItem(
@@ -2514,6 +2932,14 @@ async function rollDice(){
 
   }
 
+  /*
+    Prepara o HilltopAds durante o clique
+    do jogador. Isso permite que o navegador
+    móvel autorize o player.
+  */
+
+  hilltopPrepare();
+
   clearInterval(handle);
 
   answered = false;
@@ -2585,8 +3011,6 @@ async function rollDice(){
       ? " ponto"
       : " pontos"
     );
-
-  /* NOVO: mostra o valor dentro da tela da pergunta */
 
   document.getElementById(
     "questionDiceNumber"
@@ -2840,10 +3264,50 @@ async function answer(index){
 
   }
 
-  document
-    .getElementById("nextWrap")
-    .classList
-    .remove("hidden");
+  /*
+    HilltopAds aparece depois da resposta.
+    Se o anúncio estiver pronto, ele é exibido.
+    Caso não esteja disponível, o jogo segue normalmente.
+  */
+
+  if(
+    hilltopAdReady &&
+    hilltopAdsManager
+  ){
+
+    hilltopPlay();
+
+  }else{
+
+    /*
+      Dá um pequeno tempo para o VAST terminar
+      de carregar. Se não carregar, libera
+      a próxima pergunta automaticamente.
+    */
+
+    setTimeout(
+      () => {
+
+        if(
+          !hilltopAdPlaying &&
+          document
+            .getElementById("nextWrap")
+            .classList
+            .contains("hidden")
+        ){
+
+          document
+            .getElementById("nextWrap")
+            .classList
+            .remove("hidden");
+
+        }
+
+      },
+      1500
+    );
+
+  }
 
 }
 
@@ -2855,6 +3319,8 @@ async function answer(index){
 function finishQuestion(){
 
   clearInterval(handle);
+
+  hilltopHide();
 
   document
     .getElementById("questionCard")
@@ -2875,8 +3341,6 @@ function finishQuestion(){
     .getElementById("diceResult")
     .textContent =
       "";
-
-  /* NOVO: limpa o valor anterior */
 
   document.getElementById(
     "questionDiceNumber"
@@ -3312,4 +3776,4 @@ async function withdraw(){
 
 </body>
 
-  </html>
+</html>
