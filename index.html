@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="clckd" content="b65974febfc087ea7c6fcfd81e4cb265">
 <title>QuizUp</title>
 
-<!-- MONETAG -->
+<!-- MONETAG — IN-PAGE PUSH -->
 <script>
 (function(s){
   s.dataset.zone='11646165';
@@ -15,7 +16,7 @@
   .appendChild(document.createElement('script')));
 </script>
 
-<!-- GOOGLE IMA -->
+<!-- HILLTOPADS / GOOGLE IMA -->
 <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
 
 <style>
@@ -26,26 +27,26 @@ body{
   font-family:Arial,sans-serif;
   background:linear-gradient(135deg,#101936,#25105e);
   color:#fff;
-  min-height:100vh;
+  min-height:100vh
 }
 
 .wrap{
   max-width:760px;
   margin:auto;
-  padding:16px;
+  padding:16px
 }
 
 .logo{
   text-align:center;
   font-size:42px;
   font-weight:900;
-  margin:10px;
+  margin:10px
 }
 
 .sub{
   text-align:center;
   opacity:.8;
-  margin-bottom:16px;
+  margin-bottom:16px
 }
 
 .card{
@@ -53,11 +54,11 @@ body{
   border:1px solid rgba(255,255,255,.15);
   border-radius:20px;
   padding:20px;
-  margin:14px 0;
+  margin:14px 0
 }
 
 .hidden{
-  display:none!important;
+  display:none!important
 }
 
 button{
@@ -65,26 +66,27 @@ button{
   border-radius:12px;
   padding:13px 16px;
   font-weight:700;
-  cursor:pointer;
+  cursor:pointer
 }
 
 button:disabled{
   opacity:.5;
+  cursor:not-allowed
 }
 
 .primary{
   background:#ffd43b;
-  color:#171717;
+  color:#171717
 }
 
 .light{
   background:#fff;
-  color:#171717;
+  color:#171717
 }
 
 .ghost{
   background:rgba(255,255,255,.12);
-  color:#fff;
+  color:#fff
 }
 
 .top,.row{
@@ -92,59 +94,58 @@ button:disabled{
   gap:10px;
   align-items:center;
   justify-content:space-between;
-  flex-wrap:wrap;
+  flex-wrap:wrap
 }
 
 .stat{
   padding:10px 14px;
   background:rgba(255,255,255,.1);
-  border-radius:12px;
+  border-radius:12px
 }
 
 .nav{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:8px;
+  gap:8px
 }
 
 .dice{
   font-size:90px;
   text-align:center;
   line-height:1.1;
-  margin:8px;
+  margin:8px
 }
 
 .roll{
   display:block;
   margin:auto;
-  font-size:18px;
-  width:100%;
+  font-size:18px
 }
 
 .result{
   text-align:center;
   font-size:21px;
-  font-weight:800;
+  font-weight:800
 }
 
 .answers{
   display:grid;
-  gap:10px;
+  gap:10px
 }
 
 .answer{
   background:#fff;
   color:#111;
   text-align:left;
-  width:100%;
+  width:100%
 }
 
 .answer.correct{
-  outline:4px solid #4ade80;
+  outline:4px solid #4ade80
 }
 
 .answer.wrong{
-  outline:4px solid #fb7185;
+  outline:4px solid #fb7185
 }
 
 input,select{
@@ -153,13 +154,13 @@ input,select{
   border:0;
   border-radius:10px;
   margin:5px 0 12px;
-  font-size:16px;
+  font-size:16px
 }
 
 .timer{
   text-align:center;
   font-size:22px;
-  font-weight:800;
+  font-weight:800
 }
 
 .bar{
@@ -167,32 +168,32 @@ input,select{
   background:rgba(255,255,255,.15);
   border-radius:20px;
   overflow:hidden;
-  margin-top:12px;
+  margin-top:12px
 }
 
 .bar div{
   height:100%;
   background:#ffd43b;
-  width:100%;
-  transition:width .2s linear;
+  width:0;
+  transition:width .2s linear
 }
 
 .notice{
   padding:12px;
   border-radius:12px;
   background:rgba(255,212,59,.12);
-  border:1px solid rgba(255,212,59,.3);
+  border:1px solid rgba(255,212,59,.3)
 }
 
 .small{
   font-size:13px;
-  opacity:.75;
+  opacity:.75
 }
 
 .tabs2{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:8px;
+  gap:8px
 }
 
 .adbox{
@@ -203,85 +204,80 @@ input,select{
   align-items:center;
   overflow:hidden;
   margin:12px auto;
-  border-radius:10px;
+  border-radius:10px
 }
 
-/* =========================
-   ANÚNCIO HILLTOP
-========================= */
+/* HILLTOPADS */
 
 #hilltopAdOverlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.92);
+  background:rgba(0,0,0,.94);
   z-index:999999;
   display:none;
   align-items:center;
   justify-content:center;
-  padding:15px;
-}
-
-#hilltopAdOverlay.show{
-  display:flex;
+  padding:12px
 }
 
 #hilltopAdContainer{
-  width:min(100%,520px);
-  background:#000;
-  border-radius:16px;
-  overflow:hidden;
   position:relative;
-  box-shadow:0 0 30px rgba(0,0,0,.7);
-}
-
-#hilltopAdMessage{
-  color:#fff;
-  text-align:center;
-  padding:12px;
-  font-weight:bold;
-  font-size:15px;
-  background:#111;
+  width:100%;
+  max-width:640px;
+  height:360px;
+  background:#000;
+  border-radius:14px;
+  overflow:hidden
 }
 
 #hilltopVideo{
-  display:block;
   width:100%;
-  height:auto;
-  max-height:75vh;
-  background:#000;
+  height:100%;
+  display:block;
+  background:#000
+}
+
+#hilltopAdMessage{
+  position:absolute;
+  left:0;
+  right:0;
+  top:10px;
+  text-align:center;
+  font-size:13px;
+  color:#fff;
+  pointer-events:none;
+  text-shadow:0 1px 3px #000;
+  z-index:2
 }
 
 #hilltopLoading{
-  color:#fff;
+  position:absolute;
+  left:0;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
   text-align:center;
-  padding:25px 10px;
   font-size:16px;
-}
-
-#hilltopContinue{
-  width:100%;
-  border-radius:0;
-  background:#ffd43b;
-  color:#171717;
-  display:none;
+  color:#fff;
+  z-index:1
 }
 
 @media(max-width:560px){
 
   .nav{
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:1fr 1fr
   }
 
   .dice{
-    font-size:75px;
+    font-size:75px
   }
 
   .logo{
-    font-size:38px;
+    font-size:38px
   }
 
-  #hilltopVideo{
-    max-height:65vh;
+  #hilltopAdContainer{
+    height:220px
   }
 }
 </style>
@@ -290,19 +286,16 @@ input,select{
 <body>
 
 <!-- MÚSICA -->
-<audio
-  id="backgroundMusic"
-  src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
-  loop
-  preload="auto">
+<audio id="backgroundMusic"
+       preload="auto"
+       loop>
+  <source
+    src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
+    type="audio/mpeg">
 </audio>
 
-<!-- =========================
-     HILLTOP OVERLAY
-========================= -->
-
+<!-- HILLTOPADS -->
 <div id="hilltopAdOverlay">
-
   <div id="hilltopAdContainer">
 
     <div id="hilltopAdMessage">
@@ -320,25 +313,20 @@ input,select{
       preload="auto">
     </video>
 
-    <button
-      id="hilltopContinue"
-      onclick="hilltopClose()">
-      CONTINUAR
-    </button>
-
   </div>
-
 </div>
 
 <div class="wrap">
 
-<div class="logo">QuizUp</div>
-
-<div class="sub">
-🎲 Jogue, responda e acumule pontos
+<div class="logo">
+  QuizUp
 </div>
 
-<!-- HIGHREVENUE -->
+<div class="sub">
+  🎲 Jogue, responda e acumule pontos
+</div>
+
+<!-- HIGHREVENUEFORMAT -->
 <div class="adbox">
 
 <script>
@@ -355,9 +343,7 @@ atOptions={
 
 </div>
 
-<!-- =========================
-     LOGIN / CADASTRO
-========================= -->
+<!-- AUTENTICAÇÃO -->
 
 <section id="auth" class="card">
 
@@ -409,10 +395,14 @@ atOptions={
 
 <button
   class="primary"
-  style="width:100%"
   onclick="register()">
   Cadastrar
 </button>
+
+<p
+  id="registerMsg"
+  class="small">
+</p>
 
 </div>
 
@@ -421,14 +411,12 @@ atOptions={
 <h2>🔐 Login</h2>
 
 <label>E-mail</label>
-
 <input
   id="lEmail"
   type="email"
   placeholder="Seu e-mail">
 
 <label>Senha</label>
-
 <input
   id="lPass"
   type="password"
@@ -436,18 +424,20 @@ atOptions={
 
 <button
   class="primary"
-  style="width:100%"
   onclick="login()">
   Entrar
 </button>
+
+<p
+  id="loginMsg"
+  class="small">
+</p>
 
 </div>
 
 </section>
 
-<!-- =========================
-     JOGO
-========================= -->
+<!-- JOGO -->
 
 <section id="game" class="hidden">
 
@@ -497,18 +487,16 @@ atOptions={
 
 </div>
 
-<!-- QUIZ -->
-
 <div id="quizTab">
 
 <div id="rollCard" class="card">
 
 <h2 style="text-align:center">
-Jogue o dado
+  Jogue o dado
 </h2>
 
 <div id="dice" class="dice">
-🎲
+  🎲
 </div>
 
 <button
@@ -538,12 +526,15 @@ Jogue o dado
 </div>
 
 <div class="bar">
-<div id="progress"></div>
+  <div id="progress"></div>
 </div>
 
 <h2 id="question"></h2>
 
-<div id="answers" class="answers"></div>
+<div
+  id="answers"
+  class="answers">
+</div>
 
 <p
   id="feedback"
@@ -558,7 +549,10 @@ Jogue o dado
 
 </div>
 
-<div id="answerAd" class="adbox">
+<!-- HIGHREVENUEFORMAT -->
+<div
+  id="answerAd"
+  class="adbox">
 
 <script>
 atOptions={
@@ -619,13 +613,13 @@ Ganhe <b>50 pontos</b> quando seu convidado atingir
 <button
   class="primary"
   onclick="copyRef()">
-Copiar link
+  Copiar link
 </button>
 
 <button
   class="light"
   onclick="shareRef()">
-Enviar link
+  Enviar link
 </button>
 
 <p id="refMsg"></p>
@@ -655,11 +649,11 @@ Enviar link
   onchange="payFields()">
 
 <option value="pix">
-Pix
+  Pix
 </option>
 
 <option value="paypal">
-PayPal
+  PayPal
 </option>
 
 </select>
@@ -701,7 +695,6 @@ R$ 10,00 — 11.000 pontos
 
 <button
   class="primary"
-  style="width:100%"
   onclick="withdraw()">
 
 Solicitar saque
@@ -711,6 +704,10 @@ Solicitar saque
 <p
   id="cashMsg"
   class="notice hidden">
+</p>
+
+<p class="small">
+Nesta versão o saque é registrado.
 </p>
 
 </div>
@@ -744,7 +741,17 @@ Quero ser Premium
 <script>
 
 /* =====================================================
-   CONFIGURAÇÃO HILLTOP
+   CONFIGURAÇÕES
+===================================================== */
+
+const API_URL =
+"https://quizup-api-qxn2.onrender.com";
+
+const QUESTION_TIME = 10;
+
+
+/* =====================================================
+   HILLTOPADS — VAST
 ===================================================== */
 
 const HILLTOP_VAST_DESKTOP =
@@ -754,14 +761,442 @@ const HILLTOP_VAST_MOBILE =
 "https://smooth-survey.com/d.meFezZdaGwNLvHZuG/Ue/meVmc9/uBZhULlTkuPqTMcyzHN-DVk_2_NazBcztbNMzpMl0jOWTeYq4OMLQK";
 
 
+let hilltopAdDisplayContainer=null;
 let hilltopAdsLoader=null;
 let hilltopAdsManager=null;
-let hilltopDisplayContainer=null;
 
+let hilltopAdReady=false;
 let hilltopAdRequested=false;
 let hilltopAdPlaying=false;
-let hilltopAdFinished=false;
-let hilltopTimeout=null;
+
+let hilltopAdTimeout=null;
+let hilltopAdFallbackTimer=null;
+
+let hilltopAdFinishedCallback=null;
+
+
+/* =====================================================
+   ELEMENTOS HILLTOP
+===================================================== */
+
+const hilltopOverlay=
+document.getElementById("hilltopAdOverlay");
+
+const hilltopContainer=
+document.getElementById("hilltopAdContainer");
+
+const hilltopVideo=
+document.getElementById("hilltopVideo");
+
+const hilltopLoading=
+document.getElementById("hilltopLoading");
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+function hilltopIsMobile(){
+
+return window.matchMedia(
+"(max-width: 768px)"
+).matches;
+
+}
+
+
+/* =====================================================
+   VAST CORRETO
+===================================================== */
+
+function hilltopVastUrl(){
+
+return hilltopIsMobile()
+?HILLTOP_VAST_MOBILE
+:HILLTOP_VAST_DESKTOP;
+
+}
+
+
+/* =====================================================
+   MOSTRAR ANÚNCIO
+===================================================== */
+
+function hilltopShow(){
+
+hilltopOverlay.style.display="flex";
+
+hilltopLoading.style.display="none";
+
+hilltopAdPlaying=true;
+
+}
+
+
+/* =====================================================
+   ESCONDER ANÚNCIO
+===================================================== */
+
+function hilltopHide(){
+
+hilltopOverlay.style.display="none";
+
+hilltopLoading.style.display="none";
+
+hilltopAdPlaying=false;
+
+}
+
+
+/* =====================================================
+   FINALIZAR ANÚNCIO
+===================================================== */
+
+function hilltopFinish(){
+
+clearTimeout(hilltopAdTimeout);
+clearTimeout(hilltopAdFallbackTimer);
+
+hilltopAdTimeout=null;
+hilltopAdFallbackTimer=null;
+
+hilltopHide();
+
+const callback=
+hilltopAdFinishedCallback;
+
+hilltopAdFinishedCallback=null;
+
+if(typeof callback==="function"){
+callback();
+}
+
+}
+
+
+/* =====================================================
+   ERRO DO ANÚNCIO
+===================================================== */
+
+function hilltopOnAdError(){
+
+console.warn(
+"Anúncio HilltopAds indisponível."
+);
+
+hilltopAdReady=false;
+
+hilltopFinish();
+
+}
+
+
+/* =====================================================
+   ADS MANAGER CARREGADO
+===================================================== */
+
+function hilltopOnAdsManagerLoaded(event){
+
+try{
+
+hilltopAdsManager=
+event.getAdsManager(
+hilltopVideo
+);
+
+hilltopAdsManager.addEventListener(
+google.ima.AdErrorEvent.AD_ERROR,
+hilltopOnAdError
+);
+
+hilltopAdsManager.addEventListener(
+google.ima.AdEvent.Type.STARTED,
+function(){
+
+hilltopAdReady=true;
+
+hilltopShow();
+
+}
+);
+
+hilltopAdsManager.addEventListener(
+google.ima.AdEvent.Type.COMPLETE,
+function(){
+
+hilltopFinish();
+
+}
+);
+
+hilltopAdsManager.addEventListener(
+google.ima.AdEvent.Type.SKIPPED,
+function(){
+
+hilltopFinish();
+
+}
+);
+
+hilltopAdsManager.addEventListener(
+google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
+function(){
+
+hilltopFinish();
+
+}
+);
+
+hilltopAdsManager.addEventListener(
+google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
+function(){
+
+hilltopFinish();
+
+}
+);
+
+hilltopAdReady=true;
+
+
+/*
+   IMPORTANTE:
+
+   Se o jogador já respondeu enquanto o
+   anúncio estava carregando, iniciamos
+   imediatamente agora.
+*/
+
+if(hilltopAdFinishedCallback){
+
+setTimeout(function(){
+
+hilltopPlayManager();
+
+},50);
+
+}
+
+}catch(error){
+
+console.error(
+"Erro ao preparar HilltopAds:",
+error
+);
+
+hilltopOnAdError();
+
+}
+
+}
+
+
+/* =====================================================
+   PREPARAR VAST
+===================================================== */
+
+function hilltopPrepare(){
+
+if(hilltopAdRequested){
+return;
+}
+
+if(
+typeof google==="undefined" ||
+!google.ima
+){
+
+console.warn(
+"Google IMA não disponível."
+);
+
+return;
+
+}
+
+try{
+
+hilltopAdDisplayContainer=
+new google.ima.AdDisplayContainer(
+hilltopContainer,
+hilltopVideo
+);
+
+
+/*
+   O initialize() precisa acontecer
+   durante uma ação do usuário.
+
+   rollDice() é acionado pelo toque
+   do jogador, então é o local correto.
+*/
+
+hilltopAdDisplayContainer.initialize();
+
+hilltopAdsLoader=
+new google.ima.AdsLoader(
+hilltopAdDisplayContainer
+);
+
+hilltopAdsLoader.addEventListener(
+google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
+hilltopOnAdsManagerLoaded
+);
+
+hilltopAdsLoader.addEventListener(
+google.ima.AdErrorEvent.Type.AD_ERROR,
+hilltopOnAdError
+);
+
+const adsRequest=
+new google.ima.AdsRequest();
+
+adsRequest.adTagUrl=
+hilltopVastUrl();
+
+adsRequest.linearAdSlotWidth=
+hilltopContainer.clientWidth||320;
+
+adsRequest.linearAdSlotHeight=
+hilltopContainer.clientHeight||220;
+
+adsRequest.nonLinearAdSlotWidth=
+hilltopContainer.clientWidth||320;
+
+adsRequest.nonLinearAdSlotHeight=
+hilltopContainer.clientHeight||220;
+
+hilltopAdRequested=true;
+
+hilltopAdsLoader.requestAds(
+adsRequest
+);
+
+}catch(error){
+
+console.error(
+"Erro ao solicitar VAST HilltopAds:",
+error
+);
+
+hilltopOnAdError();
+
+}
+
+}
+
+
+/* =====================================================
+   INICIAR MANAGER
+===================================================== */
+
+function hilltopPlayManager(){
+
+if(
+!hilltopAdsManager ||
+!hilltopAdReady ||
+hilltopAdPlaying
+){
+
+return;
+
+}
+
+try{
+
+hilltopShow();
+
+hilltopAdsManager.init(
+320,
+220,
+google.ima.ViewMode.NORMAL
+);
+
+hilltopAdsManager.start();
+
+clearTimeout(hilltopAdTimeout);
+
+hilltopAdTimeout=
+setTimeout(function(){
+
+console.warn(
+"Tempo máximo do anúncio atingido."
+);
+
+hilltopFinish();
+
+},20000);
+
+}catch(error){
+
+console.error(
+"Erro ao iniciar anúncio:",
+error
+);
+
+hilltopFinish();
+
+}
+
+}
+
+
+/* =====================================================
+   TOCAR ANÚNCIO DEPOIS DA RESPOSTA
+===================================================== */
+
+function hilltopPlay(afterAd){
+
+clearTimeout(hilltopAdFallbackTimer);
+
+hilltopAdFinishedCallback=
+typeof afterAd==="function"
+?afterAd
+:null;
+
+
+/*
+   Se o anúncio já estiver pronto,
+   começa imediatamente.
+*/
+
+if(
+hilltopAdsManager &&
+hilltopAdReady
+){
+
+hilltopPlayManager();
+
+return;
+
+}
+
+
+/*
+   Ainda está carregando.
+
+   Agora NÃO usamos mais o antigo
+   fallback de 1,5 segundo.
+
+   Esperamos até 8 segundos.
+*/
+
+hilltopLoading.style.display="block";
+
+hilltopOverlay.style.display="flex";
+
+hilltopAdFallbackTimer=
+setTimeout(function(){
+
+console.warn(
+"VAST não ficou pronto a tempo."
+);
+
+hilltopFinish();
+
+},8000);
+
+}
 
 
 /* =====================================================
@@ -769,31 +1204,23 @@ let hilltopTimeout=null;
 ===================================================== */
 
 const backgroundMusic=
-document.getElementById("backgroundMusic");
+document.getElementById(
+"backgroundMusic"
+);
 
-backgroundMusic.volume=.35;
+backgroundMusic.volume=0.35;
 
 function startMusic(){
 
-  if(backgroundMusic.paused){
+if(backgroundMusic.paused){
 
-    backgroundMusic.play().catch(()=>{});
-
-  }
+backgroundMusic.play().catch(
+()=>{}
+);
 
 }
 
-document.addEventListener(
-  "click",
-  startMusic,
-  {once:true}
-);
-
-document.addEventListener(
-  "touchstart",
-  startMusic,
-  {once:true,passive:true}
-);
+}
 
 
 /* =====================================================
@@ -802,83 +1229,161 @@ document.addEventListener(
 
 const Q=[
 
-["Quanto é 2 + 2?",
-["3","4","5","6"],1],
+[
+"Quanto é 2 + 2?",
+["3","4","5","6"],
+1
+],
 
-["Qual é a capital do Brasil?",
-["Brasília","São Paulo","Salvador","Recife"],0],
+[
+"Qual é a capital do Brasil?",
+["Brasília","São Paulo","Salvador","Recife"],
+0
+],
 
-["Qual planeta é conhecido como Planeta Vermelho?",
-["Terra","Marte","Vênus","Saturno"],1],
+[
+"Qual planeta é conhecido como Planeta Vermelho?",
+["Terra","Marte","Vênus","Saturno"],
+1
+],
 
-["Quantos dias tem uma semana?",
-["5","6","7","8"],2],
+[
+"Quantos dias tem uma semana?",
+["5","6","7","8"],
+2
+],
 
-["Qual animal é conhecido como rei da selva?",
-["Tigre","Elefante","Leão","Urso"],2],
+[
+"Qual animal é conhecido como rei da selva?",
+["Tigre","Elefante","Leão","Urso"],
+2
+],
 
-["Quantos meses tem um ano?",
-["10","11","12","13"],2],
+[
+"Quantos meses tem um ano?",
+["10","11","12","13"],
+2
+],
 
-["Qual é a cor formada pela mistura de azul e amarelo?",
-["Verde","Roxo","Laranja","Rosa"],0],
+[
+"Qual é a cor formada pela mistura de azul e amarelo?",
+["Verde","Roxo","Laranja","Rosa"],
+0
+],
 
-["Qual é o maior planeta do Sistema Solar?",
-["Terra","Marte","Júpiter","Mercúrio"],2],
+[
+"Qual é o maior planeta do Sistema Solar?",
+["Terra","Marte","Júpiter","Mercúrio"],
+2
+],
 
-["Quantas horas tem um dia?",
-["12","18","24","48"],2],
+[
+"Quantas horas tem um dia?",
+["12","18","24","48"],
+2
+],
 
-["Qual animal produz leite?",
-["Cachorro","Vaca","Galinha","Peixe"],1],
+[
+"Qual animal produz leite?",
+["Cachorro","Vaca","Galinha","Peixe"],
+1
+],
 
-["Qual é o maior oceano da Terra?",
-["Atlântico","Índico","Pacífico","Ártico"],2],
+[
+"Qual é o maior oceano da Terra?",
+["Atlântico","Índico","Pacífico","Ártico"],
+2
+],
 
-["Quanto é 12 × 8?",
-["86","96","108","112"],1],
+[
+"Quanto é 12 × 8?",
+["86","96","108","112"],
+1
+],
 
-["Qual gás é mais abundante na atmosfera?",
-["Oxigênio","Nitrogênio","Hélio","Hidrogênio"],1],
+[
+"Qual gás é mais abundante na atmosfera?",
+["Oxigênio","Nitrogênio","Hélio","Hidrogênio"],
+1
+],
 
-["Quem escreveu Dom Casmurro?",
-["Machado de Assis","José de Alencar","Clarice Lispector","Cecília Meireles"],0],
+[
+"Quem escreveu Dom Casmurro?",
+["Machado de Assis","José de Alencar","Clarice Lispector","Cecília Meireles"],
+0
+],
 
-["Qual é o símbolo químico do ouro?",
-["Ag","Fe","Au","Cu"],2],
+[
+"Qual é o símbolo químico do ouro?",
+["Ag","Fe","Au","Cu"],
+2
+],
 
-["Qual é o resultado de 15² − 10²?",
-["125","150","175","225"],0],
+[
+"Qual é o resultado de 15² − 10²?",
+["125","150","175","225"],
+0
+],
 
-["Qual destes números é primo?",
-["21","27","29","33"],2],
+[
+"Qual destes números é primo?",
+["21","27","29","33"],
+2
+],
 
-["Se 3x + 7 = 25, qual é o valor de x?",
-["4","5","6","7"],1],
+[
+"Se 3x + 7 = 25, qual é o valor de x?",
+["4","5","6","7"],
+1
+],
 
-["Qual continente tem a maior área?",
-["África","Ásia","Europa","América do Sul"],1],
+[
+"Qual continente tem a maior área?",
+["África","Ásia","Europa","América do Sul"],
+1
+],
 
-["Qual é a raiz quadrada de 144?",
-["10","11","12","14"],2],
+[
+"Qual é a raiz quadrada de 144?",
+["10","11","12","14"],
+2
+],
 
-["Qual é o maior país do mundo em área?",
-["China","Canadá","Brasil","Rússia"],3],
+[
+"Qual é o maior país do mundo em área?",
+["China","Canadá","Brasil","Rússia"],
+3
+],
 
-["Em que ano terminou a Segunda Guerra Mundial?",
-["1943","1944","1945","1946"],2],
+[
+"Em que ano terminou a Segunda Guerra Mundial?",
+["1943","1944","1945","1946"],
+2
+],
 
-["Qual é o elemento químico de número atômico 6?",
-["Oxigênio","Carbono","Nitrogênio","Ferro"],1],
+[
+"Qual é o elemento químico de número atômico 6?",
+["Oxigênio","Carbono","Nitrogênio","Ferro"],
+1
+],
 
-["Qual é a velocidade aproximada da luz no vácuo?",
-["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],1],
+[
+"Qual é a velocidade aproximada da luz no vácuo?",
+["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],
+1
+],
 
-["Qual é a derivada de x³ − 4x?",
-["3x² − 4","x² − 4","3x − 4","3x² + 4"],0],
+[
+"Qual é a derivada de x³ − 4x?",
+["3x² − 4","x² − 4","3x − 4","3x² + 4"],
+0
+],
 
-["Qual processo celular produz a maior parte do ATP em condições aeróbicas?",
-["Fermentação","Glicólise","Fosforilação oxidativa","Transcrição"],2]
+[
+"Qual processo celular produz a maior parte do ATP em condições aeróbicas?",
+["Fermentação","Glicólise","Fosforilação oxidativa","Transcrição"],
+2
+]
 
 ];
 
@@ -888,20 +1393,20 @@ const Q=[
 ===================================================== */
 
 let s={
-  email:"",
-  password:"",
-  name:"",
-  cpf:"",
-  points:0,
-  round:1,
-  code:"",
-  referrer:"",
-  dice:0,
-  question:null,
-  recentQuestions:[],
-  timer:10,
-  answered:false,
-  roundPoints:0
+email:"",
+password:"",
+name:"",
+cpf:"",
+points:0,
+round:1,
+code:"",
+referrer:"",
+dice:0,
+question:null,
+recentQuestions:[],
+timer:QUESTION_TIME,
+answered:false,
+roundPoints:0
 };
 
 let handle=null;
@@ -913,157 +1418,191 @@ let handle=null;
 
 function key(){
 
-  return "quizup_"+s.email;
+return "quizup_"+s.email;
 
 }
 
+
 function save(){
 
-  localStorage.setItem(
-    key(),
-    JSON.stringify(s)
-  );
+if(!s.email){
+return;
+}
 
-  ui();
+localStorage.setItem(
+key(),
+JSON.stringify(s)
+);
+
+ui();
 
 }
 
 
 /* =====================================================
-   LOGIN
+   AUTENTICAÇÃO
 ===================================================== */
 
 function authMode(m){
 
-  document
-  .getElementById("registerBox")
-  .classList
-  .toggle("hidden",m!=="register");
+document
+.getElementById("registerBox")
+.classList
+.toggle("hidden",m!=="register");
 
-  document
-  .getElementById("loginBox")
-  .classList
-  .toggle("hidden",m!=="login");
+document
+.getElementById("loginBox")
+.classList
+.toggle("hidden",m!=="login");
 
 }
 
 
 function register(){
 
-  let e=document
-    .getElementById("rEmail")
-    .value
-    .trim()
-    .toLowerCase();
+const e=
+document.getElementById("rEmail")
+.value
+.trim()
+.toLowerCase();
 
-  let p=document
-    .getElementById("rPass")
-    .value;
+const p=
+document.getElementById("rPass")
+.value;
 
-  let n=document
-    .getElementById("rName")
-    .value
-    .trim();
+const n=
+document.getElementById("rName")
+.value
+.trim();
 
-  let cpf=document
-    .getElementById("rCpf")
-    .value
-    .trim();
+const cpf=
+document.getElementById("rCpf")
+.value
+.trim();
 
-  if(!e||!p||!n||!cpf){
+const msg=
+document.getElementById("registerMsg");
 
-    alert("Preencha todos os campos.");
 
-    return;
+if(!e||!p||!n||!cpf){
 
-  }
+msg.textContent=
+"Preencha todos os campos.";
 
-  if(localStorage.getItem("quizup_"+e)){
+return;
 
-    alert("Essa conta já existe.");
+}
 
-    return;
 
-  }
+if(localStorage.getItem("quizup_"+e)){
 
-  s={
+msg.textContent=
+"Essa conta já existe. Use o Login.";
 
-    email:e,
-    password:p,
-    name:n,
-    cpf:cpf,
-    points:0,
-    round:1,
-    code:"QU"+
-      Math.random()
-      .toString(36)
-      .slice(2,8)
-      .toUpperCase(),
+return;
 
-    referrer:
-      new URLSearchParams(location.search)
-      .get("ref")||"",
+}
 
-    dice:0,
-    question:null,
-    recentQuestions:[],
-    timer:10,
-    answered:false,
-    roundPoints:0
 
-  };
+s={
+email:e,
+password:p,
+name:n,
+cpf:cpf,
+points:0,
+round:1,
+code:"QU"+
+Math.random()
+.toString(36)
+.slice(2,8)
+.toUpperCase(),
+referrer:
+new URLSearchParams(
+location.search
+).get("ref")||"",
+dice:0,
+question:null,
+recentQuestions:[],
+timer:QUESTION_TIME,
+answered:false,
+roundPoints:0
+};
 
-  save();
 
-  openGame();
+save();
+
+msg.textContent=
+"Cadastro realizado com sucesso!";
+
+openGame();
 
 }
 
 
 function login(){
 
-  let e=document
-    .getElementById("lEmail")
-    .value
-    .trim()
-    .toLowerCase();
+const e=
+document.getElementById("lEmail")
+.value
+.trim()
+.toLowerCase();
 
-  let p=document
-    .getElementById("lPass")
-    .value;
+const p=
+document.getElementById("lPass")
+.value;
 
-  if(!e||!p){
+const msg=
+document.getElementById("loginMsg");
 
-    alert("Preencha e-mail e senha.");
 
-    return;
+if(!e||!p){
 
-  }
+msg.textContent=
+"Preencha e-mail e senha.";
 
-  let x=
-    localStorage.getItem("quizup_"+e);
+return;
 
-  if(!x){
+}
 
-    alert("Conta não encontrada.");
 
-    return;
+const x=
+localStorage.getItem("quizup_"+e);
 
-  }
 
-  let account=JSON.parse(x);
+if(!x){
 
-  if(account.password!==p){
+msg.textContent=
+"Conta não encontrada.";
 
-    alert("Senha incorreta.");
+return;
 
-    return;
+}
 
-  }
 
-  s=account;
+try{
 
-  openGame();
+const account=
+JSON.parse(x);
+
+if(account.password!==p){
+
+msg.textContent=
+"Senha incorreta.";
+
+return;
+
+}
+
+s=account;
+
+openGame();
+
+}catch(error){
+
+msg.textContent=
+"Não foi possível entrar.";
+
+}
 
 }
 
@@ -1074,21 +1613,19 @@ function login(){
 
 function openGame(){
 
-  startMusic();
+document
+.getElementById("auth")
+.classList
+.add("hidden");
 
-  document
-    .getElementById("auth")
-    .classList
-    .add("hidden");
+document
+.getElementById("game")
+.classList
+.remove("hidden");
 
-  document
-    .getElementById("game")
-    .classList
-    .remove("hidden");
+ui();
 
-  ui();
-
-  tab("quiz");
+tab("quiz");
 
 }
 
@@ -1099,17 +1636,19 @@ function openGame(){
 
 function logout(){
 
-  clearInterval(handle);
+clearInterval(handle);
 
-  document
-    .getElementById("game")
-    .classList
-    .add("hidden");
+hilltopFinish();
 
-  document
-    .getElementById("auth")
-    .classList
-    .remove("hidden");
+document
+.getElementById("game")
+.classList
+.add("hidden");
+
+document
+.getElementById("auth")
+.classList
+.remove("hidden");
 
 }
 
@@ -1120,660 +1659,443 @@ function logout(){
 
 function ui(){
 
-  document
-    .getElementById("points")
-    .textContent=s.points;
+document.getElementById("points")
+.textContent=s.points;
 
-  document
-    .getElementById("round")
-    .textContent=s.round;
+document.getElementById("round")
+.textContent=s.round;
 
-  document
-    .getElementById("totalScore")
-    .textContent=s.points;
+document.getElementById("totalScore")
+.textContent=s.points;
 
-  document
-    .getElementById("refCode")
-    .value=s.code||"";
+document.getElementById("refCode")
+.value=s.code||"";
 
-  document
-    .getElementById("refLink")
-    .value=
-      location.origin+
-      location.pathname+
-      "?ref="+
-      encodeURIComponent(s.code||"");
-
-}
-
-
-function tab(x){
-
-  ["quiz","ref","cash","premium"]
-  .forEach(a=>{
-
-    document
-      .getElementById(a+"Tab")
-      .classList
-      .toggle("hidden",a!==x);
-
-  });
-
-  if(x==="quiz"){
-
-    document
-      .getElementById("rollCard")
-      .classList
-      .remove("hidden");
-
-    document
-      .getElementById("questionCard")
-      .classList
-      .add("hidden");
-
-  }
+document.getElementById("refLink")
+.value=
+location.origin+
+location.pathname+
+"?ref="+
+encodeURIComponent(s.code||"");
 
 }
 
 
 /* =====================================================
-   PERGUNTA
+   ABAS
+===================================================== */
+
+function tab(x){
+
+[
+"quiz",
+"ref",
+"cash",
+"premium"
+].forEach(a=>{
+
+document
+.getElementById(a+"Tab")
+.classList
+.toggle("hidden",a!==x);
+
+});
+
+
+if(x==="quiz"){
+
+document
+.getElementById("rollCard")
+.classList
+.remove("hidden");
+
+document
+.getElementById("questionCard")
+.classList
+.add("hidden");
+
+}
+
+}
+
+
+/* =====================================================
+   ESCOLHER PERGUNTA
 ===================================================== */
 
 function pickQuestion(){
 
-  let recent=s.recentQuestions||[];
+const recent=
+s.recentQuestions||[];
 
-  let available=
-    Q.filter(q=>!recent.includes(q[0]));
+const available=
+Q.filter(q=>
+!recent.includes(q[0])
+);
 
-  let pool=
-    available.length
-    ?available
-    :Q;
+const pool=
+available.length
+?available
+:Q;
 
-  let q=
-    pool[
-      Math.floor(
-        Math.random()*pool.length
-      )
-    ];
+const q=
+pool[
+Math.floor(
+Math.random()*pool.length
+)
+];
 
-  s.recentQuestions=
-    [...recent,q[0]].slice(-10);
+s.recentQuestions=
+[
+...recent,
+q[0]
+].slice(-10);
 
-  return q;
+return q;
 
 }
 
 
 /* =====================================================
-   DADO
+   JOGAR DADO
 ===================================================== */
 
 function rollDice(){
 
-  startMusic();
+startMusic();
 
-  clearInterval(handle);
+clearInterval(handle);
 
-  s.answered=false;
+s.answered=false;
 
-  let dice;
 
-  if(s.round%30===0){
+/*
+   PREPARA O HILLTOP DURANTE O
+   TOQUE DO USUÁRIO.
 
-    dice=
-      Math.floor(Math.random()*3)+8;
+   Isso é importante para o IMA.
+*/
 
-  }
-  else if(s.round%10===0){
+hilltopPrepare();
 
-    dice=
-      Math.floor(Math.random()*3)+5;
 
-  }
-  else{
+let dice;
 
-    dice=
-      Math.floor(Math.random()*4)+1;
 
-  }
+/*
+   A cada 30 rodadas:
+   8–10
+*/
 
-  s.dice=dice;
-  s.roundPoints=dice;
-  s.question=pickQuestion();
+if(s.round%30===0){
 
-  document
-    .getElementById("dice")
-    .textContent="🎲 "+dice;
+dice=
+Math.floor(
+Math.random()*3
+)+8;
 
-  document
-    .getElementById("diceResult")
-    .textContent=
-      "Você tirou "+dice+
-      " • Esta pergunta vale "+
-      dice+
-      (dice===1?" ponto":" pontos");
 
-  document
-    .getElementById("question")
-    .textContent=s.question[0];
+/*
+   A cada 10 rodadas:
+   5–7
+*/
 
-  let answers=
-    document.getElementById("answers");
+}else if(s.round%10===0){
 
-  answers.innerHTML="";
+dice=
+Math.floor(
+Math.random()*3
+)+5;
 
-  s.question[1].forEach((a,i)=>{
 
-    let b=
-      document.createElement("button");
+/*
+   Rodadas normais:
+   1–4
+*/
 
-    b.className="answer";
+}else{
 
-    b.textContent=a;
+dice=
+Math.floor(
+Math.random()*4
+)+1;
 
-    b.onclick=()=>answer(i);
+}
 
-    answers.appendChild(b);
 
-  });
+s.dice=dice;
 
-  document
-    .getElementById("rollCard")
-    .classList
-    .add("hidden");
+s.roundPoints=dice;
 
-  document
-    .getElementById("questionCard")
-    .classList
-    .remove("hidden");
+s.question=pickQuestion();
 
-  document
-    .getElementById("feedback")
-    .classList
-    .add("hidden");
 
-  document
-    .getElementById("rewardBox")
-    .classList
-    .add("hidden");
+document
+.getElementById("dice")
+.textContent=
+"🎲 "+dice;
 
-  startTimer();
+
+document
+.getElementById("diceResult")
+.textContent=
+"Você tirou "+
+dice+
+" • Esta pergunta vale "+
+dice+
+(dice===1?" ponto":" pontos");
+
+
+document
+.getElementById("question")
+.textContent=
+s.question[0];
+
+
+const answers=
+document.getElementById("answers");
+
+answers.innerHTML="";
+
+
+s.question[1].forEach(
+(a,i)=>{
+
+const b=
+document.createElement("button");
+
+b.className="answer";
+
+b.textContent=a;
+
+b.onclick=()=>answer(i);
+
+answers.appendChild(b);
+
+}
+);
+
+
+document
+.getElementById("rollCard")
+.classList
+.add("hidden");
+
+document
+.getElementById("questionCard")
+.classList
+.remove("hidden");
+
+document
+.getElementById("feedback")
+.classList
+.add("hidden");
+
+document
+.getElementById("rewardBox")
+.classList
+.add("hidden");
+
+startTimer();
 
 }
 
 
 /* =====================================================
-   TEMPORIZADOR
+   CRONÔMETRO
 ===================================================== */
 
 function startTimer(){
 
-  clearInterval(handle);
+clearInterval(handle);
 
-  s.timer=10;
+s.timer=QUESTION_TIME;
 
-  document
-    .getElementById("time")
-    .textContent=10;
+document
+.getElementById("time")
+.textContent=
+QUESTION_TIME;
 
-  document
-    .getElementById("progress")
-    .style.width="100%";
+document
+.getElementById("progress")
+.style
+.width="100%";
 
-  handle=setInterval(()=>{
 
-    s.timer--;
+handle=
+setInterval(()=>{
 
-    document
-      .getElementById("time")
-      .textContent=s.timer;
+s.timer--;
 
-    document
-      .getElementById("progress")
-      .style.width=
-        Math.max(
-          0,
-          (s.timer/10)*100
-        )+"%";
+document
+.getElementById("time")
+.textContent=
+Math.max(0,s.timer);
 
-    if(s.timer<=0){
+document
+.getElementById("progress")
+.style
+.width=
+Math.max(
+0,
+(s.timer/QUESTION_TIME)*100
+)+"%";
 
-      clearInterval(handle);
 
-      answer(-1);
+if(s.timer<=0){
 
-    }
+clearInterval(handle);
 
-  },1000);
+answer(-1);
+
+}
+
+},1000);
 
 }
 
 
 /* =====================================================
-   RESPOSTA
+   RESPONDER
 ===================================================== */
 
 function answer(i){
 
-  if(s.answered)return;
+if(s.answered){
+return;
+}
 
-  s.answered=true;
+s.answered=true;
 
-  clearInterval(handle);
+clearInterval(handle);
 
-  let correct=s.question[2];
+const correct=
+s.question[2];
 
-  let buttons=
-    [...document.querySelectorAll(".answer")];
+const buttons=
+[
+...document.querySelectorAll(".answer")
+];
 
-  if(i>=0 && buttons[i]){
 
-    buttons[i]
-      .classList
-      .add(
-        i===correct
-        ?"correct"
-        :"wrong"
-      );
+if(i>=0 && buttons[i]){
 
-  }
+buttons[i]
+.classList
+.add(
+i===correct
+?"correct"
+:"wrong"
+);
 
-  if(buttons[correct]){
+}
 
-    buttons[correct]
-      .classList
-      .add("correct");
 
-  }
+if(buttons[correct]){
 
-  let ok=i===correct;
+buttons[correct]
+.classList
+.add("correct");
 
-  if(ok){
+}
 
-    s.points+=s.roundPoints;
 
-  }
+const ok=
+i===correct;
 
-  ui();
 
-  save();
+if(ok){
 
-  let feedback=
-    document.getElementById("feedback");
+s.points+=s.roundPoints;
 
-  feedback.classList.remove("hidden");
+}
 
-  feedback.textContent=
-    ok
-    ?"✅ Correto! Você ganhou "+
-      s.roundPoints+" pontos!"
-    :"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
 
-  /*
-    AQUI ESTÁ A CORREÇÃO:
+ui();
 
-    O anúncio é solicitado imediatamente
-    após a resposta do jogador.
-  */
+save();
 
-  playHilltopAd(()=>{
 
-    document
-      .getElementById("rewardBox")
-      .classList
-      .remove("hidden");
+const feedback=
+document.getElementById("feedback");
 
-  });
+feedback
+.classList
+.remove("hidden");
+
+
+feedback.textContent=
+ok
+?"✅ Correto! Você ganhou "+
+s.roundPoints+
+" pontos!"
+:"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
+
+
+/*
+   O anúncio Hilltop começa
+   DEPOIS da resposta.
+
+   Se ainda estiver carregando,
+   aguarda até 8 segundos.
+
+   Não existe mais o antigo
+   fallback de 1,5 segundo.
+*/
+
+hilltopPlay(
+function(){
+
+document
+.getElementById("rewardBox")
+.classList
+.remove("hidden");
+
+}
+);
 
 }
 
 
 /* =====================================================
-   HILLTOP ADS
+   FINALIZAR RODADA
 ===================================================== */
 
-function hilltopShowOverlay(){
+function finishQuestion(){
 
-  const overlay=
-    document.getElementById(
-      "hilltopAdOverlay"
-    );
+hilltopFinish();
 
-  const loading=
-    document.getElementById(
-      "hilltopLoading"
-    );
+document
+.getElementById("questionCard")
+.classList
+.add("hidden");
 
-  const video=
-    document.getElementById(
-      "hilltopVideo"
-    );
+document
+.getElementById("rollCard")
+.classList
+.remove("hidden");
 
-  const cont=
-    document.getElementById(
-      "hilltopContinue"
-    );
+document
+.getElementById("dice")
+.textContent="🎲";
 
-  overlay.classList.add("show");
+document
+.getElementById("diceResult")
+.textContent="";
 
-  loading.style.display="block";
+document
+.getElementById("feedback")
+.classList
+.add("hidden");
 
-  cont.style.display="none";
+document
+.getElementById("rewardBox")
+.classList
+.add("hidden");
 
-  video.style.display="none";
+s.round++;
 
-}
-
-
-function hilltopClose(){
-
-  const overlay=
-    document.getElementById(
-      "hilltopAdOverlay"
-    );
-
-  const video=
-    document.getElementById(
-      "hilltopVideo"
-    );
-
-  try{
-
-    video.pause();
-
-    video.removeAttribute("src");
-
-    video.load();
-
-  }catch(e){}
-
-  overlay.classList.remove("show");
-
-  if(typeof hilltopAdsManager!=="undefined"
-     && hilltopAdsManager){
-
-    try{
-      hilltopAdsManager.destroy();
-    }catch(e){}
-
-  }
-
-  hilltopAdsManager=null;
-
-  hilltopAdPlaying=false;
-
-}
-
-
-/*
-  Usa o SDK IMA da Google para carregar
-  o VAST aprovado da Hilltop.
-*/
-
-function playHilltopAd(afterAd){
-
-  hilltopShowOverlay();
-
-  let finished=false;
-
-  function finish(){
-
-    if(finished)return;
-
-    finished=true;
-
-    clearTimeout(hilltopTimeout);
-
-    hilltopAdFinished=true;
-
-    hilltopClose();
-
-    if(typeof afterAd==="function"){
-
-      afterAd();
-
-    }
-
-  }
-
-  hilltopTimeout=
-    setTimeout(()=>{
-
-      /*
-        Se a Hilltop não responder,
-        o jogador não fica preso.
-      */
-
-      finish();
-
-    },12000);
-
-
-  const video=
-    document.getElementById(
-      "hilltopVideo"
-    );
-
-
-  const loading=
-    document.getElementById(
-      "hilltopLoading"
-    );
-
-
-  const continueButton=
-    document.getElementById(
-      "hilltopContinue"
-    );
-
-
-  /*
-    Inicialização do IMA.
-  */
-
-  try{
-
-    if(!window.google ||
-       !google.ima){
-
-      finish();
-
-      return;
-
-    }
-
-
-    /*
-      O display container precisa ser
-      inicializado durante a interação
-      do jogador.
-    */
-
-    hilltopDisplayContainer=
-      new google.ima.AdDisplayContainer(
-        document.getElementById(
-          "hilltopAdContainer"
-        ),
-        video
-      );
-
-
-    hilltopDisplayContainer.initialize();
-
-
-    hilltopAdsLoader=
-      new google.ima.AdsLoader(
-        hilltopDisplayContainer
-      );
-
-
-    hilltopAdsLoader.addEventListener(
-      google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
-      function(event){
-
-        try{
-
-          hilltopAdsManager=
-            event.getAdsManager(
-              video
-            );
-
-
-          hilltopAdsManager.addEventListener(
-            google.ima.AdErrorEvent.Type.AD_ERROR,
-            function(){
-
-              finish();
-
-            }
-          );
-
-
-          hilltopAdsManager.addEventListener(
-            google.ima.AdEvent.Type.STARTED,
-            function(){
-
-              hilltopAdPlaying=true;
-
-              loading.style.display="none";
-
-              video.style.display="block";
-
-            }
-          );
-
-
-          hilltopAdsManager.addEventListener(
-            google.ima.AdEvent.Type.COMPLETE,
-            function(){
-
-              continueButton.style.display="block";
-
-              setTimeout(
-                finish,
-                500
-              );
-
-            }
-          );
-
-
-          hilltopAdsManager.addEventListener(
-            google.ima.AdEvent.Type.SKIPPED,
-            function(){
-
-              finish();
-
-            }
-          );
-
-
-          hilltopAdsManager.addEventListener(
-            google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
-            function(){
-
-              finish();
-
-            }
-          );
-
-
-          hilltopAdsManager.init(
-            video.clientWidth || 320,
-            video.clientHeight || 180,
-            google.ima.ViewMode.NORMAL
-          );
-
-
-          hilltopAdsManager.start();
-
-        }
-        catch(error){
-
-          console.error(
-            "Hilltop AdsManager:",
-            error
-          );
-
-          finish();
-
-        }
-
-      }
-    );
-
-
-    hilltopAdsLoader.addEventListener(
-      google.ima.AdErrorEvent.Type.AD_ERROR,
-      function(event){
-
-        console.error(
-          "Hilltop VAST:",
-          event.getError
-          ?event.getError()
-          :event
-        );
-
-        finish();
-
-      }
-    );
-
-
-    let isMobile=
-      /Android|iPhone|iPad|iPod/i.test(
-        navigator.userAgent
-      );
-
-
-    let vastUrl=
-      isMobile
-      ?HILLTOP_VAST_MOBILE
-      :HILLTOP_VAST_DESKTOP;
-
-
-    let adsRequest=
-      new google.ima.AdsRequest();
-
-
-    adsRequest.adTagUrl=vastUrl;
-
-    adsRequest.linearAdSlotWidth=
-      Math.min(
-        window.innerWidth-30,
-        520
-      );
-
-    adsRequest.linearAdSlotHeight=
-      Math.min(
-        Math.floor(
-          window.innerHeight*.65
-        ),
-        400
-      );
-
-
-    adsRequest.forceNonLinearFullSlot=false;
-
-
-    hilltopAdsLoader.requestAds(
-      adsRequest
-    );
-
-  }
-  catch(error){
-
-    console.error(
-      "Erro Hilltop:",
-      error
-    );
-
-    finish();
-
-  }
+save();
 
 }
 
@@ -1784,194 +2106,241 @@ function playHilltopAd(afterAd){
 
 function copyRef(){
 
-  let link=
-    document
-      .getElementById("refLink")
-      .value;
+const link=
+document
+.getElementById("refLink")
+.value;
 
-  if(navigator.clipboard){
+if(navigator.clipboard){
 
-    navigator.clipboard.writeText(link);
+navigator.clipboard
+.writeText(link)
+.catch(()=>{});
 
-  }
+}
 
-  document
-    .getElementById("refMsg")
-    .textContent=
-    "Link copiado!";
+document
+.getElementById("refMsg")
+.textContent=
+"Link copiado!";
 
 }
 
 
 async function shareRef(){
 
-  let link=
-    document
-      .getElementById("refLink")
-      .value;
+const link=
+document
+.getElementById("refLink")
+.value;
 
-  if(navigator.share){
+if(navigator.share){
 
-    await navigator.share({
+try{
 
-      title:"QuizUp",
+await navigator.share({
 
-      text:
-        "Venha jogar QuizUp comigo!",
+title:"QuizUp",
 
-      url:link
+text:
+"Venha jogar QuizUp comigo!",
 
-    });
+url:link
 
-  }
-  else{
+});
 
-    copyRef();
+}catch(error){}
 
-  }
+}else{
+
+copyRef();
+
+}
 
 }
 
 
 /* =====================================================
-   SAQUE
+   PAGAMENTO
 ===================================================== */
 
 function payFields(){
 
-  let pix=
-    document
-      .getElementById("payMethod")
-      .value==="pix";
+const pix=
+document
+.getElementById("payMethod")
+.value==="pix";
 
-  document
-    .getElementById("pix")
-    .classList
-    .toggle("hidden",!pix);
+document
+.getElementById("pix")
+.classList
+.toggle("hidden",!pix);
 
-  document
-    .getElementById("paypal")
-    .classList
-    .toggle("hidden",pix);
+document
+.getElementById("paypal")
+.classList
+.toggle("hidden",pix);
 
 }
 
 
 function need(v){
 
-  return v==="10"
-    ?11000
-    :v==="5"
-    ?6000
-    :2000;
+return v==="10"
+?11000
+:v==="5"
+?6000
+:2000;
 
 }
 
 
 function withdraw(){
 
-  let v=
-    document
-      .getElementById("withdrawAmount")
-      .value;
+const v=
+document
+.getElementById("withdrawAmount")
+.value;
 
-  let n=need(v);
+const n=
+need(v);
 
-  let method=
-    document
-      .getElementById("payMethod")
-      .value;
+const method=
+document
+.getElementById("payMethod")
+.value;
 
-  let k=
-    method==="pix"
-    ?document.getElementById("pixKey").value.trim()
-    :document.getElementById("paypalKey").value.trim();
+const k=
+method==="pix"
+?document
+.getElementById("pixKey")
+.value
+.trim()
+:document
+.getElementById("paypalKey")
+.value
+.trim();
 
-  let msg=
-    document.getElementById("cashMsg");
+const msg=
+document
+.getElementById("cashMsg");
 
-  msg.classList.remove("hidden");
+msg
+.classList
+.remove("hidden");
 
-  if(!k){
 
-    msg.textContent=
-      "Preencha o dado de pagamento.";
+if(!k){
 
-    return;
+msg.textContent=
+"Preencha o dado de pagamento.";
 
-  }
+return;
 
-  if(s.points<n){
+}
 
-    msg.textContent=
-      "Pontos insuficientes. Você precisa de "+
-      n+" pontos.";
 
-    return;
+if(s.points<n){
 
-  }
+msg.textContent=
+"Pontos insuficientes. Você precisa de "+
+n+
+" pontos.";
 
-  let arr=
-    JSON.parse(
-      localStorage.getItem(
-        "quizup_withdrawals"
-      )||"[]"
-    );
+return;
 
-  arr.push({
+}
 
-    email:s.email,
-    value:v,
-    method:method,
-    date:new Date().toISOString()
 
-  });
+const arr=
+JSON.parse(
+localStorage.getItem(
+"quizup_withdrawals"
+)||"[]"
+);
 
-  localStorage.setItem(
-    "quizup_withdrawals",
-    JSON.stringify(arr)
-  );
 
-  msg.textContent=
-    "Solicitação registrada.";
+arr.push({
+
+email:s.email,
+
+value:v,
+
+method:method,
+
+date:new Date().toISOString()
+
+});
+
+
+localStorage.setItem(
+"quizup_withdrawals",
+JSON.stringify(arr)
+);
+
+
+msg.textContent=
+"Solicitação registrada.";
 
 }
 
 
 /* =====================================================
-   RECUPERAR SESSÃO
+   RESTAURAR CONTA
 ===================================================== */
 
 (function(){
 
-  let k=
-    Object.keys(localStorage)
-      .find(k=>
-        k.startsWith("quizup_") &&
-        !k.includes("withdrawals")
-      );
+const k=
+Object.keys(localStorage)
+.find(k=>
+k.startsWith("quizup_") &&
+!k.includes("withdrawals")
+);
 
-  if(k){
 
-    try{
+if(k){
 
-      s=
-        JSON.parse(
-          localStorage.getItem(k)
-        );
+try{
 
-      openGame();
+const saved=
+localStorage.getItem(k);
 
-    }
-    catch(e){
+if(saved){
 
-      console.log(e);
+s=JSON.parse(saved);
 
-    }
+openGame();
 
-  }
+}
+
+}catch(error){
+
+console.log(
+"Não foi possível restaurar a conta:",
+error
+);
+
+}
+
+}
 
 })();
+
+
+/* =====================================================
+   SEGURANÇA EXTRA DO ANÚNCIO
+===================================================== */
+
+window.addEventListener(
+"beforeunload",
+function(){
+
+clearTimeout(hilltopAdTimeout);
+clearTimeout(hilltopAdFallbackTimer);
+
+}
+);
 
 </script>
 
