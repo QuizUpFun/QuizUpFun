@@ -122,6 +122,35 @@ async function prepararBanco() {
       ON jogadores(email)
     `);
 
+    // =================================================
+    // TABELA DE PARCEIROS
+    // =================================================
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS parceiros (
+        id SERIAL PRIMARY KEY,
+        nome VARCHAR(150) NOT NULL,
+        email VARCHAR(150),
+        codigo VARCHAR(50) UNIQUE,
+        pontos INTEGER DEFAULT 0,
+        saldo NUMERIC(10,2) DEFAULT 0,
+        ativo BOOLEAN DEFAULT TRUE,
+        criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    console.log("Tabela parceiros verificada.");
+
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_parceiros_codigo
+      ON parceiros(codigo)
+    `);
+
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_parceiros_email
+      ON parceiros(email)
+    `);
+
     console.log("Banco preparado.");
 
   } catch (erro) {
@@ -948,6 +977,303 @@ app.get("/api/pergunta-aleatoria", async (req, res) => {
     res.status(500).json({
       sucesso: false,
       erro: "Erro ao buscar pergunta."
+    });
+  }
+});
+
+// =====================================================
+// PARCEIROS — LISTAR NO ADMIN
+// =====================================================
+
+app.get("/api/admin/parceiros", async (req, res) => {
+  try {
+
+    const resultado = await pool.query(`
+      SELECT
+        id,
+        nome,
+        email,
+        codigo,
+        pontos,
+        saldo,
+        ativo,
+        criado_em
+      FROM parceiros
+      ORDER BY id DESC
+    `);
+
+    res.json({
+      sucesso: true,
+      parceiros: resultado.rows
+    });
+
+  } catch (erro) {
+
+    console.error("Erro ao listar parceiros:", erro);
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao carregar parceiros."
+    });
+  }
+});
+
+// =====================================================
+// PARCEIROS — CRIAR NO ADMIN
+// =====================================================
+
+app.post("/api/admin/parceiros", async (req, res) => {
+  try {
+
+    const {
+      nome,
+      email,
+      codigo,
+      pontos,
+      saldo,
+      ativo
+    } = req.body;
+
+    if (!nome || !nome.trim()) {
+      return res.status(400).json({
+        sucesso: false,
+        erro: "O nome do parceiro é obrigatório."
+      });
+    }
+
+    const pontosFinal =
+      Number.isFinite(Number(pontos))
+        ? Number(pontos)
+        : 0;
+
+    const saldoFinal =
+      Number.isFinite(Number(saldo))
+        ? Number(saldo)
+        : 0;
+
+    const ativoFinal =
+      ativo === undefined
+        ? true
+        : Boolean(ativo);
+
+    const resultado = await pool.query(
+      `
+      INSERT INTO parceiros (
+        nome,
+        email,
+        codigo,
+        pontos,
+        saldo,
+        ativo
+      )
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING
+        id,
+        nome,
+        email,
+        codigo,
+        pontos,
+        saldo,
+        ativo,
+        criado_em
+      `,
+      [
+        nome.trim(),
+        email ? email.trim().toLowerCase() : null,
+        codigo ? codigo.trim() : null,
+        pontosFinal,
+        saldoFinal,
+        ativoFinal
+      ]
+    );
+
+    res.json({
+      sucesso: true,
+      mensagem: "Parceiro cadastrado com sucesso.",
+      parceiro: resultado.rows[0]
+    });
+
+  } catch (erro) {
+
+    console.error("Erro ao criar parceiro:", erro);
+
+    if (erro.code === "23505") {
+      return res.status(400).json({
+        sucesso: false,
+        erro: "O código do parceiro já está cadastrado."
+      });
+    }
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao cadastrar parceiro."
+    });
+  }
+});
+
+// =====================================================
+// PARCEIROS — ATUALIZAR NO ADMIN
+// =====================================================
+
+app.put("/api/admin/parceiros/:id", async (req, res) => {
+  try {
+
+    const {
+      nome,
+      email,
+      codigo,
+      pontos,
+      saldo,
+      ativo
+    } = req.body;
+
+    if (!nome || !nome.trim()) {
+      return res.status(400).json({
+        sucesso: false,
+        erro: "O nome do parceiro é obrigatório."
+      });
+    }
+
+    const pontosFinal =
+      Number.isFinite(Number(pontos))
+        ? Number(pontos)
+        : 0;
+
+    const saldoFinal =
+      Number.isFinite(Number(saldo))
+        ? Number(saldo)
+        : 0;
+
+    const ativoFinal =
+      ativo === undefined
+        ? true
+        : Boolean(ativo);
+
+    const resultado = await pool.query(
+      `
+      UPDATE parceiros
+      SET
+        nome = $1,
+        email = $2,
+        codigo = $3,
+        pontos = $4,
+        saldo = $5,
+        ativo = $6
+      WHERE id = $7
+      RETURNING
+        id,
+        nome,
+        email,
+        codigo,
+        pontos,
+        saldo,
+        ativo,
+        criado_em
+      `,
+      [
+        nome.trim(),
+        email ? email.trim().toLowerCase() : null,
+        codigo ? codigo.trim() : null,
+        pontosFinal,
+        saldoFinal,
+        ativoFinal,
+        req.params.id
+      ]
+    );
+
+    if (resultado.rows.length === 0) {
+      return res.status(404).json({
+        sucesso: false,
+        erro: "Parceiro não encontrado."
+      });
+    }
+
+    res.json({
+      sucesso: true,
+      mensagem: "Parceiro atualizado com sucesso.",
+      parceiro: resultado.rows[0]
+    });
+
+  } catch (erro) {
+
+    console.error("Erro ao atualizar parceiro:", erro);
+
+    if (erro.code === "23505") {
+      return res.status(400).json({
+        sucesso: false,
+        erro: "O código do parceiro já está cadastrado."
+      });
+    }
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao atualizar parceiro."
+    });
+  }
+});
+
+// =====================================================
+// PARCEIROS — ATIVAR/DESATIVAR
+// =====================================================
+
+app.patch("/api/admin/parceiros/:id/status", async (req, res) => {
+  try {
+
+    const { ativo } = req.body;
+
+    if (typeof ativo !== "boolean") {
+      return res.status(400).json({
+        sucesso: false,
+        erro: "Informe o status do parceiro."
+      });
+    }
+
+    const resultado = await pool.query(
+      `
+      UPDATE parceiros
+      SET ativo = $1
+      WHERE id = $2
+      RETURNING
+        id,
+        nome,
+        email,
+        codigo,
+        pontos,
+        saldo,
+        ativo,
+        criado_em
+      `,
+      [
+        ativo,
+        req.params.id
+      ]
+    );
+
+    if (resultado.rows.length === 0) {
+      return res.status(404).json({
+        sucesso: false,
+        erro: "Parceiro não encontrado."
+      });
+    }
+
+    res.json({
+      sucesso: true,
+      mensagem: ativo
+        ? "Parceiro ativado com sucesso."
+        : "Parceiro desativado com sucesso.",
+      parceiro: resultado.rows[0]
+    });
+
+  } catch (erro) {
+
+    console.error(
+      "Erro ao alterar status do parceiro:",
+      erro
+    );
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao alterar status do parceiro."
     });
   }
 });
