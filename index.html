@@ -1,35 +1,26 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width,initial-scale=1"
->
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="clckd" content="b65974febfc087ea7c6fcfd81e4cb265">
 <title>QuizUp</title>
 
-<!-- MONETAG -->
+<!-- MONETAG — IN-PAGE PUSH -->
 <script>
 (function(s){
   s.dataset.zone='11646165';
   s.src='https://nap5k.com/tag.min.js';
-})([document.documentElement, document.body]
+})([document.documentElement,document.body]
   .filter(Boolean).pop()
   .appendChild(document.createElement('script')));
 </script>
 
-<!-- HILLTOPADS / IMA SDK -->
+<!-- HILLTOPADS / GOOGLE IMA -->
 <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
 
 <style>
-
-*{
-  box-sizing:border-box
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
@@ -98,8 +89,7 @@ button:disabled{
   color:#fff
 }
 
-.top,
-.row{
+.top,.row{
   display:flex;
   gap:10px;
   align-items:center;
@@ -116,8 +106,7 @@ button:disabled{
 .nav{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  margin-bottom:14px
+  gap:8px
 }
 
 .dice{
@@ -159,8 +148,7 @@ button:disabled{
   outline:4px solid #fb7185
 }
 
-input,
-select{
+input,select{
   width:100%;
   padding:13px;
   border:0;
@@ -186,7 +174,7 @@ select{
 .bar div{
   height:100%;
   background:#ffd43b;
-  width:100%;
+  width:0;
   transition:width .2s linear
 }
 
@@ -219,43 +207,12 @@ select{
   border-radius:10px
 }
 
-.cash-summary{
-  background:rgba(74,222,128,.10);
-  border:1px solid rgba(74,222,128,.25);
-  padding:14px;
-  border-radius:12px;
-  margin:12px 0
-}
-
-.next-wrap{
-  text-align:center;
-  margin-top:16px
-}
-
-.next-button{
-  width:100%;
-  font-size:18px
-}
-
-.question-dice-value{
-  text-align:center;
-  font-size:22px;
-  font-weight:900;
-  margin:14px 0;
-  padding:12px;
-  border-radius:12px;
-  background:rgba(255,212,59,.15);
-  border:1px solid rgba(255,212,59,.35)
-}
-
-/* =========================
-   HILLTOPADS
-========================= */
+/* HILLTOPADS */
 
 #hilltopAdOverlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.92);
+  background:rgba(0,0,0,.94);
   z-index:999999;
   display:none;
   align-items:center;
@@ -289,7 +246,20 @@ select{
   font-size:13px;
   color:#fff;
   pointer-events:none;
-  text-shadow:0 1px 3px #000
+  text-shadow:0 1px 3px #000;
+  z-index:2
+}
+
+#hilltopLoading{
+  position:absolute;
+  left:0;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+  text-align:center;
+  font-size:16px;
+  color:#fff;
+  z-index:1
 }
 
 @media(max-width:560px){
@@ -309,53 +279,42 @@ select{
   #hilltopAdContainer{
     height:220px
   }
-
 }
-
 </style>
-
 </head>
 
 <body>
 
-<audio
-  id="backgroundMusic"
-  preload="auto"
-  loop
-  playsinline
->
-
-<source
-  src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
-  type="audio/mpeg"
->
-
+<!-- MÚSICA -->
+<audio id="backgroundMusic"
+       preload="auto"
+       loop>
+  <source
+    src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
+    type="audio/mpeg">
 </audio>
 
-
-<!-- =========================
-     HILLTOPADS VIDEO
-========================= -->
-
+<!-- HILLTOPADS -->
 <div id="hilltopAdOverlay">
-
   <div id="hilltopAdContainer">
 
     <div id="hilltopAdMessage">
       Anúncio
     </div>
 
+    <div id="hilltopLoading">
+      Carregando anúncio...
+    </div>
+
     <video
       id="hilltopVideo"
       playsinline
       webkit-playsinline
-      preload="auto"
-    ></video>
+      preload="auto">
+    </video>
 
   </div>
-
 </div>
-
 
 <div class="wrap">
 
@@ -367,6 +326,7 @@ select{
   🎲 Jogue, responda e acumule pontos
 </div>
 
+<!-- HIGHREVENUEFORMAT -->
 <div class="adbox">
 
 <script>
@@ -383,22 +343,22 @@ atOptions={
 
 </div>
 
+<!-- AUTENTICAÇÃO -->
+
 <section id="auth" class="card">
 
 <div class="tabs2">
 
 <button
   class="primary"
-  onclick="authMode('register')"
->
-Cadastro
+  onclick="authMode('register')">
+  Cadastro
 </button>
 
 <button
   class="light"
-  onclick="authMode('login')"
->
-Login
+  onclick="authMode('login')">
+  Login
 </button>
 
 </div>
@@ -408,50 +368,41 @@ Login
 <h2>📝 Cadastro</h2>
 
 <label>E-mail</label>
-
 <input
   id="rEmail"
   type="email"
-  autocomplete="email"
-  placeholder="Seu e-mail"
->
+  placeholder="Seu e-mail">
 
 <label>Senha</label>
-
 <input
   id="rPass"
   type="password"
-  autocomplete="new-password"
-  placeholder="Sua senha"
->
+  placeholder="Sua senha">
 
 <label>Nome completo</label>
-
 <input
   id="rName"
   type="text"
-  autocomplete="name"
-  placeholder="Seu nome completo"
->
+  placeholder="Seu nome completo">
 
 <label>CPF</label>
-
 <input
   id="rCpf"
   type="text"
   inputmode="numeric"
   maxlength="14"
-  autocomplete="off"
-  placeholder="000.000.000-00"
-  oninput="formatCPF(this)"
->
+  placeholder="000.000.000-00">
 
 <button
   class="primary"
-  onclick="register()"
->
-Cadastrar
+  onclick="register()">
+  Cadastrar
 </button>
+
+<p
+  id="registerMsg"
+  class="small">
+</p>
 
 </div>
 
@@ -460,44 +411,33 @@ Cadastrar
 <h2>🔐 Login</h2>
 
 <label>E-mail</label>
-
 <input
   id="lEmail"
   type="email"
-  autocomplete="email"
-  placeholder="Seu e-mail"
->
+  placeholder="Seu e-mail">
 
 <label>Senha</label>
-
 <input
   id="lPass"
   type="password"
-  autocomplete="current-password"
-  placeholder="Sua senha"
->
+  placeholder="Sua senha">
 
 <button
   class="primary"
-  onclick="login()"
->
-Entrar
+  onclick="login()">
+  Entrar
 </button>
 
-<p style="margin-top:18px;text-align:center">
-
-<button
-  class="ghost"
-  onclick="forgotPassword()"
->
-Esqueceu a senha?
-</button>
-
+<p
+  id="loginMsg"
+  class="small">
 </p>
 
 </div>
 
 </section>
+
+<!-- JOGO -->
 
 <section id="game" class="hidden">
 
@@ -513,9 +453,8 @@ Esqueceu a senha?
 
 <button
   class="ghost"
-  onclick="logout()"
->
-Sair
+  onclick="logout()">
+  Sair
 </button>
 
 </div>
@@ -524,30 +463,26 @@ Sair
 
 <button
   class="ghost"
-  onclick="tab('quiz')"
->
-🎲 Quiz
+  onclick="tab('quiz')">
+  🎲 Quiz
 </button>
 
 <button
   class="ghost"
-  onclick="tab('ref')"
->
-🎁 Indicação
+  onclick="tab('ref')">
+  🎁 Indicação
 </button>
 
 <button
   class="ghost"
-  onclick="tab('cash')"
->
-💸 Saque
+  onclick="tab('cash')">
+  💸 Saque
 </button>
 
 <button
   class="ghost"
-  onclick="tab('premium')"
->
-💎 Premium
+  onclick="tab('premium')">
+  💎 Premium
 </button>
 
 </div>
@@ -557,36 +492,32 @@ Sair
 <div id="rollCard" class="card">
 
 <h2 style="text-align:center">
-Jogue o dado
+  Jogue o dado
 </h2>
 
 <div id="dice" class="dice">
-🎲
+  🎲
 </div>
 
 <button
+  id="rollButton"
   class="primary roll"
-  onclick="rollDice()"
->
-JOGAR DADO
+  onclick="rollDice()">
+  JOGAR DADO
 </button>
 
 <p
   id="diceResult"
-  class="result"
->
+  class="result">
 </p>
 
 </div>
 
-<div
-  id="questionCard"
-  class="card hidden"
->
+<div id="questionCard" class="card hidden">
 
 <div class="top">
 
-<b>Pergunta</b>
+<b>❓ Pergunta</b>
 
 <span class="timer">
 ⏱️ <span id="time">10</span>s
@@ -595,58 +526,33 @@ JOGAR DADO
 </div>
 
 <div class="bar">
-<div id="progress"></div>
-</div>
-
-<div
-  id="questionDiceValue"
-  class="question-dice-value"
->
-🎲 Esta pergunta vale
-<span id="questionDiceNumber">0</span>
-<span id="questionDiceText">pontos</span>
+  <div id="progress"></div>
 </div>
 
 <h2 id="question"></h2>
 
 <div
   id="answers"
-  class="answers"
->
+  class="answers">
 </div>
 
 <p
   id="feedback"
-  class="notice hidden"
->
+  class="notice hidden">
 </p>
 
 <div
-  style="text-align:center;font-size:28px;font-weight:900;margin-top:16px"
->
+  style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
+
 ⭐ Pontuação:
 <span id="totalScore">0</span>
-</div>
-
-<div
-  id="nextWrap"
-  class="next-wrap hidden"
->
-
-<button
-  id="nextButton"
-  class="primary next-button"
-  onclick="finishQuestion()"
->
-➡️ Próxima
-</button>
 
 </div>
 
+<!-- HIGHREVENUEFORMAT -->
 <div
   id="answerAd"
-  class="adbox"
->
+  class="adbox">
 
 <script>
 atOptions={
@@ -662,16 +568,32 @@ atOptions={
 
 </div>
 
-</div>
+<div
+  id="rewardBox"
+  class="hidden"
+  style="text-align:center">
+
+<button
+  id="continueButton"
+  class="primary"
+  style="width:100%"
+  onclick="finishQuestion()">
+
+CONTINUAR
+
+</button>
 
 </div>
 
 </div>
+
+</div>
+
+<!-- INDICAÇÃO -->
 
 <div
   id="refTab"
-  class="hidden card"
->
+  class="hidden card">
 
 <h2>🎁 Indicação</h2>
 
@@ -682,36 +604,33 @@ Ganhe <b>50 pontos</b> quando seu convidado atingir
 
 <input
   id="refCode"
-  readonly
->
+  readonly>
 
 <input
   id="refLink"
-  readonly
->
+  readonly>
 
 <button
   class="primary"
-  onclick="copyRef()"
->
-Copiar link
+  onclick="copyRef()">
+  Copiar link
 </button>
 
 <button
   class="light"
-  onclick="shareRef()"
->
-Enviar link
+  onclick="shareRef()">
+  Enviar link
 </button>
 
 <p id="refMsg"></p>
 
 </div>
 
+<!-- SAQUE -->
+
 <div
   id="cashTab"
-  class="hidden card"
->
+  class="hidden card">
 
 <h2>💸 Saque</h2>
 
@@ -725,35 +644,16 @@ Enviar link
 
 </div>
 
-<div class="cash-summary">
-
-<b>Divisão do saque</b><br><br>
-
-70% → jogador<br>
-30% → plataforma
-
-</div>
-
-<div class="notice">
-
-<b>Limite:</b><br>
-
-Cada jogador pode solicitar no máximo
-<b>2 saques por dia</b>.
-
-</div>
-
 <select
   id="payMethod"
-  onchange="payFields()"
->
+  onchange="payFields()">
 
 <option value="pix">
-Pix
+  Pix
 </option>
 
 <option value="paypal">
-PayPal
+  PayPal
 </option>
 
 </select>
@@ -762,21 +662,18 @@ PayPal
 
 <input
   id="pixKey"
-  placeholder="Chave Pix"
->
+  placeholder="Chave Pix">
 
 </div>
 
 <div
   id="paypal"
-  class="hidden"
->
+  class="hidden">
 
 <input
   id="paypalKey"
   type="email"
-  placeholder="E-mail PayPal"
->
+  placeholder="E-mail PayPal">
 
 </div>
 
@@ -797,25 +694,29 @@ R$ 10,00 — 11.000 pontos
 </select>
 
 <button
-  id="withdrawButton"
   class="primary"
-  onclick="withdraw()"
->
+  onclick="withdraw()">
+
 Solicitar saque
+
 </button>
 
 <p
   id="cashMsg"
-  class="notice hidden"
->
+  class="notice hidden">
+</p>
+
+<p class="small">
+Nesta versão o saque é registrado.
 </p>
 
 </div>
 
+<!-- PREMIUM -->
+
 <div
   id="premiumTab"
-  class="hidden card"
->
+  class="hidden card">
 
 <h2>💎 Premium</h2>
 
@@ -825,9 +726,10 @@ Solicitar saque
 
 <button
   class="primary"
-  onclick="alert('O pagamento Premium ainda será conectado.')"
->
+  onclick="alert('O pagamento Premium ainda será conectado.')">
+
 Quero ser Premium
+
 </button>
 
 </div>
@@ -838,21 +740,19 @@ Quero ser Premium
 
 <script>
 
+/* =====================================================
+   CONFIGURAÇÕES
+===================================================== */
+
 const API_URL =
 "https://quizup-api-qxn2.onrender.com";
 
 const QUESTION_TIME = 10;
 
-const SESSION_KEY =
-"quizup_session";
 
-const DIFFICULTY_KEY =
-"quizup_difficulty_block";
-
-
-/* =========================
-   HILLTOPADS
-========================= */
+/* =====================================================
+   HILLTOPADS — VAST
+===================================================== */
 
 const HILLTOP_VAST_DESKTOP =
 "https://smooth-survey.com/dRm.Fyz-dQG/NBvzZqGKUV/-eomU9uuXZhUMlkk/PjT/c/zDNQDTkd2NNszmcYtoNgzvMq0TOATIYM4zMaQi";
@@ -860,2920 +760,1589 @@ const HILLTOP_VAST_DESKTOP =
 const HILLTOP_VAST_MOBILE =
 "https://smooth-survey.com/d.meFezZdaGwNLvHZuG/Ue/meVmc9/uBZhULlTkuPqTMcyzHN-DVk_2_NazBcztbNMzpMl0jOWTeYq4OMLQK";
 
-let hilltopAdDisplayContainer = null;
 
-let hilltopAdsLoader = null;
+let hilltopAdDisplayContainer=null;
+let hilltopAdsLoader=null;
+let hilltopAdsManager=null;
 
-let hilltopAdsManager = null;
+let hilltopAdReady=false;
+let hilltopAdRequested=false;
+let hilltopAdPlaying=false;
 
-let hilltopAdReady = false;
+let hilltopAdTimeout=null;
+let hilltopAdFallbackTimer=null;
 
-let hilltopAdRequested = false;
+let hilltopAdFinishedCallback=null;
 
-let hilltopAdPlaying = false;
 
-let hilltopAdTimeout = null;
+/* =====================================================
+   ELEMENTOS HILLTOP
+===================================================== */
 
+const hilltopOverlay=
+document.getElementById("hilltopAdOverlay");
+
+const hilltopContainer=
+document.getElementById("hilltopAdContainer");
+
+const hilltopVideo=
+document.getElementById("hilltopVideo");
+
+const hilltopLoading=
+document.getElementById("hilltopLoading");
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
 
 function hilltopIsMobile(){
 
-  return window.matchMedia(
-    "(max-width: 768px)"
-  ).matches;
+return window.matchMedia(
+"(max-width: 768px)"
+).matches;
 
 }
 
+
+/* =====================================================
+   VAST CORRETO
+===================================================== */
 
 function hilltopVastUrl(){
 
-  return hilltopIsMobile()
-    ? HILLTOP_VAST_MOBILE
-    : HILLTOP_VAST_DESKTOP;
+return hilltopIsMobile()
+?HILLTOP_VAST_MOBILE
+:HILLTOP_VAST_DESKTOP;
 
 }
 
 
-function hilltopHide(){
-
-  const overlay =
-    document.getElementById(
-      "hilltopAdOverlay"
-    );
-
-  if(overlay){
-
-    overlay.style.display =
-      "none";
-
-  }
-
-  hilltopAdPlaying = false;
-
-}
-
+/* =====================================================
+   MOSTRAR ANÚNCIO
+===================================================== */
 
 function hilltopShow(){
 
-  const overlay =
-    document.getElementById(
-      "hilltopAdOverlay"
-    );
+hilltopOverlay.style.display="flex";
 
-  if(overlay){
+hilltopLoading.style.display="none";
 
-    overlay.style.display =
-      "flex";
-
-  }
-
-  hilltopAdPlaying = true;
+hilltopAdPlaying=true;
 
 }
 
+
+/* =====================================================
+   ESCONDER ANÚNCIO
+===================================================== */
+
+function hilltopHide(){
+
+hilltopOverlay.style.display="none";
+
+hilltopLoading.style.display="none";
+
+hilltopAdPlaying=false;
+
+}
+
+
+/* =====================================================
+   FINALIZAR ANÚNCIO
+===================================================== */
 
 function hilltopFinish(){
 
-  if(hilltopAdTimeout){
+clearTimeout(hilltopAdTimeout);
+clearTimeout(hilltopAdFallbackTimer);
 
-    clearTimeout(
-      hilltopAdTimeout
-    );
+hilltopAdTimeout=null;
+hilltopAdFallbackTimer=null;
 
-    hilltopAdTimeout = null;
+hilltopHide();
 
-  }
+const callback=
+hilltopAdFinishedCallback;
 
-  hilltopHide();
+hilltopAdFinishedCallback=null;
 
-  document
-    .getElementById("nextWrap")
-    .classList
-    .remove("hidden");
+if(typeof callback==="function"){
+callback();
+}
 
 }
 
 
-function hilltopPrepare(){
-
-  if(
-    hilltopAdRequested ||
-    typeof google === "undefined" ||
-    !google.ima
-  ){
-
-    return;
-
-  }
-
-  try{
-
-    const video =
-      document.getElementById(
-        "hilltopVideo"
-      );
-
-    const container =
-      document.getElementById(
-        "hilltopAdContainer"
-      );
-
-    hilltopAdDisplayContainer =
-      new google.ima.AdDisplayContainer(
-        container,
-        video
-      );
-
-    /*
-      O initialize acontece somente
-      depois do clique em JOGAR DADO.
-      Isso é importante para dispositivos móveis.
-    */
-
-    hilltopAdDisplayContainer.initialize();
-
-    hilltopAdsLoader =
-      new google.ima.AdsLoader(
-        hilltopAdDisplayContainer
-      );
-
-    hilltopAdsLoader.addEventListener(
-      google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
-      hilltopOnAdsManagerLoaded,
-      false
-    );
-
-    hilltopAdsLoader.addEventListener(
-      google.ima.AdErrorEvent.Type.AD_ERROR,
-      hilltopOnAdError,
-      false
-    );
-
-    const adsRequest =
-      new google.ima.AdsRequest();
-
-    adsRequest.adTagUrl =
-      hilltopVastUrl();
-
-    adsRequest.linearAdSlotWidth =
-      container.clientWidth || 320;
-
-    adsRequest.linearAdSlotHeight =
-      container.clientHeight || 220;
-
-    adsRequest.nonLinearAdSlotWidth =
-      container.clientWidth || 320;
-
-    adsRequest.nonLinearAdSlotHeight =
-      150;
-
-    hilltopAdRequested = true;
-
-    hilltopAdsLoader.requestAds(
-      adsRequest
-    );
-
-  }catch(error){
-
-    console.error(
-      "HilltopAds prepare error:",
-      error
-    );
-
-    hilltopAdRequested = false;
-
-  }
-
-}
-
-
-function hilltopOnAdsManagerLoaded(
-  event
-){
-
-  try{
-
-    hilltopAdsManager =
-      event.getAdsManager(
-        document.getElementById(
-          "hilltopVideo"
-        )
-      );
-
-    const manager =
-      hilltopAdsManager;
-
-    manager.addEventListener(
-      google.ima.AdErrorEvent.Type.AD_ERROR,
-      hilltopOnAdError
-    );
-
-    manager.addEventListener(
-      google.ima.AdEvent.Type.STARTED,
-      () => {
-
-        hilltopAdReady = true;
-
-        hilltopShow();
-
-      }
-    );
-
-    manager.addEventListener(
-      google.ima.AdEvent.Type.COMPLETE,
-      hilltopFinish
-    );
-
-    manager.addEventListener(
-      google.ima.AdEvent.Type.SKIPPED,
-      hilltopFinish
-    );
-
-    manager.addEventListener(
-      google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
-      hilltopFinish
-    );
-
-    manager.addEventListener(
-      google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
-      hilltopFinish
-    );
-
-    hilltopAdReady = true;
-
-  }catch(error){
-
-    console.error(
-      "HilltopAds manager error:",
-      error
-    );
-
-    hilltopOnAdError();
-
-  }
-
-}
-
+/* =====================================================
+   ERRO DO ANÚNCIO
+===================================================== */
 
 function hilltopOnAdError(){
 
-  console.warn(
-    "HilltopAds: anúncio indisponível."
-  );
+console.warn(
+"Anúncio HilltopAds indisponível."
+);
 
-  hilltopAdReady = false;
+hilltopAdReady=false;
 
-  hilltopFinish();
-
-}
-
-
-function hilltopPlay(){
-
-  if(
-    !hilltopAdsManager ||
-    !hilltopAdReady
-  ){
-
-    hilltopFinish();
-
-    return;
-
-  }
-
-  try{
-
-    hilltopShow();
-
-    hilltopAdsManager.init(
-      320,
-      220,
-      google.ima.ViewMode.NORMAL
-    );
-
-    hilltopAdsManager.start();
-
-    /*
-      Segurança:
-      se o provedor não responder,
-      o jogo não fica travado.
-    */
-
-    hilltopAdTimeout =
-      setTimeout(
-        () => {
-
-          if(hilltopAdPlaying){
-
-            hilltopFinish();
-
-          }
-
-        },
-        20000
-      );
-
-  }catch(error){
-
-    console.error(
-      "HilltopAds play error:",
-      error
-    );
-
-    hilltopOnAdError();
-
-  }
+hilltopFinish();
 
 }
 
 
-/* =========================
-   ESTADO DO JOGO
-========================= */
+/* =====================================================
+   ADS MANAGER CARREGADO
+===================================================== */
 
-let handle = null;
+function hilltopOnAdsManagerLoaded(event){
 
-let answered = false;
+try{
 
-let perguntasRecentes = [];
+hilltopAdsManager=
+event.getAdsManager(
+hilltopVideo
+);
+
+hilltopAdsManager.addEventListener(
+google.ima.AdErrorEvent.AD_ERROR,
+hilltopOnAdError
+);
+
+hilltopAdsManager.addEventListener(
+google.ima.AdEvent.Type.STARTED,
+function(){
+
+hilltopAdReady=true;
+
+hilltopShow();
+
+}
+);
+
+hilltopAdsManager.addEventListener(
+google.ima.AdEvent.Type.COMPLETE,
+function(){
+
+hilltopFinish();
+
+}
+);
+
+hilltopAdsManager.addEventListener(
+google.ima.AdEvent.Type.SKIPPED,
+function(){
+
+hilltopFinish();
+
+}
+);
+
+hilltopAdsManager.addEventListener(
+google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
+function(){
+
+hilltopFinish();
+
+}
+);
+
+hilltopAdsManager.addEventListener(
+google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
+function(){
+
+hilltopFinish();
+
+}
+);
+
+hilltopAdReady=true;
 
 
-let s = {
+/*
+   IMPORTANTE:
 
-  id:null,
-  email:"",
-  name:"",
-  cpf:"",
-  points:0,
-  balance:0,
-  round:1,
-  code:"",
-  referrer:"",
-  dice:0,
-  question:null,
-  timer:QUESTION_TIME,
-  roundPoints:0,
+   Se o jogador já respondeu enquanto o
+   anúncio estava carregando, iniciamos
+   imediatamente agora.
+*/
 
-  blockNumber:1,
-  difficultyOrder:[]
+if(hilltopAdFinishedCallback){
 
+setTimeout(function(){
+
+hilltopPlayManager();
+
+},50);
+
+}
+
+}catch(error){
+
+console.error(
+"Erro ao preparar HilltopAds:",
+error
+);
+
+hilltopOnAdError();
+
+}
+
+}
+
+
+/* =====================================================
+   PREPARAR VAST
+===================================================== */
+
+function hilltopPrepare(){
+
+if(hilltopAdRequested){
+return;
+}
+
+if(
+typeof google==="undefined" ||
+!google.ima
+){
+
+console.warn(
+"Google IMA não disponível."
+);
+
+return;
+
+}
+
+try{
+
+hilltopAdDisplayContainer=
+new google.ima.AdDisplayContainer(
+hilltopContainer,
+hilltopVideo
+);
+
+
+/*
+   O initialize() precisa acontecer
+   durante uma ação do usuário.
+
+   rollDice() é acionado pelo toque
+   do jogador, então é o local correto.
+*/
+
+hilltopAdDisplayContainer.initialize();
+
+hilltopAdsLoader=
+new google.ima.AdsLoader(
+hilltopAdDisplayContainer
+);
+
+hilltopAdsLoader.addEventListener(
+google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
+hilltopOnAdsManagerLoaded
+);
+
+hilltopAdsLoader.addEventListener(
+google.ima.AdErrorEvent.Type.AD_ERROR,
+hilltopOnAdError
+);
+
+const adsRequest=
+new google.ima.AdsRequest();
+
+adsRequest.adTagUrl=
+hilltopVastUrl();
+
+adsRequest.linearAdSlotWidth=
+hilltopContainer.clientWidth||320;
+
+adsRequest.linearAdSlotHeight=
+hilltopContainer.clientHeight||220;
+
+adsRequest.nonLinearAdSlotWidth=
+hilltopContainer.clientWidth||320;
+
+adsRequest.nonLinearAdSlotHeight=
+hilltopContainer.clientHeight||220;
+
+hilltopAdRequested=true;
+
+hilltopAdsLoader.requestAds(
+adsRequest
+);
+
+}catch(error){
+
+console.error(
+"Erro ao solicitar VAST HilltopAds:",
+error
+);
+
+hilltopOnAdError();
+
+}
+
+}
+
+
+/* =====================================================
+   INICIAR MANAGER
+===================================================== */
+
+function hilltopPlayManager(){
+
+if(
+!hilltopAdsManager ||
+!hilltopAdReady ||
+hilltopAdPlaying
+){
+
+return;
+
+}
+
+try{
+
+hilltopShow();
+
+hilltopAdsManager.init(
+320,
+220,
+google.ima.ViewMode.NORMAL
+);
+
+hilltopAdsManager.start();
+
+clearTimeout(hilltopAdTimeout);
+
+hilltopAdTimeout=
+setTimeout(function(){
+
+console.warn(
+"Tempo máximo do anúncio atingido."
+);
+
+hilltopFinish();
+
+},20000);
+
+}catch(error){
+
+console.error(
+"Erro ao iniciar anúncio:",
+error
+);
+
+hilltopFinish();
+
+}
+
+}
+
+
+/* =====================================================
+   TOCAR ANÚNCIO DEPOIS DA RESPOSTA
+===================================================== */
+
+function hilltopPlay(afterAd){
+
+clearTimeout(hilltopAdFallbackTimer);
+
+hilltopAdFinishedCallback=
+typeof afterAd==="function"
+?afterAd
+:null;
+
+
+/*
+   Se o anúncio já estiver pronto,
+   começa imediatamente.
+*/
+
+if(
+hilltopAdsManager &&
+hilltopAdReady
+){
+
+hilltopPlayManager();
+
+return;
+
+}
+
+
+/*
+   Ainda está carregando.
+
+   Agora NÃO usamos mais o antigo
+   fallback de 1,5 segundo.
+
+   Esperamos até 8 segundos.
+*/
+
+hilltopLoading.style.display="block";
+
+hilltopOverlay.style.display="flex";
+
+hilltopAdFallbackTimer=
+setTimeout(function(){
+
+console.warn(
+"VAST não ficou pronto a tempo."
+);
+
+hilltopFinish();
+
+},8000);
+
+}
+
+
+/* =====================================================
+   MÚSICA
+===================================================== */
+
+const backgroundMusic=
+document.getElementById(
+"backgroundMusic"
+);
+
+backgroundMusic.volume=0.35;
+
+function startMusic(){
+
+if(backgroundMusic.paused){
+
+backgroundMusic.play().catch(
+()=>{}
+);
+
+}
+
+}
+
+
+/* =====================================================
+   PERGUNTAS
+===================================================== */
+
+const Q=[
+
+[
+"Quanto é 2 + 2?",
+["3","4","5","6"],
+1
+],
+
+[
+"Qual é a capital do Brasil?",
+["Brasília","São Paulo","Salvador","Recife"],
+0
+],
+
+[
+"Qual planeta é conhecido como Planeta Vermelho?",
+["Terra","Marte","Vênus","Saturno"],
+1
+],
+
+[
+"Quantos dias tem uma semana?",
+["5","6","7","8"],
+2
+],
+
+[
+"Qual animal é conhecido como rei da selva?",
+["Tigre","Elefante","Leão","Urso"],
+2
+],
+
+[
+"Quantos meses tem um ano?",
+["10","11","12","13"],
+2
+],
+
+[
+"Qual é a cor formada pela mistura de azul e amarelo?",
+["Verde","Roxo","Laranja","Rosa"],
+0
+],
+
+[
+"Qual é o maior planeta do Sistema Solar?",
+["Terra","Marte","Júpiter","Mercúrio"],
+2
+],
+
+[
+"Quantas horas tem um dia?",
+["12","18","24","48"],
+2
+],
+
+[
+"Qual animal produz leite?",
+["Cachorro","Vaca","Galinha","Peixe"],
+1
+],
+
+[
+"Qual é o maior oceano da Terra?",
+["Atlântico","Índico","Pacífico","Ártico"],
+2
+],
+
+[
+"Quanto é 12 × 8?",
+["86","96","108","112"],
+1
+],
+
+[
+"Qual gás é mais abundante na atmosfera?",
+["Oxigênio","Nitrogênio","Hélio","Hidrogênio"],
+1
+],
+
+[
+"Quem escreveu Dom Casmurro?",
+["Machado de Assis","José de Alencar","Clarice Lispector","Cecília Meireles"],
+0
+],
+
+[
+"Qual é o símbolo químico do ouro?",
+["Ag","Fe","Au","Cu"],
+2
+],
+
+[
+"Qual é o resultado de 15² − 10²?",
+["125","150","175","225"],
+0
+],
+
+[
+"Qual destes números é primo?",
+["21","27","29","33"],
+2
+],
+
+[
+"Se 3x + 7 = 25, qual é o valor de x?",
+["4","5","6","7"],
+1
+],
+
+[
+"Qual continente tem a maior área?",
+["África","Ásia","Europa","América do Sul"],
+1
+],
+
+[
+"Qual é a raiz quadrada de 144?",
+["10","11","12","14"],
+2
+],
+
+[
+"Qual é o maior país do mundo em área?",
+["China","Canadá","Brasil","Rússia"],
+3
+],
+
+[
+"Em que ano terminou a Segunda Guerra Mundial?",
+["1943","1944","1945","1946"],
+2
+],
+
+[
+"Qual é o elemento químico de número atômico 6?",
+["Oxigênio","Carbono","Nitrogênio","Ferro"],
+1
+],
+
+[
+"Qual é a velocidade aproximada da luz no vácuo?",
+["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],
+1
+],
+
+[
+"Qual é a derivada de x³ − 4x?",
+["3x² − 4","x² − 4","3x − 4","3x² + 4"],
+0
+],
+
+[
+"Qual processo celular produz a maior parte do ATP em condições aeróbicas?",
+["Fermentação","Glicólise","Fosforilação oxidativa","Transcrição"],
+2
+]
+
+];
+
+
+/* =====================================================
+   ESTADO
+===================================================== */
+
+let s={
+email:"",
+password:"",
+name:"",
+cpf:"",
+points:0,
+round:1,
+code:"",
+referrer:"",
+dice:0,
+question:null,
+recentQuestions:[],
+timer:QUESTION_TIME,
+answered:false,
+roundPoints:0
+};
+
+let handle=null;
+
+
+/* =====================================================
+   LOCAL STORAGE
+===================================================== */
+
+function key(){
+
+return "quizup_"+s.email;
+
+}
+
+
+function save(){
+
+if(!s.email){
+return;
+}
+
+localStorage.setItem(
+key(),
+JSON.stringify(s)
+);
+
+ui();
+
+}
+
+
+/* =====================================================
+   AUTENTICAÇÃO
+===================================================== */
+
+function authMode(m){
+
+document
+.getElementById("registerBox")
+.classList
+.toggle("hidden",m!=="register");
+
+document
+.getElementById("loginBox")
+.classList
+.toggle("hidden",m!=="login");
+
+}
+
+
+function register(){
+
+const e=
+document.getElementById("rEmail")
+.value
+.trim()
+.toLowerCase();
+
+const p=
+document.getElementById("rPass")
+.value;
+
+const n=
+document.getElementById("rName")
+.value
+.trim();
+
+const cpf=
+document.getElementById("rCpf")
+.value
+.trim();
+
+const msg=
+document.getElementById("registerMsg");
+
+
+if(!e||!p||!n||!cpf){
+
+msg.textContent=
+"Preencha todos os campos.";
+
+return;
+
+}
+
+
+if(localStorage.getItem("quizup_"+e)){
+
+msg.textContent=
+"Essa conta já existe. Use o Login.";
+
+return;
+
+}
+
+
+s={
+email:e,
+password:p,
+name:n,
+cpf:cpf,
+points:0,
+round:1,
+code:"QU"+
+Math.random()
+.toString(36)
+.slice(2,8)
+.toUpperCase(),
+referrer:
+new URLSearchParams(
+location.search
+).get("ref")||"",
+dice:0,
+question:null,
+recentQuestions:[],
+timer:QUESTION_TIME,
+answered:false,
+roundPoints:0
 };
 
 
-/* =========================
-   API
-========================= */
+save();
 
-async function api(path,options={}){
+msg.textContent=
+"Cadastro realizado com sucesso!";
 
-  const response =
-    await fetch(
-      API_URL + path,
-      {
-        ...options,
-
-        headers:{
-          "Content-Type":"application/json",
-          ...(options.headers || {})
-        }
-
-      }
-    );
-
-  let data = {};
-
-  try{
-
-    data = await response.json();
-
-  }catch(error){}
-
-  if(!response.ok){
-
-    throw new Error(
-      data.erro ||
-      data.error ||
-      data.message ||
-      "Erro de comunicação com o servidor."
-    );
-
-  }
-
-  return data;
+openGame();
 
 }
 
 
-/* =========================
-   BLOCO DE DIFICULDADES
-========================= */
+function login(){
 
-function embaralhar(lista){
+const e=
+document.getElementById("lEmail")
+.value
+.trim()
+.toLowerCase();
 
-  const array =
-    [...lista];
+const p=
+document.getElementById("lPass")
+.value;
 
-  for(
-    let i=array.length-1;
-    i>0;
-    i--
-  ){
+const msg=
+document.getElementById("loginMsg");
 
-    const j =
-      Math.floor(
-        Math.random()*(i+1)
-      );
 
-    [
-      array[i],
-      array[j]
-    ] =
-    [
-      array[j],
-      array[i]
-    ];
+if(!e||!p){
 
-  }
+msg.textContent=
+"Preencha e-mail e senha.";
 
-  return array;
+return;
 
 }
 
 
-function criarBlocoDificuldades(){
+const x=
+localStorage.getItem("quizup_"+e);
 
-  return embaralhar([
 
-    "facil",
-    "facil",
-    "facil",
-    "facil",
-    "facil",
+if(!x){
 
-    "medio",
-    "medio",
-    "medio",
+msg.textContent=
+"Conta não encontrada.";
 
-    "dificil",
-    "dificil"
-
-  ]);
+return;
 
 }
 
 
-function salvarBloco(){
+try{
 
-  localStorage.setItem(
+const account=
+JSON.parse(x);
 
-    DIFFICULTY_KEY,
+if(account.password!==p){
 
-    JSON.stringify({
+msg.textContent=
+"Senha incorreta.";
 
-      blockNumber:
-        Number(s.blockNumber || 1),
+return;
 
-      difficultyOrder:
-        Array.isArray(
-          s.difficultyOrder
-        )
-        ? s.difficultyOrder
-        : []
+}
 
-    })
+s=account;
 
-  );
+openGame();
+
+}catch(error){
+
+msg.textContent=
+"Não foi possível entrar.";
+
+}
 
 }
 
 
-function carregarBloco(){
+/* =====================================================
+   ABRIR JOGO
+===================================================== */
 
-  try{
+function openGame(){
 
-    const raw =
-      localStorage.getItem(
-        DIFFICULTY_KEY
-      );
+document
+.getElementById("auth")
+.classList
+.add("hidden");
 
-    if(!raw){
+document
+.getElementById("game")
+.classList
+.remove("hidden");
 
-      s.blockNumber = 1;
+ui();
 
-      s.difficultyOrder =
-        criarBlocoDificuldades();
-
-      salvarBloco();
-
-      return;
-
-    }
-
-    const saved =
-      JSON.parse(raw);
-
-    if(
-      !saved ||
-      !Array.isArray(
-        saved.difficultyOrder
-      ) ||
-      saved.difficultyOrder.length !== 10
-    ){
-
-      s.blockNumber = 1;
-
-      s.difficultyOrder =
-        criarBlocoDificuldades();
-
-      salvarBloco();
-
-      return;
-
-    }
-
-    s.blockNumber =
-      Number(
-        saved.blockNumber || 1
-      );
-
-    s.difficultyOrder =
-      saved.difficultyOrder;
-
-  }catch(error){
-
-    s.blockNumber = 1;
-
-    s.difficultyOrder =
-      criarBlocoDificuldades();
-
-    salvarBloco();
-
-  }
+tab("quiz");
 
 }
 
 
-function garantirBloco(){
-
-  const rodada =
-    Number(s.round || 1);
-
-  const blocoAtual =
-    Math.floor(
-      (rodada - 1) / 10
-    ) + 1;
-
-  if(
-    Number(s.blockNumber || 0)
-    !== blocoAtual
-    ||
-    !Array.isArray(
-      s.difficultyOrder
-    )
-    ||
-    s.difficultyOrder.length !== 10
-  ){
-
-    s.blockNumber =
-      blocoAtual;
-
-    s.difficultyOrder =
-      criarBlocoDificuldades();
-
-    salvarBloco();
-
-  }
-
-}
-
-
-function obterDificuldadeDaRodada(){
-
-  garantirBloco();
-
-  const indice =
-    (Number(s.round || 1)-1) % 10;
-
-  return s.difficultyOrder[
-    indice
-  ];
-
-}
-
-
-/* =========================
-   DADOS PONDERADOS
-========================= */
-
-function sortearValorDado(dificuldade){
-
-  let valores;
-
-  if(dificuldade === "facil"){
-
-    valores = [
-      1,1,1,
-      2,2,2,
-      3,3,3,
-      4
-    ];
-
-  }else if(dificuldade === "medio"){
-
-    valores = [
-      5,5,5,
-      6,6,6,
-      7
-    ];
-
-  }else{
-
-    valores = [
-      8,8,8,
-      9,9,9,
-      10
-    ];
-
-  }
-
-  return valores[
-    Math.floor(
-      Math.random() *
-      valores.length
-    )
-  ];
-
-}
-
-
-/* =========================
-   SESSÃO
-========================= */
-
-function saveSession(){
-
-  if(!s.id || !s.email) return;
-
-  const session = {
-
-    id:s.id,
-    email:s.email,
-    name:s.name,
-    cpf:s.cpf,
-
-    points:
-      Number(s.points || 0),
-
-    balance:
-      Number(s.balance || 0),
-
-    round:
-      Number(s.round || 1),
-
-    code:
-      s.code || "",
-
-    referrer:
-      s.referrer || "",
-
-    blockNumber:
-      Number(s.blockNumber || 1),
-
-    difficultyOrder:
-      Array.isArray(
-        s.difficultyOrder
-      )
-      ? s.difficultyOrder
-      : []
-
-  };
-
-  localStorage.setItem(
-    SESSION_KEY,
-    JSON.stringify(session)
-  );
-
-  ui();
-
-}
-
-
-function clearSession(){
-
-  localStorage.removeItem(
-    SESSION_KEY
-  );
-
-}
-
-
-function restoreSession(){
-
-  try{
-
-    const raw =
-      localStorage.getItem(
-        SESSION_KEY
-      );
-
-    if(!raw) return false;
-
-    const saved =
-      JSON.parse(raw);
-
-    if(!saved.id || !saved.email){
-
-      clearSession();
-
-      return false;
-
-    }
-
-    s = {
-
-      ...s,
-      ...saved,
-
-      points:
-        Number(saved.points || 0),
-
-      balance:
-        Number(saved.balance || 0),
-
-      round:
-        Number(saved.round || 1),
-
-      blockNumber:
-        Number(saved.blockNumber || 1),
-
-      difficultyOrder:
-        Array.isArray(
-          saved.difficultyOrder
-        )
-        ? saved.difficultyOrder
-        : []
-
-    };
-
-    carregarBloco();
-
-    return true;
-
-  }catch(error){
-
-    clearSession();
-
-    return false;
-
-  }
-
-}
-
-
-/* =========================
-   MÚSICA
-========================= */
-
-function playMusic(){
-
-  const music =
-    document.getElementById(
-      "backgroundMusic"
-    );
-
-  if(!music) return;
-
-  music.volume = 0.35;
-
-  const tocar = () => {
-
-    music.play()
-      .then(() => {
-
-        document.removeEventListener(
-          "click",
-          tocar
-        );
-
-        document.removeEventListener(
-          "touchstart",
-          tocar
-        );
-
-        document.removeEventListener(
-          "pointerdown",
-          tocar
-        );
-
-      })
-      .catch(() => {});
-
-  };
-
-  tocar();
-
-  document.addEventListener(
-    "click",
-    tocar,
-    {once:true}
-  );
-
-  document.addEventListener(
-    "touchstart",
-    tocar,
-    {once:true}
-  );
-
-  document.addEventListener(
-    "pointerdown",
-    tocar,
-    {once:true}
-  );
-
-}
-
-
-function stopMusic(){
-
-  const music =
-    document.getElementById(
-      "backgroundMusic"
-    );
-
-  if(!music) return;
-
-  music.pause();
-
-  music.currentTime = 0;
-
-}
-
-
-/* =========================
-   CPF
-========================= */
-
-function onlyNumbers(value){
-
-  return String(value || "")
-    .replace(/\D/g,"");
-
-}
-
-
-function formatCPF(input){
-
-  let v =
-    onlyNumbers(input.value)
-      .slice(0,11);
-
-  if(v.length > 9){
-
-    v =
-      v.replace(
-        /(\d{3})(\d{3})(\d{3})(\d{0,2})/,
-        "$1.$2.$3-$4"
-      );
-
-  }else if(v.length > 6){
-
-    v =
-      v.replace(
-        /(\d{3})(\d{3})(\d{0,3})/,
-        "$1.$2.$3"
-      );
-
-  }else if(v.length > 3){
-
-    v =
-      v.replace(
-        /(\d{3})(\d{0,3})/,
-        "$1.$2"
-      );
-
-  }
-
-  input.value = v;
-
-}
-
-
-function cleanCPF(cpf){
-
-  return onlyNumbers(cpf);
-
-}
-
-
-function validCPF(cpf){
-
-  cpf = cleanCPF(cpf);
-
-  if(cpf.length !== 11) return false;
-
-  if(/^(\d)\1{10}$/.test(cpf)){
-    return false;
-  }
-
-  let sum = 0;
-
-  for(let i=0;i<9;i++){
-
-    sum +=
-      Number(cpf[i]) *
-      (10-i);
-
-  }
-
-  let d1 =
-    (sum * 10) % 11;
-
-  if(d1 === 10) d1 = 0;
-
-  if(d1 !== Number(cpf[9])){
-    return false;
-  }
-
-  sum = 0;
-
-  for(let i=0;i<10;i++){
-
-    sum +=
-      Number(cpf[i]) *
-      (11-i);
-
-  }
-
-  let d2 =
-    (sum * 10) % 11;
-
-  if(d2 === 10) d2 = 0;
-
-  return d2 ===
-    Number(cpf[10]);
-
-}
-
-
-/* =========================
-   JOGADOR
-========================= */
-
-async function loadPlayer(){
-
-  if(!s.id) return;
-
-  const data =
-    await api(
-      "/api/jogador/" +
-      encodeURIComponent(s.id)
-    );
-
-  const j =
-    data.jogador ||
-    data;
-
-  if(!j || !j.id){
-
-    throw new Error(
-      "Jogador não encontrado."
-    );
-
-  }
-
-  s.id = j.id;
-
-  s.email =
-    j.email ||
-    s.email;
-
-  s.name =
-    j.nome ||
-    s.name;
-
-  s.cpf =
-    j.cpf ||
-    s.cpf;
-
-  s.points =
-    Number(j.pontos || 0);
-
-  s.balance =
-    Number(j.equilibrio || 0);
-
-  s.code =
-    j.codigo_indicacao ||
-    s.code;
-
-  saveSession();
-
-  ui();
-
-}
-
-
-async function savePlayer(){
-
-  if(!s.id) return;
-
-  const data =
-    await api(
-      "/api/jogador/" +
-      encodeURIComponent(s.id),
-      {
-        method:"PUT",
-
-        body:JSON.stringify({
-
-          pontos:
-            Number(s.points || 0),
-
-          equilibrio:
-            Number(s.balance || 0)
-
-        })
-
-      }
-    );
-
-  const j =
-    data.jogador ||
-    data;
-
-  if(j.pontos !== undefined){
-
-    s.points =
-      Number(j.pontos || 0);
-
-  }
-
-  if(j.equilibrio !== undefined){
-
-    s.balance =
-      Number(j.equilibrio || 0);
-
-  }
-
-  saveSession();
-
-  ui();
-
-}
-
-
-/* =========================
-   AUTENTICAÇÃO
-========================= */
-
-function authMode(mode){
-
-  stopMusic();
-
-  document
-    .getElementById("registerBox")
-    .classList.toggle(
-      "hidden",
-      mode !== "register"
-    );
-
-  document
-    .getElementById("loginBox")
-    .classList.toggle(
-      "hidden",
-      mode !== "login"
-    );
-
-}
-
-
-async function register(){
-
-  stopMusic();
-
-  const button =
-    document.querySelector(
-      "#registerBox .primary"
-    );
-
-  if(button){
-
-    button.disabled = true;
-
-    button.textContent =
-      "Cadastrando...";
-
-  }
-
-  try{
-
-    const email =
-      document.getElementById(
-        "rEmail"
-      ).value
-        .trim()
-        .toLowerCase();
-
-    const password =
-      document.getElementById(
-        "rPass"
-      ).value;
-
-    const name =
-      document.getElementById(
-        "rName"
-      ).value
-        .trim();
-
-    const cpf =
-      cleanCPF(
-        document.getElementById(
-          "rCpf"
-        ).value
-      );
-
-    if(!email || !password || !name || !cpf){
-
-      throw new Error(
-        "Preencha todos os campos."
-      );
-
-    }
-
-    if(
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        .test(email)
-    ){
-
-      throw new Error(
-        "Digite um e-mail válido."
-      );
-
-    }
-
-    if(password.length < 6){
-
-      throw new Error(
-        "A senha deve ter pelo menos 6 caracteres."
-      );
-
-    }
-
-    if(
-      cpf.length !== 11 ||
-      !validCPF(cpf)
-    ){
-
-      throw new Error(
-        "Digite um CPF válido."
-      );
-
-    }
-
-    const referrer =
-      new URLSearchParams(
-        location.search
-      ).get("ref") || "";
-
-    const data =
-      await api(
-        "/api/cadastro",
-        {
-          method:"POST",
-
-          body:JSON.stringify({
-
-            email:email,
-            senha:password,
-            nome:name,
-            cpf:cpf,
-            referrer:referrer
-
-          })
-
-        }
-      );
-
-    const j =
-      data.jogador ||
-      data;
-
-    if(!j.id){
-
-      throw new Error(
-        "Cadastro criado, mas o servidor não retornou o jogador."
-      );
-
-    }
-
-    s = {
-
-      id:j.id,
-
-      email:
-        j.email ||
-        email,
-
-      name:
-        j.nome ||
-        name,
-
-      cpf:
-        j.cpf ||
-        cpf,
-
-      points:0,
-
-      balance:
-        Number(j.equilibrio || 0),
-
-      round:1,
-
-      code:
-        j.codigo_indicacao ||
-        "",
-
-      referrer:
-        referrer,
-
-      dice:0,
-
-      question:null,
-
-      timer:QUESTION_TIME,
-
-      roundPoints:0,
-
-      blockNumber:1,
-
-      difficultyOrder:
-        criarBlocoDificuldades()
-
-    };
-
-    localStorage.removeItem(
-      DIFFICULTY_KEY
-    );
-
-    salvarBloco();
-
-    saveSession();
-
-    await savePlayer();
-
-    openGame(true);
-
-  }catch(error){
-
-    console.error(
-      "Erro no cadastro:",
-      error
-    );
-
-    alert(
-      error.message ||
-      "Não foi possível realizar o cadastro."
-    );
-
-  }finally{
-
-    if(button){
-
-      button.disabled = false;
-
-      button.textContent =
-        "Cadastrar";
-
-    }
-
-  }
-
-}
-
-
-async function login(){
-
-  stopMusic();
-
-  const button =
-    document.querySelector(
-      "#loginBox .primary"
-    );
-
-  if(button){
-
-    button.disabled = true;
-
-    button.textContent =
-      "Entrando...";
-
-  }
-
-  try{
-
-    const email =
-      document.getElementById(
-        "lEmail"
-      ).value
-        .trim()
-        .toLowerCase();
-
-    const password =
-      document.getElementById(
-        "lPass"
-      ).value;
-
-    if(!email || !password){
-
-      throw new Error(
-        "Preencha e-mail e senha."
-      );
-
-    }
-
-    const data =
-      await api(
-        "/api/login",
-        {
-          method:"POST",
-
-          body:JSON.stringify({
-
-            email:email,
-            senha:password
-
-          })
-
-        }
-      );
-
-    const j =
-      data.jogador ||
-      data;
-
-    if(!j.id){
-
-      throw new Error(
-        "Resposta inválida do servidor."
-      );
-
-    }
-
-    s = {
-
-      id:j.id,
-
-      email:
-        j.email ||
-        email,
-
-      name:
-        j.nome ||
-        "",
-
-      cpf:
-        j.cpf ||
-        "",
-
-      points:0,
-
-      balance:
-        Number(j.equilibrio || 0),
-
-      round:1,
-
-      code:
-        j.codigo_indicacao ||
-        "",
-
-      referrer:"",
-
-      dice:0,
-
-      question:null,
-
-      timer:QUESTION_TIME,
-
-      roundPoints:0,
-
-      blockNumber:1,
-
-      difficultyOrder:
-        criarBlocoDificuldades()
-
-    };
-
-    localStorage.removeItem(
-      DIFFICULTY_KEY
-    );
-
-    salvarBloco();
-
-    saveSession();
-
-    await savePlayer();
-
-    openGame(true);
-
-  }catch(error){
-
-    console.error(
-      "Erro no login:",
-      error
-    );
-
-    alert(
-      error.message ||
-      "E-mail ou senha incorretos."
-    );
-
-  }finally{
-
-    if(button){
-
-      button.disabled = false;
-
-      button.textContent =
-        "Entrar";
-
-    }
-
-  }
-
-}
-
-
-async function forgotPassword(){
-
-  const email =
-    prompt(
-      "Digite o e-mail da sua conta:"
-    );
-
-  if(!email) return;
-
-  const cleanEmail =
-    email
-      .trim()
-      .toLowerCase();
-
-  if(!cleanEmail){
-
-    alert(
-      "Digite um e-mail válido."
-    );
-
-    return;
-
-  }
-
-  const cpfInput =
-    prompt(
-      "Digite o CPF da sua conta:"
-    );
-
-  if(!cpfInput) return;
-
-  const cpf =
-    cleanCPF(cpfInput);
-
-  if(
-    cpf.length !== 11 ||
-    !validCPF(cpf)
-  ){
-
-    alert(
-      "CPF inválido."
-    );
-
-    return;
-
-  }
-
-  const newPassword =
-    prompt(
-      "Digite a nova senha (mínimo 6 caracteres):"
-    );
-
-  if(!newPassword) return;
-
-  if(newPassword.length < 6){
-
-    alert(
-      "A nova senha deve ter pelo menos 6 caracteres."
-    );
-
-    return;
-
-  }
-
-  try{
-
-    await api(
-      "/api/recuperar-senha",
-      {
-        method:"POST",
-
-        body:JSON.stringify({
-
-          email:cleanEmail,
-
-          cpf:cpf,
-
-          nova_senha:newPassword,
-
-          senha:newPassword
-
-        })
-
-      }
-    );
-
-    alert(
-      "Senha alterada com sucesso. Agora faça login com a nova senha."
-    );
-
-  }catch(error){
-
-    console.error(
-      "Erro na recuperação:",
-      error
-    );
-
-    alert(
-      error.message ||
-      "Não foi possível alterar a senha."
-    );
-
-  }
-
-}
-
-
-/* =========================
-   ENTRAR NO JOGO
-========================= */
-
-function openGame(startMusic=false){
-
-  document
-    .getElementById("auth")
-    .classList.add("hidden");
-
-  document
-    .getElementById("game")
-    .classList.remove("hidden");
-
-  garantirBloco();
-
-  ui();
-
-  tab("quiz");
-
-  if(startMusic){
-
-    playMusic();
-
-  }
-
-}
-
-
-/* =========================
+/* =====================================================
    SAIR
-========================= */
+===================================================== */
 
 function logout(){
 
-  clearInterval(handle);
+clearInterval(handle);
 
-  stopMusic();
+hilltopFinish();
 
-  hilltopHide();
+document
+.getElementById("game")
+.classList
+.add("hidden");
 
-  clearSession();
-
-  localStorage.removeItem(
-    DIFFICULTY_KEY
-  );
-
-  s = {
-
-    id:null,
-    email:"",
-    name:"",
-    cpf:"",
-    points:0,
-    balance:0,
-    round:1,
-    code:"",
-    referrer:"",
-    dice:0,
-    question:null,
-    timer:QUESTION_TIME,
-    roundPoints:0,
-    blockNumber:1,
-    difficultyOrder:[]
-
-  };
-
-  document
-    .getElementById("game")
-    .classList
-    .add("hidden");
-
-  document
-    .getElementById("auth")
-    .classList
-    .remove("hidden");
-
-  authMode("register");
+document
+.getElementById("auth")
+.classList
+.remove("hidden");
 
 }
 
 
-/* =========================
+/* =====================================================
    INTERFACE
-========================= */
+===================================================== */
 
 function ui(){
 
-  document.getElementById(
-    "points"
-  ).textContent =
-    Number(s.points || 0);
+document.getElementById("points")
+.textContent=s.points;
 
-  document.getElementById(
-    "round"
-  ).textContent =
-    Number(s.round || 1);
+document.getElementById("round")
+.textContent=s.round;
 
-  document.getElementById(
-    "totalScore"
-  ).textContent =
-    Number(s.points || 0);
+document.getElementById("totalScore")
+.textContent=s.points;
 
-  document.getElementById(
-    "refCode"
-  ).value =
-    s.code || "";
+document.getElementById("refCode")
+.value=s.code||"";
 
-  document.getElementById(
-    "refLink"
-  ).value =
-    location.origin +
-    location.pathname +
-    "?ref=" +
-    encodeURIComponent(
-      s.code || ""
-    );
+document.getElementById("refLink")
+.value=
+location.origin+
+location.pathname+
+"?ref="+
+encodeURIComponent(s.code||"");
 
 }
 
 
-function tab(name){
+/* =====================================================
+   ABAS
+===================================================== */
 
-  [
-    "quiz",
-    "ref",
-    "cash",
-    "premium"
-  ].forEach(tabName => {
+function tab(x){
 
-    document
-      .getElementById(
-        tabName + "Tab"
-      )
-      .classList.toggle(
-        "hidden",
-        tabName !== name
-      );
+[
+"quiz",
+"ref",
+"cash",
+"premium"
+].forEach(a=>{
 
-  });
+document
+.getElementById(a+"Tab")
+.classList
+.toggle("hidden",a!==x);
 
-  if(name === "quiz"){
+});
 
-    if(!answered){
 
-      document
-        .getElementById("rollCard")
-        .classList.remove("hidden");
+if(x==="quiz"){
 
-      document
-        .getElementById("questionCard")
-        .classList.add("hidden");
+document
+.getElementById("rollCard")
+.classList
+.remove("hidden");
 
-    }
+document
+.getElementById("questionCard")
+.classList
+.add("hidden");
 
-  }
+}
 
 }
 
 
-/* =========================
-   PERGUNTA ALEATÓRIA
-========================= */
+/* =====================================================
+   ESCOLHER PERGUNTA
+===================================================== */
 
-async function carregarPerguntaPorDificuldade(
-  dificuldade
-){
+function pickQuestion(){
 
-  try{
+const recent=
+s.recentQuestions||[];
 
-    const resposta =
-      await fetch(
+const available=
+Q.filter(q=>
+!recent.includes(q[0])
+);
 
-        API_URL +
-        "/api/pergunta-aleatoria?dificuldade=" +
-        encodeURIComponent(
-          dificuldade
-        )
+const pool=
+available.length
+?available
+:Q;
 
-      );
+const q=
+pool[
+Math.floor(
+Math.random()*pool.length
+)
+];
 
-    const dados =
-      await resposta.json();
+s.recentQuestions=
+[
+...recent,
+q[0]
+].slice(-10);
 
-    if(
-      !resposta.ok ||
-      !dados.sucesso ||
-      !dados.pergunta
-    ){
-
-      throw new Error(
-        dados.erro ||
-        "Nenhuma pergunta encontrada."
-      );
-
-    }
-
-    const p =
-      dados.pergunta;
-
-    const respostaCorreta =
-      String(
-        p.resposta_correta
-      )
-      .toUpperCase()
-      .trim();
-
-    const indice =
-      {
-        A:0,
-        B:1,
-        C:2,
-        D:3
-      }[
-        respostaCorreta
-      ];
-
-    const alternativas = [
-
-      p.alternativa_a ??
-      p.resposta_a,
-
-      p.alternativa_b ??
-      p.resposta_b,
-
-      p.alternativa_c ??
-      p.resposta_c,
-
-      p.alternativa_d ??
-      p.resposta_d
-
-    ];
-
-    if(
-      !p.pergunta ||
-      !alternativas.every(Boolean) ||
-      ![0,1,2,3].includes(indice)
-    ){
-
-      throw new Error(
-        "Pergunta inválida recebida do servidor."
-      );
-
-    }
-
-    const idPergunta =
-      String(
-        p.id ||
-        p.pergunta
-      );
-
-    if(
-      perguntasRecentes.includes(
-        idPergunta
-      )
-    ){
-
-      return await carregarPerguntaDiferente(
-        dificuldade,
-        idPergunta
-      );
-
-    }
-
-    perguntasRecentes.push(
-      idPergunta
-    );
-
-    if(
-      perguntasRecentes.length > 20
-    ){
-
-      perguntasRecentes.shift();
-
-    }
-
-    return [
-
-      p.pergunta,
-
-      alternativas,
-
-      indice,
-
-      p.id || null
-
-    ];
-
-  }catch(error){
-
-    console.error(
-      "Erro ao carregar pergunta:",
-      error
-    );
-
-    throw error;
-
-  }
+return q;
 
 }
 
 
-async function carregarPerguntaDiferente(
-  dificuldade,
-  perguntaAnterior
-){
+/* =====================================================
+   JOGAR DADO
+===================================================== */
 
-  for(let tentativa=0;tentativa<5;tentativa++){
+function rollDice(){
 
-    const resposta =
-      await fetch(
+startMusic();
 
-        API_URL +
-        "/api/pergunta-aleatoria?dificuldade=" +
-        encodeURIComponent(
-          dificuldade
-        )
+clearInterval(handle);
 
-      );
+s.answered=false;
 
-    const dados =
-      await resposta.json();
 
-    if(
-      !resposta.ok ||
-      !dados.sucesso ||
-      !dados.pergunta
-    ){
+/*
+   PREPARA O HILLTOP DURANTE O
+   TOQUE DO USUÁRIO.
 
-      throw new Error(
-        dados.erro ||
-        "Nenhuma pergunta encontrada."
-      );
+   Isso é importante para o IMA.
+*/
 
-    }
+hilltopPrepare();
 
-    const p =
-      dados.pergunta;
 
-    const idPergunta =
-      String(
-        p.id ||
-        p.pergunta
-      );
+let dice;
 
-    if(
-      idPergunta ===
-      String(perguntaAnterior)
-      ||
-      perguntasRecentes.includes(
-        idPergunta
-      )
-    ){
 
-      continue;
+/*
+   A cada 30 rodadas:
+   8–10
+*/
 
-    }
+if(s.round%30===0){
 
-    const respostaCorreta =
-      String(
-        p.resposta_correta
-      )
-      .toUpperCase()
-      .trim();
+dice=
+Math.floor(
+Math.random()*3
+)+8;
 
-    const indice =
-      {
-        A:0,
-        B:1,
-        C:2,
-        D:3
-      }[
-        respostaCorreta
-      ];
 
-    const alternativas = [
+/*
+   A cada 10 rodadas:
+   5–7
+*/
 
-      p.alternativa_a ??
-      p.resposta_a,
+}else if(s.round%10===0){
 
-      p.alternativa_b ??
-      p.resposta_b,
+dice=
+Math.floor(
+Math.random()*3
+)+5;
 
-      p.alternativa_c ??
-      p.resposta_c,
 
-      p.alternativa_d ??
-      p.resposta_d
+/*
+   Rodadas normais:
+   1–4
+*/
 
-    ];
+}else{
 
-    if(
-      !p.pergunta ||
-      !alternativas.every(Boolean) ||
-      ![0,1,2,3].includes(indice)
-    ){
-
-      continue;
-
-    }
-
-    perguntasRecentes.push(
-      idPergunta
-    );
-
-    if(
-      perguntasRecentes.length > 20
-    ){
-
-      perguntasRecentes.shift();
-
-    }
-
-    return [
-
-      p.pergunta,
-
-      alternativas,
-
-      indice,
-
-      p.id || null
-
-    ];
-
-  }
-
-  const resposta =
-    await fetch(
-
-      API_URL +
-      "/api/pergunta-aleatoria?dificuldade=" +
-      encodeURIComponent(
-        dificuldade
-      )
-
-    );
-
-  const dados =
-    await resposta.json();
-
-  if(
-    !resposta.ok ||
-    !dados.sucesso ||
-    !dados.pergunta
-  ){
-
-    throw new Error(
-      dados.erro ||
-      "Nenhuma pergunta encontrada."
-    );
-
-  }
-
-  const p =
-    dados.pergunta;
-
-  const respostaCorreta =
-    String(
-      p.resposta_correta
-    )
-    .toUpperCase()
-    .trim();
-
-  const indice =
-    {
-      A:0,
-      B:1,
-      C:2,
-      D:3
-    }[
-      respostaCorreta
-    ];
-
-  return [
-
-    p.pergunta,
-
-    [
-      p.alternativa_a ??
-      p.resposta_a,
-
-      p.alternativa_b ??
-      p.resposta_b,
-
-      p.alternativa_c ??
-      p.resposta_c,
-
-      p.alternativa_d ??
-      p.resposta_d
-
-    ],
-
-    indice,
-
-    p.id || null
-
-  ];
+dice=
+Math.floor(
+Math.random()*4
+)+1;
 
 }
 
 
-/* =========================
-   DADO
-========================= */
+s.dice=dice;
 
-async function rollDice(){
+s.roundPoints=dice;
 
-  if(answered) return;
+s.question=pickQuestion();
 
-  const music =
-    document.getElementById(
-      "backgroundMusic"
-    );
 
-  if(
-    music &&
-    music.paused
-  ){
+document
+.getElementById("dice")
+.textContent=
+"🎲 "+dice;
 
-    playMusic();
 
-  }
+document
+.getElementById("diceResult")
+.textContent=
+"Você tirou "+
+dice+
+" • Esta pergunta vale "+
+dice+
+(dice===1?" ponto":" pontos");
 
-  /*
-    Prepara o HilltopAds durante o clique
-    do jogador. Isso permite que o navegador
-    móvel autorize o player.
-  */
 
-  hilltopPrepare();
+document
+.getElementById("question")
+.textContent=
+s.question[0];
 
-  clearInterval(handle);
 
-  answered = false;
+const answers=
+document.getElementById("answers");
 
-  const dificuldade =
-    obterDificuldadeDaRodada();
+answers.innerHTML="";
 
-  const d =
-    sortearValorDado(
-      dificuldade
-    );
 
-  s.dice = d;
+s.question[1].forEach(
+(a,i)=>{
 
-  s.roundPoints = d;
+const b=
+document.createElement("button");
 
-  s.question = null;
+b.className="answer";
 
-  try{
+b.textContent=a;
 
-    const pergunta =
-      await carregarPerguntaPorDificuldade(
-        dificuldade
-      );
+b.onclick=()=>answer(i);
 
-    if(!pergunta){
+answers.appendChild(b);
 
-      throw new Error(
-        "Não foi possível carregar a pergunta."
-      );
+}
+);
 
-    }
 
-    s.question =
-      pergunta;
+document
+.getElementById("rollCard")
+.classList
+.add("hidden");
 
-  }catch(error){
+document
+.getElementById("questionCard")
+.classList
+.remove("hidden");
 
-    console.error(
-      "Erro ao carregar pergunta:",
-      error
-    );
+document
+.getElementById("feedback")
+.classList
+.add("hidden");
 
-    s.roundPoints = 0;
+document
+.getElementById("rewardBox")
+.classList
+.add("hidden");
 
-    alert(
-      error.message ||
-      "Não foi possível carregar a pergunta."
-    );
-
-    return;
-
-  }
-
-  document.getElementById(
-    "dice"
-  ).textContent =
-    "🎲 " + d;
-
-  document.getElementById(
-    "diceResult"
-  ).textContent =
-    "Você tirou " +
-    d +
-    " • Esta pergunta vale " +
-    d +
-    (
-      d === 1
-      ? " ponto"
-      : " pontos"
-    );
-
-  document.getElementById(
-    "questionDiceNumber"
-  ).textContent =
-    d;
-
-  document.getElementById(
-    "questionDiceText"
-  ).textContent =
-    d === 1
-    ? "ponto"
-    : "pontos";
-
-  document.getElementById(
-    "question"
-  ).textContent =
-    s.question[0];
-
-  const answers =
-    document.getElementById(
-      "answers"
-    );
-
-  answers.innerHTML = "";
-
-  s.question[1].forEach(
-    (answerText,index) => {
-
-      const button =
-        document.createElement(
-          "button"
-        );
-
-      button.className =
-        "answer";
-
-      button.textContent =
-        answerText;
-
-      button.onclick =
-        () => answer(index);
-
-      answers.appendChild(
-        button
-      );
-
-    }
-  );
-
-  document
-    .getElementById("rollCard")
-    .classList.add("hidden");
-
-  document
-    .getElementById("questionCard")
-    .classList.remove("hidden");
-
-  document
-    .getElementById("feedback")
-    .classList.add("hidden");
-
-  document
-    .getElementById("nextWrap")
-    .classList.add("hidden");
-
-  ui();
-
-  startTimer();
+startTimer();
 
 }
 
 
-/* =========================
-   TIMER
-========================= */
+/* =====================================================
+   CRONÔMETRO
+===================================================== */
 
 function startTimer(){
 
-  clearInterval(handle);
+clearInterval(handle);
 
-  s.timer =
-    QUESTION_TIME;
+s.timer=QUESTION_TIME;
 
-  document.getElementById(
-    "time"
-  ).textContent =
-    QUESTION_TIME;
+document
+.getElementById("time")
+.textContent=
+QUESTION_TIME;
 
-  document.getElementById(
-    "progress"
-  ).style.width =
-    "100%";
+document
+.getElementById("progress")
+.style
+.width="100%";
 
-  handle =
-    setInterval(() => {
 
-      s.timer--;
+handle=
+setInterval(()=>{
 
-      document.getElementById(
-        "time"
-      ).textContent =
-        Math.max(
-          0,
-          s.timer
-        );
+s.timer--;
 
-      document.getElementById(
-        "progress"
-      ).style.width =
-        Math.max(
-          0,
-          s.timer /
-          QUESTION_TIME *
-          100
-        ) + "%";
+document
+.getElementById("time")
+.textContent=
+Math.max(0,s.timer);
 
-      if(s.timer <= 0){
+document
+.getElementById("progress")
+.style
+.width=
+Math.max(
+0,
+(s.timer/QUESTION_TIME)*100
+)+"%";
 
-        clearInterval(handle);
 
-        answer(-1);
+if(s.timer<=0){
 
-      }
+clearInterval(handle);
 
-    },1000);
+answer(-1);
+
+}
+
+},1000);
 
 }
 
 
-/* =========================
-   RESPOSTA
-========================= */
+/* =====================================================
+   RESPONDER
+===================================================== */
 
-async function answer(index){
+function answer(i){
 
-  if(answered) return;
+if(s.answered){
+return;
+}
 
-  answered = true;
+s.answered=true;
 
-  clearInterval(handle);
+clearInterval(handle);
 
-  const correct =
-    s.question[2];
+const correct=
+s.question[2];
 
-  const buttons =
-    [
-      ...document.querySelectorAll(
-        ".answer"
-      )
-    ];
+const buttons=
+[
+...document.querySelectorAll(".answer")
+];
 
-  if(
-    index >= 0 &&
-    buttons[index]
-  ){
 
-    buttons[index]
-      .classList.add(
-        index === correct
-        ? "correct"
-        : "wrong"
-      );
+if(i>=0 && buttons[i]){
 
-  }
-
-  if(buttons[correct]){
-
-    buttons[correct]
-      .classList.add(
-        "correct"
-      );
-
-  }
-
-  const isCorrect =
-    index === correct;
-
-  const pontosDaRodada =
-    isCorrect
-    ? Number(s.roundPoints || 0)
-    : 0;
-
-  if(isCorrect){
-
-    s.points =
-      Number(s.points || 0) +
-      pontosDaRodada;
-
-  }
-
-  s.roundPoints =
-    isCorrect
-    ? pontosDaRodada
-    : 0;
-
-  ui();
-
-  const feedback =
-    document.getElementById(
-      "feedback"
-    );
-
-  feedback
-    .classList
-    .remove("hidden");
-
-  if(isCorrect){
-
-    feedback.textContent =
-      "✅ Correto! Você ganhou " +
-      pontosDaRodada +
-      (
-        pontosDaRodada === 1
-        ? " ponto!"
-        : " pontos!"
-      );
-
-  }else if(index === -1){
-
-    feedback.textContent =
-      "⏰ Tempo esgotado! Você ganhou 0 pontos.";
-
-  }else{
-
-    feedback.textContent =
-      "❌ Incorreto! Você ganhou 0 pontos.";
-
-  }
-
-  buttons.forEach(
-    button => {
-
-      button.disabled = true;
-
-    }
-  );
-
-  try{
-
-    await savePlayer();
-
-  }catch(error){
-
-    console.error(
-      "Erro ao salvar pontuação:",
-      error
-    );
-
-    feedback.textContent +=
-      " ⚠️ Não foi possível sincronizar agora.";
-
-  }
-
-  /*
-    HilltopAds aparece depois da resposta.
-    Se o anúncio estiver pronto, ele é exibido.
-    Caso não esteja disponível, o jogo segue normalmente.
-  */
-
-  if(
-    hilltopAdReady &&
-    hilltopAdsManager
-  ){
-
-    hilltopPlay();
-
-  }else{
-
-    /*
-      Dá um pequeno tempo para o VAST terminar
-      de carregar. Se não carregar, libera
-      a próxima pergunta automaticamente.
-    */
-
-    setTimeout(
-      () => {
-
-        if(
-          !hilltopAdPlaying &&
-          document
-            .getElementById("nextWrap")
-            .classList
-            .contains("hidden")
-        ){
-
-          document
-            .getElementById("nextWrap")
-            .classList
-            .remove("hidden");
-
-        }
-
-      },
-      1500
-    );
-
-  }
+buttons[i]
+.classList
+.add(
+i===correct
+?"correct"
+:"wrong"
+);
 
 }
 
 
-/* =========================
-   PRÓXIMA PERGUNTA
-========================= */
+if(buttons[correct]){
+
+buttons[correct]
+.classList
+.add("correct");
+
+}
+
+
+const ok=
+i===correct;
+
+
+if(ok){
+
+s.points+=s.roundPoints;
+
+}
+
+
+ui();
+
+save();
+
+
+const feedback=
+document.getElementById("feedback");
+
+feedback
+.classList
+.remove("hidden");
+
+
+feedback.textContent=
+ok
+?"✅ Correto! Você ganhou "+
+s.roundPoints+
+" pontos!"
+:"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
+
+
+/*
+   O anúncio Hilltop começa
+   DEPOIS da resposta.
+
+   Se ainda estiver carregando,
+   aguarda até 8 segundos.
+
+   Não existe mais o antigo
+   fallback de 1,5 segundo.
+*/
+
+hilltopPlay(
+function(){
+
+document
+.getElementById("rewardBox")
+.classList
+.remove("hidden");
+
+}
+);
+
+}
+
+
+/* =====================================================
+   FINALIZAR RODADA
+===================================================== */
 
 function finishQuestion(){
 
-  clearInterval(handle);
+hilltopFinish();
 
-  hilltopHide();
+document
+.getElementById("questionCard")
+.classList
+.add("hidden");
 
-  document
-    .getElementById("questionCard")
-    .classList
-    .add("hidden");
+document
+.getElementById("rollCard")
+.classList
+.remove("hidden");
 
-  document
-    .getElementById("rollCard")
-    .classList
-    .remove("hidden");
+document
+.getElementById("dice")
+.textContent="🎲";
 
-  document
-    .getElementById("dice")
-    .textContent =
-      "🎲";
+document
+.getElementById("diceResult")
+.textContent="";
 
-  document
-    .getElementById("diceResult")
-    .textContent =
-      "";
+document
+.getElementById("feedback")
+.classList
+.add("hidden");
 
-  document.getElementById(
-    "questionDiceNumber"
-  ).textContent =
-    "0";
+document
+.getElementById("rewardBox")
+.classList
+.add("hidden");
 
-  document.getElementById(
-    "questionDiceText"
-  ).textContent =
-    "pontos";
+s.round++;
 
-  document
-    .getElementById("feedback")
-    .classList
-    .add("hidden");
-
-  document
-    .getElementById("nextWrap")
-    .classList
-    .add("hidden");
-
-  s.roundPoints = 0;
-
-  s.round++;
-
-  answered = false;
-
-  s.question = null;
-
-  s.timer =
-    QUESTION_TIME;
-
-  garantirBloco();
-
-  saveSession();
+save();
 
 }
 
 
-/* =========================
+/* =====================================================
    INDICAÇÃO
-========================= */
+===================================================== */
 
-async function copyRef(){
+function copyRef(){
 
-  const link =
-    document.getElementById(
-      "refLink"
-    ).value;
+const link=
+document
+.getElementById("refLink")
+.value;
 
-  try{
+if(navigator.clipboard){
 
-    if(navigator.clipboard){
+navigator.clipboard
+.writeText(link)
+.catch(()=>{});
 
-      await navigator.clipboard.writeText(
-        link
-      );
+}
 
-    }else{
-
-      throw new Error();
-
-    }
-
-    document.getElementById(
-      "refMsg"
-    ).textContent =
-      "Link copiado!";
-
-  }catch(error){
-
-    const input =
-      document.getElementById(
-        "refLink"
-      );
-
-    input.removeAttribute(
-      "readonly"
-    );
-
-    input.select();
-
-    document.execCommand(
-      "copy"
-    );
-
-    input.setAttribute(
-      "readonly",
-      ""
-    );
-
-    document.getElementById(
-      "refMsg"
-    ).textContent =
-      "Link copiado!";
-
-  }
+document
+.getElementById("refMsg")
+.textContent=
+"Link copiado!";
 
 }
 
 
 async function shareRef(){
 
-  const link =
-    document.getElementById(
-      "refLink"
-    ).value;
+const link=
+document
+.getElementById("refLink")
+.value;
 
-  if(navigator.share){
+if(navigator.share){
 
-    try{
+try{
 
-      await navigator.share({
+await navigator.share({
 
-        title:"QuizUp",
+title:"QuizUp",
 
-        text:
-          "Venha jogar QuizUp comigo!",
+text:
+"Venha jogar QuizUp comigo!",
 
-        url:link
+url:link
 
-      });
+});
 
-    }catch(error){}
+}catch(error){}
 
-  }else{
+}else{
 
-    await copyRef();
+copyRef();
 
-  }
+}
 
 }
 
 
-/* =========================
-   SAQUE
-========================= */
+/* =====================================================
+   PAGAMENTO
+===================================================== */
 
 function payFields(){
 
-  const isPix =
-    document.getElementById(
-      "payMethod"
-    ).value === "pix";
+const pix=
+document
+.getElementById("payMethod")
+.value==="pix";
 
-  document
-    .getElementById("pix")
-    .classList
-    .toggle(
-      "hidden",
-      !isPix
-    );
+document
+.getElementById("pix")
+.classList
+.toggle("hidden",!pix);
 
-  document
-    .getElementById("paypal")
-    .classList
-    .toggle(
-      "hidden",
-      isPix
-    );
+document
+.getElementById("paypal")
+.classList
+.toggle("hidden",pix);
 
 }
 
 
-function need(value){
+function need(v){
 
-  return value === "10"
-    ? 11000
-    : value === "5"
-    ? 6000
-    : 2000;
-
-}
-
-
-async function withdraw(){
-
-  const button =
-    document.getElementById(
-      "withdrawButton"
-    );
-
-  const msg =
-    document.getElementById(
-      "cashMsg"
-    );
-
-  msg
-    .classList
-    .remove("hidden");
-
-  button.disabled = true;
-
-  button.textContent =
-    "Enviando...";
-
-  try{
-
-    if(!s.id){
-
-      throw new Error(
-        "Usuário não identificado."
-      );
-
-    }
-
-    const value =
-      document.getElementById(
-        "withdrawAmount"
-      ).value;
-
-    const gross =
-      Number(value);
-
-    const pointsNeeded =
-      need(value);
-
-    const method =
-      document.getElementById(
-        "payMethod"
-      ).value;
-
-    const paymentField =
-      method === "pix"
-      ?
-      document.getElementById(
-        "pixKey"
-      )
-      :
-      document.getElementById(
-        "paypalKey"
-      );
-
-    const paymentKey =
-      paymentField.value.trim();
-
-    if(!paymentKey){
-
-      throw new Error(
-        "Preencha o dado de pagamento."
-      );
-
-    }
-
-    if(
-      method !== "pix" &&
-      method !== "paypal"
-    ){
-
-      throw new Error(
-        "Método de pagamento inválido."
-      );
-
-    }
-
-    if(
-      Number(s.points) <
-      pointsNeeded
-    ){
-
-      throw new Error(
-        "Pontos insuficientes. Você precisa de " +
-        pointsNeeded +
-        " pontos."
-      );
-
-    }
-
-    const result =
-      await api(
-        "/api/saques",
-        {
-          method:"POST",
-
-          body:JSON.stringify({
-
-            jogador_id:
-              Number(s.id),
-
-            pix_key:
-              paymentKey,
-
-            quantia:
-              gross,
-
-            metodo:
-              method
-
-          })
-
-        }
-      );
-
-    const playerValue =
-      Number(
-        result.valor_jogador ??
-        result.jogador ??
-        (gross * 0.70)
-      );
-
-    const platformValue =
-      Number(
-        result.valor_plataforma ??
-        result.plataforma ??
-        (gross * 0.30)
-      );
-
-    await loadPlayer();
-
-    msg.innerHTML =
-      "✅ Solicitação enviada com sucesso!<br><br>" +
-
-      "Valor solicitado: <b>R$ " +
-      gross
-        .toFixed(2)
-        .replace(".",",") +
-      "</b><br>" +
-
-      "Jogador recebe: <b>R$ " +
-      playerValue
-        .toFixed(2)
-        .replace(".",",") +
-      "</b><br>" +
-
-      "Plataforma: <b>R$ " +
-      platformValue
-        .toFixed(2)
-        .replace(".",",") +
-      "</b><br><br>" +
-
-      "Status: <b>Pendente</b>";
-
-  }catch(error){
-
-    console.error(
-      "Erro no saque:",
-      error
-    );
-
-    msg.innerHTML =
-      "❌ " +
-      (
-        error?.message ||
-        "Não foi possível registrar o saque."
-      );
-
-  }finally{
-
-    button.disabled = false;
-
-    button.textContent =
-      "Solicitar saque";
-
-  }
+return v==="10"
+?11000
+:v==="5"
+?6000
+:2000;
 
 }
 
 
-/* =========================
-   INICIALIZAÇÃO
-========================= */
+function withdraw(){
 
-(async function(){
+const v=
+document
+.getElementById("withdrawAmount")
+.value;
 
-  if(!restoreSession()){
+const n=
+need(v);
 
-    authMode("register");
+const method=
+document
+.getElementById("payMethod")
+.value;
 
-    return;
+const k=
+method==="pix"
+?document
+.getElementById("pixKey")
+.value
+.trim()
+:document
+.getElementById("paypalKey")
+.value
+.trim();
 
-  }
+const msg=
+document
+.getElementById("cashMsg");
 
-  carregarBloco();
+msg
+.classList
+.remove("hidden");
 
-  garantirBloco();
 
-  try{
+if(!k){
 
-    await loadPlayer();
+msg.textContent=
+"Preencha o dado de pagamento.";
 
-    openGame(false);
+return;
 
-  }catch(error){
+}
 
-    console.error(
-      "Erro ao restaurar sessão:",
-      error
-    );
 
-    clearSession();
+if(s.points<n){
 
-    s = {
+msg.textContent=
+"Pontos insuficientes. Você precisa de "+
+n+
+" pontos.";
 
-      id:null,
-      email:"",
-      name:"",
-      cpf:"",
-      points:0,
-      balance:0,
-      round:1,
-      code:"",
-      referrer:"",
-      dice:0,
-      question:null,
-      timer:QUESTION_TIME,
-      roundPoints:0,
-      blockNumber:1,
-      difficultyOrder:[]
+return;
 
-    };
+}
 
-    localStorage.removeItem(
-      DIFFICULTY_KEY
-    );
 
-    document
-      .getElementById("game")
-      .classList
-      .add("hidden");
+const arr=
+JSON.parse(
+localStorage.getItem(
+"quizup_withdrawals"
+)||"[]"
+);
 
-    document
-      .getElementById("auth")
-      .classList
-      .remove("hidden");
 
-    authMode("register");
+arr.push({
 
-  }
+email:s.email,
+
+value:v,
+
+method:method,
+
+date:new Date().toISOString()
+
+});
+
+
+localStorage.setItem(
+"quizup_withdrawals",
+JSON.stringify(arr)
+);
+
+
+msg.textContent=
+"Solicitação registrada.";
+
+}
+
+
+/* =====================================================
+   RESTAURAR CONTA
+===================================================== */
+
+(function(){
+
+const k=
+Object.keys(localStorage)
+.find(k=>
+k.startsWith("quizup_") &&
+!k.includes("withdrawals")
+);
+
+
+if(k){
+
+try{
+
+const saved=
+localStorage.getItem(k);
+
+if(saved){
+
+s=JSON.parse(saved);
+
+openGame();
+
+}
+
+}catch(error){
+
+console.log(
+"Não foi possível restaurar a conta:",
+error
+);
+
+}
+
+}
 
 })();
+
+
+/* =====================================================
+   SEGURANÇA EXTRA DO ANÚNCIO
+===================================================== */
+
+window.addEventListener(
+"beforeunload",
+function(){
+
+clearTimeout(hilltopAdTimeout);
+clearTimeout(hilltopAdFallbackTimer);
+
+}
+);
 
 </script>
 
 </body>
-
-</html>
+                                                                   </html>
