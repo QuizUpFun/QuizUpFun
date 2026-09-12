@@ -233,6 +233,17 @@ select{
   font-size:18px
 }
 
+.question-dice-value{
+  text-align:center;
+  font-size:22px;
+  font-weight:900;
+  margin:14px 0;
+  padding:12px;
+  border-radius:12px;
+  background:rgba(255,212,59,.15);
+  border:1px solid rgba(255,212,59,.35)
+}
+
 @media(max-width:560px){
 
   .nav{
@@ -508,6 +519,17 @@ JOGAR DADO
 
 <div class="bar">
 <div id="progress"></div>
+</div>
+
+<!-- NOVO: VALOR DO DADO FICA VISÍVEL DURANTE A PERGUNTA -->
+
+<div
+  id="questionDiceValue"
+  class="question-dice-value"
+>
+🎲 Esta pergunta vale
+<span id="questionDiceNumber">0</span>
+<span id="questionDiceText">pontos</span>
 </div>
 
 <h2 id="question"></h2>
@@ -1032,11 +1054,6 @@ function sortearValorDado(dificuldade){
 
   if(dificuldade === "facil"){
 
-    /*
-      1, 2 e 3 aparecem mais.
-      4 aparece menos.
-    */
-
     valores = [
       1,1,1,
       2,2,2,
@@ -1046,11 +1063,6 @@ function sortearValorDado(dificuldade){
 
   }else if(dificuldade === "medio"){
 
-    /*
-      5 e 6 aparecem mais.
-      7 aparece menos.
-    */
-
     valores = [
       5,5,5,
       6,6,6,
@@ -1058,11 +1070,6 @@ function sortearValorDado(dificuldade){
     ];
 
   }else{
-
-    /*
-      8 e 9 aparecem mais.
-      10 aparece menos.
-    */
 
     valores = [
       8,8,8,
@@ -1810,11 +1817,6 @@ async function login(){
         j.cpf ||
         "",
 
-      /*
-        O QuizUp começa esta nova sessão
-        com pontuação zerada.
-      */
-
       points:0,
 
       balance:
@@ -1850,11 +1852,6 @@ async function login(){
     salvarBloco();
 
     saveSession();
-
-    /*
-      Zera também o valor antigo
-      armazenado no jogador.
-    */
 
     await savePlayer();
 
@@ -2238,11 +2235,6 @@ async function carregarPerguntaPorDificuldade(
 
     }
 
-    /*
-      Tenta evitar repetir uma das
-      perguntas recentemente exibidas.
-    */
-
     const idPergunta =
       String(
         p.id ||
@@ -2425,12 +2417,6 @@ async function carregarPerguntaDiferente(
 
   }
 
-  /*
-    Se o banco tiver poucas perguntas
-    naquela dificuldade, aceita a pergunta
-    retornada pelo servidor.
-  */
-
   const resposta =
     await fetch(
 
@@ -2532,29 +2518,13 @@ async function rollDice(){
 
   answered = false;
 
-  /*
-    Descobre a dificuldade
-    desta rodada dentro do bloco
-    de 10 perguntas.
-  */
-
   const dificuldade =
     obterDificuldadeDaRodada();
-
-  /*
-    O valor do dado é compatível
-    com a dificuldade.
-  */
 
   const d =
     sortearValorDado(
       dificuldade
     );
-
-  /*
-    Nunca deixa valor antigo
-    contaminar a nova rodada.
-  */
 
   s.dice = d;
 
@@ -2615,6 +2585,20 @@ async function rollDice(){
       ? " ponto"
       : " pontos"
     );
+
+  /* NOVO: mostra o valor dentro da tela da pergunta */
+
+  document.getElementById(
+    "questionDiceNumber"
+  ).textContent =
+    d;
+
+  document.getElementById(
+    "questionDiceText"
+  ).textContent =
+    d === 1
+    ? "ponto"
+    : "pontos";
 
   document.getElementById(
     "question"
@@ -2780,19 +2764,6 @@ async function answer(index){
   const isCorrect =
     index === correct;
 
-  /*
-    REGRA PRINCIPAL:
-
-    Acertou:
-      ganha exatamente o valor do dado.
-
-    Errou:
-      ganha 0.
-
-    Tempo:
-      ganha 0.
-  */
-
   const pontosDaRodada =
     isCorrect
     ? Number(s.roundPoints || 0)
@@ -2805,11 +2776,6 @@ async function answer(index){
       pontosDaRodada;
 
   }
-
-  /*
-    Nunca mantém os pontos da rodada
-    depois que ela foi respondida.
-  */
 
   s.roundPoints =
     isCorrect
@@ -2910,6 +2876,18 @@ function finishQuestion(){
     .textContent =
       "";
 
+  /* NOVO: limpa o valor anterior */
+
+  document.getElementById(
+    "questionDiceNumber"
+  ).textContent =
+    "0";
+
+  document.getElementById(
+    "questionDiceText"
+  ).textContent =
+    "pontos";
+
   document
     .getElementById("feedback")
     .classList
@@ -2919,11 +2897,6 @@ function finishQuestion(){
     .getElementById("nextWrap")
     .classList
     .add("hidden");
-
-  /*
-    Não carrega pontos da rodada
-    anterior para a próxima.
-  */
 
   s.roundPoints = 0;
 
@@ -3276,22 +3249,11 @@ async function withdraw(){
 
   }
 
-  /*
-    Restaura o bloco atual de 10 rodadas.
-  */
-
   carregarBloco();
 
   garantirBloco();
 
   try{
-
-    /*
-      Carrega os dados do jogador.
-      A pontuação existente não é apagada
-      automaticamente em uma simples atualização
-      da página.
-    */
 
     await loadPlayer();
 
