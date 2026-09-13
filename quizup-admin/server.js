@@ -222,18 +222,10 @@ async function atualizarSaldoHilltopAds() {
       return;
     }
 
-    // -------------------------------------------------
-    // MOSTRAR A RESPOSTA SEM MOSTRAR A CHAVE
-    // -------------------------------------------------
-
     console.log(
       "Resposta HilltopAds:",
       JSON.stringify(dados)
     );
-
-    // -------------------------------------------------
-    // PROCURAR O SALDO
-    // -------------------------------------------------
 
     let saldo = null;
 
@@ -351,10 +343,6 @@ async function atualizarSaldoHilltopAds() {
       saldo
     );
 
-    // -------------------------------------------------
-    // GRAVAR NO AIVEN
-    // -------------------------------------------------
-
     const resultado = await pool.query(
       `
       INSERT INTO parceiros (
@@ -397,7 +385,7 @@ async function atualizarSaldoHilltopAds() {
   } catch (erro) {
 
     console.error(
-      "Erro ao atualizar saldo HilltopAds:",
+      "Erro ao atualizar saldo da HilltopAds:",
       erro.message
     );
   }
@@ -1781,6 +1769,64 @@ app.patch("/api/admin/parceiros/:id/status", async (req, res) => {
       sucesso: false,
       erro:
         "Erro ao alterar status do parceiro."
+    });
+  }
+});
+
+// =====================================================
+// MONETAG — RELATÓRIOS
+// =====================================================
+
+app.get("/api/admin/monetag", async (req, res) => {
+  try {
+
+    const registros = await pool.query(`
+      SELECT
+        id,
+        data,
+        impressoes,
+        profit,
+        cpm,
+        criado_em
+      FROM monetag_relatorios
+      ORDER BY data DESC NULLS LAST, id DESC
+    `);
+
+    const totais = await pool.query(`
+      SELECT
+        COUNT(*) AS total_registros,
+        COALESCE(SUM(impressoes), 0) AS total_impressoes,
+        COALESCE(SUM(profit), 0) AS total_profit,
+        COALESCE(AVG(cpm), 0) AS cpm_medio
+      FROM monetag_relatorios
+    `);
+
+    res.json({
+      sucesso: true,
+      registros: registros.rows,
+      totais: {
+        total_registros:
+          Number(totais.rows[0].total_registros),
+        total_impressoes:
+          Number(totais.rows[0].total_impressoes),
+        total_profit:
+          Number(totais.rows[0].total_profit),
+        cpm_medio:
+          Number(totais.rows[0].cpm_medio)
+      }
+    });
+
+  } catch (erro) {
+
+    console.error(
+      "Erro ao carregar relatórios Monetag:",
+      erro
+    );
+
+    res.status(500).json({
+      sucesso: false,
+      erro:
+        "Erro ao carregar relatórios do Monetag."
     });
   }
 });
