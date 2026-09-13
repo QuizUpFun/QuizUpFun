@@ -1,8 +1,11 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QuizUp Admin</title>  <style>
+  <title>QuizUp Admin</title>
+
+  <style>
     * {
       box-sizing: border-box;
     }
@@ -467,572 +470,852 @@
         font-size: 18px;
       }
     }
-  </style></head><body>  <!-- LOGIN -->  <div id="loginContainer" class="login-container">
+  </style>
+</head>
+
+<body>
+
+  <!-- LOGIN -->
+
+  <div id="loginContainer" class="login-container">
+
     <div class="login-box">
+
       <h1>🎯 QuizUp Admin</h1>
-      <p>Painel administrativo</p>  <form id="loginForm">
-    <div class="form-group">
-      <label for="loginEmail">E-mail</label>
-      <input
-        type="email"
-        id="loginEmail"
-        required
-        autocomplete="email"
-      >
-    </div>
 
-    <div class="form-group">
-      <label for="loginSenha">Senha</label>
-      <input
-        type="password"
-        id="loginSenha"
-        required
-        autocomplete="current-password"
-      >
-    </div>
+      <p>Painel administrativo</p>
 
-    <button class="btn btn-primary" type="submit" style="width:100%;">
-      Entrar
-    </button>
-  </form>
+      <form id="loginForm">
 
-  <div id="loginMessage"></div>
-</div>
+        <div class="form-group">
 
-  </div>  <!-- ADMIN -->  <div id="adminPanel"><div class="topbar">
-  <h1>🎯 QuizUp Admin</h1>
-
-  <button class="logout-btn" onclick="sair()">
-    Sair
-  </button>
-</div>
-
-<div class="layout">
-
-  <!-- MENU -->
-  <aside class="sidebar">
-
-    <button class="menu-btn active"
-      onclick="mostrarPagina('dashboard', this)">
-      📊 Dashboard
-    </button>
-
-    <button class="menu-btn"
-      onclick="mostrarPagina('jogadores', this)">
-      👥 Jogadores
-    </button>
-
-    <button class="menu-btn"
-      onclick="mostrarPagina('perguntas', this)">
-      ❓ Perguntas
-    </button>
-
-    <button class="menu-btn"
-      onclick="mostrarPagina('saques', this)">
-      💰 Saques
-    </button>
-
-    <button class="menu-btn"
-      onclick="mostrarPagina('parceiros', this)">
-      🤝 Parceiros
-    </button>
-
-    <button class="menu-btn"
-      onclick="mostrarPagina('movimentacoes', this)">
-      🔄 Movimentações
-    </button>
-
-    <button class="menu-btn"
-      onclick="mostrarPagina('configuracoes', this)">
-      ⚙️ Configurações
-    </button>
-
-  </aside>
-
-
-  <!-- CONTEÚDO -->
-  <main class="content">
-
-
-    <!-- DASHBOARD -->
-    <section id="dashboard" class="page active">
-
-      <h2>📊 Dashboard</h2>
-
-      <div class="cards">
-
-        <div class="card">
-          <div class="stat-title">Jogadores</div>
-          <div class="stat-value" id="dashJogadores">0</div>
-        </div>
-
-        <div class="card">
-          <div class="stat-title">Perguntas</div>
-          <div class="stat-value" id="dashPerguntas">0</div>
-        </div>
-
-        <div class="card">
-          <div class="stat-title">Pontos</div>
-          <div class="stat-value" id="dashPontos">0</div>
-        </div>
-
-        <div class="card">
-          <div class="stat-title">Saldo</div>
-          <div class="stat-value" id="dashSaldo">R$ 0,00</div>
-        </div>
-
-      </div>
-
-      <div class="card">
-        <h3>QuizUp</h3>
-        <p>
-          Painel administrativo conectado ao PostgreSQL Aiven
-          através do backend Render.
-        </p>
-      </div>
-
-    </section>
-
-
-    <!-- JOGADORES -->
-    <section id="jogadores" class="page">
-
-      <h2>👥 Jogadores</h2>
-
-      <div id="jogadoresMensagem"></div>
-
-      <div class="table-container">
-        <div id="jogadoresLoading" class="loading">
-          Carregando jogadores...
-        </div>
-
-        <table id="jogadoresTable" style="display:none;">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nome</th>
-              <th>E-mail</th>
-              <th>CPF</th>
-              <th>Pontos</th>
-              <th>Saldo</th>
-              <th>Cadastro</th>
-            </tr>
-          </thead>
-
-          <tbody id="jogadoresBody"></tbody>
-        </table>
-      </div>
-
-    </section>
-
-
-    <!-- PERGUNTAS -->
-    <section id="perguntas" class="page">
-
-      <h2>❓ Criação de perguntas</h2>
-
-      <div id="perguntasMensagem"></div>
-
-      <div class="card">
-
-        <h3>➕ Criar pergunta</h3>
-
-        <form id="perguntaForm">
-
-          <div class="form-group">
-            <label>Pergunta</label>
-            <textarea
-              id="perguntaTexto"
-              required
-              placeholder="Digite a pergunta"
-            ></textarea>
-          </div>
-
-          <div class="form-grid">
-
-            <div class="form-group">
-              <label>Alternativa A</label>
-              <input id="alternativaA" required>
-            </div>
-
-            <div class="form-group">
-              <label>Alternativa B</label>
-              <input id="alternativaB" required>
-            </div>
-
-            <div class="form-group">
-              <label>Alternativa C</label>
-              <input id="alternativaC" required>
-            </div>
-
-            <div class="form-group">
-              <label>Alternativa D</label>
-              <input id="alternativaD" required>
-            </div>
-
-            <div class="form-group">
-              <label>Resposta correta</label>
-
-              <select id="respostaCorreta" required>
-                <option value="">Selecione</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Dificuldade</label>
-
-              <select id="dificuldade" required>
-                <option value="">Selecione</option>
-                <option value="facil">
-                  Fácil — 1º ao 8º ano
-                </option>
-                <option value="medio">
-                  Médio — Científicas
-                </option>
-                <option value="dificil">
-                  Difícil — Farmácia
-                </option>
-              </select>
-            </div>
-
-          </div>
-
-          <button class="btn btn-success" type="submit">
-            Salvar pergunta
-          </button>
-
-        </form>
-
-      </div>
-
-
-      <div class="card">
-
-        <h3>📋 Perguntas cadastradas</h3>
-
-        <div class="table-container">
-
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Pergunta</th>
-                <th>Resposta</th>
-                <th>Dificuldade</th>
-              </tr>
-            </thead>
-
-            <tbody id="perguntasBody">
-            </tbody>
-          </table>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- SAQUES -->
-    <section id="saques" class="page">
-
-      <h2>💰 Saques</h2>
-
-      <div class="card">
-        <p>
-          Os saques registrados pelos jogadores aparecerão aqui.
-        </p>
-      </div>
-
-      <div class="table-container">
-
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Jogador</th>
-              <th>Valor</th>
-              <th>Pix</th>
-              <th>Status</th>
-              <th>Data</th>
-            </tr>
-          </thead>
-
-          <tbody id="saquesBody">
-          </tbody>
-        </table>
-
-      </div>
-
-    </section>
-
-
-    <!-- PARCEIROS -->
-    <section id="parceiros" class="page">
-
-      <h2>🤝 Parceiros</h2>
-
-      <div id="parceirosMensagem"></div>
-
-      <div class="card">
-
-        <div style="
-          display:flex;
-          justify-content:space-between;
-          align-items:center;
-          gap:10px;
-          flex-wrap:wrap;
-        ">
-
-          <div>
-            <h3 style="margin:0;">
-              Parceiros cadastrados
-            </h3>
-
-            <p style="color:#666;">
-              O saldo é exibido somente neste painel administrativo.
-            </p>
-          </div>
-
-          <button
-            class="btn btn-primary"
-            onclick="abrirModalParceiro()">
-            ➕ Novo parceiro
-          </button>
-
-        </div>
-
-
-        <!-- MONETAG -->
-        <div class="monetag-box">
-
-          <h3 style="margin-top:0;">
-            📊 Monetag
-          </h3>
-
-          <p style="color:#666;">
-            Importe o relatório CSV baixado em
-            <strong>Statistics → Export to CSV</strong>
-            na Monetag.
-          </p>
+          <label for="loginEmail">
+            E-mail
+          </label>
 
           <input
-            type="file"
-            id="monetagCsv"
-            accept=".csv,text/csv"
+            type="email"
+            id="loginEmail"
+            required
+            autocomplete="email"
           >
 
-          <div style="margin-top:12px;">
-            <button
-              type="button"
-              class="btn btn-primary"
-              onclick="importarCsvMonetag()">
-              📥 Importar CSV Monetag
-            </button>
-          </div>
+        </div>
 
-          <div
-            id="monetagMensagem"
-            class="page-message"
-            style="margin-top:15px;">
-          </div>
+        <div class="form-group">
 
-          <div
-            id="monetagResultado"
-            class="monetag-result"
-            style="display:none;">
+          <label for="loginSenha">
+            Senha
+          </label>
 
-            <div class="monetag-stat">
-              <small>Impressões</small>
-              <strong id="monetagImpressoes">0</strong>
-            </div>
-
-            <div class="monetag-stat">
-              <small>Profit</small>
-              <strong id="monetagProfit">$0.00</strong>
-            </div>
-
-            <div class="monetag-stat">
-              <small>CPM médio</small>
-              <strong id="monetagCpm">$0.00</strong>
-            </div>
-
-          </div>
+          <input
+            type="password"
+            id="loginSenha"
+            required
+            autocomplete="current-password"
+          >
 
         </div>
 
-      </div>
+        <button
+          class="btn btn-primary"
+          type="submit"
+          style="width:100%;">
+          Entrar
+        </button>
 
+      </form>
 
-      <div class="table-container">
+      <div id="loginMessage"></div>
 
-        <div id="parceirosLoading" class="loading">
-          Carregando parceiros...
-        </div>
-
-        <table id="parceirosTable" style="display:none;">
-
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nome</th>
-              <th>E-mail</th>
-              <th>Código</th>
-              <th>Pontos</th>
-              <th>Saldo</th>
-              <th>Status</th>
-              <th>Cadastro</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-
-          <tbody id="parceirosBody"></tbody>
-
-        </table>
-
-      </div>
-
-    </section>
-
-
-    <!-- MOVIMENTAÇÕES -->
-    <section id="movimentacoes" class="page">
-
-      <h2>🔄 Movimentações</h2>
-
-      <div class="card">
-
-        <p>
-          Histórico de movimentações dos parceiros.
-        </p>
-
-      </div>
-
-      <div class="table-container">
-
-        <table>
-
-          <thead>
-            <tr>
-              <th>Parceiro</th>
-              <th>Tipo</th>
-              <th>Pontos</th>
-              <th>Valor</th>
-              <th>Descrição</th>
-              <th>Data</th>
-            </tr>
-          </thead>
-
-          <tbody id="movimentacoesBody">
-          </tbody>
-
-        </table>
-
-      </div>
-
-    </section>
-
-
-    <!-- CONFIGURAÇÕES -->
-    <section id="configuracoes" class="page">
-
-      <h2>⚙️ Configurações</h2>
-
-      <div class="card">
-
-        <h3>Banco de dados</h3>
-
-        <p>
-          <strong>Banco:</strong> PostgreSQL Aiven
-        </p>
-
-        <p>
-          <strong>Projeto:</strong> QuizUp
-        </p>
-
-        <p>
-          <strong>Backend:</strong>
-          Render
-        </p>
-
-        <p>
-          <strong>API:</strong>
-          https://quizup-api-qxn2.onrender.com
-        </p>
-
-      </div>
-
-    </section>
-
-  </main>
-
-</div>
-
-  </div>  <!-- MODAL PARCEIRO -->  <div id="parceiroModal" class="modal"><div class="modal-content">
-
-  <div class="modal-header">
-
-    <h3 id="modalParceiroTitulo">
-      Novo parceiro
-    </h3>
-
-    <button
-      class="close-btn"
-      onclick="fecharModalParceiro()">
-      ×
-    </button>
+    </div>
 
   </div>
 
-  <form id="parceiroForm">
 
-    <input type="hidden" id="parceiroId">
+  <!-- ADMIN -->
 
-    <div class="form-group">
-      <label>Nome</label>
-      <input id="parceiroNome" required>
-    </div>
+  <div id="adminPanel">
 
-    <div class="form-group">
-      <label>E-mail</label>
-      <input
-        type="email"
-        id="parceiroEmail">
-    </div>
+    <div class="topbar">
 
-    <div class="form-group">
-      <label>Código do parceiro</label>
-      <input id="parceiroCodigo">
-    </div>
-
-    <div class="actions">
+      <h1>🎯 QuizUp Admin</h1>
 
       <button
-        type="submit"
-        class="btn btn-success">
-        Salvar
-      </button>
-
-      <button
-        type="button"
-        class="btn btn-secondary"
-        onclick="fecharModalParceiro()">
-        Cancelar
+        class="logout-btn"
+        onclick="sair()">
+        Sair
       </button>
 
     </div>
 
-  </form>
+    <div class="layout">
 
-</div>
+      <!-- MENU -->
 
-  </div><script>
+      <aside class="sidebar">
 
-const API_URL = "https://quizup-api-qxn2.onrender.com";
+        <button
+          class="menu-btn active"
+          onclick="mostrarPagina('dashboard', this)">
+          📊 Dashboard
+        </button>
+
+        <button
+          class="menu-btn"
+          onclick="mostrarPagina('jogadores', this)">
+          👥 Jogadores
+        </button>
+
+        <button
+          class="menu-btn"
+          onclick="mostrarPagina('perguntas', this)">
+          ❓ Perguntas
+        </button>
+
+        <button
+          class="menu-btn"
+          onclick="mostrarPagina('saques', this)">
+          💰 Saques
+        </button>
+
+        <button
+          class="menu-btn"
+          onclick="mostrarPagina('parceiros', this)">
+          🤝 Parceiros
+        </button>
+
+        <button
+          class="menu-btn"
+          onclick="mostrarPagina('movimentacoes', this)">
+          🔄 Movimentações
+        </button>
+
+        <button
+          class="menu-btn"
+          onclick="mostrarPagina('configuracoes', this)">
+          ⚙️ Configurações
+        </button>
+
+      </aside>
+
+
+      <!-- CONTEÚDO -->
+
+      <main class="content">
+
+
+        <!-- DASHBOARD -->
+
+        <section
+          id="dashboard"
+          class="page active">
+
+          <h2>📊 Dashboard</h2>
+
+          <div class="cards">
+
+            <div class="card">
+
+              <div class="stat-title">
+                Jogadores
+              </div>
+
+              <div
+                class="stat-value"
+                id="dashJogadores">
+                0
+              </div>
+
+            </div>
+
+            <div class="card">
+
+              <div class="stat-title">
+                Perguntas
+              </div>
+
+              <div
+                class="stat-value"
+                id="dashPerguntas">
+                0
+              </div>
+
+            </div>
+
+            <div class="card">
+
+              <div class="stat-title">
+                Pontos
+              </div>
+
+              <div
+                class="stat-value"
+                id="dashPontos">
+                0
+              </div>
+
+            </div>
+
+            <div class="card">
+
+              <div class="stat-title">
+                Saldo
+              </div>
+
+              <div
+                class="stat-value"
+                id="dashSaldo">
+                R$ 0,00
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="card">
+
+            <h3>QuizUp</h3>
+
+            <p>
+              Painel administrativo conectado ao PostgreSQL Aiven
+              através do backend Render.
+            </p>
+
+          </div>
+
+        </section>
+
+
+        <!-- JOGADORES -->
+
+        <section
+          id="jogadores"
+          class="page">
+
+          <h2>👥 Jogadores</h2>
+
+          <div id="jogadoresMensagem"></div>
+
+          <div class="table-container">
+
+            <div
+              id="jogadoresLoading"
+              class="loading">
+              Carregando jogadores...
+            </div>
+
+            <table
+              id="jogadoresTable"
+              style="display:none;">
+
+              <thead>
+
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>E-mail</th>
+                  <th>CPF</th>
+                  <th>Pontos</th>
+                  <th>Saldo</th>
+                  <th>Cadastro</th>
+                </tr>
+
+              </thead>
+
+              <tbody
+                id="jogadoresBody">
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+
+        <!-- PERGUNTAS -->
+
+        <section
+          id="perguntas"
+          class="page">
+
+          <h2>❓ Criação de perguntas</h2>
+
+          <div id="perguntasMensagem"></div>
+
+          <div class="card">
+
+            <h3>➕ Criar pergunta</h3>
+
+            <form id="perguntaForm">
+
+              <div class="form-group">
+
+                <label>Pergunta</label>
+
+                <textarea
+                  id="perguntaTexto"
+                  required
+                  placeholder="Digite a pergunta">
+                </textarea>
+
+              </div>
+
+              <div class="form-grid">
+
+                <div class="form-group">
+
+                  <label>
+                    Alternativa A
+                  </label>
+
+                  <input
+                    id="alternativaA"
+                    required>
+
+                </div>
+
+                <div class="form-group">
+
+                  <label>
+                    Alternativa B
+                  </label>
+
+                  <input
+                    id="alternativaB"
+                    required>
+
+                </div>
+
+                <div class="form-group">
+
+                  <label>
+                    Alternativa C
+                  </label>
+
+                  <input
+                    id="alternativaC"
+                    required>
+
+                </div>
+
+                <div class="form-group">
+
+                  <label>
+                    Alternativa D
+                  </label>
+
+                  <input
+                    id="alternativaD"
+                    required>
+
+                </div>
+
+                <div class="form-group">
+
+                  <label>
+                    Resposta correta
+                  </label>
+
+                  <select
+                    id="respostaCorreta"
+                    required>
+
+                    <option value="">
+                      Selecione
+                    </option>
+
+                    <option value="A">
+                      A
+                    </option>
+
+                    <option value="B">
+                      B
+                    </option>
+
+                    <option value="C">
+                      C
+                    </option>
+
+                    <option value="D">
+                      D
+                    </option>
+
+                  </select>
+
+                </div>
+
+                <div class="form-group">
+
+                  <label>
+                    Dificuldade
+                  </label>
+
+                  <select
+                    id="dificuldade"
+                    required>
+
+                    <option value="">
+                      Selecione
+                    </option>
+
+                    <option value="facil">
+                      Fácil — 1º ao 8º ano
+                    </option>
+
+                    <option value="medio">
+                      Médio — Científicas
+                    </option>
+
+                    <option value="dificil">
+                      Difícil — Farmácia
+                    </option>
+
+                  </select>
+
+                </div>
+
+              </div>
+
+              <button
+                class="btn btn-success"
+                type="submit">
+                Salvar pergunta
+              </button>
+
+            </form>
+
+          </div>
+
+
+          <div class="card">
+
+            <h3>
+              📋 Perguntas cadastradas
+            </h3>
+
+            <div class="table-container">
+
+              <table>
+
+                <thead>
+
+                  <tr>
+                    <th>ID</th>
+                    <th>Pergunta</th>
+                    <th>Resposta</th>
+                    <th>Dificuldade</th>
+                  </tr>
+
+                </thead>
+
+                <tbody
+                  id="perguntasBody">
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- SAQUES -->
+
+        <section
+          id="saques"
+          class="page">
+
+          <h2>💰 Saques</h2>
+
+          <div class="card">
+
+            <p>
+              Os saques registrados pelos jogadores aparecerão aqui.
+            </p>
+
+          </div>
+
+          <div class="table-container">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>ID</th>
+                  <th>Jogador</th>
+                  <th>Valor</th>
+                  <th>Pix</th>
+                  <th>Status</th>
+                  <th>Data</th>
+                </tr>
+
+              </thead>
+
+              <tbody
+                id="saquesBody">
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+
+        <!-- PARCEIROS -->
+
+        <section
+          id="parceiros"
+          class="page">
+
+          <h2>🤝 Parceiros</h2>
+
+          <div id="parceirosMensagem"></div>
+
+          <div class="card">
+
+            <div style="
+              display:flex;
+              justify-content:space-between;
+              align-items:center;
+              gap:10px;
+              flex-wrap:wrap;
+            ">
+
+              <div>
+
+                <h3 style="margin:0;">
+                  Parceiros cadastrados
+                </h3>
+
+                <p style="color:#666;">
+                  O saldo é exibido somente neste painel administrativo.
+                </p>
+
+              </div>
+
+              <button
+                class="btn btn-primary"
+                onclick="abrirModalParceiro()">
+                ➕ Novo parceiro
+              </button>
+
+            </div>
+
+
+            <!-- MONETAG -->
+
+            <div class="monetag-box">
+
+              <h3 style="margin-top:0;">
+                📊 Monetag
+              </h3>
+
+              <p style="color:#666;">
+                Importe o relatório CSV baixado em
+                <strong>
+                  Statistics → Export to CSV
+                </strong>
+                na Monetag.
+              </p>
+
+              <input
+                type="file"
+                id="monetagCsv"
+                accept=".csv,text/csv">
+
+              <div style="margin-top:12px;">
+
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onclick="importarCsvMonetag()">
+                  📥 Importar CSV Monetag
+                </button>
+
+              </div>
+
+              <div
+                id="monetagMensagem"
+                class="page-message"
+                style="margin-top:15px;">
+              </div>
+
+              <div
+                id="monetagResultado"
+                class="monetag-result"
+                style="display:none;">
+
+                <div class="monetag-stat">
+
+                  <small>
+                    Impressões
+                  </small>
+
+                  <strong
+                    id="monetagImpressoes">
+                    0
+                  </strong>
+
+                </div>
+
+                <div class="monetag-stat">
+
+                  <small>
+                    Profit
+                  </small>
+
+                  <strong
+                    id="monetagProfit">
+                    $0.00
+                  </strong>
+
+                </div>
+
+                <div class="monetag-stat">
+
+                  <small>
+                    CPM médio
+                  </small>
+
+                  <strong
+                    id="monetagCpm">
+                    $0.00
+                  </strong>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="table-container">
+
+            <div
+              id="parceirosLoading"
+              class="loading">
+              Carregando parceiros...
+            </div>
+
+            <table
+              id="parceirosTable"
+              style="display:none;">
+
+              <thead>
+
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>E-mail</th>
+                  <th>Código</th>
+                  <th>Pontos</th>
+                  <th>Saldo</th>
+                  <th>Status</th>
+                  <th>Cadastro</th>
+                  <th>Ações</th>
+                </tr>
+
+              </thead>
+
+              <tbody
+                id="parceirosBody">
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+
+        <!-- MOVIMENTAÇÕES -->
+
+        <section
+          id="movimentacoes"
+          class="page">
+
+          <h2>🔄 Movimentações</h2>
+
+          <div class="card">
+
+            <p>
+              Histórico de movimentações dos parceiros.
+            </p>
+
+          </div>
+
+          <div class="table-container">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>Parceiro</th>
+                  <th>Tipo</th>
+                  <th>Pontos</th>
+                  <th>Valor</th>
+                  <th>Descrição</th>
+                  <th>Data</th>
+                </tr>
+
+              </thead>
+
+              <tbody
+                id="movimentacoesBody">
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+
+        <!-- CONFIGURAÇÕES -->
+
+        <section
+          id="configuracoes"
+          class="page">
+
+          <h2>⚙️ Configurações</h2>
+
+          <div class="card">
+
+            <h3>
+              Banco de dados
+            </h3>
+
+            <p>
+              <strong>Banco:</strong>
+              PostgreSQL Aiven
+            </p>
+
+            <p>
+              <strong>Projeto:</strong>
+              QuizUp
+            </p>
+
+            <p>
+              <strong>Backend:</strong>
+              Render
+            </p>
+
+            <p>
+              <strong>API:</strong>
+              https://quizup-api-qxn2.onrender.com
+            </p>
+
+          </div>
+
+        </section>
+
+      </main>
+
+    </div>
+
+  </div>
+
+
+  <!-- MODAL PARCEIRO -->
+
+  <div
+    id="parceiroModal"
+    class="modal">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+
+        <h3 id="modalParceiroTitulo">
+          Novo parceiro
+        </h3>
+
+        <button
+          class="close-btn"
+          onclick="fecharModalParceiro()">
+          ×
+        </button>
+
+      </div>
+
+      <form id="parceiroForm">
+
+        <input
+          type="hidden"
+          id="parceiroId">
+
+        <div class="form-group">
+
+          <label>
+            Nome
+          </label>
+
+          <input
+            id="parceiroNome"
+            required>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>
+            E-mail
+          </label>
+
+          <input
+            type="email"
+            id="parceiroEmail">
+
+        </div>
+
+        <div class="form-group">
+
+          <label>
+            Código do parceiro
+          </label>
+
+          <input
+            id="parceiroCodigo">
+
+        </div>
+
+        <div class="actions">
+
+          <button
+            type="submit"
+            class="btn btn-success">
+            Salvar
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="fecharModalParceiro()">
+            Cancelar
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+<script>
+
+const API_URL =
+  "https://quizup-api-qxn2.onrender.com";
 
 let parceirosCache = [];
 
@@ -1043,7 +1326,10 @@ let parceirosCache = [];
 
 function escapar(valor) {
 
-  if (valor === null || valor === undefined) {
+  if (
+    valor === null ||
+    valor === undefined
+  ) {
     return "";
   }
 
@@ -1070,7 +1356,9 @@ function formatarMoeda(valor) {
 
 function formatarData(valor) {
 
-  if (!valor) return "-";
+  if (!valor) {
+    return "-";
+  }
 
   const data = new Date(valor);
 
@@ -1082,15 +1370,28 @@ function formatarData(valor) {
 }
 
 
-function mostrarMensagem(elemento, mensagem, tipo) {
+function mostrarMensagem(
+  elemento,
+  mensagem,
+  tipo
+) {
 
-  elemento.className = "page-message " + tipo;
-  elemento.innerHTML = escapar(mensagem);
-  elemento.style.display = "block";
+  elemento.className =
+    "page-message " + tipo;
+
+  elemento.innerHTML =
+    escapar(mensagem);
+
+  elemento.style.display =
+    "block";
 
   setTimeout(() => {
-    elemento.style.display = "none";
+
+    elemento.style.display =
+      "none";
+
   }, 4000);
+
 }
 
 
@@ -1100,100 +1401,131 @@ function mostrarMensagem(elemento, mensagem, tipo) {
 
 document
   .getElementById("loginForm")
-  .addEventListener("submit", async function(event) {
+  .addEventListener(
+    "submit",
+    async function(event) {
 
-    event.preventDefault();
+      event.preventDefault();
 
-    const email =
-      document.getElementById("loginEmail").value.trim();
+      const email =
+        document
+          .getElementById("loginEmail")
+          .value
+          .trim();
 
-    const senha =
-      document.getElementById("loginSenha").value;
+      const senha =
+        document
+          .getElementById("loginSenha")
+          .value;
 
-    const mensagem =
-      document.getElementById("loginMessage");
+      const mensagem =
+        document
+          .getElementById("loginMessage");
 
-    mensagem.className = "";
-    mensagem.textContent = "Entrando...";
+      mensagem.className = "";
+      mensagem.textContent =
+        "Entrando...";
 
-    try {
+      try {
 
-      const resposta = await fetch(
-        API_URL + "/api/admin/login",
-        {
-          method: "POST",
+        const resposta =
+          await fetch(
+            API_URL +
+            "/api/admin/login",
+            {
+              method: "POST",
 
-          headers: {
-            "Content-Type": "application/json"
-          },
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
 
-          body: JSON.stringify({
-            email,
-            senha
-          })
+              body:
+                JSON.stringify({
+                  email,
+                  senha
+                })
+            }
+          );
+
+        const dados =
+          await resposta.json();
+
+        if (
+          !resposta.ok ||
+          dados.sucesso === false
+        ) {
+
+          mensagem.className =
+            "error";
+
+          mensagem.textContent =
+            dados.mensagem ||
+            dados.message ||
+            "E-mail ou senha incorretos.";
+
+          return;
         }
-      );
 
-      const dados = await resposta.json();
+        localStorage.setItem(
+          "quizup_admin",
+          JSON.stringify(
+            dados.admin || {
+              email
+            }
+          )
+        );
 
-      if (!resposta.ok || dados.sucesso === false) {
+        entrarNoPainel();
 
-        mensagem.className = "error";
+      } catch (erro) {
+
+        console.error(erro);
+
+        mensagem.className =
+          "error";
 
         mensagem.textContent =
-          dados.mensagem ||
-          dados.message ||
-          "E-mail ou senha incorretos.";
+          "Não foi possível conectar ao backend.";
 
-        return;
       }
 
-      localStorage.setItem(
-        "quizup_admin",
-        JSON.stringify(dados.admin || {
-          email
-        })
-      );
-
-      entrarNoPainel();
-
-    } catch (erro) {
-
-      console.error(erro);
-
-      mensagem.className = "error";
-
-      mensagem.textContent =
-        "Não foi possível conectar ao backend.";
     }
-
-  });
+  );
 
 
 function entrarNoPainel() {
 
-  document.getElementById("loginContainer").style.display =
-    "none";
+  document
+    .getElementById("loginContainer")
+    .style.display = "none";
 
-  document.getElementById("adminPanel").style.display =
-    "block";
+  document
+    .getElementById("adminPanel")
+    .style.display = "block";
 
   carregarDashboard();
+
 }
 
 
 function sair() {
 
-  localStorage.removeItem("quizup_admin");
+  localStorage.removeItem(
+    "quizup_admin"
+  );
 
   location.reload();
+
 }
 
 
 function verificarLogin() {
 
   const admin =
-    localStorage.getItem("quizup_admin");
+    localStorage.getItem(
+      "quizup_admin"
+    );
 
   if (admin) {
     entrarNoPainel();
@@ -1206,29 +1538,48 @@ function verificarLogin() {
    MENU
 ========================= */
 
-function mostrarPagina(nome, botao) {
+function mostrarPagina(
+  nome,
+  botao
+) {
 
   document
     .querySelectorAll(".page")
     .forEach(pagina => {
-      pagina.classList.remove("active");
+
+      pagina.classList.remove(
+        "active"
+      );
+
     });
 
   document
     .querySelectorAll(".menu-btn")
     .forEach(btn => {
-      btn.classList.remove("active");
+
+      btn.classList.remove(
+        "active"
+      );
+
     });
 
   const pagina =
     document.getElementById(nome);
 
   if (pagina) {
-    pagina.classList.add("active");
+
+    pagina.classList.add(
+      "active"
+    );
+
   }
 
   if (botao) {
-    botao.classList.add("active");
+
+    botao.classList.add(
+      "active"
+    );
+
   }
 
   if (nome === "dashboard") {
@@ -1248,7 +1599,14 @@ function mostrarPagina(nome, botao) {
   }
 
   if (nome === "parceiros") {
+
     carregarParceiros();
+
+    /* NOVO:
+       carrega os dados já salvos
+       no PostgreSQL/Aiven */
+    carregarMonetag();
+
   }
 
   if (nome === "movimentacoes") {
@@ -1267,7 +1625,10 @@ async function carregarDashboard() {
   try {
 
     const resposta =
-      await fetch(API_URL + "/api/admin/dashboard");
+      await fetch(
+        API_URL +
+        "/api/admin/dashboard"
+      );
 
     if (!resposta.ok) {
       return;
@@ -1276,21 +1637,29 @@ async function carregarDashboard() {
     const dados =
       await resposta.json();
 
-    document.getElementById("dashJogadores").textContent =
+    document
+      .getElementById("dashJogadores")
+      .textContent =
       dados.totalJogadores ??
       dados.jogadores ??
       0;
 
-    document.getElementById("dashPerguntas").textContent =
+    document
+      .getElementById("dashPerguntas")
+      .textContent =
       dados.totalPerguntas ??
       dados.perguntas ??
       0;
 
-    document.getElementById("dashPontos").textContent =
+    document
+      .getElementById("dashPontos")
+      .textContent =
       dados.totalPontos ??
       0;
 
-    document.getElementById("dashSaldo").textContent =
+    document
+      .getElementById("dashSaldo")
+      .textContent =
       formatarMoeda(
         dados.saldoTotal ?? 0
       );
@@ -1314,22 +1683,32 @@ async function carregarDashboard() {
 async function carregarJogadores() {
 
   const loading =
-    document.getElementById("jogadoresLoading");
+    document.getElementById(
+      "jogadoresLoading"
+    );
 
   const tabela =
-    document.getElementById("jogadoresTable");
+    document.getElementById(
+      "jogadoresTable"
+    );
 
   const corpo =
-    document.getElementById("jogadoresBody");
+    document.getElementById(
+      "jogadoresBody"
+    );
 
-  loading.style.display = "block";
-  tabela.style.display = "none";
+  loading.style.display =
+    "block";
+
+  tabela.style.display =
+    "none";
 
   try {
 
     const resposta =
       await fetch(
-        API_URL + "/api/admin/jogadores"
+        API_URL +
+        "/api/admin/jogadores"
       );
 
     const dados =
@@ -1346,7 +1725,9 @@ async function carregarJogadores() {
 
       corpo.innerHTML = `
         <tr>
-          <td colspan="7" class="empty">
+          <td
+            colspan="7"
+            class="empty">
             Nenhum jogador cadastrado.
           </td>
         </tr>
@@ -1354,31 +1735,72 @@ async function carregarJogadores() {
 
     } else {
 
-      jogadores.forEach(jogador => {
+      jogadores.forEach(
+        jogador => {
 
-        const saldo =
-          jogador.saldo ??
-          jogador.equilibrio ??
-          0;
+          const saldo =
+            jogador.saldo ??
+            jogador.equilibrio ??
+            0;
 
-        corpo.innerHTML += `
-          <tr>
-            <td>${escapar(jogador.id)}</td>
-            <td>${escapar(jogador.nome)}</td>
-            <td>${escapar(jogador.email)}</td>
-            <td>${escapar(jogador.cpf)}</td>
-            <td>${Number(jogador.pontos || 0)}</td>
-            <td>${formatarMoeda(saldo)}</td>
-            <td>${formatarData(jogador.criado_em)}</td>
-          </tr>
-        `;
+          corpo.innerHTML += `
+            <tr>
 
-      });
+              <td>
+                ${escapar(
+                  jogador.id
+                )}
+              </td>
+
+              <td>
+                ${escapar(
+                  jogador.nome
+                )}
+              </td>
+
+              <td>
+                ${escapar(
+                  jogador.email
+                )}
+              </td>
+
+              <td>
+                ${escapar(
+                  jogador.cpf
+                )}
+              </td>
+
+              <td>
+                ${Number(
+                  jogador.pontos || 0
+                )}
+              </td>
+
+              <td>
+                ${formatarMoeda(
+                  saldo
+                )}
+              </td>
+
+              <td>
+                ${formatarData(
+                  jogador.criado_em
+                )}
+              </td>
+
+            </tr>
+          `;
+
+        }
+      );
 
     }
 
-    loading.style.display = "none";
-    tabela.style.display = "table";
+    loading.style.display =
+      "none";
+
+    tabela.style.display =
+      "table";
 
   } catch (erro) {
 
@@ -1399,11 +1821,15 @@ async function carregarJogadores() {
 async function carregarPerguntas() {
 
   const corpo =
-    document.getElementById("perguntasBody");
+    document.getElementById(
+      "perguntasBody"
+    );
 
   corpo.innerHTML = `
     <tr>
-      <td colspan="4" class="loading">
+      <td
+        colspan="4"
+        class="loading">
         Carregando perguntas...
       </td>
     </tr>
@@ -1413,7 +1839,8 @@ async function carregarPerguntas() {
 
     const resposta =
       await fetch(
-        API_URL + "/api/admin/perguntas"
+        API_URL +
+        "/api/admin/perguntas"
       );
 
     const dados =
@@ -1430,7 +1857,9 @@ async function carregarPerguntas() {
 
       corpo.innerHTML = `
         <tr>
-          <td colspan="4" class="empty">
+          <td
+            colspan="4"
+            class="empty">
             Nenhuma pergunta cadastrada.
           </td>
         </tr>
@@ -1439,57 +1868,83 @@ async function carregarPerguntas() {
       return;
     }
 
-    perguntas.forEach(pergunta => {
+    perguntas.forEach(
+      pergunta => {
 
-      const dificuldade =
-        String(
-          pergunta.dificuldade || ""
-        ).toLowerCase();
+        const dificuldade =
+          String(
+            pergunta.dificuldade || ""
+          ).toLowerCase();
 
-      let classe = "badge-easy";
-      let nome = "Fácil";
+        let classe =
+          "badge-easy";
 
-      if (
-        dificuldade === "medio" ||
-        dificuldade === "médio"
-      ) {
-        classe = "badge-medium";
-        nome = "Médio";
+        let nome =
+          "Fácil";
+
+        if (
+          dificuldade === "medio" ||
+          dificuldade === "médio"
+        ) {
+
+          classe =
+            "badge-medium";
+
+          nome =
+            "Médio";
+
+        }
+
+        if (
+          dificuldade === "dificil" ||
+          dificuldade === "difícil"
+        ) {
+
+          classe =
+            "badge-hard";
+
+          nome =
+            "Difícil";
+
+        }
+
+        corpo.innerHTML += `
+          <tr>
+
+            <td>
+              ${escapar(
+                pergunta.id
+              )}
+            </td>
+
+            <td>
+              ${escapar(
+                pergunta.pergunta
+              )}
+            </td>
+
+            <td>
+              ${escapar(
+                pergunta.resposta_correta ??
+                pergunta.resposta ??
+                ""
+              )}
+            </td>
+
+            <td>
+
+              <span
+                class="badge ${classe}">
+                ${nome}
+              </span>
+
+            </td>
+
+          </tr>
+        `;
+
       }
-
-      if (
-        dificuldade === "dificil" ||
-        dificuldade === "difícil"
-      ) {
-        classe = "badge-hard";
-        nome = "Difícil";
-      }
-
-      corpo.innerHTML += `
-        <tr>
-          <td>${escapar(pergunta.id)}</td>
-
-          <td>
-            ${escapar(pergunta.pergunta)}
-          </td>
-
-          <td>
-            ${escapar(
-              pergunta.resposta_correta ??
-              pergunta.resposta ??
-              ""
-            )}
-          </td>
-
-          <td>
-            <span class="badge ${classe}">
-              ${nome}
-            </span>
-          </td>
-        </tr>
-      `;
-
-    });
+    );
 
   } catch (erro) {
 
@@ -1497,7 +1952,9 @@ async function carregarPerguntas() {
 
     corpo.innerHTML = `
       <tr>
-        <td colspan="4" class="empty">
+        <td
+          colspan="4"
+          class="empty">
           Erro ao carregar perguntas.
         </td>
       </tr>
@@ -1510,95 +1967,138 @@ async function carregarPerguntas() {
 
 document
   .getElementById("perguntaForm")
-  .addEventListener("submit", async function(event) {
+  .addEventListener(
+    "submit",
+    async function(event) {
 
-    event.preventDefault();
+      event.preventDefault();
 
-    const mensagem =
-      document.getElementById("perguntasMensagem");
-
-    const dados = {
-
-      pergunta:
-        document.getElementById("perguntaTexto").value.trim(),
-
-      alternativa_a:
-        document.getElementById("alternativaA").value.trim(),
-
-      alternativa_b:
-        document.getElementById("alternativaB").value.trim(),
-
-      alternativa_c:
-        document.getElementById("alternativaC").value.trim(),
-
-      alternativa_d:
-        document.getElementById("alternativaD").value.trim(),
-
-      resposta_correta:
-        document.getElementById("respostaCorreta").value,
-
-      dificuldade:
-        document.getElementById("dificuldade").value
-
-    };
-
-    try {
-
-      const resposta =
-        await fetch(
-          API_URL + "/api/admin/perguntas",
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify(dados)
-          }
+      const mensagem =
+        document.getElementById(
+          "perguntasMensagem"
         );
 
-      const resultado =
-        await resposta.json();
+      const dados = {
 
-      if (!resposta.ok) {
+        pergunta:
+          document
+            .getElementById(
+              "perguntaTexto"
+            )
+            .value
+            .trim(),
+
+        alternativa_a:
+          document
+            .getElementById(
+              "alternativaA"
+            )
+            .value
+            .trim(),
+
+        alternativa_b:
+          document
+            .getElementById(
+              "alternativaB"
+            )
+            .value
+            .trim(),
+
+        alternativa_c:
+          document
+            .getElementById(
+              "alternativaC"
+            )
+            .value
+            .trim(),
+
+        alternativa_d:
+          document
+            .getElementById(
+              "alternativaD"
+            )
+            .value
+            .trim(),
+
+        resposta_correta:
+          document
+            .getElementById(
+              "respostaCorreta"
+            )
+            .value,
+
+        dificuldade:
+          document
+            .getElementById(
+              "dificuldade"
+            )
+            .value
+
+      };
+
+      try {
+
+        const resposta =
+          await fetch(
+            API_URL +
+            "/api/admin/perguntas",
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+
+              body:
+                JSON.stringify(dados)
+            }
+          );
+
+        const resultado =
+          await resposta.json();
+
+        if (!resposta.ok) {
+
+          mostrarMensagem(
+            mensagem,
+            resultado.mensagem ||
+            resultado.message ||
+            "Erro ao salvar pergunta.",
+            "error"
+          );
+
+          return;
+        }
 
         mostrarMensagem(
           mensagem,
-          resultado.mensagem ||
-          resultado.message ||
-          "Erro ao salvar pergunta.",
+          "Pergunta salva com sucesso!",
+          "success"
+        );
+
+        document
+          .getElementById(
+            "perguntaForm"
+          )
+          .reset();
+
+        carregarPerguntas();
+
+      } catch (erro) {
+
+        console.error(erro);
+
+        mostrarMensagem(
+          mensagem,
+          "Erro de conexão com o backend.",
           "error"
         );
 
-        return;
       }
 
-      mostrarMensagem(
-        mensagem,
-        "Pergunta salva com sucesso!",
-        "success"
-      );
-
-      document
-        .getElementById("perguntaForm")
-        .reset();
-
-      carregarPerguntas();
-
-    } catch (erro) {
-
-      console.error(erro);
-
-      mostrarMensagem(
-        mensagem,
-        "Erro de conexão com o backend.",
-        "error"
-      );
-
     }
-
-  });
+  );
 
 
 /* =========================
@@ -1608,11 +2108,15 @@ document
 async function carregarSaques() {
 
   const corpo =
-    document.getElementById("saquesBody");
+    document.getElementById(
+      "saquesBody"
+    );
 
   corpo.innerHTML = `
     <tr>
-      <td colspan="6" class="loading">
+      <td
+        colspan="6"
+        class="loading">
         Carregando saques...
       </td>
     </tr>
@@ -1622,7 +2126,8 @@ async function carregarSaques() {
 
     const resposta =
       await fetch(
-        API_URL + "/api/saques"
+        API_URL +
+        "/api/saques"
       );
 
     const dados =
@@ -1639,7 +2144,9 @@ async function carregarSaques() {
 
       corpo.innerHTML = `
         <tr>
-          <td colspan="6" class="empty">
+          <td
+            colspan="6"
+            class="empty">
             Nenhum saque registrado.
           </td>
         </tr>
@@ -1648,20 +2155,56 @@ async function carregarSaques() {
       return;
     }
 
-    saques.forEach(saque => {
+    saques.forEach(
+      saque => {
 
-      corpo.innerHTML += `
-        <tr>
-          <td>${escapar(saque.id)}</td>
-          <td>${escapar(saque.nome || saque.email)}</td>
-          <td>${formatarMoeda(saque.valor || saque.quantia)}</td>
-          <td>${escapar(saque.pix_key || saque.pix)}</td>
-          <td>${escapar(saque.status)}</td>
-          <td>${formatarData(saque.criado_em)}</td>
-        </tr>
-      `;
+        corpo.innerHTML += `
+          <tr>
 
-    });
+            <td>
+              ${escapar(
+                saque.id
+              )}
+            </td>
+
+            <td>
+              ${escapar(
+                saque.nome ||
+                saque.email
+              )}
+            </td>
+
+            <td>
+              ${formatarMoeda(
+                saque.valor ||
+                saque.quantia
+              )}
+            </td>
+
+            <td>
+              ${escapar(
+                saque.pix_key ||
+                saque.pix
+              )}
+            </td>
+
+            <td>
+              ${escapar(
+                saque.status
+              )}
+            </td>
+
+            <td>
+              ${formatarData(
+                saque.criado_em
+              )}
+            </td>
+
+          </tr>
+        `;
+
+      }
+    );
 
   } catch (erro) {
 
@@ -1669,7 +2212,9 @@ async function carregarSaques() {
 
     corpo.innerHTML = `
       <tr>
-        <td colspan="6" class="empty">
+        <td
+          colspan="6"
+          class="empty">
           Erro ao carregar saques.
         </td>
       </tr>
@@ -1687,33 +2232,45 @@ async function carregarSaques() {
 async function carregarParceiros() {
 
   const loading =
-    document.getElementById("parceirosLoading");
+    document.getElementById(
+      "parceirosLoading"
+    );
 
   const tabela =
-    document.getElementById("parceirosTable");
+    document.getElementById(
+      "parceirosTable"
+    );
 
   const corpo =
-    document.getElementById("parceirosBody");
+    document.getElementById(
+      "parceirosBody"
+    );
 
-  loading.style.display = "block";
-  tabela.style.display = "none";
+  loading.style.display =
+    "block";
+
+  tabela.style.display =
+    "none";
 
   try {
 
     const resposta =
       await fetch(
-        API_URL + "/api/admin/parceiros"
+        API_URL +
+        "/api/admin/parceiros"
       );
 
     const dados =
       await resposta.json();
 
     if (!resposta.ok) {
+
       throw new Error(
         dados.mensagem ||
         dados.message ||
         "Erro ao carregar parceiros."
       );
+
     }
 
     parceirosCache =
@@ -1727,7 +2284,9 @@ async function carregarParceiros() {
 
       corpo.innerHTML = `
         <tr>
-          <td colspan="9" class="empty">
+          <td
+            colspan="9"
+            class="empty">
             Nenhum parceiro cadastrado.
           </td>
         </tr>
@@ -1735,108 +2294,136 @@ async function carregarParceiros() {
 
     } else {
 
-      parceirosCache.forEach(parceiro => {
+      parceirosCache.forEach(
+        parceiro => {
 
-        const ativo =
-          parceiro.ativo !== false;
+          const ativo =
+            parceiro.ativo !== false;
 
-        corpo.innerHTML += `
+          corpo.innerHTML += `
 
-          <tr>
+            <tr>
 
-            <td>
-              ${escapar(parceiro.id)}
-            </td>
+              <td>
+                ${escapar(
+                  parceiro.id
+                )}
+              </td>
 
-            <td>
-              ${escapar(parceiro.nome)}
-            </td>
+              <td>
+                ${escapar(
+                  parceiro.nome
+                )}
+              </td>
 
-            <td>
-              ${escapar(parceiro.email)}
-            </td>
+              <td>
+                ${escapar(
+                  parceiro.email
+                )}
+              </td>
 
-            <td>
-              ${escapar(parceiro.codigo)}
-            </td>
+              <td>
+                ${escapar(
+                  parceiro.codigo
+                )}
+              </td>
 
-            <td>
-              ${Number(parceiro.pontos || 0)}
-            </td>
+              <td>
+                ${Number(
+                  parceiro.pontos || 0
+                )}
+              </td>
 
-            <td>
-              <strong>
-                ${formatarMoeda(parceiro.saldo)}
-              </strong>
-            </td>
+              <td>
 
-            <td>
+                <strong>
+                  ${formatarMoeda(
+                    parceiro.saldo
+                  )}
+                </strong>
 
-              <span class="badge ${
-                ativo
-                  ? "badge-success"
-                  : "badge-danger"
-              }">
+              </td>
 
-                ${ativo
-                  ? "Ativo"
-                  : "Inativo"}
+              <td>
 
-              </span>
-
-            </td>
-
-            <td>
-              ${formatarData(
-                parceiro.criado_em
-              )}
-            </td>
-
-            <td>
-
-              <div class="actions">
-
-                <button
-                  class="btn btn-warning"
-                  onclick="editarParceiro(${Number(parceiro.id)})">
-
-                  ✏️ Editar
-
-                </button>
-
-                <button
-                  class="btn ${
+                <span
+                  class="badge ${
                     ativo
-                      ? "btn-danger"
-                      : "btn-success"
-                  }"
-                  onclick="alterarStatusParceiro(
-                    ${Number(parceiro.id)},
-                    ${ativo}
-                  )">
+                      ? "badge-success"
+                      : "badge-danger"
+                  }">
 
                   ${
                     ativo
-                      ? "🔴 Desativar"
-                      : "🟢 Ativar"
+                      ? "Ativo"
+                      : "Inativo"
                   }
 
-                </button>
+                </span>
 
-              </div>
+              </td>
 
-            </td>
+              <td>
+                ${formatarData(
+                  parceiro.criado_em
+                )}
+              </td>
 
-          </tr>
+              <td>
 
-        `;
+                <div class="actions">
 
-      });
+                  <button
+                    class="btn btn-warning"
+                    onclick="editarParceiro(
+                      ${Number(
+                        parceiro.id
+                      )}
+                    )">
+
+                    ✏️ Editar
+
+                  </button>
+
+                  <button
+                    class="btn ${
+                      ativo
+                        ? "btn-danger"
+                        : "btn-success"
+                    }"
+                    onclick="alterarStatusParceiro(
+                      ${Number(
+                        parceiro.id
+                      )},
+                      ${ativo}
+                    )">
+
+                    ${
+                      ativo
+                        ? "🔴 Desativar"
+                        : "🟢 Ativar"
+                    }
+
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          `;
+
+        }
+      );
 
     }
 
-    loading.style.display = "none";
-    tabela.style.display = "table";
+    loading.style.display =
+      "none";
+
+    tabela.style.display =
+      "table";
 
   } catch (erro) {
 
@@ -1852,21 +2439,147 @@ async function carregarParceiros() {
 
 
 /* =========================
+   MONETAG — CARREGAR DO BANCO
+========================= */
+
+async function carregarMonetag() {
+
+  const mensagem =
+    document.getElementById(
+      "monetagMensagem"
+    );
+
+  const resultado =
+    document.getElementById(
+      "monetagResultado"
+    );
+
+  try {
+
+    const resposta =
+      await fetch(
+        API_URL +
+        "/api/admin/monetag"
+      );
+
+    const dados =
+      await resposta.json();
+
+    if (
+      !resposta.ok ||
+      dados.sucesso === false
+    ) {
+
+      throw new Error(
+        dados.erro ||
+        "Erro ao carregar Monetag."
+      );
+
+    }
+
+    const totais =
+      dados.totais || {};
+
+    document
+      .getElementById(
+        "monetagImpressoes"
+      )
+      .textContent =
+      Number(
+        totais.total_impressoes || 0
+      ).toLocaleString(
+        "pt-BR"
+      );
+
+    document
+      .getElementById(
+        "monetagProfit"
+      )
+      .textContent =
+      "$" +
+      Number(
+        totais.total_profit || 0
+      ).toFixed(3);
+
+    document
+      .getElementById(
+        "monetagCpm"
+      )
+      .textContent =
+      "$" +
+      Number(
+        totais.cpm_medio || 0
+      ).toFixed(2);
+
+    resultado.style.display =
+      "grid";
+
+    if (mensagem) {
+
+      mensagem.textContent =
+        "Dados do Monetag carregados do banco de dados.";
+
+      mensagem.className =
+        "page-message success";
+
+      mensagem.style.display =
+        "block";
+
+      setTimeout(() => {
+
+        mensagem.style.display =
+          "none";
+
+      }, 4000);
+
+    }
+
+  } catch (erro) {
+
+    console.error(
+      "Erro ao carregar Monetag:",
+      erro
+    );
+
+    if (mensagem) {
+
+      mensagem.textContent =
+        "Não foi possível carregar os dados do Monetag.";
+
+      mensagem.className =
+        "page-message error";
+
+      mensagem.style.display =
+        "block";
+
+    }
+
+  }
+
+}
+
+
+/* =========================
    IMPORTAÇÃO CSV MONETAG
 ========================= */
 
 function numeroMonetag(valor) {
 
-  if (valor === null || valor === undefined) {
+  if (
+    valor === null ||
+    valor === undefined
+  ) {
     return 0;
   }
 
-  let texto = String(valor).trim();
+  let texto =
+    String(valor).trim();
 
-  texto = texto
-    .replace(/\$/g, "")
-    .replace(/USD/gi, "")
-    .replace(/\s/g, "");
+  texto =
+    texto
+      .replace(/\$/g, "")
+      .replace(/USD/gi, "")
+      .replace(/\s/g, "");
 
   if (!texto) {
     return 0;
@@ -1876,94 +2589,160 @@ function numeroMonetag(valor) {
     texto.includes(",") &&
     texto.includes(".")
   ) {
+
     if (
       texto.lastIndexOf(",") >
       texto.lastIndexOf(".")
     ) {
-      texto = texto
-        .replace(/\./g, "")
-        .replace(",", ".");
+
+      texto =
+        texto
+          .replace(/\./g, "")
+          .replace(",", ".");
+
     } else {
-      texto = texto.replace(/,/g, "");
+
+      texto =
+        texto.replace(/,/g, "");
+
     }
-  } else if (texto.includes(",")) {
-    texto = texto.replace(",", ".");
+
+  } else if (
+    texto.includes(",")
+  ) {
+
+    texto =
+      texto.replace(",", ".");
+
   }
 
-  const numero = Number(texto);
+  const numero =
+    Number(texto);
 
   return Number.isFinite(numero)
     ? numero
     : 0;
+
 }
 
 
 function separarLinhaCSV(linha) {
 
   const resultado = [];
+
   let atual = "";
+
   let aspas = false;
 
-  for (let i = 0; i < linha.length; i++) {
+  for (
+    let i = 0;
+    i < linha.length;
+    i++
+  ) {
 
-    const caractere = linha[i];
+    const caractere =
+      linha[i];
 
-    if (caractere === '"') {
+    if (
+      caractere === '"'
+    ) {
 
       if (
         aspas &&
         linha[i + 1] === '"'
       ) {
+
         atual += '"';
+
         i++;
+
       } else {
-        aspas = !aspas;
+
+        aspas =
+          !aspas;
+
       }
 
       continue;
+
     }
 
     if (
-      (caractere === "," ||
-       caractere === ";") &&
+      (
+        caractere === "," ||
+        caractere === ";"
+      ) &&
       !aspas
     ) {
-      resultado.push(atual.trim());
+
+      resultado.push(
+        atual.trim()
+      );
+
       atual = "";
+
       continue;
+
     }
 
     atual += caractere;
+
   }
 
-  resultado.push(atual.trim());
+  resultado.push(
+    atual.trim()
+  );
 
   return resultado;
+
 }
 
 
 function separarCSV(texto) {
 
-  const linhas = texto
-    .replace(/\r\n/g, "\n")
-    .replace(/\r/g, "\n")
-    .split("\n")
-    .filter(linha => linha.trim() !== "");
+  const linhas =
+    texto
+      .replace(
+        /\r\n/g,
+        "\n"
+      )
+      .replace(
+        /\r/g,
+        "\n"
+      )
+      .split("\n")
+      .filter(
+        linha =>
+          linha.trim() !== ""
+      );
 
-  return linhas.map(separarLinhaCSV);
+  return linhas.map(
+    separarLinhaCSV
+  );
+
 }
 
 
 async function importarCsvMonetag() {
 
   const arquivo =
-    document.getElementById("monetagCsv").files[0];
+    document
+      .getElementById(
+        "monetagCsv"
+      )
+      .files[0];
 
   const mensagem =
-    document.getElementById("monetagMensagem");
+    document
+      .getElementById(
+        "monetagMensagem"
+      );
 
   const resultado =
-    document.getElementById("monetagResultado");
+    document
+      .getElementById(
+        "monetagResultado"
+      );
 
   if (!arquivo) {
 
@@ -1974,6 +2753,7 @@ async function importarCsvMonetag() {
     );
 
     return;
+
   }
 
   try {
@@ -1993,30 +2773,39 @@ async function importarCsvMonetag() {
       );
 
       return;
+
     }
 
     const cabecalho =
-      linhas[0].map(coluna =>
-        coluna
-          .toLowerCase()
-          .trim()
+      linhas[0].map(
+        coluna =>
+          coluna
+            .toLowerCase()
+            .trim()
       );
 
     const indiceImpressions =
-      cabecalho.findIndex(coluna =>
-        coluna === "impressions" ||
-        coluna.includes("impressions")
+      cabecalho.findIndex(
+        coluna =>
+          coluna === "impressions" ||
+          coluna.includes(
+            "impressions"
+          )
       );
 
     const indiceProfit =
-      cabecalho.findIndex(coluna =>
-        coluna === "profit" ||
-        coluna.includes("profit")
+      cabecalho.findIndex(
+        coluna =>
+          coluna === "profit" ||
+          coluna.includes(
+            "profit"
+          )
       );
 
     const indiceCpm =
-      cabecalho.findIndex(coluna =>
-        coluna === "cpm"
+      cabecalho.findIndex(
+        coluna =>
+          coluna === "cpm"
       );
 
     if (
@@ -2031,6 +2820,7 @@ async function importarCsvMonetag() {
       );
 
       return;
+
     }
 
     let impressoes = 0;
@@ -2044,30 +2834,45 @@ async function importarCsvMonetag() {
       i++
     ) {
 
-      const linha = linhas[i];
+      const linha =
+        linhas[i];
 
       if (!linha.length) {
         continue;
       }
 
-      impressoes += numeroMonetag(
-        linha[indiceImpressions]
-      );
+      impressoes +=
+        numeroMonetag(
+          linha[
+            indiceImpressions
+          ]
+        );
 
-      profit += numeroMonetag(
-        linha[indiceProfit]
-      );
+      profit +=
+        numeroMonetag(
+          linha[
+            indiceProfit
+          ]
+        );
 
-      if (indiceCpm !== -1) {
+      if (
+        indiceCpm !== -1
+      ) {
 
         const cpm =
           numeroMonetag(
-            linha[indiceCpm]
+            linha[
+              indiceCpm
+            ]
           );
 
         if (cpm > 0) {
-          cpmTotal += cpm;
+
+          cpmTotal +=
+            cpm;
+
           cpmQuantidade++;
+
         }
 
       }
@@ -2076,25 +2881,39 @@ async function importarCsvMonetag() {
 
     const cpmMedio =
       cpmQuantidade > 0
-        ? cpmTotal / cpmQuantidade
+        ? cpmTotal /
+          cpmQuantidade
         : 0;
 
-    document.getElementById(
-      "monetagImpressoes"
-    ).textContent =
-      Math.round(impressoes).toLocaleString("pt-BR");
+    document
+      .getElementById(
+        "monetagImpressoes"
+      )
+      .textContent =
+      Math.round(
+        impressoes
+      ).toLocaleString(
+        "pt-BR"
+      );
 
-    document.getElementById(
-      "monetagProfit"
-    ).textContent =
-      "$" + profit.toFixed(3);
+    document
+      .getElementById(
+        "monetagProfit"
+      )
+      .textContent =
+      "$" +
+      profit.toFixed(3);
 
-    document.getElementById(
-      "monetagCpm"
-    ).textContent =
-      "$" + cpmMedio.toFixed(2);
+    document
+      .getElementById(
+        "monetagCpm"
+      )
+      .textContent =
+      "$" +
+      cpmMedio.toFixed(2);
 
-    resultado.style.display = "grid";
+    resultado.style.display =
+      "grid";
 
     mostrarMensagem(
       mensagem,
@@ -2124,48 +2943,69 @@ async function importarCsvMonetag() {
    MODAL PARCEIRO
 ========================= */
 
-function abrirModalParceiro(parceiro = null) {
+function abrirModalParceiro(
+  parceiro = null
+) {
 
   document
-    .getElementById("parceiroModal")
+    .getElementById(
+      "parceiroModal"
+    )
     .classList.add("show");
 
   document
-    .getElementById("parceiroForm")
+    .getElementById(
+      "parceiroForm"
+    )
     .reset();
 
   document
-    .getElementById("parceiroId")
+    .getElementById(
+      "parceiroId"
+    )
     .value = "";
 
   document
-    .getElementById("modalParceiroTitulo")
-    .textContent = "Novo parceiro";
+    .getElementById(
+      "modalParceiroTitulo"
+    )
+    .textContent =
+    "Novo parceiro";
 
   if (parceiro) {
 
     document
-      .getElementById("modalParceiroTitulo")
+      .getElementById(
+        "modalParceiroTitulo"
+      )
       .textContent =
       "Editar parceiro";
 
     document
-      .getElementById("parceiroId")
+      .getElementById(
+        "parceiroId"
+      )
       .value =
       parceiro.id;
 
     document
-      .getElementById("parceiroNome")
+      .getElementById(
+        "parceiroNome"
+      )
       .value =
       parceiro.nome || "";
 
     document
-      .getElementById("parceiroEmail")
+      .getElementById(
+        "parceiroEmail"
+      )
       .value =
       parceiro.email || "";
 
     document
-      .getElementById("parceiroCodigo")
+      .getElementById(
+        "parceiroCodigo"
+      )
       .value =
       parceiro.codigo || "";
 
@@ -2177,8 +3017,12 @@ function abrirModalParceiro(parceiro = null) {
 function fecharModalParceiro() {
 
   document
-    .getElementById("parceiroModal")
-    .classList.remove("show");
+    .getElementById(
+      "parceiroModal"
+    )
+    .classList.remove(
+      "show"
+    );
 
 }
 
@@ -2188,20 +3032,25 @@ function editarParceiro(id) {
   const parceiro =
     parceirosCache.find(
       item =>
-        Number(item.id) === Number(id)
+        Number(item.id) ===
+        Number(id)
     );
 
   if (!parceiro) {
     return;
   }
 
-  abrirModalParceiro(parceiro);
+  abrirModalParceiro(
+    parceiro
+  );
 
 }
 
 
 document
-  .getElementById("parceiroForm")
+  .getElementById(
+    "parceiroForm"
+  )
   .addEventListener(
     "submit",
     async function(event) {
@@ -2210,26 +3059,34 @@ document
 
       const id =
         document
-          .getElementById("parceiroId")
+          .getElementById(
+            "parceiroId"
+          )
           .value;
 
       const dados = {
 
         nome:
           document
-            .getElementById("parceiroNome")
+            .getElementById(
+              "parceiroNome"
+            )
             .value
             .trim(),
 
         email:
           document
-            .getElementById("parceiroEmail")
+            .getElementById(
+              "parceiroEmail"
+            )
             .value
             .trim(),
 
         codigo:
           document
-            .getElementById("parceiroCodigo")
+            .getElementById(
+              "parceiroCodigo"
+            )
             .value
             .trim()
 
@@ -2249,16 +3106,20 @@ document
           await fetch(
             url,
             {
-              method: id
-                ? "PUT"
-                : "POST",
+              method:
+                id
+                  ? "PUT"
+                  : "POST",
 
               headers: {
-                "Content-Type": "application/json"
+                "Content-Type":
+                  "application/json"
               },
 
               body:
-                JSON.stringify(dados)
+                JSON.stringify(
+                  dados
+                )
             }
           );
 
@@ -2274,6 +3135,7 @@ document
           );
 
           return;
+
         }
 
         fecharModalParceiro();
@@ -2335,12 +3197,15 @@ async function alterarStatusParceiro(
           method: "PATCH",
 
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type":
+              "application/json"
           },
 
-          body: JSON.stringify({
-            ativo: novoStatus
-          })
+          body:
+            JSON.stringify({
+              ativo:
+                novoStatus
+            })
         }
       );
 
@@ -2356,6 +3221,7 @@ async function alterarStatusParceiro(
       );
 
       return;
+
     }
 
     carregarParceiros();
@@ -2386,7 +3252,9 @@ async function carregarMovimentacoes() {
 
   corpo.innerHTML = `
     <tr>
-      <td colspan="6" class="loading">
+      <td
+        colspan="6"
+        class="loading">
         Carregando movimentações...
       </td>
     </tr>
@@ -2404,13 +3272,16 @@ async function carregarMovimentacoes() {
 
       corpo.innerHTML = `
         <tr>
-          <td colspan="6" class="empty">
+          <td
+            colspan="6"
+            class="empty">
             Nenhuma movimentação disponível.
           </td>
         </tr>
       `;
 
       return;
+
     }
 
     const dados =
@@ -2427,51 +3298,66 @@ async function carregarMovimentacoes() {
 
       corpo.innerHTML = `
         <tr>
-          <td colspan="6" class="empty">
+          <td
+            colspan="6"
+            class="empty">
             Nenhuma movimentação registrada.
           </td>
         </tr>
       `;
 
       return;
+
     }
 
-    movimentacoes.forEach(item => {
+    movimentacoes.forEach(
+      item => {
 
-      corpo.innerHTML += `
-        <tr>
+        corpo.innerHTML += `
+          <tr>
 
-          <td>
-            ${escapar(
-              item.parceiro_nome ||
-              item.parceiro_id
-            )}
-          </td>
+            <td>
+              ${escapar(
+                item.parceiro_nome ||
+                item.parceiro_id
+              )}
+            </td>
 
-          <td>
-            ${escapar(item.tipo)}
-          </td>
+            <td>
+              ${escapar(
+                item.tipo
+              )}
+            </td>
 
-          <td>
-            ${Number(item.pontos || 0)}
-          </td>
+            <td>
+              ${Number(
+                item.pontos || 0
+              )}
+            </td>
 
-          <td>
-            ${formatarMoeda(item.valor)}
-          </td>
+            <td>
+              ${formatarMoeda(
+                item.valor
+              )}
+            </td>
 
-          <td>
-            ${escapar(item.descricao)}
-          </td>
+            <td>
+              ${escapar(
+                item.descricao
+              )}
+            </td>
 
-          <td>
-            ${formatarData(item.criado_em)}
-          </td>
+            <td>
+              ${formatarData(
+                item.criado_em
+              )}
+            </td>
 
-        </tr>
-      `;
+          </tr>
+        `;
 
-    });
+      }
+    );
 
   } catch (erro) {
 
@@ -2479,7 +3365,9 @@ async function carregarMovimentacoes() {
 
     corpo.innerHTML = `
       <tr>
-        <td colspan="6" class="empty">
+        <td
+          colspan="6"
+          class="empty">
           Nenhuma movimentação disponível.
         </td>
       </tr>
@@ -2496,5 +3384,7 @@ async function carregarMovimentacoes() {
 
 verificarLogin();
 
-</script></body>
-  </html>
+</script>
+
+</body>
+    </html>
