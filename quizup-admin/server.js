@@ -159,6 +159,166 @@ async function prepararBanco() {
 }
 
 // =====================================================
+// HILLTOPADS — ATUALIZAR SALDO
+// =====================================================
+
+async function atualizarSaldoHilltopAds() {
+
+  const apiKey = process.env.HILLTOP_API_KEY;
+
+  if (!apiKey) {
+    console.log(
+      "HILLTOP_API_KEY não configurada. Saldo HilltopAds não atualizado."
+    );
+    return;
+  }
+
+  try {
+
+    const url =
+      "https://api.hilltopads.com/publisher/balance?key=" +
+      encodeURIComponent(apiKey);
+
+    const resposta = await fetch(url);
+
+    if (!resposta.ok) {
+      throw new Error(
+        `HilltopAds respondeu HTTP ${resposta.status}`
+      );
+    }
+
+    const dados = await resposta.json();
+
+    console.log(
+      "Resposta da HilltopAds recebida."
+    );
+
+    // -------------------------------------------------
+    // Tentar encontrar o saldo em diferentes formatos
+    // -------------------------------------------------
+
+    let saldo = null;
+
+    if (
+      dados &&
+      typeof dados.balance === "number"
+    ) {
+      saldo = dados.balance;
+    }
+
+    if (
+      dados &&
+      typeof dados.balance === "string"
+    ) {
+      saldo = Number(
+        dados.balance.replace(",", ".")
+      );
+    }
+
+    if (
+      saldo === null &&
+      dados &&
+      dados.data &&
+      typeof dados.data.balance === "number"
+    ) {
+      saldo = dados.data.balance;
+    }
+
+    if (
+      saldo === null &&
+      dados &&
+      dados.data &&
+      typeof dados.data.balance === "string"
+    ) {
+      saldo = Number(
+        dados.data.balance.replace(",", ".")
+      );
+    }
+
+    if (
+      saldo === null &&
+      dados &&
+      typeof dados.amount === "number"
+    ) {
+      saldo = dados.amount;
+    }
+
+    if (
+      saldo === null &&
+      dados &&
+      typeof dados.amount === "string"
+    ) {
+      saldo = Number(
+        dados.amount.replace(",", ".")
+      );
+    }
+
+    if (
+      saldo === null ||
+      !Number.isFinite(Number(saldo))
+    ) {
+
+      console.error(
+        "Não foi possível identificar o saldo da HilltopAds."
+      );
+
+      return;
+    }
+
+    saldo = Number(saldo);
+
+    // -------------------------------------------------
+    // Criar ou atualizar HilltopAds no Aiven
+    // -------------------------------------------------
+
+    const resultado = await pool.query(
+      `
+      INSERT INTO parceiros (
+        nome,
+        email,
+        codigo,
+        pontos,
+        saldo,
+        ativo
+      )
+      VALUES (
+        'HilltopAds',
+        NULL,
+        'HILLTOP',
+        0,
+        $1,
+        TRUE
+      )
+      ON CONFLICT (codigo)
+      DO UPDATE SET
+        saldo = EXCLUDED.saldo,
+        nome = 'HilltopAds',
+        ativo = TRUE
+      RETURNING
+        id,
+        nome,
+        codigo,
+        saldo,
+        ativo
+      `,
+      [saldo]
+    );
+
+    console.log(
+      "Saldo HilltopAds atualizado:",
+      resultado.rows[0]
+    );
+
+  } catch (erro) {
+
+    console.error(
+      "Erro ao atualizar saldo HilltopAds:",
+      erro.message
+    );
+  }
+}
+
+// =====================================================
 // LOGIN ADMINISTRATIVO
 // =====================================================
 
@@ -988,6 +1148,9 @@ app.get("/api/pergunta-aleatoria", async (req, res) => {
 app.get("/api/admin/parceiros", async (req, res) => {
   try {
 
+    // Atualiza a HilltopAds antes de mostrar os parceiros
+    await atualizarSaldoHilltopAds();
+
     const resultado = await pool.query(`
       SELECT
         id,
@@ -1014,6 +1177,49 @@ app.get("/api/admin/parceiros", async (req, res) => {
     res.status(500).json({
       sucesso: false,
       erro: "Erro ao carregar parceiros."
+    });
+  }
+});
+
+// =====================================================
+// ATUALIZAR SALDOS DOS PARCEIROS
+// =====================================================
+
+app.post("/api/admin/parceiros/atualizar-saldos", async (req, res) => {
+  try {
+
+    await atualizarSaldoHilltopAds();
+
+    const resultado = await pool.query(`
+      SELECT
+        id,
+        nome,
+        email,
+        codigo,
+        pontos,
+        saldo,
+        ativo,
+        criado_em
+      FROM parceiros
+      ORDER BY id DESC
+    `);
+
+    res.json({
+      sucesso: true,
+      mensagem: "Saldo dos parceiros atualizado.",
+      parceiros: resultado.rows
+    });
+
+  } catch (erro) {
+
+    console.error(
+      "Erro ao atualizar saldos dos parceiros:",
+      erro
+    );
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao atualizar saldos."
     });
   }
 });
@@ -1336,6 +1542,9 @@ app.post("/api/saques", async (req, res) => {
 async function iniciarServidor() {
 
   await prepararBanco();
+
+  // Atualiza o saldo da HilltopAds ao iniciar o backend
+  await atualizarSaldoHilltopAds();
 
   app.listen(PORT, "0.0.0.0", () => {
     console.log(
