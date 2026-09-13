@@ -151,6 +151,25 @@ async function prepararBanco() {
       ON parceiros(email)
     `);
 
+    // =================================================
+    // TABELA DE SAQUES
+    // =================================================
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS saques (
+        id SERIAL PRIMARY KEY,
+        jogador_id INTEGER,
+        email VARCHAR(255),
+        valor NUMERIC(10,2) NOT NULL,
+        pix VARCHAR(255),
+        "PayPal" VARCHAR(255),
+        status VARCHAR(30) DEFAULT 'pendente',
+        criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    console.log("Tabela saques verificada.");
+
     console.log("Banco preparado.");
 
   } catch (erro) {
@@ -1832,7 +1851,112 @@ app.get("/api/admin/monetag", async (req, res) => {
 });
 
 // =====================================================
-// SAQUES
+// MONETAG — IMPORTAR REGISTROS DO CSV
+// =====================================================
+
+app.post("/api/admin/monetag", async (req, res) => {
+  try {
+
+    const { registros } = req.body;
+
+    if (
+      !Array.isArray(registros) ||
+      registros.length === 0
+    ) {
+
+      return res.status(400).json({
+        sucesso: false,
+        erro:
+          "Nenhum registro do Monetag foi enviado."
+      });
+    }
+
+    let inseridos = 0;
+
+    for (const registro of registros) {
+
+      await pool.query(
+        `
+        INSERT INTO monetag_relatorios
+        (data, impressoes, profit, cpm)
+        VALUES ($1, $2, $3, $4)
+        `,
+        [
+          registro.data || null,
+          Number(registro.impressoes || 0),
+          Number(registro.profit || 0),
+          Number(registro.cpm || 0)
+        ]
+      );
+
+      inseridos++;
+    }
+
+    res.json({
+      sucesso: true,
+      mensagem:
+        "Relatório Monetag importado com sucesso.",
+      inseridos
+    });
+
+  } catch (erro) {
+
+    console.error(
+      "Erro ao importar relatório Monetag:",
+      erro
+    );
+
+    res.status(500).json({
+      sucesso: false,
+      erro:
+        "Erro ao salvar relatório do Monetag."
+    });
+  }
+});
+
+// =====================================================
+// SAQUES — LISTAR NO ADMIN
+// =====================================================
+
+app.get("/api/admin/saques", async (req, res) => {
+  try {
+
+    const resultado = await pool.query(`
+      SELECT
+        id,
+        jogador_id,
+        email,
+        valor,
+        pix,
+        "PayPal",
+        status,
+        criado_em
+      FROM saques
+      ORDER BY id DESC
+    `);
+
+    res.json({
+      sucesso: true,
+      saques: resultado.rows
+    });
+
+  } catch (erro) {
+
+    console.error(
+      "Erro ao listar saques:",
+      erro
+    );
+
+    res.status(500).json({
+      sucesso: false,
+      erro:
+        "Erro ao carregar saques."
+    });
+  }
+});
+
+// =====================================================
+// SAQUES — SOLICITAR
 // =====================================================
 
 app.post("/api/saques", async (req, res) => {
@@ -1841,16 +1965,35 @@ app.post("/api/saques", async (req, res) => {
     const {
       jogador_id,
       pix_key,
+      pix,
       valor,
       pontos,
       metodo,
-      email
+      email,
+      paypal
     } = req.body;
+
+    const pixFinal =
+      pix_key ||
+      pix ||
+      null;
+
+    const paypalFinal =
+      paypal ||
+      (
+        metodo &&
+        String(metodo).toLowerCase() === "paypal"
+          ? email
+          : null
+      );
+
+    const valorFinal =
+      Number(valor);
 
     if (
       !jogador_id ||
-      !pix_key ||
-      !valor
+      !valorFinal ||
+      valorFinal <= 0
     ) {
 
       return res.status(400).json({
@@ -1860,18 +2003,62 @@ app.post("/api/saques", async (req, res) => {
       });
     }
 
+    if (
+      !pixFinal &&
+      !paypalFinal
+    ) {
+
+      return res.status(400).json({
+        sucesso: false,
+        erro:
+          "Informe a chave Pix ou a conta PayPal."
+      });
+    }
+
+    const resultado =
+      await pool.query(
+        `
+        INSERT INTO saques (
+          jogador_id,
+          email,
+          valor,
+          pix,
+          "PayPal",
+          status
+        )
+        VALUES (
+          $1,
+          $2,
+          $3,
+          $4,
+          $5,
+          'pendente'
+        )
+        RETURNING
+          id,
+          jogador_id,
+          email,
+          valor,
+          pix,
+          "PayPal",
+          status,
+          criado_em
+        `,
+        [
+          jogador_id,
+          email || null,
+          valorFinal,
+          pixFinal,
+          paypalFinal
+        ]
+      );
+
     res.json({
       sucesso: true,
       mensagem:
         "Solicitação de saque recebida.",
-      saque: {
-        jogador_id,
-        pix_key,
-        valor,
-        pontos,
-        metodo,
-        email
-      }
+      saque:
+        resultado.rows[0]
     });
 
   } catch (erro) {
