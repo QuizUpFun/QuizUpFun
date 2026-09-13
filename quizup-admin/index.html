@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QuizUp Admin</title>
-
-  <style>
+  <title>QuizUp Admin</title>  <style>
     * {
       box-sizing: border-box;
     }
@@ -388,9 +385,45 @@
       color: #991b1b;
     }
 
+    .monetag-box {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 18px;
+      margin-top: 18px;
+    }
+
+    .monetag-result {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .monetag-stat {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    .monetag-stat small {
+      display: block;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .monetag-stat strong {
+      font-size: 20px;
+    }
+
     @media (max-width: 900px) {
       .cards {
         grid-template-columns: repeat(2, 1fr);
+      }
+
+      .monetag-result {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -434,533 +467,570 @@
         font-size: 18px;
       }
     }
-  </style>
-</head>
-
-<body>
-
-  <!-- LOGIN -->
-  <div id="loginContainer" class="login-container">
+  </style></head><body>  <!-- LOGIN -->  <div id="loginContainer" class="login-container">
     <div class="login-box">
       <h1>🎯 QuizUp Admin</h1>
-      <p>Painel administrativo</p>
+      <p>Painel administrativo</p>  <form id="loginForm">
+    <div class="form-group">
+      <label for="loginEmail">E-mail</label>
+      <input
+        type="email"
+        id="loginEmail"
+        required
+        autocomplete="email"
+      >
+    </div>
 
-      <form id="loginForm">
-        <div class="form-group">
-          <label for="loginEmail">E-mail</label>
-          <input
-            type="email"
-            id="loginEmail"
-            required
-            autocomplete="email"
-          >
+    <div class="form-group">
+      <label for="loginSenha">Senha</label>
+      <input
+        type="password"
+        id="loginSenha"
+        required
+        autocomplete="current-password"
+      >
+    </div>
+
+    <button class="btn btn-primary" type="submit" style="width:100%;">
+      Entrar
+    </button>
+  </form>
+
+  <div id="loginMessage"></div>
+</div>
+
+  </div>  <!-- ADMIN -->  <div id="adminPanel"><div class="topbar">
+  <h1>🎯 QuizUp Admin</h1>
+
+  <button class="logout-btn" onclick="sair()">
+    Sair
+  </button>
+</div>
+
+<div class="layout">
+
+  <!-- MENU -->
+  <aside class="sidebar">
+
+    <button class="menu-btn active"
+      onclick="mostrarPagina('dashboard', this)">
+      📊 Dashboard
+    </button>
+
+    <button class="menu-btn"
+      onclick="mostrarPagina('jogadores', this)">
+      👥 Jogadores
+    </button>
+
+    <button class="menu-btn"
+      onclick="mostrarPagina('perguntas', this)">
+      ❓ Perguntas
+    </button>
+
+    <button class="menu-btn"
+      onclick="mostrarPagina('saques', this)">
+      💰 Saques
+    </button>
+
+    <button class="menu-btn"
+      onclick="mostrarPagina('parceiros', this)">
+      🤝 Parceiros
+    </button>
+
+    <button class="menu-btn"
+      onclick="mostrarPagina('movimentacoes', this)">
+      🔄 Movimentações
+    </button>
+
+    <button class="menu-btn"
+      onclick="mostrarPagina('configuracoes', this)">
+      ⚙️ Configurações
+    </button>
+
+  </aside>
+
+
+  <!-- CONTEÚDO -->
+  <main class="content">
+
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="page active">
+
+      <h2>📊 Dashboard</h2>
+
+      <div class="cards">
+
+        <div class="card">
+          <div class="stat-title">Jogadores</div>
+          <div class="stat-value" id="dashJogadores">0</div>
         </div>
 
-        <div class="form-group">
-          <label for="loginSenha">Senha</label>
-          <input
-            type="password"
-            id="loginSenha"
-            required
-            autocomplete="current-password"
-          >
+        <div class="card">
+          <div class="stat-title">Perguntas</div>
+          <div class="stat-value" id="dashPerguntas">0</div>
         </div>
 
-        <button class="btn btn-primary" type="submit" style="width:100%;">
-          Entrar
-        </button>
-      </form>
-
-      <div id="loginMessage"></div>
-    </div>
-  </div>
-
-
-  <!-- ADMIN -->
-  <div id="adminPanel">
-
-    <div class="topbar">
-      <h1>🎯 QuizUp Admin</h1>
-
-      <button class="logout-btn" onclick="sair()">
-        Sair
-      </button>
-    </div>
-
-    <div class="layout">
-
-      <!-- MENU -->
-      <aside class="sidebar">
-
-        <button class="menu-btn active"
-          onclick="mostrarPagina('dashboard', this)">
-          📊 Dashboard
-        </button>
-
-        <button class="menu-btn"
-          onclick="mostrarPagina('jogadores', this)">
-          👥 Jogadores
-        </button>
-
-        <button class="menu-btn"
-          onclick="mostrarPagina('perguntas', this)">
-          ❓ Perguntas
-        </button>
-
-        <button class="menu-btn"
-          onclick="mostrarPagina('saques', this)">
-          💰 Saques
-        </button>
-
-        <button class="menu-btn"
-          onclick="mostrarPagina('parceiros', this)">
-          🤝 Parceiros
-        </button>
-
-        <button class="menu-btn"
-          onclick="mostrarPagina('movimentacoes', this)">
-          🔄 Movimentações
-        </button>
-
-        <button class="menu-btn"
-          onclick="mostrarPagina('configuracoes', this)">
-          ⚙️ Configurações
-        </button>
-
-      </aside>
-
-
-      <!-- CONTEÚDO -->
-      <main class="content">
-
-
-        <!-- DASHBOARD -->
-        <section id="dashboard" class="page active">
-
-          <h2>📊 Dashboard</h2>
-
-          <div class="cards">
-
-            <div class="card">
-              <div class="stat-title">Jogadores</div>
-              <div class="stat-value" id="dashJogadores">0</div>
-            </div>
-
-            <div class="card">
-              <div class="stat-title">Perguntas</div>
-              <div class="stat-value" id="dashPerguntas">0</div>
-            </div>
-
-            <div class="card">
-              <div class="stat-title">Pontos</div>
-              <div class="stat-value" id="dashPontos">0</div>
-            </div>
-
-            <div class="card">
-              <div class="stat-title">Saldo</div>
-              <div class="stat-value" id="dashSaldo">R$ 0,00</div>
-            </div>
-
-          </div>
-
-          <div class="card">
-            <h3>QuizUp</h3>
-            <p>
-              Painel administrativo conectado ao PostgreSQL Aiven
-              através do backend Render.
-            </p>
-          </div>
-
-        </section>
-
-
-        <!-- JOGADORES -->
-        <section id="jogadores" class="page">
-
-          <h2>👥 Jogadores</h2>
-
-          <div id="jogadoresMensagem"></div>
-
-          <div class="table-container">
-            <div id="jogadoresLoading" class="loading">
-              Carregando jogadores...
-            </div>
-
-            <table id="jogadoresTable" style="display:none;">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Nome</th>
-                  <th>E-mail</th>
-                  <th>CPF</th>
-                  <th>Pontos</th>
-                  <th>Saldo</th>
-                  <th>Cadastro</th>
-                </tr>
-              </thead>
-
-              <tbody id="jogadoresBody"></tbody>
-            </table>
-          </div>
-
-        </section>
-
-
-        <!-- PERGUNTAS -->
-        <section id="perguntas" class="page">
-
-          <h2>❓ Criação de perguntas</h2>
-
-          <div id="perguntasMensagem"></div>
-
-          <div class="card">
-
-            <h3>➕ Criar pergunta</h3>
-
-            <form id="perguntaForm">
-
-              <div class="form-group">
-                <label>Pergunta</label>
-                <textarea
-                  id="perguntaTexto"
-                  required
-                  placeholder="Digite a pergunta"
-                ></textarea>
-              </div>
-
-              <div class="form-grid">
-
-                <div class="form-group">
-                  <label>Alternativa A</label>
-                  <input id="alternativaA" required>
-                </div>
-
-                <div class="form-group">
-                  <label>Alternativa B</label>
-                  <input id="alternativaB" required>
-                </div>
-
-                <div class="form-group">
-                  <label>Alternativa C</label>
-                  <input id="alternativaC" required>
-                </div>
-
-                <div class="form-group">
-                  <label>Alternativa D</label>
-                  <input id="alternativaD" required>
-                </div>
-
-                <div class="form-group">
-                  <label>Resposta correta</label>
-
-                  <select id="respostaCorreta" required>
-                    <option value="">Selecione</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label>Dificuldade</label>
-
-                  <select id="dificuldade" required>
-                    <option value="">Selecione</option>
-                    <option value="facil">
-                      Fácil — 1º ao 8º ano
-                    </option>
-                    <option value="medio">
-                      Médio — Científicas
-                    </option>
-                    <option value="dificil">
-                      Difícil — Farmácia
-                    </option>
-                  </select>
-                </div>
-
-              </div>
-
-              <button class="btn btn-success" type="submit">
-                Salvar pergunta
-              </button>
-
-            </form>
-
-          </div>
-
-
-          <div class="card">
-
-            <h3>📋 Perguntas cadastradas</h3>
-
-            <div class="table-container">
-
-              <table>
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Pergunta</th>
-                    <th>Resposta</th>
-                    <th>Dificuldade</th>
-                  </tr>
-                </thead>
-
-                <tbody id="perguntasBody">
-                </tbody>
-              </table>
-
-            </div>
-
-          </div>
-
-        </section>
-
-
-        <!-- SAQUES -->
-        <section id="saques" class="page">
-
-          <h2>💰 Saques</h2>
-
-          <div class="card">
-            <p>
-              Os saques registrados pelos jogadores aparecerão aqui.
-            </p>
-          </div>
-
-          <div class="table-container">
-
-            <table>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Jogador</th>
-                  <th>Valor</th>
-                  <th>Pix</th>
-                  <th>Status</th>
-                  <th>Data</th>
-                </tr>
-              </thead>
-
-              <tbody id="saquesBody">
-              </tbody>
-            </table>
-
-          </div>
-
-        </section>
-
-
-        <!-- PARCEIROS -->
-        <section id="parceiros" class="page">
-
-          <h2>🤝 Parceiros</h2>
-
-          <div id="parceirosMensagem"></div>
-
-          <div class="card">
-
-            <div style="
-              display:flex;
-              justify-content:space-between;
-              align-items:center;
-              gap:10px;
-              flex-wrap:wrap;
-            ">
-
-              <div>
-                <h3 style="margin:0;">
-                  Parceiros cadastrados
-                </h3>
-
-                <p style="color:#666;">
-                  O saldo é exibido somente neste painel administrativo.
-                </p>
-              </div>
-
-              <button
-                class="btn btn-primary"
-                onclick="abrirModalParceiro()">
-                ➕ Novo parceiro
-              </button>
-
-            </div>
-
-          </div>
-
-
-          <div class="table-container">
-
-            <div id="parceirosLoading" class="loading">
-              Carregando parceiros...
-            </div>
-
-            <table id="parceirosTable" style="display:none;">
-
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Nome</th>
-                  <th>E-mail</th>
-                  <th>Código</th>
-                  <th>Pontos</th>
-                  <th>Saldo</th>
-                  <th>Status</th>
-                  <th>Cadastro</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-
-              <tbody id="parceirosBody"></tbody>
-
-            </table>
-
-          </div>
-
-        </section>
-
-
-        <!-- MOVIMENTAÇÕES -->
-        <section id="movimentacoes" class="page">
-
-          <h2>🔄 Movimentações</h2>
-
-          <div class="card">
-
-            <p>
-              Histórico de movimentações dos parceiros.
-            </p>
-
-          </div>
-
-          <div class="table-container">
-
-            <table>
-
-              <thead>
-                <tr>
-                  <th>Parceiro</th>
-                  <th>Tipo</th>
-                  <th>Pontos</th>
-                  <th>Valor</th>
-                  <th>Descrição</th>
-                  <th>Data</th>
-                </tr>
-              </thead>
-
-              <tbody id="movimentacoesBody">
-              </tbody>
-
-            </table>
-
-          </div>
-
-        </section>
-
-
-        <!-- CONFIGURAÇÕES -->
-        <section id="configuracoes" class="page">
-
-          <h2>⚙️ Configurações</h2>
-
-          <div class="card">
-
-            <h3>Banco de dados</h3>
-
-            <p>
-              <strong>Banco:</strong> PostgreSQL Aiven
-            </p>
-
-            <p>
-              <strong>Projeto:</strong> QuizUp
-            </p>
-
-            <p>
-              <strong>Backend:</strong>
-              Render
-            </p>
-
-            <p>
-              <strong>API:</strong>
-              https://quizup-api-qxn2.onrender.com
-            </p>
-
-          </div>
-
-        </section>
-
-      </main>
-
-    </div>
-
-  </div>
-
-
-  <!-- MODAL PARCEIRO -->
-  <div id="parceiroModal" class="modal">
-
-    <div class="modal-content">
-
-      <div class="modal-header">
-
-        <h3 id="modalParceiroTitulo">
-          Novo parceiro
-        </h3>
-
-        <button
-          class="close-btn"
-          onclick="fecharModalParceiro()">
-          ×
-        </button>
+        <div class="card">
+          <div class="stat-title">Pontos</div>
+          <div class="stat-value" id="dashPontos">0</div>
+        </div>
+
+        <div class="card">
+          <div class="stat-title">Saldo</div>
+          <div class="stat-value" id="dashSaldo">R$ 0,00</div>
+        </div>
 
       </div>
 
-      <form id="parceiroForm">
+      <div class="card">
+        <h3>QuizUp</h3>
+        <p>
+          Painel administrativo conectado ao PostgreSQL Aiven
+          através do backend Render.
+        </p>
+      </div>
 
-        <input type="hidden" id="parceiroId">
+    </section>
 
-        <div class="form-group">
-          <label>Nome</label>
-          <input id="parceiroNome" required>
+
+    <!-- JOGADORES -->
+    <section id="jogadores" class="page">
+
+      <h2>👥 Jogadores</h2>
+
+      <div id="jogadoresMensagem"></div>
+
+      <div class="table-container">
+        <div id="jogadoresLoading" class="loading">
+          Carregando jogadores...
         </div>
 
-        <div class="form-group">
-          <label>E-mail</label>
+        <table id="jogadoresTable" style="display:none;">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>E-mail</th>
+              <th>CPF</th>
+              <th>Pontos</th>
+              <th>Saldo</th>
+              <th>Cadastro</th>
+            </tr>
+          </thead>
+
+          <tbody id="jogadoresBody"></tbody>
+        </table>
+      </div>
+
+    </section>
+
+
+    <!-- PERGUNTAS -->
+    <section id="perguntas" class="page">
+
+      <h2>❓ Criação de perguntas</h2>
+
+      <div id="perguntasMensagem"></div>
+
+      <div class="card">
+
+        <h3>➕ Criar pergunta</h3>
+
+        <form id="perguntaForm">
+
+          <div class="form-group">
+            <label>Pergunta</label>
+            <textarea
+              id="perguntaTexto"
+              required
+              placeholder="Digite a pergunta"
+            ></textarea>
+          </div>
+
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label>Alternativa A</label>
+              <input id="alternativaA" required>
+            </div>
+
+            <div class="form-group">
+              <label>Alternativa B</label>
+              <input id="alternativaB" required>
+            </div>
+
+            <div class="form-group">
+              <label>Alternativa C</label>
+              <input id="alternativaC" required>
+            </div>
+
+            <div class="form-group">
+              <label>Alternativa D</label>
+              <input id="alternativaD" required>
+            </div>
+
+            <div class="form-group">
+              <label>Resposta correta</label>
+
+              <select id="respostaCorreta" required>
+                <option value="">Selecione</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Dificuldade</label>
+
+              <select id="dificuldade" required>
+                <option value="">Selecione</option>
+                <option value="facil">
+                  Fácil — 1º ao 8º ano
+                </option>
+                <option value="medio">
+                  Médio — Científicas
+                </option>
+                <option value="dificil">
+                  Difícil — Farmácia
+                </option>
+              </select>
+            </div>
+
+          </div>
+
+          <button class="btn btn-success" type="submit">
+            Salvar pergunta
+          </button>
+
+        </form>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>📋 Perguntas cadastradas</h3>
+
+        <div class="table-container">
+
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Pergunta</th>
+                <th>Resposta</th>
+                <th>Dificuldade</th>
+              </tr>
+            </thead>
+
+            <tbody id="perguntasBody">
+            </tbody>
+          </table>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- SAQUES -->
+    <section id="saques" class="page">
+
+      <h2>💰 Saques</h2>
+
+      <div class="card">
+        <p>
+          Os saques registrados pelos jogadores aparecerão aqui.
+        </p>
+      </div>
+
+      <div class="table-container">
+
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Jogador</th>
+              <th>Valor</th>
+              <th>Pix</th>
+              <th>Status</th>
+              <th>Data</th>
+            </tr>
+          </thead>
+
+          <tbody id="saquesBody">
+          </tbody>
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- PARCEIROS -->
+    <section id="parceiros" class="page">
+
+      <h2>🤝 Parceiros</h2>
+
+      <div id="parceirosMensagem"></div>
+
+      <div class="card">
+
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          gap:10px;
+          flex-wrap:wrap;
+        ">
+
+          <div>
+            <h3 style="margin:0;">
+              Parceiros cadastrados
+            </h3>
+
+            <p style="color:#666;">
+              O saldo é exibido somente neste painel administrativo.
+            </p>
+          </div>
+
+          <button
+            class="btn btn-primary"
+            onclick="abrirModalParceiro()">
+            ➕ Novo parceiro
+          </button>
+
+        </div>
+
+
+        <!-- MONETAG -->
+        <div class="monetag-box">
+
+          <h3 style="margin-top:0;">
+            📊 Monetag
+          </h3>
+
+          <p style="color:#666;">
+            Importe o relatório CSV baixado em
+            <strong>Statistics → Export to CSV</strong>
+            na Monetag.
+          </p>
+
           <input
-            type="email"
-            id="parceiroEmail">
+            type="file"
+            id="monetagCsv"
+            accept=".csv,text/csv"
+          >
+
+          <div style="margin-top:12px;">
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="importarCsvMonetag()">
+              📥 Importar CSV Monetag
+            </button>
+          </div>
+
+          <div
+            id="monetagMensagem"
+            class="page-message"
+            style="margin-top:15px;">
+          </div>
+
+          <div
+            id="monetagResultado"
+            class="monetag-result"
+            style="display:none;">
+
+            <div class="monetag-stat">
+              <small>Impressões</small>
+              <strong id="monetagImpressoes">0</strong>
+            </div>
+
+            <div class="monetag-stat">
+              <small>Profit</small>
+              <strong id="monetagProfit">$0.00</strong>
+            </div>
+
+            <div class="monetag-stat">
+              <small>CPM médio</small>
+              <strong id="monetagCpm">$0.00</strong>
+            </div>
+
+          </div>
+
         </div>
 
-        <div class="form-group">
-          <label>Código do parceiro</label>
-          <input id="parceiroCodigo">
+      </div>
+
+
+      <div class="table-container">
+
+        <div id="parceirosLoading" class="loading">
+          Carregando parceiros...
         </div>
 
-        <div class="actions">
+        <table id="parceirosTable" style="display:none;">
 
-          <button
-            type="submit"
-            class="btn btn-success">
-            Salvar
-          </button>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>E-mail</th>
+              <th>Código</th>
+              <th>Pontos</th>
+              <th>Saldo</th>
+              <th>Status</th>
+              <th>Cadastro</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
 
-          <button
-            type="button"
-            class="btn btn-secondary"
-            onclick="fecharModalParceiro()">
-            Cancelar
-          </button>
+          <tbody id="parceirosBody"></tbody>
 
-        </div>
+        </table>
 
-      </form>
+      </div>
 
-    </div>
+    </section>
+
+
+    <!-- MOVIMENTAÇÕES -->
+    <section id="movimentacoes" class="page">
+
+      <h2>🔄 Movimentações</h2>
+
+      <div class="card">
+
+        <p>
+          Histórico de movimentações dos parceiros.
+        </p>
+
+      </div>
+
+      <div class="table-container">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Parceiro</th>
+              <th>Tipo</th>
+              <th>Pontos</th>
+              <th>Valor</th>
+              <th>Descrição</th>
+              <th>Data</th>
+            </tr>
+          </thead>
+
+          <tbody id="movimentacoesBody">
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- CONFIGURAÇÕES -->
+    <section id="configuracoes" class="page">
+
+      <h2>⚙️ Configurações</h2>
+
+      <div class="card">
+
+        <h3>Banco de dados</h3>
+
+        <p>
+          <strong>Banco:</strong> PostgreSQL Aiven
+        </p>
+
+        <p>
+          <strong>Projeto:</strong> QuizUp
+        </p>
+
+        <p>
+          <strong>Backend:</strong>
+          Render
+        </p>
+
+        <p>
+          <strong>API:</strong>
+          https://quizup-api-qxn2.onrender.com
+        </p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+  </div>  <!-- MODAL PARCEIRO -->  <div id="parceiroModal" class="modal"><div class="modal-content">
+
+  <div class="modal-header">
+
+    <h3 id="modalParceiroTitulo">
+      Novo parceiro
+    </h3>
+
+    <button
+      class="close-btn"
+      onclick="fecharModalParceiro()">
+      ×
+    </button>
 
   </div>
 
+  <form id="parceiroForm">
 
-<script>
+    <input type="hidden" id="parceiroId">
+
+    <div class="form-group">
+      <label>Nome</label>
+      <input id="parceiroNome" required>
+    </div>
+
+    <div class="form-group">
+      <label>E-mail</label>
+      <input
+        type="email"
+        id="parceiroEmail">
+    </div>
+
+    <div class="form-group">
+      <label>Código do parceiro</label>
+      <input id="parceiroCodigo">
+    </div>
+
+    <div class="actions">
+
+      <button
+        type="submit"
+        class="btn btn-success">
+        Salvar
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        onclick="fecharModalParceiro()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </form>
+
+</div>
+
+  </div><script>
 
 const API_URL = "https://quizup-api-qxn2.onrender.com";
 
@@ -1387,8 +1457,10 @@ async function carregarPerguntas() {
         nome = "Médio";
       }
 
-      if (dificuldade === "dificil" ||
-          dificuldade === "difícil") {
+      if (
+        dificuldade === "dificil" ||
+        dificuldade === "difícil"
+      ) {
         classe = "badge-hard";
         nome = "Difícil";
       }
@@ -1780,6 +1852,275 @@ async function carregarParceiros() {
 
 
 /* =========================
+   IMPORTAÇÃO CSV MONETAG
+========================= */
+
+function numeroMonetag(valor) {
+
+  if (valor === null || valor === undefined) {
+    return 0;
+  }
+
+  let texto = String(valor).trim();
+
+  texto = texto
+    .replace(/\$/g, "")
+    .replace(/USD/gi, "")
+    .replace(/\s/g, "");
+
+  if (!texto) {
+    return 0;
+  }
+
+  if (
+    texto.includes(",") &&
+    texto.includes(".")
+  ) {
+    if (
+      texto.lastIndexOf(",") >
+      texto.lastIndexOf(".")
+    ) {
+      texto = texto
+        .replace(/\./g, "")
+        .replace(",", ".");
+    } else {
+      texto = texto.replace(/,/g, "");
+    }
+  } else if (texto.includes(",")) {
+    texto = texto.replace(",", ".");
+  }
+
+  const numero = Number(texto);
+
+  return Number.isFinite(numero)
+    ? numero
+    : 0;
+}
+
+
+function separarLinhaCSV(linha) {
+
+  const resultado = [];
+  let atual = "";
+  let aspas = false;
+
+  for (let i = 0; i < linha.length; i++) {
+
+    const caractere = linha[i];
+
+    if (caractere === '"') {
+
+      if (
+        aspas &&
+        linha[i + 1] === '"'
+      ) {
+        atual += '"';
+        i++;
+      } else {
+        aspas = !aspas;
+      }
+
+      continue;
+    }
+
+    if (
+      (caractere === "," ||
+       caractere === ";") &&
+      !aspas
+    ) {
+      resultado.push(atual.trim());
+      atual = "";
+      continue;
+    }
+
+    atual += caractere;
+  }
+
+  resultado.push(atual.trim());
+
+  return resultado;
+}
+
+
+function separarCSV(texto) {
+
+  const linhas = texto
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n")
+    .split("\n")
+    .filter(linha => linha.trim() !== "");
+
+  return linhas.map(separarLinhaCSV);
+}
+
+
+async function importarCsvMonetag() {
+
+  const arquivo =
+    document.getElementById("monetagCsv").files[0];
+
+  const mensagem =
+    document.getElementById("monetagMensagem");
+
+  const resultado =
+    document.getElementById("monetagResultado");
+
+  if (!arquivo) {
+
+    mostrarMensagem(
+      mensagem,
+      "Selecione primeiro o arquivo CSV exportado pela Monetag.",
+      "error"
+    );
+
+    return;
+  }
+
+  try {
+
+    const texto =
+      await arquivo.text();
+
+    const linhas =
+      separarCSV(texto);
+
+    if (linhas.length < 2) {
+
+      mostrarMensagem(
+        mensagem,
+        "O arquivo CSV está vazio ou não possui dados.",
+        "error"
+      );
+
+      return;
+    }
+
+    const cabecalho =
+      linhas[0].map(coluna =>
+        coluna
+          .toLowerCase()
+          .trim()
+      );
+
+    const indiceImpressions =
+      cabecalho.findIndex(coluna =>
+        coluna === "impressions" ||
+        coluna.includes("impressions")
+      );
+
+    const indiceProfit =
+      cabecalho.findIndex(coluna =>
+        coluna === "profit" ||
+        coluna.includes("profit")
+      );
+
+    const indiceCpm =
+      cabecalho.findIndex(coluna =>
+        coluna === "cpm"
+      );
+
+    if (
+      indiceImpressions === -1 ||
+      indiceProfit === -1
+    ) {
+
+      mostrarMensagem(
+        mensagem,
+        "Não encontrei as colunas Impressions e Profit no CSV da Monetag.",
+        "error"
+      );
+
+      return;
+    }
+
+    let impressoes = 0;
+    let profit = 0;
+    let cpmTotal = 0;
+    let cpmQuantidade = 0;
+
+    for (
+      let i = 1;
+      i < linhas.length;
+      i++
+    ) {
+
+      const linha = linhas[i];
+
+      if (!linha.length) {
+        continue;
+      }
+
+      impressoes += numeroMonetag(
+        linha[indiceImpressions]
+      );
+
+      profit += numeroMonetag(
+        linha[indiceProfit]
+      );
+
+      if (indiceCpm !== -1) {
+
+        const cpm =
+          numeroMonetag(
+            linha[indiceCpm]
+          );
+
+        if (cpm > 0) {
+          cpmTotal += cpm;
+          cpmQuantidade++;
+        }
+
+      }
+
+    }
+
+    const cpmMedio =
+      cpmQuantidade > 0
+        ? cpmTotal / cpmQuantidade
+        : 0;
+
+    document.getElementById(
+      "monetagImpressoes"
+    ).textContent =
+      Math.round(impressoes).toLocaleString("pt-BR");
+
+    document.getElementById(
+      "monetagProfit"
+    ).textContent =
+      "$" + profit.toFixed(3);
+
+    document.getElementById(
+      "monetagCpm"
+    ).textContent =
+      "$" + cpmMedio.toFixed(2);
+
+    resultado.style.display = "grid";
+
+    mostrarMensagem(
+      mensagem,
+      "CSV da Monetag lido com sucesso. Os dados foram calculados no painel.",
+      "success"
+    );
+
+  } catch (erro) {
+
+    console.error(
+      "Erro ao importar CSV Monetag:",
+      erro
+    );
+
+    mostrarMensagem(
+      mensagem,
+      "Não foi possível ler o arquivo CSV.",
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =========================
    MODAL PARCEIRO
 ========================= */
 
@@ -2155,7 +2496,5 @@ async function carregarMovimentacoes() {
 
 verificarLogin();
 
-</script>
-
-</body>
+</script></body>
   </html>
