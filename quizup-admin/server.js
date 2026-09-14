@@ -45,7 +45,6 @@ app.get("/api/test-db", async (req, res) => {
     });
 
   } catch (erro) {
-
     console.error("Erro no banco:", erro);
 
     res.status(500).json({
@@ -137,6 +136,24 @@ async function prepararBanco() {
     `);
 
     console.log("Tabela parceiros verificada.");
+
+    // =================================================
+    // MOVIMENTAÇÕES DOS PARCEIROS
+    // =================================================
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS movimentacoes_parceiros (
+        id SERIAL PRIMARY KEY,
+        parceiro_id INTEGER,
+        tipo VARCHAR(100),
+        pontos INTEGER DEFAULT 0,
+        valor NUMERIC(12,2) DEFAULT 0,
+        descricao TEXT,
+        criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    console.log("Tabela movimentacoes_parceiros verificada.");
 
     // =================================================
     // SAQUES
@@ -1444,6 +1461,54 @@ app.post(
         sucesso: false,
         erro:
           "Erro ao importar relatório Monetag."
+      });
+    }
+  }
+);
+
+// =====================================================
+// MOVIMENTAÇÕES — LISTAR
+// =====================================================
+
+app.get(
+  "/api/admin/movimentacoes",
+  async (req, res) => {
+
+    try {
+
+      const resultado =
+        await pool.query(`
+          SELECT
+            m.id,
+            m.parceiro_id,
+            p.nome AS parceiro,
+            m.tipo,
+            m.pontos,
+            m.valor,
+            m.descricao,
+            m.criado_em
+          FROM movimentacoes_parceiros m
+          LEFT JOIN parceiros p
+            ON p.id = m.parceiro_id
+          ORDER BY m.id DESC
+        `);
+
+      res.json({
+        sucesso: true,
+        movimentacoes: resultado.rows
+      });
+
+    } catch (erro) {
+
+      console.error(
+        "Erro movimentações:",
+        erro
+      );
+
+      res.status(500).json({
+        sucesso: false,
+        erro:
+          "Erro ao carregar movimentações."
       });
     }
   }
