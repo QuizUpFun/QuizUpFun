@@ -107,7 +107,7 @@ button:disabled{
 
 .nav{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:repeat(5,1fr);
   gap:8px
 }
 
@@ -150,13 +150,18 @@ button:disabled{
   outline:4px solid #fb7185
 }
 
-input,select{
+input,select,textarea{
   width:100%;
   padding:13px;
   border:0;
   border-radius:10px;
   margin:5px 0 12px;
   font-size:16px
+}
+
+textarea{
+  min-height:140px;
+  resize:vertical
 }
 
 .timer{
@@ -310,13 +315,13 @@ input,select{
 
 <!-- MÚSICA -->
 <audio
-  id="backgroundMusic"
-  preload="auto"
-  loop>
+id="backgroundMusic"
+preload="auto"
+loop>
 
-  <source
-    src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
-    type="audio/mpeg">
+<source
+src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
+type="audio/mpeg">
 
 </audio>
 
@@ -354,15 +359,15 @@ atOptions={
 <div class="tabs2">
 
 <button
-  class="primary"
-  onclick="authMode('register')">
-  Cadastro
+class="primary"
+onclick="authMode('register')">
+Cadastro
 </button>
 
 <button
-  class="light"
-  onclick="authMode('login')">
-  Login
+class="light"
+onclick="authMode('login')">
+Login
 </button>
 
 </div>
@@ -374,42 +379,42 @@ atOptions={
 <label>E-mail</label>
 
 <input
-  id="rEmail"
-  type="email"
-  placeholder="Seu e-mail">
+id="rEmail"
+type="email"
+placeholder="Seu e-mail">
 
 <label>Senha</label>
 
 <input
-  id="rPass"
-  type="password"
-  placeholder="Sua senha">
+id="rPass"
+type="password"
+placeholder="Sua senha">
 
 <label>Nome completo</label>
 
 <input
-  id="rName"
-  type="text"
-  placeholder="Seu nome completo">
+id="rName"
+type="text"
+placeholder="Seu nome completo">
 
 <label>CPF</label>
 
 <input
-  id="rCpf"
-  type="text"
-  inputmode="numeric"
-  maxlength="14"
-  placeholder="000.000.000-00">
+id="rCpf"
+type="text"
+inputmode="numeric"
+maxlength="14"
+placeholder="000.000.000-00">
 
 <button
-  class="primary"
-  onclick="register()">
-  Cadastrar
+class="primary"
+onclick="register()">
+Cadastrar
 </button>
 
 <p
-  id="registerMsg"
-  class="small">
+id="registerMsg"
+class="small">
 </p>
 
 </div>
@@ -421,26 +426,26 @@ atOptions={
 <label>E-mail</label>
 
 <input
-  id="lEmail"
-  type="email"
-  placeholder="Seu e-mail">
+id="lEmail"
+type="email"
+placeholder="Seu e-mail">
 
 <label>Senha</label>
 
 <input
-  id="lPass"
-  type="password"
-  placeholder="Sua senha">
+id="lPass"
+type="password"
+placeholder="Sua senha">
 
 <button
-  class="primary"
-  onclick="login()">
-  Entrar
+class="primary"
+onclick="login()">
+Entrar
 </button>
 
 <p
-  id="loginMsg"
-  class="small">
+id="loginMsg"
+class="small">
 </p>
 
 </div>
@@ -462,9 +467,9 @@ atOptions={
 </div>
 
 <button
-  class="ghost"
-  onclick="logout()">
-  Sair
+class="ghost"
+onclick="logout()">
+Sair
 </button>
 
 </div>
@@ -472,27 +477,33 @@ atOptions={
 <div class="nav">
 
 <button
-  class="ghost"
-  onclick="tab('quiz')">
-  🎲 Quiz
+class="ghost"
+onclick="tab('quiz')">
+🎲 Quiz
 </button>
 
 <button
-  class="ghost"
-  onclick="tab('ref')">
-  🎁 Indicação
+class="ghost"
+onclick="tab('ref')">
+🎁 Indicação
 </button>
 
 <button
-  class="ghost"
-  onclick="tab('cash')">
-  💸 Saque
+class="ghost"
+onclick="tab('cash')">
+💸 Saque
 </button>
 
 <button
-  class="ghost"
-  onclick="tab('premium')">
-  💎 Premium
+class="ghost"
+onclick="tab('premium')">
+💎 Premium
+</button>
+
+<button
+class="ghost"
+onclick="tab('sac')">
+📩 SAC
 </button>
 
 </div>
@@ -510,15 +521,15 @@ atOptions={
 </div>
 
 <button
-  id="rollButton"
-  class="primary roll"
-  onclick="rollDice()">
-  JOGAR DADO
+id="rollButton"
+class="primary roll"
+onclick="rollDice()">
+JOGAR DADO
 </button>
 
 <p
-  id="diceResult"
-  class="result">
+id="diceResult"
+class="result">
 </p>
 
 </div>
@@ -536,23 +547,23 @@ atOptions={
 </div>
 
 <div class="bar">
-  <div id="progress"></div>
+<div id="progress"></div>
 </div>
 
 <h2 id="question"></h2>
 
 <div
-  id="answers"
-  class="answers">
+id="answers"
+class="answers">
 </div>
 
 <p
-  id="feedback"
-  class="notice hidden">
+id="feedback"
+class="notice hidden">
 </p>
 
 <div
-  style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
+style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
 
 ⭐ Pontuação:
 <span id="totalScore">0</span>
@@ -560,31 +571,32 @@ atOptions={
 </div>
 
 <!-- ANÚNCIO VAST NA PERGUNTA -->
+
 <div
-  id="quizAdArea"
-  class="hidden">
+id="quizAdArea"
+class="hidden">
 
 <div id="quizAdTitle">
-  🎬 Assista ao anúncio para continuar
+🎬 Assista ao anúncio para continuar
 </div>
 
 <div id="quizAdContainer">
 
 <video
-  id="quizAdVideo"
-  playsinline
-  webkit-playsinline
-  preload="auto">
+id="quizAdVideo"
+playsinline
+webkit-playsinline
+preload="auto">
 </video>
 
 <div id="quizAdLoading">
-  Preparando anúncio...
+Preparando anúncio...
 </div>
 
 <button
-  id="quizAdPlay"
-  class="primary"
-  onclick="startQuizAd()">
+id="quizAdPlay"
+class="primary"
+onclick="startQuizAd()">
 
 ▶️ ASSISTIR ANÚNCIO
 
@@ -593,13 +605,13 @@ atOptions={
 </div>
 
 <div id="quizAdStatus">
-  Toque no botão para iniciar o anúncio.
+Toque no botão para iniciar o anúncio.
 </div>
 
 <button
-  id="quizAdContinue"
-  class="primary hidden"
-  onclick="finishQuestion()">
+id="quizAdContinue"
+class="primary hidden"
+onclick="finishQuestion()">
 
 CONTINUAR
 
@@ -608,9 +620,10 @@ CONTINUAR
 </div>
 
 <!-- HIGHREVENUEFORMAT -->
+
 <div
-  id="answerAd"
-  class="adbox">
+id="answerAd"
+class="adbox">
 
 <script>
 atOptions={
@@ -633,8 +646,8 @@ atOptions={
 <!-- INDICAÇÃO -->
 
 <div
-  id="refTab"
-  class="hidden card">
+id="refTab"
+class="hidden card">
 
 <h2>🎁 Indicação</h2>
 
@@ -644,23 +657,23 @@ Ganhe <b>50 pontos</b> quando seu convidado atingir
 </p>
 
 <input
-  id="refCode"
-  readonly>
+id="refCode"
+readonly>
 
 <input
-  id="refLink"
-  readonly>
+id="refLink"
+readonly>
 
 <button
-  class="primary"
-  onclick="copyRef()">
-  Copiar link
+class="primary"
+onclick="copyRef()">
+Copiar link
 </button>
 
 <button
-  class="light"
-  onclick="shareRef()">
-  Enviar link
+class="light"
+onclick="shareRef()">
+Enviar link
 </button>
 
 <p id="refMsg"></p>
@@ -670,8 +683,8 @@ Ganhe <b>50 pontos</b> quando seu convidado atingir
 <!-- SAQUE -->
 
 <div
-  id="cashTab"
-  class="hidden card">
+id="cashTab"
+class="hidden card">
 
 <h2>💸 Saque</h2>
 
@@ -697,8 +710,8 @@ Plataforma ganha: <b>R$ 3,00</b>
 </div>
 
 <select
-  id="payMethod"
-  onchange="payFields()">
+id="payMethod"
+onchange="payFields()">
 
 <option value="pix">
   Pix
@@ -713,19 +726,19 @@ Plataforma ganha: <b>R$ 3,00</b>
 <div id="pix">
 
 <input
-  id="pixKey"
-  placeholder="Chave Pix">
+id="pixKey"
+placeholder="Chave Pix">
 
 </div>
 
 <div
-  id="paypal"
-  class="hidden">
+id="paypal"
+class="hidden">
 
 <input
-  id="paypalKey"
-  type="email"
-  placeholder="E-mail PayPal">
+id="paypalKey"
+type="email"
+placeholder="E-mail PayPal">
 
 </div>
 
@@ -746,16 +759,16 @@ R$ 10,00 bruto — 11.000 pontos → você recebe R$ 7,00
 </select>
 
 <button
-  class="primary"
-  onclick="withdraw()">
+class="primary"
+onclick="withdraw()">
 
 Solicitar saque
 
 </button>
 
 <p
-  id="cashMsg"
-  class="notice hidden">
+id="cashMsg"
+class="notice hidden">
 </p>
 
 <p class="small">
@@ -768,8 +781,8 @@ Nesta versão o saque é registrado.
 <!-- PREMIUM -->
 
 <div
-  id="premiumTab"
-  class="hidden card">
+id="premiumTab"
+class="hidden card">
 
 <h2>💎 Premium</h2>
 
@@ -778,12 +791,42 @@ Nesta versão o saque é registrado.
 </p>
 
 <button
-  class="primary"
-  onclick="alert('O pagamento Premium ainda será conectado.')">
+class="primary"
+onclick="alert('O pagamento Premium ainda será conectado.')">
 
 Quero ser Premium
 
 </button>
+
+</div>
+
+<!-- SAC -->
+
+<div
+id="sacTab"
+class="hidden card">
+
+<h2>📩 SAC</h2>
+
+<p>
+Precisa de ajuda? Envie sua mensagem para a equipe do QuizUp.
+</p>
+
+<textarea
+id="sacMensagem"
+placeholder="Digite sua mensagem..."></textarea>
+
+<button
+id="sacButton"
+class="primary"
+onclick="enviarSAC()">
+Enviar mensagem
+</button>
+
+<p
+id="sacMsg"
+class="notice hidden">
+</p>
 
 </div>
 
@@ -1646,7 +1689,8 @@ function tab(x){
 "quiz",
 "ref",
 "cash",
-"premium"
+"premium",
+"sac"
 ].forEach(a=>{
 
 document
@@ -2108,8 +2152,7 @@ method==="pix"
 .trim();
 
 const msg=
-document
-.getElementById("cashMsg");
+document.getElementById("cashMsg");
 
 msg
 .classList
@@ -2206,6 +2249,116 @@ valorJogador
 .toFixed(2)
 .replace(".",",")+
 ".";
+
+}
+
+
+/* =====================================================
+   SAC
+===================================================== */
+
+async function enviarSAC(){
+
+const campo=
+document.getElementById("sacMensagem");
+
+const msg=
+document.getElementById("sacMsg");
+
+const button=
+document.getElementById("sacButton");
+
+const mensagem=
+campo.value.trim();
+
+msg.classList.remove("hidden");
+
+
+if(!mensagem){
+
+msg.textContent=
+"Digite sua mensagem antes de enviar.";
+
+return;
+
+}
+
+
+button.disabled=true;
+
+button.textContent=
+"Enviando...";
+
+
+try{
+
+const resposta=
+await fetch(
+`${API_URL}/api/sac`,
+{
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+jogador_id:
+s.id || null,
+
+email:
+s.email || "",
+
+nome_completo:
+s.name || "",
+
+mensagem:
+mensagem
+
+})
+}
+);
+
+
+const dados=
+await resposta.json();
+
+
+if(!resposta.ok || !dados.sucesso){
+
+throw new Error(
+dados.mensagem ||
+"Não foi possível enviar."
+);
+
+}
+
+
+campo.value="";
+
+msg.textContent=
+"✅ Mensagem enviada com sucesso! Nossa equipe recebeu sua solicitação.";
+
+
+}catch(error){
+
+console.error(
+"Erro ao enviar SAC:",
+error
+);
+
+msg.textContent=
+"❌ Não foi possível enviar a mensagem. Tente novamente.";
+
+}finally{
+
+button.disabled=false;
+
+button.textContent=
+"Enviar mensagem";
+
+}
 
 }
 
