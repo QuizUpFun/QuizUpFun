@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="clckd" content="b65974febfc087ea7c6fcfd81e4cb265">
 <title>QuizUp</title>
 
 <!-- MONETAG — IN-PAGE PUSH -->
@@ -10,13 +11,19 @@
 (function(s){
   s.dataset.zone='11646165';
   s.src='https://nap5k.com/tag.min.js';
-})([document.documentElement, document.body]
+})([document.documentElement,document.body]
   .filter(Boolean).pop()
   .appendChild(document.createElement('script')));
 </script>
 
+<!-- GOOGLE IMA -->
+<script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box
+}
+
 body{
   margin:0;
   font-family:Arial,sans-serif;
@@ -24,9 +31,26 @@ body{
   color:#fff;
   min-height:100vh
 }
-.wrap{max-width:760px;margin:auto;padding:16px}
-.logo{text-align:center;font-size:42px;font-weight:900;margin:10px}
-.sub{text-align:center;opacity:.8;margin-bottom:16px}
+
+.wrap{
+  max-width:760px;
+  margin:auto;
+  padding:16px
+}
+
+.logo{
+  text-align:center;
+  font-size:42px;
+  font-weight:900;
+  margin:10px
+}
+
+.sub{
+  text-align:center;
+  opacity:.8;
+  margin-bottom:16px
+}
+
 .card{
   background:rgba(255,255,255,.1);
   border:1px solid rgba(255,255,255,.15);
@@ -34,7 +58,11 @@ body{
   padding:20px;
   margin:14px 0
 }
-.hidden{display:none!important}
+
+.hidden{
+  display:none!important
+}
+
 button{
   border:0;
   border-radius:12px;
@@ -42,10 +70,27 @@ button{
   font-weight:700;
   cursor:pointer
 }
-button:disabled{opacity:.5}
-.primary{background:#ffd43b;color:#171717}
-.light{background:#fff;color:#171717}
-.ghost{background:rgba(255,255,255,.12);color:#fff}
+
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed
+}
+
+.primary{
+  background:#ffd43b;
+  color:#171717
+}
+
+.light{
+  background:#fff;
+  color:#171717
+}
+
+.ghost{
+  background:rgba(255,255,255,.12);
+  color:#fff
+}
+
 .top,.row{
   display:flex;
   gap:10px;
@@ -53,57 +98,79 @@ button:disabled{opacity:.5}
   justify-content:space-between;
   flex-wrap:wrap
 }
+
 .stat{
   padding:10px 14px;
   background:rgba(255,255,255,.1);
   border-radius:12px
 }
+
 .nav{
   display:grid;
   grid-template-columns:repeat(5,1fr);
   gap:8px
 }
+
 .dice{
   font-size:90px;
   text-align:center;
   line-height:1.1;
   margin:8px
 }
+
 .roll{
   display:block;
   margin:auto;
   font-size:18px
 }
-.result{text-align:center;font-size:21px;font-weight:800}
-.answers{display:grid;gap:10px}
+
+.result{
+  text-align:center;
+  font-size:21px;
+  font-weight:800
+}
+
+.answers{
+  display:grid;
+  gap:10px
+}
+
 .answer{
   background:#fff;
   color:#111;
   text-align:left;
   width:100%
 }
-.answer.correct{outline:4px solid #4ade80}
-.answer.wrong{outline:4px solid #fb7185}
-input,select{
-  width:100%;
-  padding:13px;
-  border:0;
-  border-radius:10px;
-  margin:5px 0 12px;
-  font-size:16px
+
+.answer.correct{
+  outline:4px solid #4ade80
 }
-textarea{
+
+.answer.wrong{
+  outline:4px solid #fb7185
+}
+
+input,select,textarea{
   width:100%;
-  min-height:120px;
   padding:13px;
   border:0;
   border-radius:10px;
   margin:5px 0 12px;
   font-size:16px;
-  font-family:Arial,sans-serif;
+  font-family:Arial,sans-serif
+}
+
+textarea{
+  min-height:120px;
   resize:vertical
 }
-.timer{text-align:center;font-size:22px;font-weight:800}
+
+.timer{
+  text-align:center;
+  font-size:22px;
+  font-weight:800
+}
+
 .bar{
   height:9px;
   background:rgba(255,255,255,.15);
@@ -111,24 +178,32 @@ textarea{
   overflow:hidden;
   margin-top:12px
 }
+
 .bar div{
   height:100%;
   background:#ffd43b;
   width:0;
   transition:width .2s linear
 }
+
 .notice{
   padding:12px;
   border-radius:12px;
   background:rgba(255,212,59,.12);
   border:1px solid rgba(255,212,59,.3)
 }
-.small{font-size:13px;opacity:.75}
+
+.small{
+  font-size:13px;
+  opacity:.75
+}
+
 .tabs2{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:8px
 }
+
 .adbox{
   width:100%;
   min-height:60px;
@@ -139,12 +214,90 @@ textarea{
   margin:12px auto;
   border-radius:10px
 }
+
+/* =====================================================
+   PLAYER VAST — GOOGLE IMA
+===================================================== */
+
+#quizAdArea{
+  margin-top:18px;
+  padding:14px;
+  background:rgba(0,0,0,.35);
+  border-radius:16px;
+  text-align:center
+}
+
+#quizAdTitle{
+  font-weight:800;
+  margin-bottom:10px
+}
+
+#quizAdContainer{
+  position:relative;
+  width:100%;
+  max-width:640px;
+  height:360px;
+  margin:auto;
+  background:#000;
+  border-radius:14px;
+  overflow:hidden
+}
+
+#quizAdVideo{
+  width:100%;
+  height:100%;
+  display:block;
+  background:#000
+}
+
+#quizAdLoading{
+  position:absolute;
+  left:0;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+  color:#fff;
+  font-size:15px;
+  text-align:center;
+  z-index:3;
+  pointer-events:none
+}
+
+#quizAdPlay{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  z-index:5;
+  min-width:190px;
+  font-size:18px;
+  padding:16px 22px
+}
+
+#quizAdStatus{
+  margin-top:10px;
+  font-size:13px;
+  opacity:.8
+}
+
+#quizAdContinue{
+  width:100%;
+  margin-top:12px;
+  font-size:17px
+}
+
+/* =====================================================
+   SAC
+===================================================== */
+
 .sac-message{
   background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
   border-radius:14px;
-  padding:15px;
+  padding:14px;
   margin-top:12px
 }
+
 .sac-response{
   margin-top:12px;
   padding:13px;
@@ -152,41 +305,80 @@ textarea{
   background:rgba(74,222,128,.12);
   border:1px solid rgba(74,222,128,.35)
 }
+
 .sac-pending{
   margin-top:12px;
-  padding:13px;
+  padding:12px;
   border-radius:12px;
   background:rgba(255,212,59,.12);
   border:1px solid rgba(255,212,59,.3)
 }
+
+.sac-date{
+  font-size:12px;
+  opacity:.65;
+  margin-top:8px
+}
+
+.sac-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap
+}
+
 @media(max-width:560px){
-  .nav{grid-template-columns:1fr 1fr}
-  .dice{font-size:75px}
-  .logo{font-size:38px}
+
+  .nav{
+    grid-template-columns:1fr 1fr
+  }
+
+  .dice{
+    font-size:75px
+  }
+
+  .logo{
+    font-size:38px
+  }
+
+  #quizAdContainer{
+    height:220px
+  }
+
+  #quizAdPlay{
+    min-width:170px;
+    font-size:16px
+  }
 }
 </style>
 </head>
 
 <body>
 
-<!--
-  ÁUDIO:
-  O arquivo deve estar na MESMA pasta do index.html:
-  92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3
+<!-- MÚSICA -->
+<audio
+  id="backgroundMusic"
+  preload="auto"
+  loop>
 
-  A música começa somente quando o jogador toca em JOGAR DADO.
--->
-<audio id="backgroundMusic" preload="auto" loop>
-  <source src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3" type="audio/mpeg">
+  <source
+    src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
+    type="audio/mpeg">
+
 </audio>
 
 <div class="wrap">
 
-<div class="logo">QuizUp</div>
-<div class="sub">🎲 Jogue, responda e acumule pontos</div>
+<div class="logo">
+  QuizUp
+</div>
 
-<!-- ADSTERRA / HIGHREVENUE — BANNER -->
+<div class="sub">
+  🎲 Jogue, responda e acumule pontos
+</div>
+
+<!-- HIGHREVENUEFORMAT -->
 <div class="adbox">
+
 <script>
 atOptions={
   'key':'827464848b02582093e6b5d45cb10d0a',
@@ -196,108 +388,281 @@ atOptions={
   'params':{}
 };
 </script>
+
 <script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
+
 </div>
+
+<!-- AUTENTICAÇÃO -->
 
 <section id="auth" class="card">
 
 <div class="tabs2">
-<button class="primary" onclick="authMode('register')">Cadastro</button>
-<button class="light" onclick="authMode('login')">Login</button>
+
+<button
+  class="primary"
+  onclick="authMode('register')">
+  Cadastro
+</button>
+
+<button
+  class="light"
+  onclick="authMode('login')">
+  Login
+</button>
+
 </div>
 
 <div id="registerBox">
+
 <h2>📝 Cadastro</h2>
 
 <label>E-mail</label>
-<input id="rEmail" type="email" placeholder="Seu e-mail">
+
+<input
+  id="rEmail"
+  type="email"
+  placeholder="Seu e-mail">
 
 <label>Senha</label>
-<input id="rPass" type="password" placeholder="Sua senha">
+
+<input
+  id="rPass"
+  type="password"
+  placeholder="Sua senha">
 
 <label>Nome completo</label>
-<input id="rName" type="text" placeholder="Seu nome completo">
+
+<input
+  id="rName"
+  type="text"
+  placeholder="Seu nome completo">
 
 <label>CPF</label>
-<input id="rCpf" type="text" inputmode="numeric" maxlength="14" placeholder="000.000.000-00">
 
-<button class="primary" onclick="register()">Cadastrar</button>
+<input
+  id="rCpf"
+  type="text"
+  inputmode="numeric"
+  maxlength="14"
+  placeholder="000.000.000-00">
+
+<button
+  class="primary"
+  onclick="register()">
+  Cadastrar
+</button>
+
+<p id="registerMsg" class="small"></p>
+
 </div>
 
 <div id="loginBox" class="hidden">
+
 <h2>🔐 Login</h2>
 
 <label>E-mail</label>
-<input id="lEmail" type="email" placeholder="Seu e-mail">
+
+<input
+  id="lEmail"
+  type="email"
+  placeholder="Seu e-mail">
 
 <label>Senha</label>
-<input id="lPass" type="password" placeholder="Sua senha">
 
-<button class="primary" onclick="login()">Entrar</button>
+<input
+  id="lPass"
+  type="password"
+  placeholder="Sua senha">
+
+<button
+  class="primary"
+  onclick="login()">
+  Entrar
+</button>
+
+<p id="loginMsg" class="small"></p>
+
 </div>
 
 </section>
 
+<!-- JOGO -->
+
 <section id="game" class="hidden">
 
 <div class="top card">
-<div class="stat">⭐ <span id="points">0</span> pontos</div>
-<div class="stat">🎲 Rodada <span id="round">1</span></div>
-<button class="ghost" onclick="logout()">Sair</button>
+
+<div class="stat">
+⭐ <span id="points">0</span> pontos
+</div>
+
+<div class="stat">
+🎲 Rodada <span id="round">1</span>
+</div>
+
+<button
+  class="ghost"
+  onclick="logout()">
+  Sair
+</button>
+
 </div>
 
 <div class="nav">
-<button class="ghost" onclick="tab('quiz')">🎲 Quiz</button>
-<button class="ghost" onclick="tab('ref')">🎁 Indicação</button>
-<button class="ghost" onclick="tab('cash')">💸 Saque</button>
-<button class="ghost" onclick="tab('sac')">💬 SAC</button>
-<button class="ghost" onclick="tab('premium')">💎 Premium</button>
+
+<button
+  class="ghost"
+  onclick="tab('quiz')">
+  🎲 Quiz
+</button>
+
+<button
+  class="ghost"
+  onclick="tab('ref')">
+  🎁 Indicação
+</button>
+
+<button
+  class="ghost"
+  onclick="tab('cash')">
+  💸 Saque
+</button>
+
+<button
+  class="ghost"
+  onclick="tab('sac')">
+  💬 SAC
+</button>
+
+<button
+  class="ghost"
+  onclick="tab('premium')">
+  💎 Premium
+</button>
+
 </div>
 
-<!-- ================================================= -->
-<!-- QUIZ -->
-<!-- ================================================= -->
+<!-- =====================================================
+     QUIZ
+===================================================== -->
 
 <div id="quizTab">
 
 <div id="rollCard" class="card">
-<h2 style="text-align:center">Jogue o dado</h2>
 
-<div id="dice" class="dice">🎲</div>
+<h2 style="text-align:center">
+  Jogue o dado
+</h2>
 
-<button class="primary roll" onclick="rollDice()">
-JOGAR DADO
+<div id="dice" class="dice">
+  🎲
+</div>
+
+<button
+  id="rollButton"
+  class="primary roll"
+  onclick="rollDice()">
+  JOGAR DADO
 </button>
 
 <p id="diceResult" class="result"></p>
+
 </div>
 
 <div id="questionCard" class="card hidden">
 
 <div class="top">
-<b>Pergunta</b>
+
+<b>❓ Pergunta</b>
+
 <span class="timer">
-⏱️ <span id="time">5</span>s
+⏱️ <span id="time">10</span>s
 </span>
+
 </div>
 
 <div class="bar">
-<div id="progress"></div>
+  <div id="progress"></div>
 </div>
 
 <h2 id="question"></h2>
 
-<div id="answers" class="answers"></div>
-
-<p id="feedback" class="notice hidden"></p>
-
-<div style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
-⭐ Pontuação:
-<span id="totalScore">0</span>
+<div
+  id="answers"
+  class="answers">
 </div>
 
-<!-- ANÚNCIO APÓS A RESPOSTA -->
-<div id="answerAd" class="adbox">
+<p
+  id="feedback"
+  class="notice hidden">
+</p>
+
+<div style="
+text-align:center;
+font-size:28px;
+font-weight:900;
+margin-top:16px">
+
+⭐ Pontuação:
+<span id="totalScore">0</span>
+
+</div>
+
+<!-- ANÚNCIO VAST -->
+
+<div
+  id="quizAdArea"
+  class="hidden">
+
+<div id="quizAdTitle">
+  🎬 Assista ao anúncio para continuar
+</div>
+
+<div id="quizAdContainer">
+
+<video
+  id="quizAdVideo"
+  playsinline
+  webkit-playsinline
+  preload="auto">
+</video>
+
+<div id="quizAdLoading">
+  Preparando anúncio...
+</div>
+
+<button
+  id="quizAdPlay"
+  class="primary"
+  onclick="startQuizAd()">
+
+▶️ ASSISTIR ANÚNCIO
+
+</button>
+
+</div>
+
+<div id="quizAdStatus">
+  Toque no botão para iniciar o anúncio.
+</div>
+
+<button
+  id="quizAdContinue"
+  class="primary hidden"
+  onclick="finishQuestion()">
+
+CONTINUAR
+
+</button>
+
+</div>
+
+<!-- HIGHREVENUEFORMAT -->
+
+<div
+  id="answerAd"
+  class="adbox">
 
 <script>
 atOptions={
@@ -313,27 +678,17 @@ atOptions={
 
 </div>
 
-<div id="rewardBox" class="hidden" style="margin-top:16px">
-
-<button
-id="continueButton"
-class="primary"
-style="width:100%"
-onclick="finishQuestion()"
->
-CONTINUAR
-</button>
-
 </div>
 
 </div>
-</div>
 
-<!-- ================================================= -->
-<!-- INDICAÇÃO -->
-<!-- ================================================= -->
+<!-- =====================================================
+     INDICAÇÃO
+===================================================== -->
 
-<div id="refTab" class="hidden card">
+<div
+  id="refTab"
+  class="hidden card">
 
 <h2>🎁 Indicação</h2>
 
@@ -346,23 +701,29 @@ Ganhe <b>50 pontos</b> quando seu convidado atingir
 
 <input id="refLink" readonly>
 
-<button class="primary" onclick="copyRef()">
-Copiar link
+<button
+  class="primary"
+  onclick="copyRef()">
+  Copiar link
 </button>
 
-<button class="light" onclick="shareRef()">
-Enviar link
+<button
+  class="light"
+  onclick="shareRef()">
+  Enviar link
 </button>
 
 <p id="refMsg"></p>
 
 </div>
 
-<!-- ================================================= -->
-<!-- SAQUE -->
-<!-- ================================================= -->
+<!-- =====================================================
+     SAQUE
+===================================================== -->
 
-<div id="cashTab" class="hidden card">
+<div
+  id="cashTab"
+  class="hidden card">
 
 <h2>💸 Saque</h2>
 
@@ -376,27 +737,35 @@ Enviar link
 
 </div>
 
-<select id="payMethod" onchange="payFields()">
+<select
+  id="payMethod"
+  onchange="payFields()">
 
 <option value="pix">
-Pix
+  Pix
 </option>
 
 <option value="paypal">
-PayPal
+  PayPal
 </option>
 
 </select>
 
 <div id="pix">
-<input id="pixKey" placeholder="Chave Pix">
+
+<input
+  id="pixKey"
+  placeholder="Chave Pix">
+
 </div>
 
 <div id="paypal" class="hidden">
+
 <input
-id="paypalKey"
-type="email"
-placeholder="E-mail PayPal">
+  id="paypalKey"
+  type="email"
+  placeholder="E-mail PayPal">
+
 </div>
 
 <select id="withdrawAmount">
@@ -415,24 +784,32 @@ R$ 10,00 — 11.000 pontos
 
 </select>
 
-<button class="primary" onclick="withdraw()">
+<button
+  class="primary"
+  onclick="withdraw()">
+
 Solicitar saque
+
 </button>
 
-<p id="cashMsg" class="notice hidden"></p>
+<p
+  id="cashMsg"
+  class="notice hidden">
+</p>
 
 <p class="small">
-Nesta versão o saque é apenas registrado.
-O pagamento real ainda não está conectado.
+Nesta versão o saque é registrado.
 </p>
 
 </div>
 
-<!-- ================================================= -->
-<!-- SAC -->
-<!-- ================================================= -->
+<!-- =====================================================
+     SAC
+===================================================== -->
 
-<div id="sacTab" class="hidden card">
+<div
+  id="sacTab"
+  class="hidden card">
 
 <h2>💬 Atendimento</h2>
 
@@ -442,37 +819,58 @@ Quando houver uma resposta, ela aparecerá aqui.
 </p>
 
 <div class="notice">
+
 <b>Conta:</b>
 <span id="sacAccount"></span>
+
 </div>
 
-<label>Mensagem</label>
+<label>
+Mensagem
+</label>
 
 <textarea
-id="sacMessage"
-placeholder="Digite sua mensagem..."
-maxlength="2000"
-></textarea>
+  id="sacMessage"
+  maxlength="2000"
+  placeholder="Digite sua mensagem para a equipe do QuizUp..."></textarea>
+
+<div class="sac-actions">
 
 <button
-id="sendSacButton"
-class="primary"
-onclick="enviarSAC()"
->
+  id="sendSacButton"
+  class="primary"
+  onclick="enviarSAC()">
+
 Enviar mensagem
+
 </button>
 
-<p id="sacSendMsg" class="notice hidden"></p>
+<button
+  class="light"
+  onclick="carregarHistoricoSAC()">
+
+🔄 Atualizar
+
+</button>
+
+</div>
+
+<p
+  id="sacSendMsg"
+  class="notice hidden">
+</p>
 
 <div id="sacHistory"></div>
 
 </div>
 
-<!-- ================================================= -->
-<!-- PREMIUM -->
-<!-- ================================================= -->
+<!-- =====================================================
+     PREMIUM
+===================================================== -->
 
-<div id="premiumTab" class="hidden card">
+<div
+  id="premiumTab"
+  class="hidden card">
 
 <h2>💎 Premium</h2>
 
@@ -481,10 +879,11 @@ Enviar mensagem
 </p>
 
 <button
-class="primary"
-onclick="alert('O pagamento Premium ainda será conectado.')"
->
+  class="primary"
+  onclick="alert('O pagamento Premium ainda será conectado.')">
+
 Quero ser Premium
+
 </button>
 
 </div>
@@ -495,30 +894,579 @@ Quero ser Premium
 
 <script>
 
+/* =====================================================
+   CONFIGURAÇÕES
+===================================================== */
+
 const API_URL =
 "https://quizup-api-qxn2.onrender.com";
 
+const QUESTION_TIME = 10;
+
+
+/* =====================================================
+   HILLTOPADS / GOOGLE IMA
+===================================================== */
+
+const HILLTOP_VAST =
+"https://smooth-survey.com/dgmfF.zodhGtN/vLZlGHUb/Oejm/9CucZoUOl/kTPYT/cZz/NrDwkP2HN/zucktJNYz/MZ0TOGT/Yh4zMmS/Zts/a/WU1epxd/DE0bxc";
+
+
+let adsLoader=null;
+let adsManager=null;
+let adDisplayContainer=null;
+
+let adStarted=false;
+let adFinished=false;
+let adLoading=false;
+
+
+/* =====================================================
+   ELEMENTOS DO PLAYER
+===================================================== */
+
+const quizAdArea=
+document.getElementById("quizAdArea");
+
+const quizAdContainer=
+document.getElementById("quizAdContainer");
+
+const quizAdVideo=
+document.getElementById("quizAdVideo");
+
+const quizAdLoading=
+document.getElementById("quizAdLoading");
+
+const quizAdPlay=
+document.getElementById("quizAdPlay");
+
+const quizAdStatus=
+document.getElementById("quizAdStatus");
+
+const quizAdContinue=
+document.getElementById("quizAdContinue");
+
+
+/* =====================================================
+   RESETAR PLAYER
+===================================================== */
+
+function resetQuizAd(){
+
+try{
+
+if(adsManager){
+adsManager.destroy();
+}
+
+}catch(error){
+console.warn(error);
+}
+
+adsManager=null;
+adsLoader=null;
+adDisplayContainer=null;
+
+adStarted=false;
+adFinished=false;
+adLoading=false;
+
+quizAdPlay.disabled=false;
+
+quizAdPlay.classList.remove("hidden");
+
+quizAdContinue.classList.add("hidden");
+
+quizAdLoading.classList.remove("hidden");
+
+quizAdLoading.textContent=
+"Preparando anúncio...";
+
+quizAdStatus.textContent=
+"Toque no botão para iniciar o anúncio.";
+
+try{
+
+quizAdVideo.pause();
+
+quizAdVideo.removeAttribute("src");
+
+quizAdVideo.load();
+
+}catch(error){}
+
+}
+
+
+/* =====================================================
+   MOSTRAR ANÚNCIO
+===================================================== */
+
+function showQuizAd(){
+
+resetQuizAd();
+
+quizAdArea.classList.remove("hidden");
+
+quizAdLoading.textContent=
+"Anúncio pronto.";
+
+quizAdPlay.classList.remove("hidden");
+
+quizAdStatus.textContent=
+"Toque em ▶️ para assistir ao anúncio.";
+
+}
+
+
+/* =====================================================
+   ESCONDER ANÚNCIO
+===================================================== */
+
+function hideQuizAd(){
+
+quizAdArea.classList.add("hidden");
+
+}
+
+
+/* =====================================================
+   ERRO
+===================================================== */
+
+function quizAdError(event){
+
+console.warn(
+"Erro no anúncio VAST:",
+event
+);
+
+adLoading=false;
+
+quizAdPlay.disabled=false;
+
+quizAdLoading.classList.remove("hidden");
+
+quizAdLoading.textContent=
+"Não foi possível carregar o anúncio.";
+
+quizAdStatus.textContent=
+"Você pode continuar.";
+
+quizAdContinue.classList.remove("hidden");
+
+}
+
+
+/* =====================================================
+   INÍCIO
+===================================================== */
+
+function quizAdStarted(){
+
+adStarted=true;
+adLoading=false;
+
+quizAdPlay.classList.add("hidden");
+
+quizAdLoading.classList.add("hidden");
+
+quizAdStatus.textContent=
+"▶️ Anúncio em reprodução...";
+
+}
+
+
+/* =====================================================
+   FINAL
+===================================================== */
+
+function quizAdComplete(){
+
+adFinished=true;
+adLoading=false;
+
+quizAdPlay.classList.add("hidden");
+
+quizAdLoading.classList.add("hidden");
+
+quizAdStatus.textContent=
+"✅ Anúncio concluído.";
+
+quizAdContinue.classList.remove("hidden");
+
+try{
+
+if(adsManager){
+adsManager.destroy();
+}
+
+}catch(error){}
+
+adsManager=null;
+
+}
+
+
+/* =====================================================
+   ADS MANAGER
+===================================================== */
+
+function onAdsManagerLoaded(event){
+
+try{
+
+adsManager=
+event.getAdsManager(
+quizAdVideo
+);
+
+adsManager.addEventListener(
+google.ima.AdErrorEvent.Type.AD_ERROR,
+quizAdError
+);
+
+adsManager.addEventListener(
+google.ima.AdEvent.Type.STARTED,
+quizAdStarted
+);
+
+adsManager.addEventListener(
+google.ima.AdEvent.Type.COMPLETE,
+quizAdComplete
+);
+
+adsManager.addEventListener(
+google.ima.AdEvent.Type.SKIPPED,
+quizAdComplete
+);
+
+adsManager.addEventListener(
+google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
+quizAdComplete
+);
+
+adsManager.addEventListener(
+google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
+quizAdComplete
+);
+
+const width=
+quizAdContainer.clientWidth||320;
+
+const height=
+quizAdContainer.clientHeight||220;
+
+adsManager.init(
+width,
+height,
+google.ima.ViewMode.NORMAL
+);
+
+adsManager.start();
+
+}catch(error){
+
+console.error(error);
+
+quizAdError(error);
+
+}
+
+}
+
+
+/* =====================================================
+   INICIAR ANÚNCIO
+===================================================== */
+
+function startQuizAd(){
+
+if(adLoading || adStarted){
+return;
+}
+
+if(
+typeof google==="undefined" ||
+!google.ima
+){
+
+quizAdError(
+"Google IMA não carregado."
+);
+
+return;
+
+}
+
+adLoading=true;
+
+quizAdPlay.disabled=true;
+
+quizAdPlay.classList.add("hidden");
+
+quizAdLoading.classList.remove("hidden");
+
+quizAdLoading.textContent=
+"Carregando anúncio...";
+
+quizAdStatus.textContent=
+"Conectando ao anúncio...";
+
+try{
+
+adDisplayContainer=
+new google.ima.AdDisplayContainer(
+quizAdContainer,
+quizAdVideo
+);
+
+adDisplayContainer.initialize();
+
+adsLoader=
+new google.ima.AdsLoader(
+adDisplayContainer
+);
+
+adsLoader.addEventListener(
+google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
+onAdsManagerLoaded
+);
+
+adsLoader.addEventListener(
+google.ima.AdErrorEvent.Type.AD_ERROR,
+quizAdError
+);
+
+const request=
+new google.ima.AdsRequest();
+
+request.adTagUrl=
+HILLTOP_VAST;
+
+const width=
+quizAdContainer.clientWidth||320;
+
+const height=
+quizAdContainer.clientHeight||220;
+
+request.linearAdSlotWidth=
+width;
+
+request.linearAdSlotHeight=
+height;
+
+request.nonLinearAdSlotWidth=
+width;
+
+request.nonLinearAdSlotHeight=
+height;
+
+adsLoader.requestAds(request);
+
+}catch(error){
+
+console.error(error);
+
+quizAdError(error);
+
+}
+
+}
+
+
+/* =====================================================
+   MÚSICA
+===================================================== */
+
+const backgroundMusic=
+document.getElementById(
+"backgroundMusic"
+);
+
+backgroundMusic.volume=0.35;
+
+function startMusic(){
+
+if(backgroundMusic.paused){
+
+backgroundMusic.play().catch(
+()=>{}
+);
+
+}
+
+}
+
+
+/* =====================================================
+   PERGUNTAS
+===================================================== */
+
 const Q=[
-["Quanto é 2 + 2?",["3","4","5","6"],1],
-["Qual é a capital do Brasil?",["Brasília","São Paulo","Salvador","Recife"],0],
-["Qual planeta é conhecido como Planeta Vermelho?",["Terra","Marte","Vênus","Saturno"],1],
-["Quantos dias tem uma semana?",["5","6","7","8"],2],
-["Qual animal é conhecido como rei da selva?",["Tigre","Elefante","Leão","Urso"],2],
-["Quantos meses tem um ano?",["10","11","12","13"],2],
-["Qual é a cor formada pela mistura de azul e amarelo?",["Verde","Roxo","Laranja","Rosa"],0],
-["Qual é o maior planeta do Sistema Solar?",["Terra","Marte","Júpiter","Mercúrio"],2],
-["Qual é o maior oceano da Terra?",["Atlântico","Índico","Pacífico","Ártico"],2],
-["Quanto é 12 × 8?",["86","96","108","112"],1],
-["Quem escreveu Dom Casmurro?",["Machado de Assis","José de Alencar","Clarice Lispector","Cecília Meireles"],0],
-["Qual é o símbolo químico do ouro?",["Ag","Fe","Au","Cu"],2],
-["Qual destes números é primo?",["21","27","29","33"],2],
-["Qual é a raiz quadrada de 144?",["10","11","12","14"],2],
-["Qual é o maior país do mundo em área?",["China","Canadá","Brasil","Rússia"],3],
-["Em que ano terminou a Segunda Guerra Mundial?",["1943","1944","1945","1946"],2],
-["Qual é o elemento químico de número atômico 6?",["Oxigênio","Carbono","Nitrogênio","Ferro"],1],
-["Qual é a velocidade aproximada da luz no vácuo?",["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],1],
-["Qual é a derivada de x³ − 4x?",["3x² − 4","x² − 4","3x − 4","3x² + 4"],0]
+
+[
+"Quanto é 2 + 2?",
+["3","4","5","6"],
+1
+],
+
+[
+"Qual é a capital do Brasil?",
+["Brasília","São Paulo","Salvador","Recife"],
+0
+],
+
+[
+"Qual planeta é conhecido como Planeta Vermelho?",
+["Terra","Marte","Vênus","Saturno"],
+1
+],
+
+[
+"Quantos dias tem uma semana?",
+["5","6","7","8"],
+2
+],
+
+[
+"Qual animal é conhecido como rei da selva?",
+["Tigre","Elefante","Leão","Urso"],
+2
+],
+
+[
+"Quantos meses tem um ano?",
+["10","11","12","13"],
+2
+],
+
+[
+"Qual é a cor formada pela mistura de azul e amarelo?",
+["Verde","Roxo","Laranja","Rosa"],
+0
+],
+
+[
+"Qual é o maior planeta do Sistema Solar?",
+["Terra","Marte","Júpiter","Mercúrio"],
+2
+],
+
+[
+"Quantas horas tem um dia?",
+["12","18","24","48"],
+2
+],
+
+[
+"Qual animal produz leite?",
+["Cachorro","Vaca","Galinha","Peixe"],
+1
+],
+
+[
+"Qual é o maior oceano da Terra?",
+["Atlântico","Índico","Pacífico","Ártico"],
+2
+],
+
+[
+"Quanto é 12 × 8?",
+["86","96","108","112"],
+1
+],
+
+[
+"Qual gás é mais abundante na atmosfera?",
+["Oxigênio","Nitrogênio","Hélio","Hidrogênio"],
+1
+],
+
+[
+"Quem escreveu Dom Casmurro?",
+["Machado de Assis","José de Alencar","Clarice Lispector","Cecília Meireles"],
+0
+],
+
+[
+"Qual é o símbolo químico do ouro?",
+["Ag","Fe","Au","Cu"],
+2
+],
+
+[
+"Qual é o resultado de 15² − 10²?",
+["125","150","175","225"],
+0
+],
+
+[
+"Qual destes números é primo?",
+["21","27","29","33"],
+2
+],
+
+[
+"Se 3x + 7 = 25, qual é o valor de x?",
+["4","5","6","7"],
+1
+],
+
+[
+"Qual continente tem a maior área?",
+["África","Ásia","Europa","América do Sul"],
+1
+],
+
+[
+"Qual é a raiz quadrada de 144?",
+["10","11","12","14"],
+2
+],
+
+[
+"Qual é o maior país do mundo em área?",
+["China","Canadá","Brasil","Rússia"],
+3
+],
+
+[
+"Em que ano terminou a Segunda Guerra Mundial?",
+["1943","1944","1945","1946"],
+2
+],
+
+[
+"Qual é o elemento químico de número atômico 6?",
+["Oxigênio","Carbono","Nitrogênio","Ferro"],
+1
+],
+
+[
+"Qual é a velocidade aproximada da luz no vácuo?",
+["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],
+1
+],
+
+[
+"Qual é a derivada de x³ − 4x?",
+["3x² − 4","x² − 4","3x − 4","3x² + 4"],
+0
+],
+
+[
+"Qual processo celular produz a maior parte do ATP em condições aeróbicas?",
+["Fermentação","Glicólise","Fosforilação oxidativa","Transcrição"],
+2
+]
+
 ];
+
+
+/* =====================================================
+   ESTADO
+===================================================== */
 
 let s={
 email:"",
@@ -531,13 +1479,15 @@ code:"",
 referrer:"",
 dice:0,
 question:null,
-timer:5,
+recentQuestions:[],
+timer:QUESTION_TIME,
 answered:false,
 roundPoints:0,
 sacIds:[]
 };
 
 let handle=null;
+
 
 /* =====================================================
    LOCAL STORAGE
@@ -549,13 +1499,19 @@ return "quizup_"+s.email;
 
 function save(){
 
+if(!s.email){
+return;
+}
+
 localStorage.setItem(
 key(),
 JSON.stringify(s)
 );
 
 ui();
+
 }
+
 
 /* =====================================================
    AUTENTICAÇÃO
@@ -575,40 +1531,44 @@ document
 
 }
 
+
 function register(){
 
-let e=
+const e=
 document.getElementById("rEmail")
-.value
-.trim()
-.toLowerCase();
+.value.trim().toLowerCase();
 
-let p=
+const p=
 document.getElementById("rPass")
 .value;
 
-let n=
+const n=
 document.getElementById("rName")
-.value
-.trim();
+.value.trim();
 
-let cpf=
+const cpf=
 document.getElementById("rCpf")
-.value
-.trim();
+.value.trim();
+
+const msg=
+document.getElementById("registerMsg");
 
 if(!e||!p||!n||!cpf){
 
-alert("Preencha todos os campos.");
+msg.textContent=
+"Preencha todos os campos.";
 
 return;
+
 }
 
 if(localStorage.getItem("quizup_"+e)){
 
-alert("Essa conta já existe.");
+msg.textContent=
+"Essa conta já existe. Use o Login.";
 
 return;
+
 }
 
 s={
@@ -618,18 +1578,19 @@ name:n,
 cpf:cpf,
 points:0,
 round:1,
-code:
-"QU"+
+code:"QU"+
 Math.random()
 .toString(36)
 .slice(2,8)
 .toUpperCase(),
 referrer:
-new URLSearchParams(location.search)
-.get("ref")||"",
+new URLSearchParams(
+location.search
+).get("ref")||"",
 dice:0,
 question:null,
-timer:5,
+recentQuestions:[],
+timer:QUESTION_TIME,
 answered:false,
 roundPoints:0,
 sacIds:[]
@@ -637,50 +1598,63 @@ sacIds:[]
 
 save();
 
+msg.textContent=
+"Cadastro realizado com sucesso!";
+
 openGame();
 
 }
 
+
 function login(){
 
-let e=
+const e=
 document.getElementById("lEmail")
-.value
-.trim()
-.toLowerCase();
+.value.trim().toLowerCase();
 
-let p=
+const p=
 document.getElementById("lPass")
 .value;
 
+const msg=
+document.getElementById("loginMsg");
+
 if(!e||!p){
 
-alert("Preencha e-mail e senha.");
+msg.textContent=
+"Preencha e-mail e senha.";
 
 return;
+
 }
 
-let x=
+const x=
 localStorage.getItem("quizup_"+e);
 
 if(!x){
 
-alert("Conta não encontrada.");
+msg.textContent=
+"Conta não encontrada.";
 
 return;
+
 }
 
-let a=
+try{
+
+const account=
 JSON.parse(x);
 
-if(a.password!==p){
+if(account.password!==p){
 
-alert("Senha incorreta.");
+msg.textContent=
+"Senha incorreta.";
 
 return;
+
 }
 
-s=a;
+s=account;
 
 if(!Array.isArray(s.sacIds)){
 s.sacIds=[];
@@ -688,7 +1662,19 @@ s.sacIds=[];
 
 openGame();
 
+}catch(error){
+
+msg.textContent=
+"Não foi possível entrar.";
+
 }
+
+}
+
+
+/* =====================================================
+   ABRIR JOGO
+===================================================== */
 
 function openGame(){
 
@@ -708,6 +1694,7 @@ tab("quiz");
 
 }
 
+
 /* =====================================================
    SAIR
 ===================================================== */
@@ -715,6 +1702,8 @@ tab("quiz");
 function logout(){
 
 clearInterval(handle);
+
+resetQuizAd();
 
 document
 .getElementById("game")
@@ -727,6 +1716,7 @@ document
 .remove("hidden");
 
 }
+
 
 /* =====================================================
    INTERFACE
@@ -753,16 +1743,18 @@ location.pathname+
 "?ref="+
 encodeURIComponent(s.code||"");
 
-let account=
-s.name
-?s.name+" — "+s.email
-:s.email;
+const sacAccount=
+document.getElementById("sacAccount");
 
-document.getElementById("sacAccount")
-.textContent=
-account||"Conta QuizUp";
+if(sacAccount){
+
+sacAccount.textContent=
+s.email||"Conta atual";
 
 }
+
+}
+
 
 /* =====================================================
    ABAS
@@ -776,15 +1768,20 @@ function tab(x){
 "cash",
 "sac",
 "premium"
-]
-.forEach(a=>{
+].forEach(a=>{
 
-document
-.getElementById(a+"Tab")
-.classList
+const elemento=
+document.getElementById(a+"Tab");
+
+if(elemento){
+
+elemento.classList
 .toggle("hidden",a!==x);
 
+}
+
 });
+
 
 if(x==="quiz"){
 
@@ -802,135 +1799,123 @@ document
 
 if(x==="sac"){
 
+ui();
+
 carregarHistoricoSAC();
 
 }
 
 }
 
-/* =====================================================
-   MÚSICA
-===================================================== */
-
-function playMusic(){
-
-const music=
-document.getElementById(
-"backgroundMusic"
-);
-
-if(!music)return;
-
-music.volume=0.35;
-
-const promise=
-music.play();
-
-if(promise!==undefined){
-
-promise.catch(function(error){
-
-console.log(
-"Áudio bloqueado pelo navegador:",
-error
-);
-
-});
-
-}
-
-}
 
 /* =====================================================
-   PERGUNTA
+   ESCOLHER PERGUNTA
 ===================================================== */
 
 function pickQuestion(){
 
-return Q[
+const recent=
+s.recentQuestions||[];
+
+const available=
+Q.filter(q=>
+!recent.includes(q[0])
+);
+
+const pool=
+available.length
+?available
+:Q;
+
+const q=
+pool[
 Math.floor(
-Math.random()*Q.length
+Math.random()*pool.length
 )
 ];
 
+s.recentQuestions=
+[
+...recent,
+q[0]
+].slice(-10);
+
+return q;
+
 }
 
+
 /* =====================================================
-   DADO
+   JOGAR DADO
 ===================================================== */
 
 function rollDice(){
 
-/* O toque no botão libera a música no celular */
-
-playMusic();
+startMusic();
 
 clearInterval(handle);
 
 s.answered=false;
 
-let d;
+let dice;
 
 if(s.round%30===0){
 
-d=
+dice=
 Math.floor(
 Math.random()*3
 )+8;
 
-}
+}else if(s.round%10===0){
 
-else if(s.round%10===0){
-
-d=
+dice=
 Math.floor(
 Math.random()*3
 )+5;
 
-}
+}else{
 
-else{
-
-d=
+dice=
 Math.floor(
 Math.random()*4
 )+1;
 
 }
 
-s.dice=d;
+s.dice=dice;
 
-s.roundPoints=d;
+s.roundPoints=dice;
 
-s.question=
-pickQuestion();
+s.question=pickQuestion();
 
 document
 .getElementById("dice")
-.textContent="🎲 "+d;
+.textContent=
+"🎲 "+dice;
 
 document
 .getElementById("diceResult")
 .textContent=
-"Você tirou "+d+
+"Você tirou "+
+dice+
 " • Esta pergunta vale "+
-d+
-(d===1?" ponto":" pontos");
+dice+
+(dice===1?" ponto":" pontos");
 
 document
 .getElementById("question")
 .textContent=
 s.question[0];
 
-let answers=
+const answers=
 document.getElementById("answers");
 
 answers.innerHTML="";
 
-s.question[1]
-.forEach((a,i)=>{
+s.question[1].forEach(
+(a,i)=>{
 
-let b=
+const b=
 document.createElement("button");
 
 b.className="answer";
@@ -941,7 +1926,8 @@ b.onclick=()=>answer(i);
 
 answers.appendChild(b);
 
-});
+}
+);
 
 document
 .getElementById("rollCard")
@@ -958,32 +1944,32 @@ document
 .classList
 .add("hidden");
 
-document
-.getElementById("rewardBox")
-.classList
-.add("hidden");
+hideQuizAd();
 
 startTimer();
 
 }
 
+
 /* =====================================================
-   TEMPORIZADOR
+   CRONÔMETRO
 ===================================================== */
 
 function startTimer(){
 
 clearInterval(handle);
 
-s.timer=5;
+s.timer=QUESTION_TIME;
 
 document
 .getElementById("time")
-.textContent=5;
+.textContent=
+QUESTION_TIME;
 
 document
 .getElementById("progress")
-.style.width="100%";
+.style
+.width="100%";
 
 handle=
 setInterval(()=>{
@@ -992,14 +1978,16 @@ s.timer--;
 
 document
 .getElementById("time")
-.textContent=s.timer;
+.textContent=
+Math.max(0,s.timer);
 
 document
 .getElementById("progress")
-.style.width=
+.style
+.width=
 Math.max(
 0,
-s.timer/5*100
+(s.timer/QUESTION_TIME)*100
 )+"%";
 
 if(s.timer<=0){
@@ -1014,49 +2002,51 @@ answer(-1);
 
 }
 
+
 /* =====================================================
-   RESPOSTA
+   RESPONDER
 ===================================================== */
 
 function answer(i){
 
-if(s.answered)return;
+if(s.answered){
+return;
+}
 
 s.answered=true;
 
 clearInterval(handle);
 
-let c=
+const correct=
 s.question[2];
 
-let bs=
+const buttons=
 [
-...document.querySelectorAll(
-".answer"
-)
+...document.querySelectorAll(".answer")
 ];
 
-if(i>=0 && bs[i]){
+if(i>=0 && buttons[i]){
 
-bs[i]
+buttons[i]
 .classList
 .add(
-i===c
+i===correct
 ?"correct"
 :"wrong"
 );
 
 }
 
-if(bs[c]){
+if(buttons[correct]){
 
-bs[c]
+buttons[correct]
 .classList
 .add("correct");
 
 }
 
-let ok=i===c;
+const ok=
+i===correct;
 
 if(ok){
 
@@ -1068,10 +2058,8 @@ ui();
 
 save();
 
-let feedback=
-document.getElementById(
-"feedback"
-);
+const feedback=
+document.getElementById("feedback");
 
 feedback
 .classList
@@ -1084,18 +2072,18 @@ s.roundPoints+
 " pontos!"
 :"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
 
-document
-.getElementById("rewardBox")
-.classList
-.remove("hidden");
+showQuizAd();
 
 }
 
+
 /* =====================================================
-   FINALIZAR PERGUNTA
+   FINALIZAR RODADA
 ===================================================== */
 
 function finishQuestion(){
+
+resetQuizAd();
 
 document
 .getElementById("questionCard")
@@ -1115,11 +2103,17 @@ document
 .getElementById("diceResult")
 .textContent="";
 
+document
+.getElementById("feedback")
+.classList
+.add("hidden");
+
 s.round++;
 
 save();
 
 }
+
 
 /* =====================================================
    INDICAÇÃO
@@ -1127,7 +2121,7 @@ save();
 
 function copyRef(){
 
-let link=
+const link=
 document
 .getElementById("refLink")
 .value;
@@ -1135,7 +2129,8 @@ document
 if(navigator.clipboard){
 
 navigator.clipboard
-.writeText(link);
+.writeText(link)
+.catch(()=>{});
 
 }
 
@@ -1146,14 +2141,17 @@ document
 
 }
 
+
 async function shareRef(){
 
-let link=
+const link=
 document
 .getElementById("refLink")
 .value;
 
 if(navigator.share){
+
+try{
 
 await navigator.share({
 
@@ -1166,9 +2164,9 @@ url:link
 
 });
 
-}
+}catch(error){}
 
-else{
+}else{
 
 copyRef();
 
@@ -1176,13 +2174,14 @@ copyRef();
 
 }
 
+
 /* =====================================================
-   SAQUE
+   PAGAMENTO
 ===================================================== */
 
 function payFields(){
 
-let p=
+const pix=
 document
 .getElementById("payMethod")
 .value==="pix";
@@ -1190,14 +2189,15 @@ document
 document
 .getElementById("pix")
 .classList
-.toggle("hidden",!p);
+.toggle("hidden",!pix);
 
 document
 .getElementById("paypal")
 .classList
-.toggle("hidden",p);
+.toggle("hidden",pix);
 
 }
+
 
 function need(v){
 
@@ -1209,30 +2209,34 @@ return v==="10"
 
 }
 
+
 function withdraw(){
 
-let v=
+const v=
 document
 .getElementById("withdrawAmount")
 .value;
 
-let n=need(v);
+const n=
+need(v);
 
-let m=
+const method=
 document
 .getElementById("payMethod")
 .value;
 
-let k=
-(
-m==="pix"
-?document.getElementById("pixKey")
-:document.getElementById("paypalKey")
-)
+const k=
+method==="pix"
+?document
+.getElementById("pixKey")
+.value
+.trim()
+:document
+.getElementById("paypalKey")
 .value
 .trim();
 
-let msg=
+const msg=
 document
 .getElementById("cashMsg");
 
@@ -1260,35 +2264,35 @@ return;
 
 }
 
-let a=
+const arr=
 JSON.parse(
 localStorage.getItem(
 "quizup_withdrawals"
 )||"[]"
 );
 
-a.push({
+arr.push({
 
 email:s.email,
 
 value:v,
 
-method:m,
+method:method,
 
-date:
-new Date().toISOString()
+date:new Date().toISOString()
 
 });
 
 localStorage.setItem(
 "quizup_withdrawals",
-JSON.stringify(a)
+JSON.stringify(arr)
 );
 
 msg.textContent=
-"Solicitação registrada. O pagamento real será conectado posteriormente.";
+"Solicitação registrada.";
 
 }
+
 
 /* =====================================================
    SAC — ENVIAR MENSAGEM
@@ -1297,37 +2301,31 @@ msg.textContent=
 async function enviarSAC(){
 
 const campo=
-document.getElementById(
-"sacMessage"
-);
+document.getElementById("sacMessage");
 
 const mensagem=
 campo.value.trim();
 
 const msg=
-document.getElementById(
-"sacSendMsg"
-);
+document.getElementById("sacSendMsg");
 
-const button=
-document.getElementById(
-"sendSacButton"
-);
-
-msg
-.classList
-.remove("hidden");
+const botao=
+document.getElementById("sendSacButton");
 
 if(!mensagem){
 
+msg.classList.remove("hidden");
+
 msg.textContent=
-"Digite uma mensagem.";
+"Digite uma mensagem antes de enviar.";
 
 return;
 
 }
 
-button.disabled=true;
+botao.disabled=true;
+
+msg.classList.remove("hidden");
 
 msg.textContent=
 "Enviando mensagem...";
@@ -1345,7 +2343,8 @@ headers:{
 "application/json"
 },
 
-body:JSON.stringify({
+body:
+JSON.stringify({
 
 email:s.email||null,
 
@@ -1362,13 +2361,15 @@ mensagem:mensagem
 const dados=
 await resposta.json();
 
-if(!resposta.ok ||
-!dados.sucesso){
+if(
+!resposta.ok ||
+!dados.sucesso
+){
 
 throw new Error(
 dados.mensagem||
 dados.erro||
-"Não foi possível enviar."
+"Não foi possível enviar a mensagem."
 );
 
 }
@@ -1382,15 +2383,12 @@ if(!Array.isArray(s.sacIds)){
 s.sacIds=[];
 }
 
-if(
-!s.sacIds.includes(
-Number(dados.sac.id)
-)
-){
+const id=
+Number(dados.sac.id);
 
-s.sacIds.push(
-Number(dados.sac.id)
-);
+if(!s.sacIds.includes(id)){
+
+s.sacIds.push(id);
 
 }
 
@@ -1401,32 +2399,33 @@ save();
 campo.value="";
 
 msg.textContent=
-"✅ Mensagem enviada com sucesso.";
+"✅ Mensagem enviada com sucesso!";
 
 await carregarHistoricoSAC();
 
-}
-catch(erro){
+}catch(erro){
 
 console.error(
-"Erro SAC:",
+"Erro ao enviar SAC:",
 erro
 );
 
 msg.textContent=
-"❌ Não foi possível enviar a mensagem. Tente novamente.";
+"❌ "+
+(erro.message||
+"Não foi possível enviar a mensagem.");
+
+}finally{
+
+botao.disabled=false;
 
 }
-finally{
-
-button.disabled=false;
 
 }
 
-}
 
 /* =====================================================
-   SAC — CONSULTAR RESPOSTA
+   SAC — CONSULTAR MENSAGEM
 ===================================================== */
 
 async function consultarSAC(id){
@@ -1435,14 +2434,18 @@ try{
 
 const resposta=
 await fetch(
-API_URL+"/api/sac/"+encodeURIComponent(id)
+API_URL+
+"/api/sac/"+
+encodeURIComponent(id)
 );
 
 const dados=
 await resposta.json();
 
-if(!resposta.ok ||
-!dados.sucesso){
+if(
+!resposta.ok ||
+!dados.sucesso
+){
 
 return null;
 
@@ -1450,8 +2453,7 @@ return null;
 
 return dados.sac;
 
-}
-catch(erro){
+}catch(erro){
 
 console.error(
 "Erro ao consultar SAC:",
@@ -1463,6 +2465,37 @@ return null;
 }
 
 }
+
+
+/* =====================================================
+   SAC — ESCAPAR HTML
+===================================================== */
+
+function escapeHtml(valor){
+
+if(
+valor===null ||
+valor===undefined
+){
+
+return "";
+
+}
+
+return String(valor)
+
+.replace(/&/g,"&amp;")
+
+.replace(/</g,"&lt;")
+
+.replace(/>/g,"&gt;")
+
+.replace(/"/g,"&quot;")
+
+.replace(/'/g,"&#039;");
+
+}
+
 
 /* =====================================================
    SAC — HISTÓRICO
@@ -1476,7 +2509,9 @@ document.getElementById(
 );
 
 if(!Array.isArray(s.sacIds)){
+
 s.sacIds=[];
+
 }
 
 area.innerHTML=
@@ -1508,85 +2543,58 @@ mensagens.push(sac);
 
 }
 
-if(mensagens.length===0){
+if(!mensagens.length){
 
 area.innerHTML=
-"<p class='small'>Nenhuma mensagem encontrada.</p>";
+"<p class='small'>Não foi possível carregar suas mensagens.</p>";
 
 return;
 
 }
 
-area.innerHTML="";
-
 mensagens
 .sort(
 (a,b)=>
-Number(b.id)-Number(a.id)
-)
-.forEach(sac=>{
+Number(b.id)-
+Number(a.id)
+);
 
-const div=
-document.createElement("div");
+let html="";
 
-div.className=
-"sac-message";
+mensagens.forEach(
+sac=>{
 
-const data=
-sac.criado_em
-?new Date(
-sac.criado_em
-).toLocaleString(
-"pt-BR"
-)
-:"";
+html+=
+"<div class='sac-message'>";
 
-let html=
-"<div><b>📨 Sua mensagem</b></div>";
+html+=
+"<b>📨 Sua mensagem</b>";
 
 html+=
 "<div style='margin-top:8px'>"+
-escapeHtml(
-sac.mensagem||""
-)+
-"</div>";
-
-html+=
-"<div class='small' style='margin-top:8px'>"+
-data+
+escapeHtml(sac.mensagem)+
 "</div>";
 
 if(
 sac.resposta &&
-String(
-sac.resposta
-).trim()
+String(sac.resposta).trim()
 ){
 
 html+=
-"<div class='sac-response'>"+
-"<b>💬 Resposta do QuizUp</b>"+
+"<div class='sac-response'>";
+
+html+=
+"<b>💬 Resposta do QuizUp</b>";
+
+html+=
 "<div style='margin-top:8px'>"+
-escapeHtml(
-sac.resposta
-)+
-"</div>"+
-(
-sac.respondido_em
-?
-"<div class='small' style='margin-top:8px'>"+
-new Date(
-sac.respondido_em
-).toLocaleString(
-"pt-BR"
-)+
-"</div>"
-:""
-)+
+escapeHtml(sac.resposta)+
 "</div>";
 
-}
-else{
+html+=
+"</div>";
+
+}else{
 
 html+=
 "<div class='sac-pending'>"+
@@ -1595,28 +2603,68 @@ html+=
 
 }
 
-div.innerHTML=html;
+if(sac.criado_em){
 
-area.appendChild(div);
-
-});
+html+=
+"<div class='sac-date'>"+
+"Enviada em: "+
+formatarDataSAC(sac.criado_em)+
+"</div>";
 
 }
+
+if(
+sac.respondido_em
+){
+
+html+=
+"<div class='sac-date'>"+
+"Respondida em: "+
+formatarDataSAC(sac.respondido_em)+
+"</div>";
+
+}
+
+html+=
+"</div>";
+
+}
+);
+
+area.innerHTML=html;
+
+}
+
 
 /* =====================================================
-   SEGURANÇA PARA TEXTO DO SAC
+   SAC — DATA
 ===================================================== */
 
-function escapeHtml(text){
+function formatarDataSAC(valor){
 
-return String(text)
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+if(!valor){
+
+return "-";
 
 }
+
+const data=
+new Date(valor);
+
+if(
+isNaN(data.getTime())
+){
+
+return String(valor);
+
+}
+
+return data.toLocaleString(
+"pt-BR"
+);
+
+}
+
 
 /* =====================================================
    RESTAURAR CONTA
@@ -1624,10 +2672,9 @@ return String(text)
 
 (function(){
 
-let k=
+const k=
 Object.keys(localStorage)
-.find(
-k=>
+.find(k=>
 k.startsWith("quizup_") &&
 !k.includes("withdrawals")
 );
@@ -1636,27 +2683,50 @@ if(k){
 
 try{
 
-s=
-JSON.parse(
-localStorage.getItem(k)
-);
+const saved=
+localStorage.getItem(k);
+
+if(saved){
+
+s=JSON.parse(saved);
 
 if(!Array.isArray(s.sacIds)){
+
 s.sacIds=[];
+
 }
 
 openGame();
 
 }
-catch(e){
 
-console.log(e);
+}catch(error){
+
+console.log(
+"Não foi possível restaurar a conta:",
+error
+);
 
 }
 
 }
 
 })();
+
+
+/* =====================================================
+   LIMPEZA
+===================================================== */
+
+window.addEventListener(
+"beforeunload",
+function(){
+
+clearInterval(handle);
+
+resetQuizAd();
+
+});
 
 </script>
 
