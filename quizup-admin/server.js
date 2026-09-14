@@ -34,7 +34,9 @@ app.get("/", (req, res) => {
 
 app.get("/api/test-db", async (req, res) => {
   try {
-    const resultado = await pool.query("SELECT NOW() AS agora");
+    const resultado = await pool.query(
+      "SELECT NOW() AS agora"
+    );
 
     res.json({
       status: "ok",
@@ -43,11 +45,12 @@ app.get("/api/test-db", async (req, res) => {
     });
 
   } catch (erro) {
+
     console.error("Erro no banco:", erro);
 
     res.status(500).json({
       status: "erro",
-      erro: "Não foi possível conectar ao banco."
+      mensagem: erro.message
     });
   }
 });
@@ -57,102 +60,86 @@ app.get("/api/test-db", async (req, res) => {
 // =====================================================
 
 async function prepararBanco() {
+
   try {
+
+    // =================================================
+    // ADMINS
+    // =================================================
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS admins (
         id SERIAL PRIMARY KEY,
+        nome VARCHAR(255),
         email VARCHAR(255) UNIQUE NOT NULL,
-        senha VARCHAR(255) NOT NULL,
+        senha TEXT NOT NULL,
         criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
     console.log("Tabela admins pronta.");
 
+    // =================================================
+    // JOGADORES
+    // =================================================
+
     await pool.query(`
       CREATE TABLE IF NOT EXISTS jogadores (
         id SERIAL PRIMARY KEY,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        senha VARCHAR(255),
         nome_completo TEXT,
-        cpf VARCHAR(20) UNIQUE,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        senha TEXT,
+        cpf VARCHAR(20),
         codigo_indicacao VARCHAR(100),
         pontos INTEGER DEFAULT 0,
-        saldo NUMERIC(12,2) DEFAULT 0,
+        equilibrio NUMERIC(12,2) DEFAULT 0,
         criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
     console.log("Tabela jogadores verificada.");
 
-    await pool.query(`
-      ALTER TABLE jogadores
-      ADD COLUMN IF NOT EXISTS saldo NUMERIC(12,2) DEFAULT 0
-    `);
+    // =================================================
+    // PERGUNTAS
+    // =================================================
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS perguntas (
         id SERIAL PRIMARY KEY,
         pergunta TEXT NOT NULL,
-        alternativa_a TEXT NOT NULL,
-        alternativa_b TEXT NOT NULL,
-        alternativa_c TEXT NOT NULL,
-        alternativa_d TEXT NOT NULL,
-        resposta_correta VARCHAR(10) NOT NULL,
-        criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        dificuldade VARCHAR(20)
+        alternativa_a TEXT,
+        alternativa_b TEXT,
+        alternativa_c TEXT,
+        alternativa_d TEXT,
+        resposta_correta VARCHAR(1),
+        dificuldade VARCHAR(30),
+        criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    `);
-
-    await pool.query(`
-      ALTER TABLE perguntas
-      ADD COLUMN IF NOT EXISTS dificuldade VARCHAR(20)
     `);
 
     console.log("Tabela perguntas verificada.");
 
-    await pool.query(`
-      CREATE INDEX IF NOT EXISTS idx_perguntas_dificuldade
-      ON perguntas(dificuldade)
-    `);
-
-    await pool.query(`
-      CREATE INDEX IF NOT EXISTS idx_jogadores_email
-      ON jogadores(email)
-    `);
-
     // =================================================
-    // TABELA DE PARCEIROS
+    // PARCEIROS
     // =================================================
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS parceiros (
         id SERIAL PRIMARY KEY,
-        nome VARCHAR(150) NOT NULL,
-        email VARCHAR(150),
-        codigo VARCHAR(50) UNIQUE,
+        nome VARCHAR(255),
+        email VARCHAR(255),
+        codigo VARCHAR(100),
         pontos INTEGER DEFAULT 0,
-        saldo NUMERIC(10,2) DEFAULT 0,
-        ativo BOOLEAN DEFAULT TRUE,
+        valor NUMERIC(12,2) DEFAULT 0,
+        status VARCHAR(30) DEFAULT 'ativo',
         criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
     console.log("Tabela parceiros verificada.");
 
-    await pool.query(`
-      CREATE INDEX IF NOT EXISTS idx_parceiros_codigo
-      ON parceiros(codigo)
-    `);
-
-    await pool.query(`
-      CREATE INDEX IF NOT EXISTS idx_parceiros_email
-      ON parceiros(email)
-    `);
-
     // =================================================
-    // TABELA DE SAQUES
+    // SAQUES
     // =================================================
 
     await pool.query(`
@@ -160,23 +147,19 @@ async function prepararBanco() {
         id SERIAL PRIMARY KEY,
         jogador_id INTEGER,
         email VARCHAR(255),
-        valor NUMERIC(10,2) NOT NULL,
-        pix VARCHAR(255),
-        paypal VARCHAR(255),
+        pix_key TEXT,
+        quantia NUMERIC(12,2),
+        valor NUMERIC(12,2),
+        metodo VARCHAR(50),
         status VARCHAR(30) DEFAULT 'pendente',
         criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
-    await pool.query(`
-      ALTER TABLE saques
-      ADD COLUMN IF NOT EXISTS motivo_reprovacao TEXT
-    `);
-
     console.log("Tabela saques verificada.");
 
     // =================================================
-    // TABELA MONETAG
+    // MONETAG
     // =================================================
 
     await pool.query(`
@@ -193,7 +176,7 @@ async function prepararBanco() {
     console.log("Tabela monetag_relatorios verificada.");
 
     // =================================================
-    // TABELA SAC
+    // SAC
     // =================================================
 
     await pool.query(`
@@ -215,34 +198,33 @@ async function prepararBanco() {
     console.log("Banco preparado.");
 
   } catch (erro) {
-    console.error("Erro ao preparar banco:", erro);
+
+    console.error(
+      "Erro ao preparar banco:",
+      erro
+    );
+
+    throw erro;
   }
 }
 
 // =====================================================
-// HILLTOPADS — ATUALIZAR SALDO
+// HILLTOP ADS
 // =====================================================
 
 async function atualizarSaldoHilltopAds() {
 
-  const apiKey = process.env.HILLTOP_API_KEY;
-
-  if (!apiKey) {
-    console.log(
-      "HILLTOP_API_KEY não configurada."
-    );
-    return;
-  }
-
   try {
 
-    const url =
-      "https://api.hilltopads.com/publisher/balance?key=" +
-      encodeURIComponent(apiKey);
-
-    const resposta = await fetch(url);
-
-    const textoResposta = await resposta.text();
+    const resposta = await fetch(
+      "https://hilltopads.com/api/v1/publisher/balance",
+      {
+        headers: {
+          Authorization:
+            `Bearer ${process.env.HILLTOPADS_API_KEY}`
+        }
+      }
+    );
 
     console.log(
       "HilltopAds HTTP:",
@@ -250,604 +232,56 @@ async function atualizarSaldoHilltopAds() {
     );
 
     if (!resposta.ok) {
-
-      console.error(
-        "Erro HTTP da HilltopAds:",
-        resposta.status
-      );
-
       return;
     }
 
-    let dados;
-
-    try {
-
-      dados = JSON.parse(textoResposta);
-
-    } catch (erroJSON) {
-
-      console.error(
-        "A HilltopAds não retornou JSON válido."
-      );
-
-      return;
-    }
+    const dados = await resposta.json();
 
     let saldo = null;
 
-    function procurarSaldo(obj) {
-
-      if (
-        obj === null ||
-        obj === undefined
-      ) {
-        return null;
-      }
-
-      if (
-        typeof obj === "number" &&
-        Number.isFinite(obj)
-      ) {
-        return obj;
-      }
-
-      if (
-        typeof obj === "string"
-      ) {
-
-        const texto = obj
-          .replace(",", ".")
-          .trim();
-
-        const numero = Number(texto);
-
-        if (Number.isFinite(numero)) {
-          return numero;
-        }
-
-        return null;
-      }
-
-      if (
-        typeof obj !== "object"
-      ) {
-        return null;
-      }
-
-      const nomesPossiveis = [
-        "balance",
-        "amount",
-        "saldo",
-        "value",
-        "current_balance",
-        "currentBalance",
-        "balance_amount",
-        "balanceAmount"
-      ];
-
-      for (const nome of nomesPossiveis) {
-
-        if (
-          Object.prototype.hasOwnProperty.call(
-            obj,
-            nome
-          )
-        ) {
-
-          const encontrado =
-            procurarSaldo(obj[nome]);
-
-          if (
-            encontrado !== null
-          ) {
-            return encontrado;
-          }
-        }
-      }
-
-      for (const chave of Object.keys(obj)) {
-
-        const valor = obj[chave];
-
-        if (
-          valor &&
-          typeof valor === "object"
-        ) {
-
-          const encontrado =
-            procurarSaldo(valor);
-
-          if (
-            encontrado !== null
-          ) {
-            return encontrado;
-          }
-        }
-      }
-
-      return null;
+    if (
+      typeof dados.balance === "number"
+    ) {
+      saldo = dados.balance;
     }
-
-    saldo = procurarSaldo(dados);
 
     if (
-      saldo === null ||
-      !Number.isFinite(Number(saldo))
+      dados.balance &&
+      typeof dados.balance.amount === "number"
     ) {
-
-      console.error(
-        "Não foi possível identificar o saldo da HilltopAds."
-      );
-
-      return;
+      saldo = dados.balance.amount;
     }
 
-    saldo = Number(saldo);
+    if (saldo !== null) {
 
-    const resultado = await pool.query(
-      `
-      INSERT INTO parceiros (
-        nome,
-        email,
-        codigo,
-        pontos,
-        saldo,
-        ativo
-      )
-      VALUES (
-        'HilltopAds',
-        NULL,
-        'HILLTOP',
-        0,
-        $1,
-        TRUE
-      )
-      ON CONFLICT (codigo)
-      DO UPDATE SET
-        saldo = EXCLUDED.saldo,
-        nome = 'HilltopAds',
-        ativo = TRUE
-      RETURNING
-        id,
-        nome,
-        codigo,
-        pontos,
-        saldo,
-        ativo
-      `,
-      [saldo]
-    );
+      await pool.query(`
+        UPDATE parceiros
+        SET valor = $1
+        WHERE LOWER(nome) LIKE '%hilltop%'
+           OR LOWER(email) LIKE '%hilltop%'
+      `, [saldo]);
 
-    console.log(
-      "Saldo HilltopAds salvo no Aiven:",
-      resultado.rows[0]
-    );
+      console.log(
+        "Saldo HilltopAds salvo:",
+        saldo
+      );
+    }
 
   } catch (erro) {
 
     console.error(
-      "Erro ao atualizar saldo da HilltopAds:",
+      "Erro ao atualizar HilltopAds:",
       erro.message
     );
   }
 }
 
 // =====================================================
-// LOGIN ADMINISTRATIVO
+// LOGIN ADMIN
 // =====================================================
 
 app.post("/api/admin/login", async (req, res) => {
-  try {
 
-    const { email, senha } = req.body;
-
-    if (!email || !senha) {
-      return res.status(400).json({
-        sucesso: false,
-        erro: "E-mail e senha são obrigatórios."
-      });
-    }
-
-    const resultado = await pool.query(
-      `
-      SELECT *
-      FROM admins
-      WHERE LOWER(email) = LOWER($1)
-      LIMIT 1
-      `,
-      [email.trim()]
-    );
-
-    if (resultado.rows.length === 0) {
-      return res.status(401).json({
-        sucesso: false,
-        erro: "E-mail ou senha incorretos."
-      });
-    }
-
-    const admin = resultado.rows[0];
-
-    const senhaCorreta = await bcrypt.compare(
-      senha,
-      admin.senha
-    );
-
-    if (!senhaCorreta) {
-      return res.status(401).json({
-        sucesso: false,
-        erro: "E-mail ou senha incorretos."
-      });
-    }
-
-    res.json({
-      sucesso: true,
-      mensagem: "Login realizado com sucesso.",
-      admin: {
-        id: admin.id,
-        email: admin.email
-      }
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro no login administrativo:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro interno no servidor."
-    });
-  }
-});
-
-// =====================================================
-// DASHBOARD
-// =====================================================
-
-app.get("/api/admin/dashboard", async (req, res) => {
-  try {
-
-    const jogadores = await pool.query(`
-      SELECT COUNT(*) AS total
-      FROM jogadores
-    `);
-
-    const perguntas = await pool.query(`
-      SELECT COUNT(*) AS total
-      FROM perguntas
-    `);
-
-    res.json({
-      sucesso: true,
-      jogadores: Number(
-        jogadores.rows[0].total
-      ),
-      perguntas: Number(
-        perguntas.rows[0].total
-      )
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro no dashboard:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro ao carregar dashboard."
-    });
-  }
-});
-
-// =====================================================
-// LISTAR JOGADORES NO ADMIN
-// =====================================================
-
-app.get("/api/admin/jogadores", async (req, res) => {
-  try {
-
-    const resultado = await pool.query(`
-      SELECT
-        id,
-        email,
-        nome_completo,
-        cpf,
-        codigo_indicacao,
-        pontos,
-        saldo,
-        criado_em
-      FROM jogadores
-      ORDER BY id DESC
-    `);
-
-    res.json({
-      sucesso: true,
-      jogadores: resultado.rows
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao listar jogadores:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro ao carregar jogadores."
-    });
-  }
-});
-
-// =====================================================
-// DADOS DO JOGADOR
-// =====================================================
-
-app.get("/api/jogador/:id", async (req, res) => {
-  try {
-
-    const resultado = await pool.query(
-      `
-      SELECT
-        id,
-        email,
-        nome_completo,
-        cpf,
-        codigo_indicacao,
-        pontos,
-        saldo,
-        criado_em
-      FROM jogadores
-      WHERE id = $1
-      LIMIT 1
-      `,
-      [req.params.id]
-    );
-
-    if (resultado.rows.length === 0) {
-
-      return res.status(404).json({
-        sucesso: false,
-        erro: "Jogador não encontrado."
-      });
-    }
-
-    res.json({
-      sucesso: true,
-      jogador: resultado.rows[0]
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao buscar jogador:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro ao buscar jogador."
-    });
-  }
-});
-
-// =====================================================
-// ATUALIZAR DADOS DO JOGADOR
-// =====================================================
-
-app.put("/api/jogador/:id", async (req, res) => {
-  try {
-
-    const {
-      pontos,
-      equilibrio,
-      saldo
-    } = req.body;
-
-    const novoPontos =
-      Number.isFinite(Number(pontos))
-        ? Number(pontos)
-        : 0;
-
-    const novoSaldo =
-      equilibrio !== undefined
-        ? Number(equilibrio)
-        : Number(saldo || 0);
-
-    const resultado = await pool.query(
-      `
-      UPDATE jogadores
-      SET
-        pontos = $1,
-        saldo = $2
-      WHERE id = $3
-      RETURNING
-        id,
-        email,
-        nome_completo,
-        cpf,
-        codigo_indicacao,
-        pontos,
-        saldo,
-        criado_em
-      `,
-      [
-        novoPontos,
-        novoSaldo,
-        req.params.id
-      ]
-    );
-
-    if (resultado.rows.length === 0) {
-
-      return res.status(404).json({
-        sucesso: false,
-        erro: "Jogador não encontrado."
-      });
-    }
-
-    res.json({
-      sucesso: true,
-      jogador: resultado.rows[0]
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao atualizar jogador:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro ao atualizar jogador."
-    });
-  }
-});
-
-// =====================================================
-// CADASTRO DE JOGADOR
-// =====================================================
-
-app.post("/api/cadastro", async (req, res) => {
-  try {
-
-    const {
-      email,
-      senha,
-      nome,
-      nome_completo,
-      cpf,
-      codigo_indicacao,
-      codigo
-    } = req.body;
-
-    const nomeFinal =
-      nome_completo ||
-      nome ||
-      "";
-
-    const codigoFinal =
-      codigo_indicacao ||
-      codigo ||
-      "";
-
-    if (
-      !email ||
-      !senha ||
-      !nomeFinal ||
-      !cpf
-    ) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro: "Preencha todos os campos obrigatórios."
-      });
-    }
-
-    const emailLimpo =
-      email.trim().toLowerCase();
-
-    const cpfLimpo =
-      cpf.trim();
-
-    const existente = await pool.query(
-      `
-      SELECT id
-      FROM jogadores
-      WHERE LOWER(email) = LOWER($1)
-         OR cpf = $2
-      LIMIT 1
-      `,
-      [
-        emailLimpo,
-        cpfLimpo
-      ]
-    );
-
-    if (existente.rows.length > 0) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro: "E-mail ou CPF já cadastrado."
-      });
-    }
-
-    const senhaHash =
-      await bcrypt.hash(
-        senha,
-        12
-      );
-
-    const resultado = await pool.query(
-      `
-      INSERT INTO jogadores (
-        email,
-        senha,
-        nome_completo,
-        cpf,
-        codigo_indicacao,
-        pontos,
-        saldo
-      )
-      VALUES (
-        $1,
-        $2,
-        $3,
-        $4,
-        $5,
-        0,
-        0
-      )
-      RETURNING
-        id,
-        email,
-        nome_completo,
-        cpf,
-        codigo_indicacao,
-        pontos,
-        saldo,
-        criado_em
-      `,
-      [
-        emailLimpo,
-        senhaHash,
-        nomeFinal,
-        cpfLimpo,
-        codigoFinal
-      ]
-    );
-
-    res.json({
-      sucesso: true,
-      mensagem: "Cadastro realizado com sucesso.",
-      jogador: resultado.rows[0]
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro no cadastro:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro ao realizar cadastro."
-    });
-  }
-});
-
-// =====================================================
-// LOGIN DO JOGADOR
-// =====================================================
-
-app.post("/api/login", async (req, res) => {
   try {
 
     const {
@@ -859,21 +293,456 @@ app.post("/api/login", async (req, res) => {
 
       return res.status(400).json({
         sucesso: false,
-        erro: "E-mail e senha são obrigatórios."
+        erro: "Informe e-mail e senha."
       });
     }
 
     const resultado = await pool.query(
       `
-      SELECT *
-      FROM jogadores
+      SELECT
+        id,
+        nome,
+        email,
+        senha
+      FROM admins
       WHERE LOWER(email) = LOWER($1)
       LIMIT 1
       `,
-      [email.trim()]
+      [email]
     );
 
     if (resultado.rows.length === 0) {
+
+      return res.status(401).json({
+        sucesso: false,
+        erro: "E-mail ou senha incorretos."
+      });
+    }
+
+    const admin = resultado.rows[0];
+
+    let senhaCorreta = false;
+
+    try {
+
+      senhaCorreta =
+        await bcrypt.compare(
+          senha,
+          admin.senha
+        );
+
+    } catch (erro) {
+
+      senhaCorreta =
+        senha === admin.senha;
+    }
+
+    if (!senhaCorreta) {
+
+      return res.status(401).json({
+        sucesso: false,
+        erro: "E-mail ou senha incorretos."
+      });
+    }
+
+    res.json({
+      sucesso: true,
+      admin: {
+        id: admin.id,
+        nome: admin.nome,
+        email: admin.email
+      }
+    });
+
+  } catch (erro) {
+
+    console.error(
+      "Erro no login admin:",
+      erro
+    );
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro interno no login."
+    });
+  }
+});
+
+// =====================================================
+// DASHBOARD
+// =====================================================
+
+app.get("/api/admin/dashboard", async (req, res) => {
+
+  try {
+
+    const jogadores =
+      await pool.query(
+        "SELECT COUNT(*) FROM jogadores"
+      );
+
+    const perguntas =
+      await pool.query(
+        "SELECT COUNT(*) FROM perguntas"
+      );
+
+    const saques =
+      await pool.query(
+        `
+        SELECT COUNT(*)
+        FROM saques
+        WHERE status = 'pendente'
+        `
+      );
+
+    const parceiros =
+      await pool.query(
+        "SELECT COUNT(*) FROM parceiros"
+      );
+
+    res.json({
+      sucesso: true,
+      jogadores:
+        Number(jogadores.rows[0].count),
+      perguntas:
+        Number(perguntas.rows[0].count),
+      saques_pendentes:
+        Number(saques.rows[0].count),
+      parceiros:
+        Number(parceiros.rows[0].count)
+    });
+
+  } catch (erro) {
+
+    console.error(
+      "Erro dashboard:",
+      erro
+    );
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao carregar dashboard."
+    });
+  }
+});
+
+// =====================================================
+// JOGADORES — LISTAR
+// =====================================================
+
+app.get("/api/admin/jogadores", async (req, res) => {
+
+  try {
+
+    const resultado =
+      await pool.query(`
+        SELECT
+          id,
+          nome_completo,
+          email,
+          cpf,
+          codigo_indicacao,
+          pontos,
+          equilibrio,
+          criado_em
+        FROM jogadores
+        ORDER BY id DESC
+      `);
+
+    res.json({
+      sucesso: true,
+      jogadores: resultado.rows
+    });
+
+  } catch (erro) {
+
+    console.error(
+      "Erro jogadores:",
+      erro
+    );
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao carregar jogadores."
+    });
+  }
+});
+
+// =====================================================
+// JOGADOR — CONSULTAR
+// =====================================================
+
+app.get(
+  "/api/admin/jogadores/:id",
+  async (req, res) => {
+
+    try {
+
+      const id =
+        Number(req.params.id);
+
+      const resultado =
+        await pool.query(
+          `
+          SELECT *
+          FROM jogadores
+          WHERE id = $1
+          LIMIT 1
+          `,
+          [id]
+        );
+
+      if (
+        resultado.rows.length === 0
+      ) {
+
+        return res.status(404).json({
+          sucesso: false,
+          erro: "Jogador não encontrado."
+        });
+      }
+
+      res.json({
+        sucesso: true,
+        jogador: resultado.rows[0]
+      });
+
+    } catch (erro) {
+
+      console.error(
+        "Erro jogador:",
+        erro
+      );
+
+      res.status(500).json({
+        sucesso: false,
+        erro: "Erro ao consultar jogador."
+      });
+    }
+  }
+);
+
+// =====================================================
+// JOGADOR — ATUALIZAR
+// =====================================================
+
+app.put(
+  "/api/admin/jogadores/:id",
+  async (req, res) => {
+
+    try {
+
+      const id =
+        Number(req.params.id);
+
+      const {
+        nome_completo,
+        email,
+        cpf,
+        pontos,
+        equilibrio
+      } = req.body;
+
+      const resultado =
+        await pool.query(
+          `
+          UPDATE jogadores
+          SET
+            nome_completo = COALESCE($1, nome_completo),
+            email = COALESCE($2, email),
+            cpf = COALESCE($3, cpf),
+            pontos = COALESCE($4, pontos),
+            equilibrio = COALESCE($5, equilibrio)
+          WHERE id = $6
+          RETURNING *
+          `,
+          [
+            nome_completo,
+            email,
+            cpf,
+            pontos,
+            equilibrio,
+            id
+          ]
+        );
+
+      if (
+        resultado.rows.length === 0
+      ) {
+
+        return res.status(404).json({
+          sucesso: false,
+          erro: "Jogador não encontrado."
+        });
+      }
+
+      res.json({
+        sucesso: true,
+        jogador: resultado.rows[0]
+      });
+
+    } catch (erro) {
+
+      console.error(
+        "Erro atualizar jogador:",
+        erro
+      );
+
+      res.status(500).json({
+        sucesso: false,
+        erro: "Erro ao atualizar jogador."
+      });
+    }
+  }
+);
+
+// =====================================================
+// REGISTRO DO JOGADOR
+// =====================================================
+
+app.post("/api/jogadores/registrar", async (req, res) => {
+
+  try {
+
+    const {
+      nome_completo,
+      email,
+      senha,
+      cpf,
+      codigo_indicacao
+    } = req.body;
+
+    if (
+      !nome_completo ||
+      !email ||
+      !senha ||
+      !cpf
+    ) {
+
+      return res.status(400).json({
+        sucesso: false,
+        erro: "Preencha todos os campos obrigatórios."
+      });
+    }
+
+    const existente =
+      await pool.query(
+        `
+        SELECT id
+        FROM jogadores
+        WHERE LOWER(email) = LOWER($1)
+           OR cpf = $2
+        LIMIT 1
+        `,
+        [
+          email,
+          cpf
+        ]
+      );
+
+    if (
+      existente.rows.length > 0
+    ) {
+
+      return res.status(400).json({
+        sucesso: false,
+        erro:
+          "E-mail ou CPF já cadastrado."
+      });
+    }
+
+    const senhaHash =
+      await bcrypt.hash(
+        senha,
+        10
+      );
+
+    const resultado =
+      await pool.query(
+        `
+        INSERT INTO jogadores (
+          nome_completo,
+          email,
+          senha,
+          cpf,
+          codigo_indicacao,
+          pontos,
+          equilibrio
+        )
+        VALUES (
+          $1,
+          $2,
+          $3,
+          $4,
+          $5,
+          0,
+          0
+        )
+        RETURNING
+          id,
+          nome_completo,
+          email,
+          cpf,
+          codigo_indicacao,
+          pontos,
+          equilibrio,
+          criado_em
+        `,
+        [
+          nome_completo,
+          String(email).toLowerCase(),
+          senhaHash,
+          cpf,
+          codigo_indicacao || null
+        ]
+      );
+
+    res.json({
+      sucesso: true,
+      jogador: resultado.rows[0]
+    });
+
+  } catch (erro) {
+
+    console.error(
+      "Erro registro jogador:",
+      erro
+    );
+
+    res.status(500).json({
+      sucesso: false,
+      erro: "Erro ao cadastrar jogador."
+    });
+  }
+});
+
+// =====================================================
+// LOGIN DO JOGADOR
+// =====================================================
+
+app.post("/api/jogadores/login", async (req, res) => {
+
+  try {
+
+    const {
+      email,
+      senha
+    } = req.body;
+
+    const resultado =
+      await pool.query(
+        `
+        SELECT *
+        FROM jogadores
+        WHERE LOWER(email) = LOWER($1)
+        LIMIT 1
+        `,
+        [email]
+      );
+
+    if (
+      resultado.rows.length === 0
+    ) {
 
       return res.status(401).json({
         sucesso: false,
@@ -898,33 +767,23 @@ app.post("/api/login", async (req, res) => {
       });
     }
 
+    delete jogador.senha;
+
     res.json({
       sucesso: true,
-      jogador: {
-        id: jogador.id,
-        email: jogador.email,
-        nome: jogador.nome_completo,
-        nome_completo: jogador.nome_completo,
-        cpf: jogador.cpf,
-        codigo_indicacao:
-          jogador.codigo_indicacao,
-        pontos:
-          jogador.pontos || 0,
-        saldo:
-          Number(jogador.saldo || 0)
-      }
+      jogador
     });
 
   } catch (erro) {
 
     console.error(
-      "Erro no login do jogador:",
+      "Erro login jogador:",
       erro
     );
 
     res.status(500).json({
       sucesso: false,
-      erro: "Erro ao realizar login."
+      erro: "Erro no login."
     });
   }
 });
@@ -933,276 +792,239 @@ app.post("/api/login", async (req, res) => {
 // RECUPERAÇÃO DE SENHA
 // =====================================================
 
-app.post("/api/recuperar-senha", async (req, res) => {
-  try {
-
-    const {
-      email,
-      cpf
-    } = req.body;
-
-    if (!email || !cpf) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro: "Informe o e-mail e o CPF."
-      });
-    }
-
-    const resultado = await pool.query(
-      `
-      SELECT id
-      FROM jogadores
-      WHERE LOWER(email) = LOWER($1)
-        AND cpf = $2
-      LIMIT 1
-      `,
-      [
-        email.trim(),
-        cpf.trim()
-      ]
-    );
-
-    if (resultado.rows.length === 0) {
-
-      return res.status(404).json({
-        sucesso: false,
-        erro: "E-mail e CPF não conferem."
-      });
-    }
-
-    res.json({
-      sucesso: true,
-      mensagem:
-        "Dados encontrados. A recuperação de senha poderá ser realizada."
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro na recuperação:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro na recuperação de senha."
-    });
-  }
-});
-
-// =====================================================
-// LISTAR PERGUNTAS NO ADMIN
-// =====================================================
-
-app.get("/api/admin/perguntas", async (req, res) => {
-  try {
-
-    const resultado = await pool.query(`
-      SELECT
-        id,
-        pergunta,
-        alternativa_a,
-        alternativa_b,
-        alternativa_c,
-        alternativa_d,
-        resposta_correta,
-        dificuldade,
-        criado_em
-      FROM perguntas
-      ORDER BY id DESC
-    `);
-
-    res.json({
-      sucesso: true,
-      perguntas: resultado.rows
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao listar perguntas:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro ao carregar perguntas."
-    });
-  }
-});
-
-// =====================================================
-// LISTAR PERGUNTAS
-// =====================================================
-
-app.get("/api/perguntas", async (req, res) => {
-  try {
-
-    const resultado = await pool.query(`
-      SELECT
-        id,
-        pergunta,
-        alternativa_a,
-        alternativa_b,
-        alternativa_c,
-        alternativa_d,
-        resposta_correta,
-        dificuldade
-      FROM perguntas
-      ORDER BY id DESC
-    `);
-
-    res.json({
-      sucesso: true,
-      perguntas: resultado.rows
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao carregar perguntas:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro ao carregar perguntas."
-    });
-  }
-});
-
-// =====================================================
-// CRIAR PERGUNTA PELO ADMIN
-// =====================================================
-
-app.post("/api/admin/perguntas", async (req, res) => {
-  try {
-
-    const {
-      pergunta,
-      alternativa_a,
-      alternativa_b,
-      alternativa_c,
-      alternativa_d,
-      resposta_correta,
-      dificuldade
-    } = req.body;
-
-    if (
-      !pergunta ||
-      !alternativa_a ||
-      !alternativa_b ||
-      !alternativa_c ||
-      !alternativa_d ||
-      !resposta_correta ||
-      !dificuldade
-    ) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro: "Preencha todos os campos da pergunta."
-      });
-    }
-
-    const resultado = await pool.query(
-      `
-      INSERT INTO perguntas (
-        pergunta,
-        alternativa_a,
-        alternativa_b,
-        alternativa_c,
-        alternativa_d,
-        resposta_correta,
-        dificuldade
-      )
-      VALUES (
-        $1,
-        $2,
-        $3,
-        $4,
-        $5,
-        $6,
-        $7
-      )
-      RETURNING *
-      `,
-      [
-        pergunta,
-        alternativa_a,
-        alternativa_b,
-        alternativa_c,
-        alternativa_d,
-        String(resposta_correta)
-          .toUpperCase()
-          .trim(),
-        dificuldade
-      ]
-    );
-
-    res.json({
-      sucesso: true,
-      mensagem: "Pergunta criada com sucesso.",
-      pergunta: resultado.rows[0]
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao criar pergunta:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro ao criar pergunta."
-    });
-  }
-});
-
-// =====================================================
-// IMPORTAR PERGUNTAS EM LOTE
-// =====================================================
-
-app.post("/api/admin/perguntas/importar", async (req, res) => {
-  try {
-
-    const perguntas =
-      req.body.perguntas;
-
-    if (
-      !Array.isArray(perguntas) ||
-      perguntas.length === 0
-    ) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro: "Nenhuma pergunta foi enviada."
-      });
-    }
-
-    const client =
-      await pool.connect();
+app.post(
+  "/api/jogadores/recuperar",
+  async (req, res) => {
 
     try {
 
-      await client.query("BEGIN");
+      const {
+        email,
+        cpf,
+        nova_senha
+      } = req.body;
 
-      for (const p of perguntas) {
+      if (
+        !email ||
+        !cpf ||
+        !nova_senha
+      ) {
 
-        if (
-          !p.pergunta ||
-          !p.alternativa_a ||
-          !p.alternativa_b ||
-          !p.alternativa_c ||
-          !p.alternativa_d ||
-          !p.resposta_correta ||
-          !p.dificuldade
-        ) {
-          continue;
-        }
+        return res.status(400).json({
+          sucesso: false,
+          erro: "Preencha todos os campos."
+        });
+      }
 
-        await client.query(
+      const jogador =
+        await pool.query(
+          `
+          SELECT id
+          FROM jogadores
+          WHERE LOWER(email) = LOWER($1)
+            AND cpf = $2
+          LIMIT 1
+          `,
+          [
+            email,
+            cpf
+          ]
+        );
+
+      if (
+        jogador.rows.length === 0
+      ) {
+
+        return res.status(404).json({
+          sucesso: false,
+          erro:
+            "E-mail e CPF não conferem."
+        });
+      }
+
+      const senhaHash =
+        await bcrypt.hash(
+          nova_senha,
+          10
+        );
+
+      await pool.query(
+        `
+        UPDATE jogadores
+        SET senha = $1
+        WHERE id = $2
+        `,
+        [
+          senhaHash,
+          jogador.rows[0].id
+        ]
+      );
+
+      res.json({
+        sucesso: true,
+        mensagem:
+          "Senha alterada com sucesso."
+      });
+
+    } catch (erro) {
+
+      console.error(
+        "Erro recuperação:",
+        erro
+      );
+
+      res.status(500).json({
+        sucesso: false,
+        erro:
+          "Erro ao recuperar senha."
+      });
+    }
+  }
+);
+
+// =====================================================
+// PERGUNTAS — ADMIN LISTAR
+// =====================================================
+
+app.get(
+  "/api/admin/perguntas",
+  async (req, res) => {
+
+    try {
+
+      const resultado =
+        await pool.query(`
+          SELECT *
+          FROM perguntas
+          ORDER BY id DESC
+        `);
+
+      res.json({
+        sucesso: true,
+        perguntas: resultado.rows
+      });
+
+    } catch (erro) {
+
+      console.error(
+        "Erro perguntas:",
+        erro
+      );
+
+      res.status(500).json({
+        sucesso: false,
+        erro: "Erro ao carregar perguntas."
+      });
+    }
+  }
+);
+
+// =====================================================
+// PERGUNTAS — CRIAR
+// =====================================================
+
+app.post(
+  "/api/admin/perguntas",
+  async (req, res) => {
+
+    try {
+
+      const {
+        pergunta,
+        alternativa_a,
+        alternativa_b,
+        alternativa_c,
+        alternativa_d,
+        resposta_correta,
+        dificuldade
+      } = req.body;
+
+      const resultado =
+        await pool.query(
+          `
+          INSERT INTO perguntas (
+            pergunta,
+            alternativa_a,
+            alternativa_b,
+            alternativa_c,
+            alternativa_d,
+            resposta_correta,
+            dificuldade
+          )
+          VALUES (
+            $1,
+            $2,
+            $3,
+            $4,
+            $5,
+            $6,
+            $7
+          )
+          RETURNING *
+          `,
+          [
+            pergunta,
+            alternativa_a,
+            alternativa_b,
+            alternativa_c,
+            alternativa_d,
+            resposta_correta,
+            dificuldade
+          ]
+        );
+
+      res.json({
+        sucesso: true,
+        pergunta:
+          resultado.rows[0]
+      });
+
+    } catch (erro) {
+
+      console.error(
+        "Erro criar pergunta:",
+        erro
+      );
+
+      res.status(500).json({
+        sucesso: false,
+        erro: "Erro ao criar pergunta."
+      });
+    }
+  }
+);
+
+// =====================================================
+// PERGUNTAS — IMPORTAR
+// =====================================================
+
+app.post(
+  "/api/admin/perguntas/importar",
+  async (req, res) => {
+
+    try {
+
+      const perguntas =
+        req.body.perguntas;
+
+      if (
+        !Array.isArray(perguntas)
+      ) {
+
+        return res.status(400).json({
+          sucesso: false,
+          erro:
+            "Lista de perguntas inválida."
+        });
+      }
+
+      let importadas = 0;
+
+      for (
+        const p of perguntas
+      ) {
+
+        await pool.query(
           `
           INSERT INTO perguntas (
             pergunta,
@@ -1229,1298 +1051,591 @@ app.post("/api/admin/perguntas/importar", async (req, res) => {
             p.alternativa_b,
             p.alternativa_c,
             p.alternativa_d,
-            String(p.resposta_correta)
-              .toUpperCase()
-              .trim(),
+            p.resposta_correta,
             p.dificuldade
           ]
         );
-      }
 
-      await client.query("COMMIT");
+        importadas++;
+      }
 
       res.json({
         sucesso: true,
-        mensagem:
-          "Perguntas importadas com sucesso.",
-        quantidade:
-          perguntas.length
+        importadas
       });
 
     } catch (erro) {
 
-      await client.query(
-        "ROLLBACK"
+      console.error(
+        "Erro importar perguntas:",
+        erro
       );
 
-      throw erro;
-
-    } finally {
-
-      client.release();
-    }
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao importar perguntas:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro ao importar perguntas."
-    });
-  }
-});
-
-// =====================================================
-// PERGUNTA ALEATÓRIA POR DIFICULDADE
-// =====================================================
-
-app.get("/api/pergunta-aleatoria", async (req, res) => {
-  try {
-
-    const dificuldadeRecebida =
-      String(
-        req.query.dificuldade || ""
-      )
-        .trim()
-        .toLowerCase();
-
-    const dificuldadesValidas = [
-      "facil",
-      "fácil",
-      "medio",
-      "médio",
-      "dificil",
-      "difícil"
-    ];
-
-    if (
-      !dificuldadesValidas.includes(
-        dificuldadeRecebida
-      )
-    ) {
-
-      return res.status(400).json({
+      res.status(500).json({
         sucesso: false,
         erro:
-          "Dificuldade inválida. Use facil, medio ou dificil."
+          "Erro ao importar perguntas."
       });
     }
+  }
+);
 
-    let dificuldade =
-      dificuldadeRecebida;
+// =====================================================
+// PERGUNTAS — PÚBLICO
+// =====================================================
 
-    if (dificuldade === "fácil") {
-      dificuldade = "facil";
-    }
+app.get(
+  "/api/perguntas",
+  async (req, res) => {
 
-    if (dificuldade === "médio") {
-      dificuldade = "medio";
-    }
+    try {
 
-    if (dificuldade === "difícil") {
-      dificuldade = "dificil";
-    }
-
-    const resultado = await pool.query(
-      `
-      SELECT
-        id,
-        pergunta,
-        alternativa_a,
-        alternativa_b,
-        alternativa_c,
-        alternativa_d,
-        resposta_correta,
+      const {
         dificuldade
-      FROM perguntas
-      WHERE LOWER(
-        REPLACE(
-          REPLACE(
-            REPLACE(
-              dificuldade,
-              'á',
-              'a'
-            ),
-            'é',
-            'e'
-          ),
-          'í',
-          'i'
-        )
-      ) = $1
-      ORDER BY RANDOM()
-      LIMIT 1
-      `,
-      [dificuldade]
-    );
-
-    if (
-      resultado.rows.length === 0
-    ) {
-
-      return res.status(404).json({
-        sucesso: false,
-        erro:
-          `Nenhuma pergunta ${dificuldade} cadastrada.`
-      });
-    }
-
-    res.json({
-      sucesso: true,
-      pergunta:
-        resultado.rows[0]
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao buscar pergunta por dificuldade:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro ao buscar pergunta."
-    });
-  }
-});
-
-// =====================================================
-// PARCEIROS — LISTAR NO ADMIN
-// =====================================================
-
-app.get("/api/admin/parceiros", async (req, res) => {
-  try {
-
-    await atualizarSaldoHilltopAds();
-
-    const resultado = await pool.query(`
-      SELECT
-        id,
-        nome,
-        email,
-        codigo,
-        pontos,
-        saldo,
-        ativo,
-        criado_em
-      FROM parceiros
-      ORDER BY id DESC
-    `);
-
-    res.json({
-      sucesso: true,
-      parceiros:
-        resultado.rows
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao listar parceiros:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro ao carregar parceiros."
-    });
-  }
-});
-
-// =====================================================
-// ATUALIZAR SALDOS DOS PARCEIROS
-// =====================================================
-
-app.post("/api/admin/parceiros/atualizar-saldos", async (req, res) => {
-  try {
-
-    await atualizarSaldoHilltopAds();
-
-    const resultado = await pool.query(`
-      SELECT
-        id,
-        nome,
-        email,
-        codigo,
-        pontos,
-        saldo,
-        ativo,
-        criado_em
-      FROM parceiros
-      ORDER BY id DESC
-    `);
-
-    res.json({
-      sucesso: true,
-      mensagem:
-        "Saldo dos parceiros atualizado.",
-      parceiros:
-        resultado.rows
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao atualizar saldos dos parceiros:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro ao atualizar saldos."
-    });
-  }
-});
-
-// =====================================================
-// PARCEIROS — CRIAR NO ADMIN
-// =====================================================
-
-app.post("/api/admin/parceiros", async (req, res) => {
-  try {
-
-    const {
-      nome,
-      email,
-      codigo,
-      pontos,
-      saldo,
-      ativo
-    } = req.body;
-
-    if (
-      !nome ||
-      !nome.trim()
-    ) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro:
-          "O nome do parceiro é obrigatório."
-      });
-    }
-
-    const pontosFinal =
-      Number.isFinite(
-        Number(pontos)
-      )
-        ? Number(pontos)
-        : 0;
-
-    const saldoFinal =
-      Number.isFinite(
-        Number(saldo)
-      )
-        ? Number(saldo)
-        : 0;
-
-    const ativoFinal =
-      ativo === undefined
-        ? true
-        : Boolean(ativo);
-
-    const resultado =
-      await pool.query(
-        `
-        INSERT INTO parceiros (
-          nome,
-          email,
-          codigo,
-          pontos,
-          saldo,
-          ativo
-        )
-        VALUES (
-          $1,
-          $2,
-          $3,
-          $4,
-          $5,
-          $6
-        )
-        RETURNING
-          id,
-          nome,
-          email,
-          codigo,
-          pontos,
-          saldo,
-          ativo,
-          criado_em
-        `,
-        [
-          nome.trim(),
-          email
-            ? email.trim().toLowerCase()
-            : null,
-          codigo
-            ? codigo.trim()
-            : null,
-          pontosFinal,
-          saldoFinal,
-          ativoFinal
-        ]
-      );
-
-    res.json({
-      sucesso: true,
-      mensagem:
-        "Parceiro cadastrado com sucesso.",
-      parceiro:
-        resultado.rows[0]
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao criar parceiro:",
-      erro
-    );
-
-    if (
-      erro.code === "23505"
-    ) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro:
-          "O código do parceiro já está cadastrado."
-      });
-    }
-
-    res.status(500).json({
-      sucesso: false,
-      erro:
-        "Erro ao cadastrar parceiro."
-    });
-  }
-});
-
-// =====================================================
-// PARCEIROS — ATUALIZAR NO ADMIN
-// =====================================================
-
-app.put("/api/admin/parceiros/:id", async (req, res) => {
-  try {
-
-    const {
-      nome,
-      email,
-      codigo,
-      pontos,
-      saldo,
-      ativo
-    } = req.body;
-
-    if (
-      !nome ||
-      !nome.trim()
-    ) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro:
-          "O nome do parceiro é obrigatório."
-      });
-    }
-
-    const pontosFinal =
-      Number.isFinite(
-        Number(pontos)
-      )
-        ? Number(pontos)
-        : 0;
-
-    const saldoFinal =
-      Number.isFinite(
-        Number(saldo)
-      )
-        ? Number(saldo)
-        : 0;
-
-    const ativoFinal =
-      ativo === undefined
-        ? true
-        : Boolean(ativo);
-
-    const resultado =
-      await pool.query(
-        `
-        UPDATE parceiros
-        SET
-          nome = $1,
-          email = $2,
-          codigo = $3,
-          pontos = $4,
-          saldo = $5,
-          ativo = $6
-        WHERE id = $7
-        RETURNING
-          id,
-          nome,
-          email,
-          codigo,
-          pontos,
-          saldo,
-          ativo,
-          criado_em
-        `,
-        [
-          nome.trim(),
-          email
-            ? email.trim().toLowerCase()
-            : null,
-          codigo
-            ? codigo.trim()
-            : null,
-          pontosFinal,
-          saldoFinal,
-          ativoFinal,
-          req.params.id
-        ]
-      );
-
-    if (
-      resultado.rows.length === 0
-    ) {
-
-      return res.status(404).json({
-        sucesso: false,
-        erro:
-          "Parceiro não encontrado."
-      });
-    }
-
-    res.json({
-      sucesso: true,
-      mensagem:
-        "Parceiro atualizado com sucesso.",
-      parceiro:
-        resultado.rows[0]
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao atualizar parceiro:",
-      erro
-    );
-
-    if (
-      erro.code === "23505"
-    ) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro:
-          "O código do parceiro já está cadastrado."
-      });
-    }
-
-    res.status(500).json({
-      sucesso: false,
-      erro:
-        "Erro ao atualizar parceiro."
-    });
-  }
-});
-
-// =====================================================
-// PARCEIROS — ATIVAR/DESATIVAR
-// =====================================================
-
-app.patch("/api/admin/parceiros/:id/status", async (req, res) => {
-  try {
-
-    const { ativo } =
-      req.body;
-
-    if (
-      typeof ativo !== "boolean"
-    ) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro:
-          "Informe o status do parceiro."
-      });
-    }
-
-    const resultado =
-      await pool.query(
-        `
-        UPDATE parceiros
-        SET ativo = $1
-        WHERE id = $2
-        RETURNING
-          id,
-          nome,
-          email,
-          codigo,
-          pontos,
-          saldo,
-          ativo,
-          criado_em
-        `,
-        [
-          ativo,
-          req.params.id
-        ]
-      );
-
-    if (
-      resultado.rows.length === 0
-    ) {
-
-      return res.status(404).json({
-        sucesso: false,
-        erro:
-          "Parceiro não encontrado."
-      });
-    }
-
-    res.json({
-      sucesso: true,
-      mensagem:
-        ativo
-          ? "Parceiro ativado com sucesso."
-          : "Parceiro desativado com sucesso.",
-      parceiro:
-        resultado.rows[0]
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao alterar status do parceiro:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro:
-        "Erro ao alterar status do parceiro."
-    });
-  }
-});
-
-// =====================================================
-// MONETAG — RELATÓRIOS
-// =====================================================
-
-app.get("/api/admin/monetag", async (req, res) => {
-  try {
-
-    const registros = await pool.query(`
-      SELECT
-        id,
-        data,
-        impressoes,
-        profit,
-        cpm,
-        criado_em
-      FROM monetag_relatorios
-      ORDER BY data DESC NULLS LAST, id DESC
-    `);
-
-    const totais = await pool.query(`
-      SELECT
-        COUNT(*) AS total_registros,
-        COALESCE(SUM(impressoes), 0) AS total_impressoes,
-        COALESCE(SUM(profit), 0) AS total_profit,
-        COALESCE(AVG(cpm), 0) AS cpm_medio
-      FROM monetag_relatorios
-    `);
-
-    res.json({
-      sucesso: true,
-      registros: registros.rows,
-      totais: {
-        total_registros:
-          Number(totais.rows[0].total_registros),
-        total_impressoes:
-          Number(totais.rows[0].total_impressoes),
-        total_profit:
-          Number(totais.rows[0].total_profit),
-        cpm_medio:
-          Number(totais.rows[0].cpm_medio)
+      } = req.query;
+
+      let resultado;
+
+      if (dificuldade) {
+
+        resultado =
+          await pool.query(
+            `
+            SELECT *
+            FROM perguntas
+            WHERE LOWER(dificuldade) =
+                  LOWER($1)
+            ORDER BY RANDOM()
+            `,
+            [dificuldade]
+          );
+
+      } else {
+
+        resultado =
+          await pool.query(
+            `
+            SELECT *
+            FROM perguntas
+            ORDER BY RANDOM()
+            `
+          );
       }
-    });
 
-  } catch (erro) {
-
-    console.error(
-      "Erro ao carregar relatórios Monetag:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro:
-        "Erro ao carregar relatórios do Monetag."
-    });
-  }
-});
-
-// =====================================================
-// MONETAG — IMPORTAR REGISTROS DO CSV
-// =====================================================
-
-app.post("/api/admin/monetag", async (req, res) => {
-  try {
-
-    const { registros } = req.body;
-
-    if (
-      !Array.isArray(registros) ||
-      registros.length === 0
-    ) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro:
-          "Nenhum registro do Monetag foi enviado."
+      res.json({
+        sucesso: true,
+        perguntas: resultado.rows
       });
-    }
 
-    let inseridos = 0;
+    } catch (erro) {
 
-    for (const registro of registros) {
-
-      await pool.query(
-        `
-        INSERT INTO monetag_relatorios
-        (data, impressoes, profit, cpm)
-        VALUES ($1, $2, $3, $4)
-        `,
-        [
-          registro.data || null,
-          Number(registro.impressoes || 0),
-          Number(registro.profit || 0),
-          Number(registro.cpm || 0)
-        ]
+      console.error(
+        "Erro perguntas público:",
+        erro
       );
 
-      inseridos++;
+      res.status(500).json({
+        sucesso: false,
+        erro:
+          "Erro ao carregar perguntas."
+      });
     }
-
-    res.json({
-      sucesso: true,
-      mensagem:
-        "Relatório Monetag importado com sucesso.",
-      inseridos
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao importar relatório Monetag:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro:
-        "Erro ao salvar relatório do Monetag."
-    });
   }
-});
+);
 
 // =====================================================
-// SAQUES — LISTAR NO ADMIN
+// PARCEIROS — LISTAR
 // =====================================================
 
-app.get("/api/admin/saques", async (req, res) => {
-  try {
+app.get(
+  "/api/admin/parceiros",
+  async (req, res) => {
 
-    const resultado = await pool.query(`
-      SELECT
-        id,
-        jogador_id,
+    try {
+
+      const resultado =
+        await pool.query(`
+          SELECT *
+          FROM parceiros
+          ORDER BY id DESC
+        `);
+
+      res.json({
+        sucesso: true,
+        parceiros: resultado.rows
+      });
+
+    } catch (erro) {
+
+      console.error(
+        "Erro parceiros:",
+        erro
+      );
+
+      res.status(500).json({
+        sucesso: false,
+        erro:
+          "Erro ao carregar parceiros."
+      });
+    }
+  }
+);
+
+// =====================================================
+// PARCEIROS — ATUALIZAR
+// =====================================================
+
+app.put(
+  "/api/admin/parceiros/:id",
+  async (req, res) => {
+
+    try {
+
+      const id =
+        Number(req.params.id);
+
+      const {
+        nome,
         email,
+        codigo,
+        pontos,
         valor,
-        pix,
-        paypal,
-        status,
-        motivo_reprovacao,
-        criado_em
-      FROM saques
-      ORDER BY id DESC
-    `);
+        status
+      } = req.body;
 
-    res.json({
-      sucesso: true,
-      saques: resultado.rows
-    });
+      const resultado =
+        await pool.query(
+          `
+          UPDATE parceiros
+          SET
+            nome = COALESCE($1, nome),
+            email = COALESCE($2, email),
+            codigo = COALESCE($3, codigo),
+            pontos = COALESCE($4, pontos),
+            valor = COALESCE($5, valor),
+            status = COALESCE($6, status)
+          WHERE id = $7
+          RETURNING *
+          `,
+          [
+            nome,
+            email,
+            codigo,
+            pontos,
+            valor,
+            status,
+            id
+          ]
+        );
 
-  } catch (erro) {
+      if (
+        resultado.rows.length === 0
+      ) {
 
-    console.error(
-      "Erro ao listar saques:",
-      erro
-    );
+        return res.status(404).json({
+          sucesso: false,
+          erro:
+            "Parceiro não encontrado."
+        });
+      }
 
-    res.status(500).json({
-      sucesso: false,
-      erro:
-        "Erro ao carregar saques."
-    });
+      res.json({
+        sucesso: true,
+        parceiro:
+          resultado.rows[0]
+      });
+
+    } catch (erro) {
+
+      console.error(
+        "Erro atualizar parceiro:",
+        erro
+      );
+
+      res.status(500).json({
+        sucesso: false,
+        erro:
+          "Erro ao atualizar parceiro."
+      });
+    }
   }
-});
+);
 
 // =====================================================
-// SAQUES — APROVAR OU REPROVAR PELO ADMIN
+// PARCEIROS — CRIAR
 // =====================================================
 
-app.patch("/api/admin/saques/:id/status", async (req, res) => {
+app.post(
+  "/api/admin/parceiros",
+  async (req, res) => {
 
-  const client = await pool.connect();
+    try {
 
-  try {
+      const {
+        nome,
+        email,
+        codigo,
+        pontos,
+        valor,
+        status
+      } = req.body;
 
-    const saqueId =
-      Number(req.params.id);
+      const resultado =
+        await pool.query(
+          `
+          INSERT INTO parceiros (
+            nome,
+            email,
+            codigo,
+            pontos,
+            valor,
+            status
+          )
+          VALUES (
+            $1,
+            $2,
+            $3,
+            $4,
+            $5,
+            $6
+          )
+          RETURNING *
+          `,
+          [
+            nome,
+            email,
+            codigo,
+            pontos || 0,
+            valor || 0,
+            status || "ativo"
+          ]
+        );
 
-    const {
-      status,
-      motivo
-    } = req.body;
+      res.json({
+        sucesso: true,
+        parceiro:
+          resultado.rows[0]
+      });
 
-    if (
-      !Number.isInteger(saqueId) ||
-      saqueId <= 0
-    ) {
+    } catch (erro) {
 
-      return res.status(400).json({
+      console.error(
+        "Erro criar parceiro:",
+        erro
+      );
+
+      res.status(500).json({
         sucesso: false,
         erro:
-          "ID do saque inválido."
+          "Erro ao criar parceiro."
       });
     }
+  }
+);
 
-    const statusFinal =
-      String(status || "")
-        .trim()
-        .toLowerCase();
+// =====================================================
+// MONETAG — LISTAR
+// =====================================================
 
-    if (
-      statusFinal !== "aprovado" &&
-      statusFinal !== "reprovado"
-    ) {
+app.get(
+  "/api/admin/monetag",
+  async (req, res) => {
 
-      return res.status(400).json({
+    try {
+
+      const resultado =
+        await pool.query(`
+          SELECT *
+          FROM monetag_relatorios
+          ORDER BY data DESC, id DESC
+        `);
+
+      res.json({
+        sucesso: true,
+        relatorios:
+          resultado.rows
+      });
+
+    } catch (erro) {
+
+      console.error(
+        "Erro Monetag:",
+        erro
+      );
+
+      res.status(500).json({
         sucesso: false,
         erro:
-          "Status inválido. Use aprovado ou reprovado."
+          "Erro ao carregar Monetag."
       });
     }
+  }
+);
 
-    let motivoFinal = null;
+// =====================================================
+// MONETAG — IMPORTAR
+// =====================================================
 
-    if (
-      statusFinal === "reprovado"
-    ) {
+app.post(
+  "/api/admin/monetag/importar",
+  async (req, res) => {
 
-      motivoFinal =
-        String(
-          motivo ||
-          ""
-        )
-          .trim();
+    try {
 
-      if (!motivoFinal) {
+      const relatorios =
+        req.body.relatorios;
+
+      if (
+        !Array.isArray(relatorios)
+      ) {
 
         return res.status(400).json({
           sucesso: false,
           erro:
-            "Informe o motivo da reprovação."
+            "Lista de relatórios inválida."
         });
       }
-    }
 
-    await client.query("BEGIN");
-
-    const saqueResult =
-      await client.query(
-        `
-        SELECT
-          id,
-          jogador_id,
-          email,
-          valor,
-          pix,
-          paypal,
-          status,
-          motivo_reprovacao,
-          criado_em
-        FROM saques
-        WHERE id = $1
-        FOR UPDATE
-        `,
-        [saqueId]
-      );
-
-    if (
-      saqueResult.rows.length === 0
-    ) {
-
-      await client.query("ROLLBACK");
-
-      return res.status(404).json({
-        sucesso: false,
-        erro:
-          "Saque não encontrado."
-      });
-    }
-
-    const saque =
-      saqueResult.rows[0];
-
-    const statusAtual =
-      String(
-        saque.status || ""
-      )
-        .trim()
-        .toLowerCase();
-
-    if (
-      statusAtual !== "pendente"
-    ) {
-
-      await client.query("ROLLBACK");
-
-      return res.status(400).json({
-        sucesso: false,
-        erro:
-          "Este saque já foi processado e não pode ser alterado novamente.",
-        status_atual:
-          saque.status
-      });
-    }
-
-    const resultado =
-      await client.query(
-        `
-        UPDATE saques
-        SET
-          status = $1,
-          motivo_reprovacao = $2
-        WHERE id = $3
-        RETURNING
-          id,
-          jogador_id,
-          email,
-          valor,
-          pix,
-          paypal,
-          status,
-          motivo_reprovacao,
-          criado_em
-        `,
-        [
-          statusFinal,
-          motivoFinal,
-          saqueId
-        ]
-      );
-
-    await client.query("COMMIT");
-
-    console.log(
-      "Saque atualizado pelo administrador:",
-      resultado.rows[0]
-    );
-
-    res.json({
-      sucesso: true,
-      mensagem:
-        statusFinal === "aprovado"
-          ? "Saque aprovado com sucesso."
-          : "Saque reprovado com sucesso.",
-      saque:
-        resultado.rows[0]
-    });
-
-  } catch (erro) {
-
-    try {
-      await client.query("ROLLBACK");
-    } catch (erroRollback) {
-      console.error(
-        "Erro no rollback do saque:",
-        erroRollback
-      );
-    }
-
-    console.error(
-      "Erro ao atualizar status do saque:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro:
-        "Erro ao atualizar o saque."
-    });
-
-  } finally {
-
-    client.release();
-  }
-});
-
-// =====================================================
-// SAQUES — SOLICITAR
-// =====================================================
-
-app.post("/api/saques", async (req, res) => {
-
-  const client = await pool.connect();
-
-  try {
-
-    const {
-      jogador_id,
-      pix_key,
-      pix,
-      valor,
-      pontos,
-      metodo,
-      email,
-      paypal
-    } = req.body;
-
-    const jogadorId =
-      Number(jogador_id);
-
-    if (
-      !Number.isInteger(jogadorId) ||
-      jogadorId <= 0
-    ) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro:
-          "Jogador inválido."
-      });
-    }
-
-    const valorSolicitado =
-      Number(valor);
-
-    if (
-      !Number.isFinite(valorSolicitado) ||
-      valorSolicitado <= 0
-    ) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro:
-          "Valor de saque inválido."
-      });
-    }
-
-    const regrasSaque = {
-      "1.00": 2000,
-      "5.00": 6000,
-      "10.00": 11000
-    };
-
-    const chaveValor =
-      valorSolicitado.toFixed(2);
-
-    const pontosNecessarios =
-      regrasSaque[chaveValor];
-
-    if (!pontosNecessarios) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro:
-          "Valor de saque inválido. As opções são R$ 1,00, R$ 5,00 ou R$ 10,00."
-      });
-    }
-
-    const pixFinal =
-      pix_key ||
-      pix ||
-      null;
-
-    const paypalFinal =
-      paypal ||
-      (
-        metodo &&
-        String(metodo)
-          .toLowerCase() === "paypal"
-          ? email
-          : null
-      );
-
-    const metodoFinal =
-      String(metodo || "")
-        .trim()
-        .toLowerCase();
-
-    if (
-      !pixFinal &&
-      !paypalFinal
-    ) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro:
-          "Informe a chave Pix ou a conta PayPal."
-      });
-    }
-
-    if (
-      metodoFinal === "pix" &&
-      !pixFinal
-    ) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro:
-          "Informe a chave Pix."
-      });
-    }
-
-    if (
-      metodoFinal === "paypal" &&
-      !paypalFinal
-    ) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro:
-          "Informe a conta PayPal."
-      });
-    }
-
-    await client.query("BEGIN");
-
-    const jogadorResult =
-      await client.query(
-        `
-        SELECT
-          id,
-          email,
-          pontos
-        FROM jogadores
-        WHERE id = $1
-        FOR UPDATE
-        `,
-        [jogadorId]
-      );
-
-    if (
-      jogadorResult.rows.length === 0
-    ) {
-
-      await client.query("ROLLBACK");
-
-      return res.status(404).json({
-        sucesso: false,
-        erro:
-          "Jogador não encontrado."
-      });
-    }
-
-    const jogador =
-      jogadorResult.rows[0];
-
-    const pontosAtuais =
-      Number(jogador.pontos || 0);
-
-    const saquesHojeResult =
-      await client.query(
-        `
-        SELECT COUNT(*) AS quantidade
-        FROM saques
-        WHERE jogador_id = $1
-          AND criado_em >= CURRENT_DATE
-          AND criado_em < CURRENT_DATE + INTERVAL '1 day'
-        `,
-        [jogadorId]
-      );
-
-    const saquesHoje =
-      Number(
-        saquesHojeResult.rows[0].quantidade
-      );
-
-    if (saquesHoje >= 2) {
-
-      await client.query("ROLLBACK");
-
-      return res.status(400).json({
-        sucesso: false,
-        erro:
-          "Você já realizou o limite de 2 saques hoje."
-      });
-    }
-
-    if (
-      pontosAtuais < pontosNecessarios
-    ) {
-
-      await client.query("ROLLBACK");
-
-      return res.status(400).json({
-        sucesso: false,
-        erro:
-          `Você precisa de ${pontosNecessarios.toLocaleString("pt-BR")} pontos para sacar R$ ${valorSolicitado.toFixed(2).replace(".", ",")}.`,
-        pontos_atuais:
-          pontosAtuais,
-        pontos_necessarios:
-          pontosNecessarios
-      });
-    }
-
-    const saqueResult =
-      await client.query(
-        `
-        INSERT INTO saques (
-          jogador_id,
-          email,
-          valor,
-          pix,
-          paypal,
-          status,
-          motivo_reprovacao
-        )
-        VALUES (
-          $1,
-          $2,
-          $3,
-          $4,
-          $5,
-          'pendente',
-          NULL
-        )
-        RETURNING
-          id,
-          jogador_id,
-          email,
-          valor,
-          pix,
-          paypal,
-          status,
-          motivo_reprovacao,
-          criado_em
-        `,
-        [
-          jogadorId,
-          email || jogador.email,
-          valorSolicitado,
-          pixFinal,
-          paypalFinal
-        ]
-      );
-
-    const pontosDepois =
-      pontosAtuais -
-      pontosNecessarios;
-
-    const jogadorAtualizado =
-      await client.query(
-        `
-        UPDATE jogadores
-        SET pontos = $1
-        WHERE id = $2
-        RETURNING
-          id,
-          email,
-          pontos,
-          saldo
-        `,
-        [
-          pontosDepois,
-          jogadorId
-        ]
-      );
-
-    await client.query("COMMIT");
-
-    console.log(
-      "Saque criado:",
-      saqueResult.rows[0]
-    );
-
-    console.log(
-      "Pontos descontados:",
-      {
-        jogador_id: jogadorId,
-        antes: pontosAtuais,
-        descontados: pontosNecessarios,
-        depois: pontosDepois
-      }
-    );
-
-    res.json({
-      sucesso: true,
-      mensagem:
-        "Solicitação de saque recebida. O pagamento será analisado.",
-      saque:
-        saqueResult.rows[0],
-      jogador: {
-        id:
-          jogadorAtualizado.rows[0].id,
-        email:
-          jogadorAtualizado.rows[0].email,
-        pontos:
-          Number(
-            jogadorAtualizado.rows[0].pontos
-          ),
-        saldo:
-          Number(
-            jogadorAtualizado.rows[0].saldo || 0
+      let importados = 0;
+
+      for (
+        const item of relatorios
+      ) {
+
+        await pool.query(
+          `
+          INSERT INTO monetag_relatorios (
+            data,
+            impressoes,
+            profit,
+            cpm
           )
-      },
-      pontos_descontados:
-        pontosNecessarios,
-      pontos_restantes:
-        pontosDepois
-    });
+          VALUES (
+            $1,
+            $2,
+            $3,
+            $4
+          )
+          `,
+          [
+            item.data,
+            Number(item.impressoes || 0),
+            Number(item.profit || 0),
+            Number(item.cpm || 0)
+          ]
+        );
 
-  } catch (erro) {
+        importados++;
+      }
+
+      res.json({
+        sucesso: true,
+        importados
+      });
+
+    } catch (erro) {
+
+      console.error(
+        "Erro importar Monetag:",
+        erro
+      );
+
+      res.status(500).json({
+        sucesso: false,
+        erro:
+          "Erro ao importar relatório Monetag."
+      });
+    }
+  }
+);
+
+// =====================================================
+// SAQUES — LISTAR
+// =====================================================
+
+app.get(
+  "/api/admin/saques",
+  async (req, res) => {
 
     try {
-      await client.query("ROLLBACK");
-    } catch (erroRollback) {
+
+      const resultado =
+        await pool.query(`
+          SELECT
+            s.*,
+            j.nome_completo
+          FROM saques s
+          LEFT JOIN jogadores j
+            ON j.id = s.jogador_id
+          ORDER BY s.id DESC
+        `);
+
+      res.json({
+        sucesso: true,
+        saques:
+          resultado.rows
+      });
+
+    } catch (erro) {
+
       console.error(
-        "Erro no rollback do saque:",
-        erroRollback
+        "Erro saques:",
+        erro
       );
+
+      res.status(500).json({
+        sucesso: false,
+        erro:
+          "Erro ao carregar saques."
+      });
     }
-
-    console.error(
-      "Erro no saque:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro:
-        "Erro ao solicitar saque."
-    });
-
-  } finally {
-
-    client.release();
   }
-});
+);
+
+// =====================================================
+// SAQUES — ALTERAR STATUS
+// =====================================================
+
+app.patch(
+  "/api/admin/saques/:id/status",
+  async (req, res) => {
+
+    try {
+
+      const id =
+        Number(req.params.id);
+
+      const {
+        status
+      } = req.body;
+
+      const resultado =
+        await pool.query(
+          `
+          UPDATE saques
+          SET status = $1
+          WHERE id = $2
+          RETURNING *
+          `,
+          [
+            status,
+            id
+          ]
+        );
+
+      if (
+        resultado.rows.length === 0
+      ) {
+
+        return res.status(404).json({
+          sucesso: false,
+          erro:
+            "Saque não encontrado."
+        });
+      }
+
+      res.json({
+        sucesso: true,
+        saque:
+          resultado.rows[0]
+      });
+
+    } catch (erro) {
+
+      console.error(
+        "Erro status saque:",
+        erro
+      );
+
+      res.status(500).json({
+        sucesso: false,
+        erro:
+          "Erro ao alterar saque."
+      });
+    }
+  }
+);
+
+// =====================================================
+// SAQUE — SOLICITAR
+// =====================================================
+
+app.post(
+  "/api/saques",
+  async (req, res) => {
+
+    try {
+
+      const {
+        jogador_id,
+        email,
+        pix_key,
+        quantia,
+        valor,
+        metodo
+      } = req.body;
+
+      const resultado =
+        await pool.query(
+          `
+          INSERT INTO saques (
+            jogador_id,
+            email,
+            pix_key,
+            quantia,
+            valor,
+            metodo,
+            status
+          )
+          VALUES (
+            $1,
+            $2,
+            $3,
+            $4,
+            $5,
+            $6,
+            'pendente'
+          )
+          RETURNING *
+          `,
+          [
+            jogador_id || null,
+            email || null,
+            pix_key || null,
+            quantia || null,
+            valor || null,
+            metodo || "Pix"
+          ]
+        );
+
+      res.json({
+        sucesso: true,
+        saque:
+          resultado.rows[0]
+      });
+
+    } catch (erro) {
+
+      console.error(
+        "Erro solicitar saque:",
+        erro
+      );
+
+      res.status(500).json({
+        sucesso: false,
+        erro:
+          "Erro ao solicitar saque."
+      });
+    }
+  }
+);
 
 // =====================================================
 // SAC — JOGADOR ENVIA MENSAGEM
 // =====================================================
 
 app.post("/api/sac", async (req, res) => {
+
   try {
 
     let {
@@ -2543,18 +1658,23 @@ app.post("/api/sac", async (req, res) => {
     }
 
     email = email
-      ? String(email).trim().toLowerCase()
+      ? String(email)
+          .trim()
+          .toLowerCase()
       : null;
 
     nome_completo = nome_completo
       ? String(nome_completo).trim()
       : null;
 
-    // =================================================
-    // TENTA ENCONTRAR O JOGADOR PELO E-MAIL
-    // =================================================
+    // -----------------------------------------------
+    // TENTA LOCALIZAR PELO E-MAIL
+    // -----------------------------------------------
 
-    if (!jogador_id && email) {
+    if (
+      !jogador_id &&
+      email
+    ) {
 
       const jogador =
         await pool.query(
@@ -2564,13 +1684,16 @@ app.post("/api/sac", async (req, res) => {
             email,
             nome_completo
           FROM jogadores
-          WHERE LOWER(email) = LOWER($1)
+          WHERE LOWER(email) =
+                LOWER($1)
           LIMIT 1
           `,
           [email]
         );
 
-      if (jogador.rows.length > 0) {
+      if (
+        jogador.rows.length > 0
+      ) {
 
         jogador_id =
           jogador.rows[0].id;
@@ -2583,9 +1706,9 @@ app.post("/api/sac", async (req, res) => {
       }
     }
 
-    // =================================================
-    // SE RECEBEU O ID, CONFIRMA OS DADOS NO BANCO
-    // =================================================
+    // -----------------------------------------------
+    // TENTA LOCALIZAR PELO ID
+    // -----------------------------------------------
 
     if (jogador_id) {
 
@@ -2603,7 +1726,9 @@ app.post("/api/sac", async (req, res) => {
           [jogador_id]
         );
 
-      if (jogador.rows.length > 0) {
+      if (
+        jogador.rows.length > 0
+      ) {
 
         jogador_id =
           jogador.rows[0].id;
@@ -2616,9 +1741,9 @@ app.post("/api/sac", async (req, res) => {
       }
     }
 
-    // =================================================
-    // SALVAR MENSAGEM
-    // =================================================
+    // -----------------------------------------------
+    // SALVAR
+    // -----------------------------------------------
 
     const resultado =
       await pool.query(
@@ -2658,14 +1783,14 @@ app.post("/api/sac", async (req, res) => {
   } catch (erro) {
 
     console.error(
-      "Erro ao enviar mensagem SAC:",
+      "Erro SAC:",
       erro
     );
 
     res.status(500).json({
       sucesso: false,
       mensagem:
-        "Não foi possível enviar a mensagem."
+        "Erro ao enviar mensagem."
     });
   }
 });
@@ -2674,50 +1799,58 @@ app.post("/api/sac", async (req, res) => {
 // SAC — ADMIN LISTA MENSAGENS
 // =====================================================
 
-app.get("/api/admin/sac", async (req, res) => {
-  try {
+app.get(
+  "/api/admin/sac",
+  async (req, res) => {
 
-    const resultado =
-      await pool.query(
-        `
-        SELECT
-          id,
-          jogador_id,
-          email,
-          nome_completo,
-          mensagem,
-          resposta,
-          status,
-          criado_em,
-          respondido_em
-        FROM sac_mensagens
-        ORDER BY criado_em DESC
-        `
+    try {
+
+      const resultado =
+        await pool.query(`
+          SELECT
+            id,
+            jogador_id,
+            email,
+            nome_completo,
+            mensagem,
+            resposta,
+            status,
+            criado_em,
+            respondido_em
+          FROM sac_mensagens
+          ORDER BY
+            CASE
+              WHEN status = 'pendente'
+              THEN 0
+              ELSE 1
+            END,
+            id DESC
+        `);
+
+      res.json({
+        sucesso: true,
+        mensagens:
+          resultado.rows
+      });
+
+    } catch (erro) {
+
+      console.error(
+        "Erro listar SAC:",
+        erro
       );
 
-    res.json({
-      sucesso: true,
-      mensagens:
-        resultado.rows
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao carregar mensagens SAC:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      mensagem:
-        "Erro ao carregar mensagens do SAC."
-    });
+      res.status(500).json({
+        sucesso: false,
+        erro:
+          "Erro ao carregar mensagens SAC."
+      });
+    }
   }
-});
+);
 
 // =====================================================
-// SAC — ADMIN RESPONDE MENSAGEM
+// SAC — ADMIN RESPONDE
 // =====================================================
 
 app.patch(
@@ -2762,7 +1895,8 @@ app.patch(
           SET
             resposta = $1,
             status = 'respondido',
-            respondido_em = CURRENT_TIMESTAMP
+            respondido_em =
+              CURRENT_TIMESTAMP
           WHERE id = $2
           RETURNING
             id,
@@ -2803,14 +1937,89 @@ app.patch(
     } catch (erro) {
 
       console.error(
-        "Erro ao responder SAC:",
+        "Erro responder SAC:",
         erro
       );
 
       res.status(500).json({
         sucesso: false,
         erro:
-          "Erro ao salvar resposta do SAC."
+          "Erro ao responder mensagem SAC."
+      });
+    }
+  }
+);
+
+// =====================================================
+// SAC — JOGADOR CONSULTA SUA MENSAGEM E RESPOSTA
+// =====================================================
+
+app.get(
+  "/api/sac/:id",
+  async (req, res) => {
+
+    try {
+
+      const sacId =
+        Number(req.params.id);
+
+      if (
+        !Number.isInteger(sacId) ||
+        sacId <= 0
+      ) {
+
+        return res.status(400).json({
+          sucesso: false,
+          erro:
+            "ID da mensagem SAC inválido."
+        });
+      }
+
+      const resultado =
+        await pool.query(
+          `
+          SELECT
+            id,
+            mensagem,
+            resposta,
+            status,
+            criado_em,
+            respondido_em
+          FROM sac_mensagens
+          WHERE id = $1
+          LIMIT 1
+          `,
+          [sacId]
+        );
+
+      if (
+        resultado.rows.length === 0
+      ) {
+
+        return res.status(404).json({
+          sucesso: false,
+          erro:
+            "Mensagem SAC não encontrada."
+        });
+      }
+
+      res.json({
+        sucesso: true,
+        sac:
+          resultado.rows[0]
+      });
+
+    } catch (erro) {
+
+      console.error(
+        "Erro ao consultar resposta do SAC:",
+        erro
+      );
+
+      res.status(500).json({
+        sucesso: false,
+        erro:
+          "Erro ao consultar resposta do SAC."
       });
     }
   }
@@ -2822,19 +2031,32 @@ app.patch(
 
 async function iniciarServidor() {
 
-  await prepararBanco();
+  try {
 
-  await atualizarSaldoHilltopAds();
+    await prepararBanco();
 
-  app.listen(
-    PORT,
-    "0.0.0.0",
-    () => {
-      console.log(
-        `QuizUp Admin Backend rodando na porta ${PORT}`
-      );
-    }
-  );
+    await atualizarSaldoHilltopAds();
+
+    app.listen(
+      PORT,
+      () => {
+
+        console.log(
+          `QuizUp Admin Backend rodando na porta ${PORT}`
+        );
+
+      }
+    );
+
+  } catch (erro) {
+
+    console.error(
+      "Erro ao iniciar servidor:",
+      erro
+    );
+
+    process.exit(1);
+  }
 }
 
 iniciarServidor();
