@@ -162,7 +162,7 @@ async function prepararBanco() {
         email VARCHAR(255),
         valor NUMERIC(10,2) NOT NULL,
         pix VARCHAR(255),
-        "PayPal" VARCHAR(255),
+        paypal VARCHAR(255),
         status VARCHAR(30) DEFAULT 'pendente',
         criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
@@ -1920,7 +1920,7 @@ app.get("/api/admin/saques", async (req, res) => {
         email,
         valor,
         pix,
-        "PayPal",
+        paypal,
         status,
         criado_em
       FROM saques
@@ -2195,7 +2195,7 @@ app.post("/api/saques", async (req, res) => {
           email,
           valor,
           pix,
-          "PayPal",
+          paypal,
           status
         )
         VALUES (
@@ -2212,7 +2212,7 @@ app.post("/api/saques", async (req, res) => {
           email,
           valor,
           pix,
-          "PayPal",
+          paypal,
           status,
           criado_em
         `,
