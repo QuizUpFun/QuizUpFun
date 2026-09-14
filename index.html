@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="clckd" content="b65974febfc087ea7c6fcfd81e4cb265">
 <title>QuizUp</title>
 
 <!-- MONETAG — IN-PAGE PUSH -->
@@ -11,19 +10,13 @@
 (function(s){
   s.dataset.zone='11646165';
   s.src='https://nap5k.com/tag.min.js';
-})([document.documentElement,document.body]
+})([document.documentElement, document.body]
   .filter(Boolean).pop()
   .appendChild(document.createElement('script')));
 </script>
 
-<!-- GOOGLE IMA -->
-<script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-
 <style>
-*{
-  box-sizing:border-box
-}
-
+*{box-sizing:border-box}
 body{
   margin:0;
   font-family:Arial,sans-serif;
@@ -31,26 +24,9 @@ body{
   color:#fff;
   min-height:100vh
 }
-
-.wrap{
-  max-width:760px;
-  margin:auto;
-  padding:16px
-}
-
-.logo{
-  text-align:center;
-  font-size:42px;
-  font-weight:900;
-  margin:10px
-}
-
-.sub{
-  text-align:center;
-  opacity:.8;
-  margin-bottom:16px
-}
-
+.wrap{max-width:760px;margin:auto;padding:16px}
+.logo{text-align:center;font-size:42px;font-weight:900;margin:10px}
+.sub{text-align:center;opacity:.8;margin-bottom:16px}
 .card{
   background:rgba(255,255,255,.1);
   border:1px solid rgba(255,255,255,.15);
@@ -58,11 +34,7 @@ body{
   padding:20px;
   margin:14px 0
 }
-
-.hidden{
-  display:none!important
-}
-
+.hidden{display:none!important}
 button{
   border:0;
   border-radius:12px;
@@ -70,27 +42,10 @@ button{
   font-weight:700;
   cursor:pointer
 }
-
-button:disabled{
-  opacity:.5;
-  cursor:not-allowed
-}
-
-.primary{
-  background:#ffd43b;
-  color:#171717
-}
-
-.light{
-  background:#fff;
-  color:#171717
-}
-
-.ghost{
-  background:rgba(255,255,255,.12);
-  color:#fff
-}
-
+button:disabled{opacity:.5}
+.primary{background:#ffd43b;color:#171717}
+.light{background:#fff;color:#171717}
+.ghost{background:rgba(255,255,255,.12);color:#fff}
 .top,.row{
   display:flex;
   gap:10px;
@@ -98,59 +53,38 @@ button:disabled{
   justify-content:space-between;
   flex-wrap:wrap
 }
-
 .stat{
   padding:10px 14px;
   background:rgba(255,255,255,.1);
   border-radius:12px
 }
-
 .nav{
   display:grid;
   grid-template-columns:repeat(5,1fr);
   gap:8px
 }
-
 .dice{
   font-size:90px;
   text-align:center;
   line-height:1.1;
   margin:8px
 }
-
 .roll{
   display:block;
   margin:auto;
   font-size:18px
 }
-
-.result{
-  text-align:center;
-  font-size:21px;
-  font-weight:800
-}
-
-.answers{
-  display:grid;
-  gap:10px
-}
-
+.result{text-align:center;font-size:21px;font-weight:800}
+.answers{display:grid;gap:10px}
 .answer{
   background:#fff;
   color:#111;
   text-align:left;
   width:100%
 }
-
-.answer.correct{
-  outline:4px solid #4ade80
-}
-
-.answer.wrong{
-  outline:4px solid #fb7185
-}
-
-input,select,textarea{
+.answer.correct{outline:4px solid #4ade80}
+.answer.wrong{outline:4px solid #fb7185}
+input,select{
   width:100%;
   padding:13px;
   border:0;
@@ -158,18 +92,18 @@ input,select,textarea{
   margin:5px 0 12px;
   font-size:16px
 }
-
 textarea{
-  min-height:140px;
+  width:100%;
+  min-height:120px;
+  padding:13px;
+  border:0;
+  border-radius:10px;
+  margin:5px 0 12px;
+  font-size:16px;
+  font-family:Arial,sans-serif;
   resize:vertical
 }
-
-.timer{
-  text-align:center;
-  font-size:22px;
-  font-weight:800
-}
-
+.timer{text-align:center;font-size:22px;font-weight:800}
 .bar{
   height:9px;
   background:rgba(255,255,255,.15);
@@ -177,32 +111,24 @@ textarea{
   overflow:hidden;
   margin-top:12px
 }
-
 .bar div{
   height:100%;
   background:#ffd43b;
   width:0;
   transition:width .2s linear
 }
-
 .notice{
   padding:12px;
   border-radius:12px;
   background:rgba(255,212,59,.12);
   border:1px solid rgba(255,212,59,.3)
 }
-
-.small{
-  font-size:13px;
-  opacity:.75
-}
-
+.small{font-size:13px;opacity:.75}
 .tabs2{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:8px
 }
-
 .adbox{
   width:100%;
   min-height:60px;
@@ -213,131 +139,54 @@ textarea{
   margin:12px auto;
   border-radius:10px
 }
-
-/* =====================================================
-   PLAYER VAST — GOOGLE IMA
-===================================================== */
-
-#quizAdArea{
-  margin-top:18px;
-  padding:14px;
-  background:rgba(0,0,0,.35);
-  border-radius:16px;
-  text-align:center
-}
-
-#quizAdTitle{
-  font-weight:800;
-  margin-bottom:10px
-}
-
-#quizAdContainer{
-  position:relative;
-  width:100%;
-  max-width:640px;
-  height:360px;
-  margin:auto;
-  background:#000;
+.sac-message{
+  background:rgba(255,255,255,.08);
   border-radius:14px;
-  overflow:hidden
+  padding:15px;
+  margin-top:12px
 }
-
-#quizAdVideo{
-  width:100%;
-  height:100%;
-  display:block;
-  background:#000
-}
-
-#quizAdLoading{
-  position:absolute;
-  left:0;
-  right:0;
-  top:50%;
-  transform:translateY(-50%);
-  color:#fff;
-  font-size:15px;
-  text-align:center;
-  z-index:3;
-  pointer-events:none
-}
-
-#quizAdPlay{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  z-index:5;
-  min-width:190px;
-  font-size:18px;
-  padding:16px 22px
-}
-
-#quizAdStatus{
-  margin-top:10px;
-  font-size:13px;
-  opacity:.8
-}
-
-#quizAdContinue{
-  width:100%;
+.sac-response{
   margin-top:12px;
-  font-size:17px
+  padding:13px;
+  border-radius:12px;
+  background:rgba(74,222,128,.12);
+  border:1px solid rgba(74,222,128,.35)
 }
-
+.sac-pending{
+  margin-top:12px;
+  padding:13px;
+  border-radius:12px;
+  background:rgba(255,212,59,.12);
+  border:1px solid rgba(255,212,59,.3)
+}
 @media(max-width:560px){
-
-  .nav{
-    grid-template-columns:1fr 1fr
-  }
-
-  .dice{
-    font-size:75px
-  }
-
-  .logo{
-    font-size:38px
-  }
-
-  #quizAdContainer{
-    height:220px
-  }
-
-  #quizAdPlay{
-    min-width:170px;
-    font-size:16px
-  }
+  .nav{grid-template-columns:1fr 1fr}
+  .dice{font-size:75px}
+  .logo{font-size:38px}
 }
 </style>
 </head>
 
 <body>
 
-<!-- MÚSICA -->
-<audio
-id="backgroundMusic"
-preload="auto"
-loop>
+<!--
+  ÁUDIO:
+  O arquivo deve estar na MESMA pasta do index.html:
+  92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3
 
-<source
-src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
-type="audio/mpeg">
-
+  A música começa somente quando o jogador toca em JOGAR DADO.
+-->
+<audio id="backgroundMusic" preload="auto" loop>
+  <source src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3" type="audio/mpeg">
 </audio>
 
 <div class="wrap">
 
-<div class="logo">
-  QuizUp
-</div>
+<div class="logo">QuizUp</div>
+<div class="sub">🎲 Jogue, responda e acumule pontos</div>
 
-<div class="sub">
-  🎲 Jogue, responda e acumule pontos
-</div>
-
-<!-- HIGHREVENUEFORMAT -->
+<!-- ADSTERRA / HIGHREVENUE — BANNER -->
 <div class="adbox">
-
 <script>
 atOptions={
   'key':'827464848b02582093e6b5d45cb10d0a',
@@ -347,203 +196,89 @@ atOptions={
   'params':{}
 };
 </script>
-
 <script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
-
 </div>
-
-<!-- AUTENTICAÇÃO -->
 
 <section id="auth" class="card">
 
 <div class="tabs2">
-
-<button
-class="primary"
-onclick="authMode('register')">
-Cadastro
-</button>
-
-<button
-class="light"
-onclick="authMode('login')">
-Login
-</button>
-
+<button class="primary" onclick="authMode('register')">Cadastro</button>
+<button class="light" onclick="authMode('login')">Login</button>
 </div>
 
 <div id="registerBox">
-
 <h2>📝 Cadastro</h2>
 
 <label>E-mail</label>
-
-<input
-id="rEmail"
-type="email"
-placeholder="Seu e-mail">
+<input id="rEmail" type="email" placeholder="Seu e-mail">
 
 <label>Senha</label>
-
-<input
-id="rPass"
-type="password"
-placeholder="Sua senha">
+<input id="rPass" type="password" placeholder="Sua senha">
 
 <label>Nome completo</label>
-
-<input
-id="rName"
-type="text"
-placeholder="Seu nome completo">
+<input id="rName" type="text" placeholder="Seu nome completo">
 
 <label>CPF</label>
+<input id="rCpf" type="text" inputmode="numeric" maxlength="14" placeholder="000.000.000-00">
 
-<input
-id="rCpf"
-type="text"
-inputmode="numeric"
-maxlength="14"
-placeholder="000.000.000-00">
-
-<button
-class="primary"
-onclick="register()">
-Cadastrar
-</button>
-
-<p
-id="registerMsg"
-class="small">
-</p>
-
+<button class="primary" onclick="register()">Cadastrar</button>
 </div>
 
 <div id="loginBox" class="hidden">
-
 <h2>🔐 Login</h2>
 
 <label>E-mail</label>
-
-<input
-id="lEmail"
-type="email"
-placeholder="Seu e-mail">
+<input id="lEmail" type="email" placeholder="Seu e-mail">
 
 <label>Senha</label>
+<input id="lPass" type="password" placeholder="Sua senha">
 
-<input
-id="lPass"
-type="password"
-placeholder="Sua senha">
-
-<button
-class="primary"
-onclick="login()">
-Entrar
-</button>
-
-<p
-id="loginMsg"
-class="small">
-</p>
-
+<button class="primary" onclick="login()">Entrar</button>
 </div>
 
 </section>
 
-<!-- JOGO -->
-
 <section id="game" class="hidden">
 
 <div class="top card">
-
-<div class="stat">
-⭐ <span id="points">0</span> pontos
-</div>
-
-<div class="stat">
-🎲 Rodada <span id="round">1</span>
-</div>
-
-<button
-class="ghost"
-onclick="logout()">
-Sair
-</button>
-
+<div class="stat">⭐ <span id="points">0</span> pontos</div>
+<div class="stat">🎲 Rodada <span id="round">1</span></div>
+<button class="ghost" onclick="logout()">Sair</button>
 </div>
 
 <div class="nav">
-
-<button
-class="ghost"
-onclick="tab('quiz')">
-🎲 Quiz
-</button>
-
-<button
-class="ghost"
-onclick="tab('ref')">
-🎁 Indicação
-</button>
-
-<button
-class="ghost"
-onclick="tab('cash')">
-💸 Saque
-</button>
-
-<button
-class="ghost"
-onclick="tab('premium')">
-💎 Premium
-</button>
-
-<button
-class="ghost"
-onclick="tab('sac')">
-📩 SAC
-</button>
-
+<button class="ghost" onclick="tab('quiz')">🎲 Quiz</button>
+<button class="ghost" onclick="tab('ref')">🎁 Indicação</button>
+<button class="ghost" onclick="tab('cash')">💸 Saque</button>
+<button class="ghost" onclick="tab('sac')">💬 SAC</button>
+<button class="ghost" onclick="tab('premium')">💎 Premium</button>
 </div>
+
+<!-- ================================================= -->
+<!-- QUIZ -->
+<!-- ================================================= -->
 
 <div id="quizTab">
 
 <div id="rollCard" class="card">
+<h2 style="text-align:center">Jogue o dado</h2>
 
-<h2 style="text-align:center">
-  Jogue o dado
-</h2>
+<div id="dice" class="dice">🎲</div>
 
-<div id="dice" class="dice">
-  🎲
-</div>
-
-<button
-id="rollButton"
-class="primary roll"
-onclick="rollDice()">
+<button class="primary roll" onclick="rollDice()">
 JOGAR DADO
 </button>
 
-<p
-id="diceResult"
-class="result">
-</p>
-
+<p id="diceResult" class="result"></p>
 </div>
 
 <div id="questionCard" class="card hidden">
 
 <div class="top">
-
-<b>❓ Pergunta</b>
-
+<b>Pergunta</b>
 <span class="timer">
-⏱️ <span id="time">10</span>s
+⏱️ <span id="time">5</span>s
 </span>
-
 </div>
 
 <div class="bar">
@@ -552,78 +287,17 @@ class="result">
 
 <h2 id="question"></h2>
 
-<div
-id="answers"
-class="answers">
-</div>
+<div id="answers" class="answers"></div>
 
-<p
-id="feedback"
-class="notice hidden">
-</p>
+<p id="feedback" class="notice hidden"></p>
 
-<div
-style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
-
+<div style="text-align:center;font-size:28px;font-weight:900;margin-top:16px">
 ⭐ Pontuação:
 <span id="totalScore">0</span>
-
 </div>
 
-<!-- ANÚNCIO VAST NA PERGUNTA -->
-
-<div
-id="quizAdArea"
-class="hidden">
-
-<div id="quizAdTitle">
-🎬 Assista ao anúncio para continuar
-</div>
-
-<div id="quizAdContainer">
-
-<video
-id="quizAdVideo"
-playsinline
-webkit-playsinline
-preload="auto">
-</video>
-
-<div id="quizAdLoading">
-Preparando anúncio...
-</div>
-
-<button
-id="quizAdPlay"
-class="primary"
-onclick="startQuizAd()">
-
-▶️ ASSISTIR ANÚNCIO
-
-</button>
-
-</div>
-
-<div id="quizAdStatus">
-Toque no botão para iniciar o anúncio.
-</div>
-
-<button
-id="quizAdContinue"
-class="primary hidden"
-onclick="finishQuestion()">
-
-CONTINUAR
-
-</button>
-
-</div>
-
-<!-- HIGHREVENUEFORMAT -->
-
-<div
-id="answerAd"
-class="adbox">
+<!-- ANÚNCIO APÓS A RESPOSTA -->
+<div id="answerAd" class="adbox">
 
 <script>
 atOptions={
@@ -639,15 +313,27 @@ atOptions={
 
 </div>
 
-</div>
+<div id="rewardBox" class="hidden" style="margin-top:16px">
+
+<button
+id="continueButton"
+class="primary"
+style="width:100%"
+onclick="finishQuestion()"
+>
+CONTINUAR
+</button>
 
 </div>
 
+</div>
+</div>
+
+<!-- ================================================= -->
 <!-- INDICAÇÃO -->
+<!-- ================================================= -->
 
-<div
-id="refTab"
-class="hidden card">
+<div id="refTab" class="hidden card">
 
 <h2>🎁 Indicação</h2>
 
@@ -656,23 +342,15 @@ Ganhe <b>50 pontos</b> quando seu convidado atingir
 <b>300 pontos</b>.
 </p>
 
-<input
-id="refCode"
-readonly>
+<input id="refCode" readonly>
 
-<input
-id="refLink"
-readonly>
+<input id="refLink" readonly>
 
-<button
-class="primary"
-onclick="copyRef()">
+<button class="primary" onclick="copyRef()">
 Copiar link
 </button>
 
-<button
-class="light"
-onclick="shareRef()">
+<button class="light" onclick="shareRef()">
 Enviar link
 </button>
 
@@ -680,109 +358,121 @@ Enviar link
 
 </div>
 
+<!-- ================================================= -->
 <!-- SAQUE -->
+<!-- ================================================= -->
 
-<div
-id="cashTab"
-class="hidden card">
+<div id="cashTab" class="hidden card">
 
 <h2>💸 Saque</h2>
 
 <div class="notice">
 
-<b>Como funciona o saque:</b><br><br>
+<b>Valores:</b><br>
 
-A <b>plataforma ganha 30%</b> do valor bruto de cada saque
-e o <b>jogador recebe 70%</b>.<br><br>
-
-<b>2.000 pontos</b> → R$ 1,00 bruto<br>
-Jogador recebe: <b>R$ 0,70</b><br>
-Plataforma ganha: <b>R$ 0,30</b><br><br>
-
-<b>6.000 pontos</b> → R$ 5,00 bruto<br>
-Jogador recebe: <b>R$ 3,50</b><br>
-Plataforma ganha: <b>R$ 1,50</b><br><br>
-
-<b>11.000 pontos</b> → R$ 10,00 bruto<br>
-Jogador recebe: <b>R$ 7,00</b><br>
-Plataforma ganha: <b>R$ 3,00</b>
+2.000 pontos → R$ 1,00<br>
+6.000 pontos → R$ 5,00<br>
+11.000 pontos → R$ 10,00
 
 </div>
 
-<select
-id="payMethod"
-onchange="payFields()">
+<select id="payMethod" onchange="payFields()">
 
 <option value="pix">
-  Pix
+Pix
 </option>
 
 <option value="paypal">
-  PayPal
+PayPal
 </option>
 
 </select>
 
 <div id="pix">
-
-<input
-id="pixKey"
-placeholder="Chave Pix">
-
+<input id="pixKey" placeholder="Chave Pix">
 </div>
 
-<div
-id="paypal"
-class="hidden">
-
+<div id="paypal" class="hidden">
 <input
 id="paypalKey"
 type="email"
 placeholder="E-mail PayPal">
-
 </div>
 
 <select id="withdrawAmount">
 
 <option value="1">
-R$ 1,00 bruto — 2.000 pontos → você recebe R$ 0,70
+R$ 1,00 — 2.000 pontos
 </option>
 
 <option value="5">
-R$ 5,00 bruto — 6.000 pontos → você recebe R$ 3,50
+R$ 5,00 — 6.000 pontos
 </option>
 
 <option value="10">
-R$ 10,00 bruto — 11.000 pontos → você recebe R$ 7,00
+R$ 10,00 — 11.000 pontos
 </option>
 
 </select>
 
-<button
-class="primary"
-onclick="withdraw()">
-
+<button class="primary" onclick="withdraw()">
 Solicitar saque
-
 </button>
 
-<p
-id="cashMsg"
-class="notice hidden">
-</p>
+<p id="cashMsg" class="notice hidden"></p>
 
 <p class="small">
-A plataforma ganha 30% e o jogador recebe 70% do valor bruto do saque.
-Nesta versão o saque é registrado.
+Nesta versão o saque é apenas registrado.
+O pagamento real ainda não está conectado.
 </p>
 
 </div>
 
-<!-- PREMIUM -->
+<!-- ================================================= -->
+<!-- SAC -->
+<!-- ================================================= -->
 
-<div
-id="premiumTab"
-class="hidden card">
+<div id="sacTab" class="hidden card">
+
+<h2>💬 Atendimento</h2>
+
+<p>
+Envie sua mensagem para a equipe do QuizUp.
+Quando houver uma resposta, ela aparecerá aqui.
+</p>
+
+<div class="notice">
+<b>Conta:</b>
+<span id="sacAccount"></span>
+</div>
+
+<label>Mensagem</label>
+
+<textarea
+id="sacMessage"
+placeholder="Digite sua mensagem..."
+maxlength="2000"
+></textarea>
+
+<button
+id="sendSacButton"
+class="primary"
+onclick="enviarSAC()"
+>
+Enviar mensagem
+</button>
+
+<p id="sacSendMsg" class="notice hidden"></p>
+
+<div id="sacHistory"></div>
+
+</div>
+
+<!-- ================================================= -->
+<!-- PREMIUM -->
+<!-- ================================================= -->
+
+<div id="premiumTab" class="hidden card">
 
 <h2>💎 Premium</h2>
 
@@ -792,41 +482,10 @@ class="hidden card">
 
 <button
 class="primary"
-onclick="alert('O pagamento Premium ainda será conectado.')">
-
+onclick="alert('O pagamento Premium ainda será conectado.')"
+>
 Quero ser Premium
-
 </button>
-
-</div>
-
-<!-- SAC -->
-
-<div
-id="sacTab"
-class="hidden card">
-
-<h2>📩 SAC</h2>
-
-<p>
-Precisa de ajuda? Envie sua mensagem para a equipe do QuizUp.
-</p>
-
-<textarea
-id="sacMensagem"
-placeholder="Digite sua mensagem..."></textarea>
-
-<button
-id="sacButton"
-class="primary"
-onclick="enviarSAC()">
-Enviar mensagem
-</button>
-
-<p
-id="sacMsg"
-class="notice hidden">
-</p>
 
 </div>
 
@@ -836,559 +495,30 @@ class="notice hidden">
 
 <script>
 
-/* =====================================================
-   CONFIGURAÇÕES
-===================================================== */
-
 const API_URL =
 "https://quizup-api-qxn2.onrender.com";
 
-const QUESTION_TIME = 10;
-
-
-/* =====================================================
-   HILLTOPADS / GOOGLE IMA
-===================================================== */
-
-const HILLTOP_VAST =
-"https://smooth-survey.com/dgmfF.zodhGtN/vLZlGHUb/Oejm/9CucZoUOl/kTPYT/cZz/NrDwkP2HN/zucktJNYz/MZ0TOGT/Yh4zMmS/Zts/a/WU1epxd/DE0bxc";
-
-
-let adsLoader=null;
-let adsManager=null;
-let adDisplayContainer=null;
-
-let adStarted=false;
-let adFinished=false;
-let adLoading=false;
-
-
-const quizAdArea=
-document.getElementById("quizAdArea");
-
-const quizAdContainer=
-document.getElementById("quizAdContainer");
-
-const quizAdVideo=
-document.getElementById("quizAdVideo");
-
-const quizAdLoading=
-document.getElementById("quizAdLoading");
-
-const quizAdPlay=
-document.getElementById("quizAdPlay");
-
-const quizAdStatus=
-document.getElementById("quizAdStatus");
-
-const quizAdContinue=
-document.getElementById("quizAdContinue");
-
-
-function resetQuizAd(){
-
-try{
-
-if(adsManager){
-adsManager.destroy();
-}
-
-}catch(error){
-
-console.warn(
-"Não foi possível destruir o AdsManager.",
-error
-);
-
-}
-
-adsManager=null;
-adsLoader=null;
-adDisplayContainer=null;
-
-adStarted=false;
-adFinished=false;
-adLoading=false;
-
-quizAdPlay.disabled=false;
-
-quizAdPlay.classList.remove("hidden");
-
-quizAdContinue.classList.add("hidden");
-
-quizAdLoading.classList.remove("hidden");
-
-quizAdLoading.textContent=
-"Preparando anúncio...";
-
-quizAdStatus.textContent=
-"Toque no botão para iniciar o anúncio.";
-
-try{
-
-quizAdVideo.pause();
-
-quizAdVideo.removeAttribute("src");
-
-quizAdVideo.load();
-
-}catch(error){}
-
-}
-
-
-function showQuizAd(){
-
-resetQuizAd();
-
-quizAdArea.classList.remove("hidden");
-
-quizAdLoading.classList.remove("hidden");
-
-quizAdLoading.textContent=
-"Anúncio pronto.";
-
-quizAdPlay.classList.remove("hidden");
-
-quizAdStatus.textContent=
-"Toque em ▶️ para assistir ao anúncio.";
-
-}
-
-
-function hideQuizAd(){
-
-quizAdArea.classList.add("hidden");
-
-}
-
-
-function quizAdError(event){
-
-console.warn(
-"Erro no anúncio VAST:",
-event
-);
-
-adLoading=false;
-
-quizAdPlay.disabled=false;
-
-quizAdLoading.classList.remove("hidden");
-
-quizAdLoading.textContent=
-"Não foi possível carregar o anúncio.";
-
-quizAdStatus.textContent=
-"Você pode continuar.";
-
-quizAdContinue.classList.remove("hidden");
-
-}
-
-
-function quizAdStarted(){
-
-adStarted=true;
-adLoading=false;
-
-quizAdPlay.classList.add("hidden");
-
-quizAdLoading.classList.add("hidden");
-
-quizAdStatus.textContent=
-"▶️ Anúncio em reprodução...";
-
-}
-
-
-function quizAdComplete(){
-
-adFinished=true;
-adLoading=false;
-
-quizAdPlay.classList.add("hidden");
-
-quizAdLoading.classList.add("hidden");
-
-quizAdStatus.textContent=
-"✅ Anúncio concluído.";
-
-quizAdContinue.classList.remove("hidden");
-
-try{
-
-if(adsManager){
-adsManager.destroy();
-}
-
-}catch(error){}
-
-adsManager=null;
-
-}
-
-
-function onAdsManagerLoaded(event){
-
-try{
-
-adsManager=
-event.getAdsManager(
-quizAdVideo
-);
-
-adsManager.addEventListener(
-google.ima.AdErrorEvent.Type.AD_ERROR,
-quizAdError
-);
-
-adsManager.addEventListener(
-google.ima.AdEvent.Type.STARTED,
-quizAdStarted
-);
-
-adsManager.addEventListener(
-google.ima.AdEvent.Type.COMPLETE,
-quizAdComplete
-);
-
-adsManager.addEventListener(
-google.ima.AdEvent.Type.SKIPPED,
-quizAdComplete
-);
-
-adsManager.addEventListener(
-google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
-quizAdComplete
-);
-
-adsManager.addEventListener(
-google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
-quizAdComplete
-);
-
-const width=
-quizAdContainer.clientWidth||320;
-
-const height=
-quizAdContainer.clientHeight||220;
-
-adsManager.init(
-width,
-height,
-google.ima.ViewMode.NORMAL
-);
-
-adsManager.start();
-
-}catch(error){
-
-console.error(
-"Erro ao iniciar AdsManager:",
-error
-);
-
-quizAdError(error);
-
-}
-
-}
-
-
-function startQuizAd(){
-
-if(adLoading || adStarted){
-return;
-}
-
-if(
-typeof google==="undefined" ||
-!google.ima
-){
-
-quizAdError(
-"Google IMA não carregado."
-);
-
-return;
-
-}
-
-adLoading=true;
-
-quizAdPlay.disabled=true;
-
-quizAdPlay.classList.add("hidden");
-
-quizAdLoading.classList.remove("hidden");
-
-quizAdLoading.textContent=
-"Carregando anúncio...";
-
-quizAdStatus.textContent=
-"Conectando ao anúncio...";
-
-try{
-
-adDisplayContainer=
-new google.ima.AdDisplayContainer(
-quizAdContainer,
-quizAdVideo
-);
-
-adDisplayContainer.initialize();
-
-adsLoader=
-new google.ima.AdsLoader(
-adDisplayContainer
-);
-
-adsLoader.addEventListener(
-google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
-onAdsManagerLoaded
-);
-
-adsLoader.addEventListener(
-google.ima.AdErrorEvent.Type.AD_ERROR,
-quizAdError
-);
-
-const request=
-new google.ima.AdsRequest();
-
-request.adTagUrl=
-HILLTOP_VAST;
-
-const width=
-quizAdContainer.clientWidth||320;
-
-const height=
-quizAdContainer.clientHeight||220;
-
-request.linearAdSlotWidth=
-width;
-
-request.linearAdSlotHeight=
-height;
-
-request.nonLinearAdSlotWidth=
-width;
-
-request.nonLinearAdSlotHeight=
-height;
-
-adsLoader.requestAds(
-request
-);
-
-}catch(error){
-
-console.error(
-"Erro ao solicitar VAST:",
-error
-);
-
-quizAdError(error);
-
-}
-
-}
-
-
-/* =====================================================
-   MÚSICA
-===================================================== */
-
-const backgroundMusic=
-document.getElementById(
-"backgroundMusic"
-);
-
-backgroundMusic.volume=0.35;
-
-
-function startMusic(){
-
-if(backgroundMusic.paused){
-
-backgroundMusic.play().catch(
-()=>{}
-);
-
-}
-
-}
-
-
-/* =====================================================
-   PERGUNTAS
-===================================================== */
-
 const Q=[
-
-[
-"Quanto é 2 + 2?",
-["3","4","5","6"],
-1
-],
-
-[
-"Qual é a capital do Brasil?",
-["Brasília","São Paulo","Salvador","Recife"],
-0
-],
-
-[
-"Qual planeta é conhecido como Planeta Vermelho?",
-["Terra","Marte","Vênus","Saturno"],
-1
-],
-
-[
-"Quantos dias tem uma semana?",
-["5","6","7","8"],
-2
-],
-
-[
-"Qual animal é conhecido como rei da selva?",
-["Tigre","Elefante","Leão","Urso"],
-2
-],
-
-[
-"Quantos meses tem um ano?",
-["10","11","12","13"],
-2
-],
-
-[
-"Qual é a cor formada pela mistura de azul e amarelo?",
-["Verde","Roxo","Laranja","Rosa"],
-0
-],
-
-[
-"Qual é o maior planeta do Sistema Solar?",
-["Terra","Marte","Júpiter","Mercúrio"],
-2
-],
-
-[
-"Quantas horas tem um dia?",
-["12","18","24","48"],
-2
-],
-
-[
-"Qual animal produz leite?",
-["Cachorro","Vaca","Galinha","Peixe"],
-1
-],
-
-[
-"Qual é o maior oceano da Terra?",
-["Atlântico","Índico","Pacífico","Ártico"],
-2
-],
-
-[
-"Quanto é 12 × 8?",
-["86","96","108","112"],
-1
-],
-
-[
-"Qual gás é mais abundante na atmosfera?",
-["Oxigênio","Nitrogênio","Hélio","Hidrogênio"],
-1
-],
-
-[
-"Quem escreveu Dom Casmurro?",
-["Machado de Assis","José de Alencar","Clarice Lispector","Cecília Meireles"],
-0
-],
-
-[
-"Qual é o símbolo químico do ouro?",
-["Ag","Fe","Au","Cu"],
-2
-],
-
-[
-"Qual é o resultado de 15² − 10²?",
-["125","150","175","225"],
-0
-],
-
-[
-"Qual destes números é primo?",
-["21","27","29","33"],
-2
-],
-
-[
-"Se 3x + 7 = 25, qual é o valor de x?",
-["4","5","6","7"],
-1
-],
-
-[
-"Qual continente tem a maior área?",
-["África","Ásia","Europa","América do Sul"],
-1
-],
-
-[
-"Qual é a raiz quadrada de 144?",
-["10","11","12","14"],
-2
-],
-
-[
-"Qual é o maior país do mundo em área?",
-["China","Canadá","Brasil","Rússia"],
-3
-],
-
-[
-"Em que ano terminou a Segunda Guerra Mundial?",
-["1943","1944","1945","1946"],
-2
-],
-
-[
-"Qual é o elemento químico de número atômico 6?",
-["Oxigênio","Carbono","Nitrogênio","Ferro"],
-1
-],
-
-[
-"Qual é a velocidade aproximada da luz no vácuo?",
-["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],
-1
-],
-
-[
-"Qual é a derivada de x³ − 4x?",
-["3x² − 4","x² − 4","3x − 4","3x² + 4"],
-0
-],
-
-[
-"Qual processo celular produz a maior parte do ATP em condições aeróbicas?",
-["Fermentação","Glicólise","Fosforilação oxidativa","Transcrição"],
-2
-]
-
+["Quanto é 2 + 2?",["3","4","5","6"],1],
+["Qual é a capital do Brasil?",["Brasília","São Paulo","Salvador","Recife"],0],
+["Qual planeta é conhecido como Planeta Vermelho?",["Terra","Marte","Vênus","Saturno"],1],
+["Quantos dias tem uma semana?",["5","6","7","8"],2],
+["Qual animal é conhecido como rei da selva?",["Tigre","Elefante","Leão","Urso"],2],
+["Quantos meses tem um ano?",["10","11","12","13"],2],
+["Qual é a cor formada pela mistura de azul e amarelo?",["Verde","Roxo","Laranja","Rosa"],0],
+["Qual é o maior planeta do Sistema Solar?",["Terra","Marte","Júpiter","Mercúrio"],2],
+["Qual é o maior oceano da Terra?",["Atlântico","Índico","Pacífico","Ártico"],2],
+["Quanto é 12 × 8?",["86","96","108","112"],1],
+["Quem escreveu Dom Casmurro?",["Machado de Assis","José de Alencar","Clarice Lispector","Cecília Meireles"],0],
+["Qual é o símbolo químico do ouro?",["Ag","Fe","Au","Cu"],2],
+["Qual destes números é primo?",["21","27","29","33"],2],
+["Qual é a raiz quadrada de 144?",["10","11","12","14"],2],
+["Qual é o maior país do mundo em área?",["China","Canadá","Brasil","Rússia"],3],
+["Em que ano terminou a Segunda Guerra Mundial?",["1943","1944","1945","1946"],2],
+["Qual é o elemento químico de número atômico 6?",["Oxigênio","Carbono","Nitrogênio","Ferro"],1],
+["Qual é a velocidade aproximada da luz no vácuo?",["30 mil km/s","300 mil km/s","3 milhões km/s","3 mil km/s"],1],
+["Qual é a derivada de x³ − 4x?",["3x² − 4","x² − 4","3x − 4","3x² + 4"],0]
 ];
-
-
-/* =====================================================
-   ESTADO
-===================================================== */
 
 let s={
 email:"",
@@ -1401,31 +531,23 @@ code:"",
 referrer:"",
 dice:0,
 question:null,
-recentQuestions:[],
-timer:QUESTION_TIME,
+timer:5,
 answered:false,
-roundPoints:0
+roundPoints:0,
+sacIds:[]
 };
 
 let handle=null;
-
 
 /* =====================================================
    LOCAL STORAGE
 ===================================================== */
 
 function key(){
-
 return "quizup_"+s.email;
-
 }
-
 
 function save(){
-
-if(!s.email){
-return;
-}
 
 localStorage.setItem(
 key(),
@@ -1433,9 +555,7 @@ JSON.stringify(s)
 );
 
 ui();
-
 }
-
 
 /* =====================================================
    AUTENTICAÇÃO
@@ -1455,52 +575,41 @@ document
 
 }
 
-
 function register(){
 
-const e=
+let e=
 document.getElementById("rEmail")
 .value
 .trim()
 .toLowerCase();
 
-const p=
+let p=
 document.getElementById("rPass")
 .value;
 
-const n=
+let n=
 document.getElementById("rName")
 .value
 .trim();
 
-const cpf=
+let cpf=
 document.getElementById("rCpf")
 .value
 .trim();
 
-const msg=
-document.getElementById("registerMsg");
-
-
 if(!e||!p||!n||!cpf){
 
-msg.textContent=
-"Preencha todos os campos.";
+alert("Preencha todos os campos.");
 
 return;
-
 }
-
 
 if(localStorage.getItem("quizup_"+e)){
 
-msg.textContent=
-"Essa conta já existe. Use o Login.";
+alert("Essa conta já existe.");
 
 return;
-
 }
-
 
 s={
 email:e,
@@ -1509,105 +618,77 @@ name:n,
 cpf:cpf,
 points:0,
 round:1,
-code:"QU"+
+code:
+"QU"+
 Math.random()
 .toString(36)
 .slice(2,8)
 .toUpperCase(),
 referrer:
-new URLSearchParams(
-location.search
-).get("ref")||"",
+new URLSearchParams(location.search)
+.get("ref")||"",
 dice:0,
 question:null,
-recentQuestions:[],
-timer:QUESTION_TIME,
+timer:5,
 answered:false,
-roundPoints:0
+roundPoints:0,
+sacIds:[]
 };
 
-
 save();
-
-msg.textContent=
-"Cadastro realizado com sucesso!";
 
 openGame();
 
 }
 
-
 function login(){
 
-const e=
+let e=
 document.getElementById("lEmail")
 .value
 .trim()
 .toLowerCase();
 
-const p=
+let p=
 document.getElementById("lPass")
 .value;
 
-const msg=
-document.getElementById("loginMsg");
-
-
 if(!e||!p){
 
-msg.textContent=
-"Preencha e-mail e senha.";
+alert("Preencha e-mail e senha.");
 
 return;
-
 }
 
-
-const x=
+let x=
 localStorage.getItem("quizup_"+e);
-
 
 if(!x){
 
-msg.textContent=
-"Conta não encontrada.";
+alert("Conta não encontrada.");
 
 return;
-
 }
 
-
-try{
-
-const account=
+let a=
 JSON.parse(x);
 
-if(account.password!==p){
+if(a.password!==p){
 
-msg.textContent=
-"Senha incorreta.";
+alert("Senha incorreta.");
 
 return;
-
 }
 
-s=account;
+s=a;
+
+if(!Array.isArray(s.sacIds)){
+s.sacIds=[];
+}
 
 openGame();
 
-}catch(error){
-
-msg.textContent=
-"Não foi possível entrar.";
-
 }
-
-}
-
-
-/* =====================================================
-   ABRIR JOGO
-===================================================== */
 
 function openGame(){
 
@@ -1627,7 +708,6 @@ tab("quiz");
 
 }
 
-
 /* =====================================================
    SAIR
 ===================================================== */
@@ -1635,8 +715,6 @@ tab("quiz");
 function logout(){
 
 clearInterval(handle);
-
-resetQuizAd();
 
 document
 .getElementById("game")
@@ -1649,7 +727,6 @@ document
 .remove("hidden");
 
 }
-
 
 /* =====================================================
    INTERFACE
@@ -1676,8 +753,16 @@ location.pathname+
 "?ref="+
 encodeURIComponent(s.code||"");
 
-}
+let account=
+s.name
+?s.name+" — "+s.email
+:s.email;
 
+document.getElementById("sacAccount")
+.textContent=
+account||"Conta QuizUp";
+
+}
 
 /* =====================================================
    ABAS
@@ -1689,9 +774,10 @@ function tab(x){
 "quiz",
 "ref",
 "cash",
-"premium",
-"sac"
-].forEach(a=>{
+"sac",
+"premium"
+]
+.forEach(a=>{
 
 document
 .getElementById(a+"Tab")
@@ -1699,7 +785,6 @@ document
 .toggle("hidden",a!==x);
 
 });
-
 
 if(x==="quiz"){
 
@@ -1715,117 +800,137 @@ document
 
 }
 
+if(x==="sac"){
+
+carregarHistoricoSAC();
+
 }
 
+}
 
 /* =====================================================
-   ESCOLHER PERGUNTA
+   MÚSICA
+===================================================== */
+
+function playMusic(){
+
+const music=
+document.getElementById(
+"backgroundMusic"
+);
+
+if(!music)return;
+
+music.volume=0.35;
+
+const promise=
+music.play();
+
+if(promise!==undefined){
+
+promise.catch(function(error){
+
+console.log(
+"Áudio bloqueado pelo navegador:",
+error
+);
+
+});
+
+}
+
+}
+
+/* =====================================================
+   PERGUNTA
 ===================================================== */
 
 function pickQuestion(){
 
-const recent=
-s.recentQuestions||[];
-
-const available=
-Q.filter(q=>
-!recent.includes(q[0])
-);
-
-const pool=
-available.length
-?available
-:Q;
-
-const q=
-pool[
+return Q[
 Math.floor(
-Math.random()*pool.length
+Math.random()*Q.length
 )
 ];
 
-s.recentQuestions=
-[
-...recent,
-q[0]
-].slice(-10);
-
-return q;
-
 }
 
-
 /* =====================================================
-   JOGAR DADO
+   DADO
 ===================================================== */
 
 function rollDice(){
 
-startMusic();
+/* O toque no botão libera a música no celular */
+
+playMusic();
 
 clearInterval(handle);
 
 s.answered=false;
 
-let dice;
+let d;
 
 if(s.round%30===0){
 
-dice=
+d=
 Math.floor(
 Math.random()*3
 )+8;
 
-}else if(s.round%10===0){
+}
 
-dice=
+else if(s.round%10===0){
+
+d=
 Math.floor(
 Math.random()*3
 )+5;
 
-}else{
+}
 
-dice=
+else{
+
+d=
 Math.floor(
 Math.random()*4
 )+1;
 
 }
 
-s.dice=dice;
+s.dice=d;
 
-s.roundPoints=dice;
+s.roundPoints=d;
 
-s.question=pickQuestion();
+s.question=
+pickQuestion();
 
 document
 .getElementById("dice")
-.textContent=
-"🎲 "+dice;
+.textContent="🎲 "+d;
 
 document
 .getElementById("diceResult")
 .textContent=
-"Você tirou "+
-dice+
+"Você tirou "+d+
 " • Esta pergunta vale "+
-dice+
-(dice===1?" ponto":" pontos");
+d+
+(d===1?" ponto":" pontos");
 
 document
 .getElementById("question")
 .textContent=
 s.question[0];
 
-const answers=
+let answers=
 document.getElementById("answers");
 
 answers.innerHTML="";
 
-s.question[1].forEach(
-(a,i)=>{
+s.question[1]
+.forEach((a,i)=>{
 
-const b=
+let b=
 document.createElement("button");
 
 b.className="answer";
@@ -1836,8 +941,7 @@ b.onclick=()=>answer(i);
 
 answers.appendChild(b);
 
-}
-);
+});
 
 document
 .getElementById("rollCard")
@@ -1854,32 +958,32 @@ document
 .classList
 .add("hidden");
 
-hideQuizAd();
+document
+.getElementById("rewardBox")
+.classList
+.add("hidden");
 
 startTimer();
 
 }
 
-
 /* =====================================================
-   CRONÔMETRO
+   TEMPORIZADOR
 ===================================================== */
 
 function startTimer(){
 
 clearInterval(handle);
 
-s.timer=QUESTION_TIME;
+s.timer=5;
 
 document
 .getElementById("time")
-.textContent=
-QUESTION_TIME;
+.textContent=5;
 
 document
 .getElementById("progress")
-.style
-.width="100%";
+.style.width="100%";
 
 handle=
 setInterval(()=>{
@@ -1888,16 +992,14 @@ s.timer--;
 
 document
 .getElementById("time")
-.textContent=
-Math.max(0,s.timer);
+.textContent=s.timer;
 
 document
 .getElementById("progress")
-.style
-.width=
+.style.width=
 Math.max(
 0,
-(s.timer/QUESTION_TIME)*100
+s.timer/5*100
 )+"%";
 
 if(s.timer<=0){
@@ -1912,51 +1014,49 @@ answer(-1);
 
 }
 
-
 /* =====================================================
-   RESPONDER
+   RESPOSTA
 ===================================================== */
 
 function answer(i){
 
-if(s.answered){
-return;
-}
+if(s.answered)return;
 
 s.answered=true;
 
 clearInterval(handle);
 
-const correct=
+let c=
 s.question[2];
 
-const buttons=
+let bs=
 [
-...document.querySelectorAll(".answer")
+...document.querySelectorAll(
+".answer"
+)
 ];
 
-if(i>=0 && buttons[i]){
+if(i>=0 && bs[i]){
 
-buttons[i]
+bs[i]
 .classList
 .add(
-i===correct
+i===c
 ?"correct"
 :"wrong"
 );
 
 }
 
-if(buttons[correct]){
+if(bs[c]){
 
-buttons[correct]
+bs[c]
 .classList
 .add("correct");
 
 }
 
-const ok=
-i===correct;
+let ok=i===c;
 
 if(ok){
 
@@ -1968,8 +1068,10 @@ ui();
 
 save();
 
-const feedback=
-document.getElementById("feedback");
+let feedback=
+document.getElementById(
+"feedback"
+);
 
 feedback
 .classList
@@ -1982,18 +1084,18 @@ s.roundPoints+
 " pontos!"
 :"❌ Incorreto ou tempo esgotado. Seus pontos permanecem.";
 
-showQuizAd();
+document
+.getElementById("rewardBox")
+.classList
+.remove("hidden");
 
 }
 
-
 /* =====================================================
-   FINALIZAR RODADA
+   FINALIZAR PERGUNTA
 ===================================================== */
 
 function finishQuestion(){
-
-resetQuizAd();
 
 document
 .getElementById("questionCard")
@@ -2013,17 +1115,11 @@ document
 .getElementById("diceResult")
 .textContent="";
 
-document
-.getElementById("feedback")
-.classList
-.add("hidden");
-
 s.round++;
 
 save();
 
 }
-
 
 /* =====================================================
    INDICAÇÃO
@@ -2031,7 +1127,7 @@ save();
 
 function copyRef(){
 
-const link=
+let link=
 document
 .getElementById("refLink")
 .value;
@@ -2039,8 +1135,7 @@ document
 if(navigator.clipboard){
 
 navigator.clipboard
-.writeText(link)
-.catch(()=>{});
+.writeText(link);
 
 }
 
@@ -2051,17 +1146,14 @@ document
 
 }
 
-
 async function shareRef(){
 
-const link=
+let link=
 document
 .getElementById("refLink")
 .value;
 
 if(navigator.share){
-
-try{
 
 await navigator.share({
 
@@ -2074,9 +1166,9 @@ url:link
 
 });
 
-}catch(error){}
+}
 
-}else{
+else{
 
 copyRef();
 
@@ -2084,14 +1176,13 @@ copyRef();
 
 }
 
-
 /* =====================================================
-   PAGAMENTO
+   SAQUE
 ===================================================== */
 
 function payFields(){
 
-const pix=
+let p=
 document
 .getElementById("payMethod")
 .value==="pix";
@@ -2099,15 +1190,14 @@ document
 document
 .getElementById("pix")
 .classList
-.toggle("hidden",!pix);
+.toggle("hidden",!p);
 
 document
 .getElementById("paypal")
 .classList
-.toggle("hidden",pix);
+.toggle("hidden",p);
 
 }
-
 
 function need(v){
 
@@ -2119,45 +1209,36 @@ return v==="10"
 
 }
 
-
-/* =====================================================
-   SAQUE
-   70% JOGADOR / 30% PLATAFORMA
-===================================================== */
-
 function withdraw(){
 
-const v=
+let v=
 document
 .getElementById("withdrawAmount")
 .value;
 
-const n=
-need(v);
+let n=need(v);
 
-const method=
+let m=
 document
 .getElementById("payMethod")
 .value;
 
-const k=
-method==="pix"
-?document
-.getElementById("pixKey")
-.value
-.trim()
-:document
-.getElementById("paypalKey")
+let k=
+(
+m==="pix"
+?document.getElementById("pixKey")
+:document.getElementById("paypalKey")
+)
 .value
 .trim();
 
-const msg=
-document.getElementById("cashMsg");
+let msg=
+document
+.getElementById("cashMsg");
 
 msg
 .classList
 .remove("hidden");
-
 
 if(!k){
 
@@ -2167,7 +1248,6 @@ msg.textContent=
 return;
 
 }
-
 
 if(s.points<n){
 
@@ -2180,188 +1260,363 @@ return;
 
 }
 
-
-/* VALORES */
-
-const valorBruto=
-Number(v);
-
-const valorJogador=
-Number(
-(valorBruto*0.70)
-.toFixed(2)
-);
-
-const valorPlataforma=
-Number(
-(valorBruto*0.30)
-.toFixed(2)
-);
-
-
-/* REGISTRO */
-
-const arr=
+let a=
 JSON.parse(
 localStorage.getItem(
 "quizup_withdrawals"
 )||"[]"
 );
 
-arr.push({
+a.push({
 
 email:s.email,
 
-pontos:n,
+value:v,
 
-valorBruto:valorBruto,
+method:m,
 
-valorJogador:valorJogador,
-
-valorPlataforma:valorPlataforma,
-
-method:method,
-
-chave:k,
-
-date:new Date().toISOString()
+date:
+new Date().toISOString()
 
 });
 
 localStorage.setItem(
 "quizup_withdrawals",
-JSON.stringify(arr)
+JSON.stringify(a)
 );
 
-
-/* DESCONTAR PONTOS */
-
-s.points-=n;
-
-save();
-
-
-/* MENSAGEM */
-
 msg.textContent=
-"Solicitação registrada! Você receberá R$ "+
-valorJogador
-.toFixed(2)
-.replace(".",",")+
-".";
+"Solicitação registrada. O pagamento real será conectado posteriormente.";
 
 }
 
-
 /* =====================================================
-   SAC
+   SAC — ENVIAR MENSAGEM
 ===================================================== */
 
 async function enviarSAC(){
 
 const campo=
-document.getElementById("sacMensagem");
-
-const msg=
-document.getElementById("sacMsg");
-
-const button=
-document.getElementById("sacButton");
+document.getElementById(
+"sacMessage"
+);
 
 const mensagem=
 campo.value.trim();
 
-msg.classList.remove("hidden");
+const msg=
+document.getElementById(
+"sacSendMsg"
+);
 
+const button=
+document.getElementById(
+"sendSacButton"
+);
+
+msg
+.classList
+.remove("hidden");
 
 if(!mensagem){
 
 msg.textContent=
-"Digite sua mensagem antes de enviar.";
+"Digite uma mensagem.";
 
 return;
 
 }
 
-
 button.disabled=true;
 
-button.textContent=
-"Enviando...";
-
+msg.textContent=
+"Enviando mensagem...";
 
 try{
 
 const resposta=
 await fetch(
-`${API_URL}/api/sac`,
+API_URL+"/api/sac",
 {
 method:"POST",
 
 headers:{
-"Content-Type":"application/json"
+"Content-Type":
+"application/json"
 },
 
 body:JSON.stringify({
 
-jogador_id:
-s.id || null,
-
-email:
-s.email || "",
+email:s.email||null,
 
 nome_completo:
-s.name || "",
+s.name||null,
 
-mensagem:
-mensagem
+mensagem:mensagem
 
 })
+
 }
 );
-
 
 const dados=
 await resposta.json();
 
-
-if(!resposta.ok || !dados.sucesso){
+if(!resposta.ok ||
+!dados.sucesso){
 
 throw new Error(
-dados.mensagem ||
+dados.mensagem||
+dados.erro||
 "Não foi possível enviar."
 );
 
 }
 
+if(
+dados.sac &&
+dados.sac.id
+){
+
+if(!Array.isArray(s.sacIds)){
+s.sacIds=[];
+}
+
+if(
+!s.sacIds.includes(
+Number(dados.sac.id)
+)
+){
+
+s.sacIds.push(
+Number(dados.sac.id)
+);
+
+}
+
+save();
+
+}
 
 campo.value="";
 
 msg.textContent=
-"✅ Mensagem enviada com sucesso! Nossa equipe recebeu sua solicitação.";
+"✅ Mensagem enviada com sucesso.";
 
+await carregarHistoricoSAC();
 
-}catch(error){
+}
+catch(erro){
 
 console.error(
-"Erro ao enviar SAC:",
-error
+"Erro SAC:",
+erro
 );
 
 msg.textContent=
 "❌ Não foi possível enviar a mensagem. Tente novamente.";
 
-}finally{
+}
+finally{
 
 button.disabled=false;
 
-button.textContent=
-"Enviar mensagem";
+}
+
+}
+
+/* =====================================================
+   SAC — CONSULTAR RESPOSTA
+===================================================== */
+
+async function consultarSAC(id){
+
+try{
+
+const resposta=
+await fetch(
+API_URL+"/api/sac/"+encodeURIComponent(id)
+);
+
+const dados=
+await resposta.json();
+
+if(!resposta.ok ||
+!dados.sucesso){
+
+return null;
+
+}
+
+return dados.sac;
+
+}
+catch(erro){
+
+console.error(
+"Erro ao consultar SAC:",
+erro
+);
+
+return null;
 
 }
 
 }
 
+/* =====================================================
+   SAC — HISTÓRICO
+===================================================== */
+
+async function carregarHistoricoSAC(){
+
+const area=
+document.getElementById(
+"sacHistory"
+);
+
+if(!Array.isArray(s.sacIds)){
+s.sacIds=[];
+}
+
+area.innerHTML=
+"<p class='small'>Carregando mensagens...</p>";
+
+if(s.sacIds.length===0){
+
+area.innerHTML=
+"<p class='small'>Você ainda não enviou nenhuma mensagem.</p>";
+
+return;
+
+}
+
+let mensagens=[];
+
+for(
+const id of s.sacIds
+){
+
+const sac=
+await consultarSAC(id);
+
+if(sac){
+
+mensagens.push(sac);
+
+}
+
+}
+
+if(mensagens.length===0){
+
+area.innerHTML=
+"<p class='small'>Nenhuma mensagem encontrada.</p>";
+
+return;
+
+}
+
+area.innerHTML="";
+
+mensagens
+.sort(
+(a,b)=>
+Number(b.id)-Number(a.id)
+)
+.forEach(sac=>{
+
+const div=
+document.createElement("div");
+
+div.className=
+"sac-message";
+
+const data=
+sac.criado_em
+?new Date(
+sac.criado_em
+).toLocaleString(
+"pt-BR"
+)
+:"";
+
+let html=
+"<div><b>📨 Sua mensagem</b></div>";
+
+html+=
+"<div style='margin-top:8px'>"+
+escapeHtml(
+sac.mensagem||""
+)+
+"</div>";
+
+html+=
+"<div class='small' style='margin-top:8px'>"+
+data+
+"</div>";
+
+if(
+sac.resposta &&
+String(
+sac.resposta
+).trim()
+){
+
+html+=
+"<div class='sac-response'>"+
+"<b>💬 Resposta do QuizUp</b>"+
+"<div style='margin-top:8px'>"+
+escapeHtml(
+sac.resposta
+)+
+"</div>"+
+(
+sac.respondido_em
+?
+"<div class='small' style='margin-top:8px'>"+
+new Date(
+sac.respondido_em
+).toLocaleString(
+"pt-BR"
+)+
+"</div>"
+:""
+)+
+"</div>";
+
+}
+else{
+
+html+=
+"<div class='sac-pending'>"+
+"⏳ Sua mensagem está aguardando resposta da equipe."+
+"</div>";
+
+}
+
+div.innerHTML=html;
+
+area.appendChild(div);
+
+});
+
+}
+
+/* =====================================================
+   SEGURANÇA PARA TEXTO DO SAC
+===================================================== */
+
+function escapeHtml(text){
+
+return String(text)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
 
 /* =====================================================
    RESTAURAR CONTA
@@ -2369,9 +1624,10 @@ button.textContent=
 
 (function(){
 
-const k=
+let k=
 Object.keys(localStorage)
-.find(k=>
+.find(
+k=>
 k.startsWith("quizup_") &&
 !k.includes("withdrawals")
 );
@@ -2380,44 +1636,27 @@ if(k){
 
 try{
 
-const saved=
-localStorage.getItem(k);
+s=
+JSON.parse(
+localStorage.getItem(k)
+);
 
-if(saved){
-
-s=JSON.parse(saved);
+if(!Array.isArray(s.sacIds)){
+s.sacIds=[];
+}
 
 openGame();
 
 }
+catch(e){
 
-}catch(error){
-
-console.log(
-"Não foi possível restaurar a conta:",
-error
-);
+console.log(e);
 
 }
 
 }
 
 })();
-
-
-/* =====================================================
-   LIMPEZA AO SAIR DA PÁGINA
-===================================================== */
-
-window.addEventListener(
-"beforeunload",
-function(){
-
-clearInterval(handle);
-
-resetQuizAd();
-
-});
 
 </script>
 
