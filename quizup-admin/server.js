@@ -170,6 +170,23 @@ async function prepararBanco() {
 
     console.log("Tabela saques verificada.");
 
+    // =================================================
+    // TABELA MONETAG
+    // =================================================
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS monetag_relatorios (
+        id SERIAL PRIMARY KEY,
+        data DATE,
+        impressoes INTEGER DEFAULT 0,
+        profit NUMERIC(12,6) DEFAULT 0,
+        cpm NUMERIC(12,6) DEFAULT 0,
+        criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    console.log("Tabela monetag_relatorios verificada.");
+
     console.log("Banco preparado.");
 
   } catch (erro) {
@@ -207,10 +224,6 @@ async function atualizarSaldoHilltopAds() {
       resposta.status
     );
 
-    console.log(
-      "Resposta da HilltopAds recebida."
-    );
-
     if (!resposta.ok) {
 
       console.error(
@@ -233,18 +246,8 @@ async function atualizarSaldoHilltopAds() {
         "A HilltopAds não retornou JSON válido."
       );
 
-      console.error(
-        "Conteúdo recebido:",
-        textoResposta.substring(0, 1000)
-      );
-
       return;
     }
-
-    console.log(
-      "Resposta HilltopAds:",
-      JSON.stringify(dados)
-    );
 
     let saldo = null;
 
@@ -356,11 +359,6 @@ async function atualizarSaldoHilltopAds() {
     }
 
     saldo = Number(saldo);
-
-    console.log(
-      "Saldo HilltopAds identificado:",
-      saldo
-    );
 
     const resultado = await pool.query(
       `
@@ -1290,21 +1288,15 @@ app.get("/api/pergunta-aleatoria", async (req, res) => {
     let dificuldade =
       dificuldadeRecebida;
 
-    if (
-      dificuldade === "fácil"
-    ) {
+    if (dificuldade === "fácil") {
       dificuldade = "facil";
     }
 
-    if (
-      dificuldade === "médio"
-    ) {
+    if (dificuldade === "médio") {
       dificuldade = "medio";
     }
 
-    if (
-      dificuldade === "difícil"
-    ) {
+    if (dificuldade === "difícil") {
       dificuldade = "dificil";
     }
 
@@ -1960,6 +1952,9 @@ app.get("/api/admin/saques", async (req, res) => {
 // =====================================================
 
 app.post("/api/saques", async (req, res) => {
+
+  const client = await pool.connect();
+
   try {
 
     const {
@@ -1973,6 +1968,69 @@ app.post("/api/saques", async (req, res) => {
       paypal
     } = req.body;
 
+    const jogadorId =
+      Number(jogador_id);
+
+    if (
+      !Number.isInteger(jogadorId) ||
+      jogadorId <= 0
+    ) {
+
+      return res.status(400).json({
+        sucesso: false,
+        erro:
+          "Jogador inválido."
+      });
+    }
+
+    // =================================================
+    // VALOR DO SAQUE
+    // =================================================
+
+    const valorSolicitado =
+      Number(valor);
+
+    if (
+      !Number.isFinite(valorSolicitado) ||
+      valorSolicitado <= 0
+    ) {
+
+      return res.status(400).json({
+        sucesso: false,
+        erro:
+          "Valor de saque inválido."
+      });
+    }
+
+    // =================================================
+    // REGRAS OFICIAIS DO QUIZUP
+    // =================================================
+
+    const regrasSaque = {
+      "1.00": 2000,
+      "5.00": 6000,
+      "10.00": 11000
+    };
+
+    const chaveValor =
+      valorSolicitado.toFixed(2);
+
+    const pontosNecessarios =
+      regrasSaque[chaveValor];
+
+    if (!pontosNecessarios) {
+
+      return res.status(400).json({
+        sucesso: false,
+        erro:
+          "Valor de saque inválido. As opções são R$ 1,00, R$ 5,00 ou R$ 10,00."
+      });
+    }
+
+    // =================================================
+    // PAGAMENTO
+    // =================================================
+
     const pixFinal =
       pix_key ||
       pix ||
@@ -1982,26 +2040,16 @@ app.post("/api/saques", async (req, res) => {
       paypal ||
       (
         metodo &&
-        String(metodo).toLowerCase() === "paypal"
+        String(metodo)
+          .toLowerCase() === "paypal"
           ? email
           : null
       );
 
-    const valorFinal =
-      Number(valor);
-
-    if (
-      !jogador_id ||
-      !valorFinal ||
-      valorFinal <= 0
-    ) {
-
-      return res.status(400).json({
-        sucesso: false,
-        erro:
-          "Dados do saque incompletos."
-      });
-    }
+    const metodoFinal =
+      String(metodo || "")
+        .trim()
+        .toLowerCase();
 
     if (
       !pixFinal &&
@@ -2015,8 +2063,132 @@ app.post("/api/saques", async (req, res) => {
       });
     }
 
-    const resultado =
-      await pool.query(
+    if (
+      metodoFinal === "pix" &&
+      !pixFinal
+    ) {
+
+      return res.status(400).json({
+        sucesso: false,
+        erro:
+          "Informe a chave Pix."
+      });
+    }
+
+    if (
+      metodoFinal === "paypal" &&
+      !paypalFinal
+    ) {
+
+      return res.status(400).json({
+        sucesso: false,
+        erro:
+          "Informe a conta PayPal."
+      });
+    }
+
+    // =================================================
+    // INICIAR TRANSAÇÃO
+    // =================================================
+
+    await client.query("BEGIN");
+
+    // =================================================
+    // BUSCAR JOGADOR COM BLOQUEIO
+    // =================================================
+
+    const jogadorResult =
+      await client.query(
+        `
+        SELECT
+          id,
+          email,
+          pontos
+        FROM jogadores
+        WHERE id = $1
+        FOR UPDATE
+        `,
+        [jogadorId]
+      );
+
+    if (
+      jogadorResult.rows.length === 0
+    ) {
+
+      await client.query("ROLLBACK");
+
+      return res.status(404).json({
+        sucesso: false,
+        erro:
+          "Jogador não encontrado."
+      });
+    }
+
+    const jogador =
+      jogadorResult.rows[0];
+
+    const pontosAtuais =
+      Number(jogador.pontos || 0);
+
+    // =================================================
+    // VERIFICAR LIMITE DE 2 SAQUES POR DIA
+    // =================================================
+
+    const saquesHojeResult =
+      await client.query(
+        `
+        SELECT COUNT(*) AS quantidade
+        FROM saques
+        WHERE jogador_id = $1
+          AND criado_em >= CURRENT_DATE
+          AND criado_em < CURRENT_DATE + INTERVAL '1 day'
+        `,
+        [jogadorId]
+      );
+
+    const saquesHoje =
+      Number(
+        saquesHojeResult.rows[0].quantidade
+      );
+
+    if (saquesHoje >= 2) {
+
+      await client.query("ROLLBACK");
+
+      return res.status(400).json({
+        sucesso: false,
+        erro:
+          "Você já realizou o limite de 2 saques hoje."
+      });
+    }
+
+    // =================================================
+    // VERIFICAR PONTOS
+    // =================================================
+
+    if (
+      pontosAtuais < pontosNecessarios
+    ) {
+
+      await client.query("ROLLBACK");
+
+      return res.status(400).json({
+        sucesso: false,
+        erro:
+          `Você precisa de ${pontosNecessarios.toLocaleString("pt-BR")} pontos para sacar R$ ${valorSolicitado.toFixed(2).replace(".", ",")}.`,
+        pontos_atuais:
+          pontosAtuais,
+        pontos_necessarios:
+          pontosNecessarios
+      });
+    }
+
+    // =================================================
+    // CRIAR SAQUE
+    // =================================================
+
+    const saqueResult =
+      await client.query(
         `
         INSERT INTO saques (
           jogador_id,
@@ -2045,23 +2217,97 @@ app.post("/api/saques", async (req, res) => {
           criado_em
         `,
         [
-          jogador_id,
-          email || null,
-          valorFinal,
+          jogadorId,
+          email || jogador.email,
+          valorSolicitado,
           pixFinal,
           paypalFinal
         ]
       );
 
+    // =================================================
+    // DESCONTAR OS PONTOS
+    // =================================================
+
+    const pontosDepois =
+      pontosAtuais -
+      pontosNecessarios;
+
+    const jogadorAtualizado =
+      await client.query(
+        `
+        UPDATE jogadores
+        SET pontos = $1
+        WHERE id = $2
+        RETURNING
+          id,
+          email,
+          pontos,
+          saldo
+        `,
+        [
+          pontosDepois,
+          jogadorId
+        ]
+      );
+
+    // =================================================
+    // FINALIZAR TRANSAÇÃO
+    // =================================================
+
+    await client.query("COMMIT");
+
+    console.log(
+      "Saque criado:",
+      saqueResult.rows[0]
+    );
+
+    console.log(
+      "Pontos descontados:",
+      {
+        jogador_id: jogadorId,
+        antes: pontosAtuais,
+        descontados: pontosNecessarios,
+        depois: pontosDepois
+      }
+    );
+
     res.json({
       sucesso: true,
       mensagem:
-        "Solicitação de saque recebida.",
+        "Solicitação de saque recebida. O pagamento será analisado.",
       saque:
-        resultado.rows[0]
+        saqueResult.rows[0],
+      jogador: {
+        id:
+          jogadorAtualizado.rows[0].id,
+        email:
+          jogadorAtualizado.rows[0].email,
+        pontos:
+          Number(
+            jogadorAtualizado.rows[0].pontos
+          ),
+        saldo:
+          Number(
+            jogadorAtualizado.rows[0].saldo || 0
+          )
+      },
+      pontos_descontados:
+        pontosNecessarios,
+      pontos_restantes:
+        pontosDepois
     });
 
   } catch (erro) {
+
+    try {
+      await client.query("ROLLBACK");
+    } catch (erroRollback) {
+      console.error(
+        "Erro no rollback:",
+        erroRollback
+      );
+    }
 
     console.error(
       "Erro no saque:",
@@ -2073,6 +2319,10 @@ app.post("/api/saques", async (req, res) => {
       erro:
         "Erro ao solicitar saque."
     });
+
+  } finally {
+
+    client.release();
   }
 });
 
