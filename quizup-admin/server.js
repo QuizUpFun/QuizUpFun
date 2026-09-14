@@ -2210,10 +2210,6 @@ app.post("/api/saques", async (req, res) => {
       });
     }
 
-    // =================================================
-    // VALOR DO SAQUE
-    // =================================================
-
     const valorSolicitado =
       Number(valor);
 
@@ -2228,10 +2224,6 @@ app.post("/api/saques", async (req, res) => {
           "Valor de saque inválido."
       });
     }
-
-    // =================================================
-    // REGRAS OFICIAIS DO QUIZUP
-    // =================================================
 
     const regrasSaque = {
       "1.00": 2000,
@@ -2253,10 +2245,6 @@ app.post("/api/saques", async (req, res) => {
           "Valor de saque inválido. As opções são R$ 1,00, R$ 5,00 ou R$ 10,00."
       });
     }
-
-    // =================================================
-    // PAGAMENTO
-    // =================================================
 
     const pixFinal =
       pix_key ||
@@ -2314,15 +2302,7 @@ app.post("/api/saques", async (req, res) => {
       });
     }
 
-    // =================================================
-    // INICIAR TRANSAÇÃO
-    // =================================================
-
     await client.query("BEGIN");
-
-    // =================================================
-    // BUSCAR JOGADOR COM BLOQUEIO
-    // =================================================
 
     const jogadorResult =
       await client.query(
@@ -2357,10 +2337,6 @@ app.post("/api/saques", async (req, res) => {
     const pontosAtuais =
       Number(jogador.pontos || 0);
 
-    // =================================================
-    // VERIFICAR LIMITE DE 2 SAQUES POR DIA
-    // =================================================
-
     const saquesHojeResult =
       await client.query(
         `
@@ -2389,10 +2365,6 @@ app.post("/api/saques", async (req, res) => {
       });
     }
 
-    // =================================================
-    // VERIFICAR PONTOS
-    // =================================================
-
     if (
       pontosAtuais < pontosNecessarios
     ) {
@@ -2409,10 +2381,6 @@ app.post("/api/saques", async (req, res) => {
           pontosNecessarios
       });
     }
-
-    // =================================================
-    // CRIAR SAQUE
-    // =================================================
 
     const saqueResult =
       await client.query(
@@ -2455,10 +2423,6 @@ app.post("/api/saques", async (req, res) => {
         ]
       );
 
-    // =================================================
-    // DESCONTAR OS PONTOS
-    // =================================================
-
     const pontosDepois =
       pontosAtuais -
       pontosNecessarios;
@@ -2480,10 +2444,6 @@ app.post("/api/saques", async (req, res) => {
           jogadorId
         ]
       );
-
-    // =================================================
-    // FINALIZAR TRANSAÇÃO
-    // =================================================
 
     await client.query("COMMIT");
 
@@ -2563,7 +2523,7 @@ app.post("/api/saques", async (req, res) => {
 app.post("/api/sac", async (req, res) => {
   try {
 
-    const {
+    let {
       jogador_id,
       email,
       nome_completo,
@@ -2581,6 +2541,84 @@ app.post("/api/sac", async (req, res) => {
           "Digite uma mensagem."
       });
     }
+
+    email = email
+      ? String(email).trim().toLowerCase()
+      : null;
+
+    nome_completo = nome_completo
+      ? String(nome_completo).trim()
+      : null;
+
+    // =================================================
+    // TENTA ENCONTRAR O JOGADOR PELO E-MAIL
+    // =================================================
+
+    if (!jogador_id && email) {
+
+      const jogador =
+        await pool.query(
+          `
+          SELECT
+            id,
+            email,
+            nome_completo
+          FROM jogadores
+          WHERE LOWER(email) = LOWER($1)
+          LIMIT 1
+          `,
+          [email]
+        );
+
+      if (jogador.rows.length > 0) {
+
+        jogador_id =
+          jogador.rows[0].id;
+
+        email =
+          jogador.rows[0].email;
+
+        nome_completo =
+          jogador.rows[0].nome_completo;
+      }
+    }
+
+    // =================================================
+    // SE RECEBEU O ID, CONFIRMA OS DADOS NO BANCO
+    // =================================================
+
+    if (jogador_id) {
+
+      const jogador =
+        await pool.query(
+          `
+          SELECT
+            id,
+            email,
+            nome_completo
+          FROM jogadores
+          WHERE id = $1
+          LIMIT 1
+          `,
+          [jogador_id]
+        );
+
+      if (jogador.rows.length > 0) {
+
+        jogador_id =
+          jogador.rows[0].id;
+
+        email =
+          jogador.rows[0].email;
+
+        nome_completo =
+          jogador.rows[0].nome_completo;
+      }
+    }
+
+    // =================================================
+    // SALVAR MENSAGEM
+    // =================================================
 
     const resultado =
       await pool.query(
@@ -2677,6 +2715,106 @@ app.get("/api/admin/sac", async (req, res) => {
     });
   }
 });
+
+// =====================================================
+// SAC — ADMIN RESPONDE MENSAGEM
+// =====================================================
+
+app.patch(
+  "/api/admin/sac/:id/responder",
+  async (req, res) => {
+
+    try {
+
+      const sacId =
+        Number(req.params.id);
+
+      const resposta =
+        String(
+          req.body.resposta || ""
+        ).trim();
+
+      if (
+        !Number.isInteger(sacId) ||
+        sacId <= 0
+      ) {
+
+        return res.status(400).json({
+          sucesso: false,
+          erro:
+            "ID da mensagem SAC inválido."
+        });
+      }
+
+      if (!resposta) {
+
+        return res.status(400).json({
+          sucesso: false,
+          erro:
+            "Digite uma resposta."
+        });
+      }
+
+      const resultado =
+        await pool.query(
+          `
+          UPDATE sac_mensagens
+          SET
+            resposta = $1,
+            status = 'respondido',
+            respondido_em = CURRENT_TIMESTAMP
+          WHERE id = $2
+          RETURNING
+            id,
+            jogador_id,
+            email,
+            nome_completo,
+            mensagem,
+            resposta,
+            status,
+            criado_em,
+            respondido_em
+          `,
+          [
+            resposta,
+            sacId
+          ]
+        );
+
+      if (
+        resultado.rows.length === 0
+      ) {
+
+        return res.status(404).json({
+          sucesso: false,
+          erro:
+            "Mensagem SAC não encontrada."
+        });
+      }
+
+      res.json({
+        sucesso: true,
+        mensagem:
+          "Resposta salva com sucesso.",
+        sac:
+          resultado.rows[0]
+      });
+
+    } catch (erro) {
+
+      console.error(
+        "Erro ao responder SAC:",
+        erro
+      );
+
+      res.status(500).json({
+        sucesso: false,
+        erro:
+          "Erro ao salvar resposta do SAC."
+      });
+    }
+  }
+);
 
 // =====================================================
 // INICIAR SERVIDOR
