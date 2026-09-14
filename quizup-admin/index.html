@@ -1,8 +1,11 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QuizUp Admin</title>  <style>
+  <title>QuizUp Admin</title>
+
+  <style>
     * {
       box-sizing: border-box;
     }
@@ -14,190 +17,62 @@
       color: #222;
     }
 
-    button,
-    input,
-    select,
-    textarea {
-      font: inherit;
+    .hidden {
+      display: none !important;
     }
 
-    .login-container {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: linear-gradient(135deg, #4f46e5, #7c3aed);
-    }
-
-    .login-box {
-      width: 100%;
-      max-width: 420px;
-      background: white;
-      padding: 30px;
-      border-radius: 18px;
-      box-shadow: 0 15px 40px rgba(0,0,0,.2);
-    }
-
-    .login-box h1 {
-      text-align: center;
-      margin-top: 0;
-      color: #4f46e5;
-    }
-
-    .login-box p {
-      text-align: center;
-      color: #666;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: bold;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      outline: none;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      border-color: #4f46e5;
-    }
-
-    textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-
-    .btn {
-      border: 0;
-      border-radius: 8px;
-      padding: 11px 16px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .btn-primary {
-      background: #4f46e5;
-      color: white;
-    }
-
-    .btn-success {
-      background: #16a34a;
-      color: white;
-    }
-
-    .btn-danger {
-      background: #dc2626;
-      color: white;
-    }
-
-    .btn-secondary {
-      background: #6b7280;
-      color: white;
-    }
-
-    .btn-warning {
-      background: #f59e0b;
-      color: white;
-    }
-
-    .btn:hover {
-      opacity: .9;
-    }
-
-    .error {
-      color: #dc2626;
-      margin-top: 12px;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    .success {
-      color: #16a34a;
-      margin-top: 12px;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    #adminPanel {
-      display: none;
-      min-height: 100vh;
-    }
-
-    .topbar {
-      background: #4f46e5;
+    header {
+      background: #171717;
       color: white;
       padding: 15px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 15px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .topbar h1 {
+    header h1 {
       margin: 0;
-      font-size: 21px;
-    }
-
-    .logout-btn {
-      background: #dc2626;
-      color: white;
-      border: 0;
-      border-radius: 7px;
-      padding: 9px 13px;
-      cursor: pointer;
+      font-size: 22px;
     }
 
     .layout {
       display: flex;
-      min-height: calc(100vh - 65px);
+      min-height: calc(100vh - 60px);
     }
 
     .sidebar {
       width: 230px;
-      background: #111827;
+      background: #222;
+      color: white;
       padding: 15px;
       flex-shrink: 0;
     }
 
-    .menu-btn {
+    .sidebar button {
       width: 100%;
+      display: block;
       border: 0;
       background: transparent;
-      color: #d1d5db;
-      padding: 13px;
+      color: white;
+      padding: 13px 10px;
       text-align: left;
       border-radius: 8px;
       cursor: pointer;
       margin-bottom: 5px;
+      font-size: 15px;
     }
 
-    .menu-btn:hover,
-    .menu-btn.active {
-      background: #4f46e5;
-      color: white;
+    .sidebar button:hover,
+    .sidebar button.active {
+      background: #3b82f6;
     }
 
     .content {
       flex: 1;
-      padding: 25px;
-      overflow-x: hidden;
+      padding: 20px;
+      min-width: 0;
     }
 
     .page {
@@ -208,60 +83,156 @@
       display: block;
     }
 
-    .page h2 {
-      margin-top: 0;
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+      margin-bottom: 20px;
     }
 
     .cards {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 15px;
-      margin-bottom: 25px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,.07);
       margin-bottom: 20px;
     }
 
-    .stat-title {
-      color: #6b7280;
-      font-size: 14px;
+    .stat-card {
+      background: white;
+      padding: 18px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
     }
 
-    .stat-value {
-      font-size: 27px;
-      font-weight: bold;
+    .stat-card strong {
+      display: block;
+      font-size: 28px;
       margin-top: 8px;
     }
 
     .table-container {
-      width: 100%;
-      overflow-x: auto;
       background: white;
       border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,.07);
+      overflow-x: auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 950px;
+      min-width: 750px;
     }
 
     th,
     td {
       padding: 12px;
-      border-bottom: 1px solid #e5e7eb;
+      border-bottom: 1px solid #eee;
       text-align: left;
-      white-space: nowrap;
+      vertical-align: middle;
     }
 
     th {
-      background: #f9fafb;
+      background: #f8fafc;
+      font-weight: bold;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 15px;
+      margin-top: 5px;
+      margin-bottom: 12px;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .success {
+      background: #16a34a;
+      color: white;
+    }
+
+    .danger {
+      background: #dc2626;
+      color: white;
+    }
+
+    .secondary {
+      background: #64748b;
+      color: white;
+    }
+
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: #f4f6f8;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 400px;
+      background: white;
+      padding: 25px;
+      border-radius: 14px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.1);
+    }
+
+    .login-box h1 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    .login-box button {
+      width: 100%;
+    }
+
+    .message {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .message.success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .message.info {
+      background: #e0f2fe;
+      color: #075985;
     }
 
     .badge {
@@ -270,6 +241,11 @@
       border-radius: 20px;
       font-size: 12px;
       font-weight: bold;
+    }
+
+    .badge-warning {
+      background: #fef3c7;
+      color: #92400e;
     }
 
     .badge-success {
@@ -282,1206 +258,582 @@
       color: #991b1b;
     }
 
-    .badge-warning {
-      background: #fef3c7;
-      color: #92400e;
+    .sac-response {
+      min-width: 260px;
     }
 
-    .badge-easy {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .badge-medium {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .badge-hard {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-    }
-
-    .form-full {
-      grid-column: 1 / -1;
-    }
-
-    .actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .loading {
-      padding: 20px;
-      text-align: center;
-      color: #666;
-    }
-
-    .empty {
-      padding: 30px;
-      text-align: center;
-      color: #777;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.55);
-      z-index: 500;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal.show {
-      display: flex;
-    }
-
-    .modal-content {
-      width: 100%;
-      max-width: 600px;
-      max-height: 90vh;
-      overflow-y: auto;
-      background: white;
-      border-radius: 14px;
-      padding: 25px;
-    }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-
-    .modal-header h3 {
-      margin: 0;
-    }
-
-    .close-btn {
-      border: 0;
-      background: transparent;
-      font-size: 25px;
-      cursor: pointer;
-    }
-
-    .page-message {
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      display: none;
-    }
-
-    .page-message.success {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .page-message.error {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .monetag-box {
-      background: #f8fafc;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 18px;
-      margin-top: 18px;
-    }
-
-    .monetag-result {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-top: 15px;
-    }
-
-    .monetag-stat {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 14px;
-    }
-
-    .monetag-stat small {
-      display: block;
-      color: #6b7280;
+    .sac-response textarea {
+      min-height: 75px;
       margin-bottom: 6px;
     }
 
-    .monetag-stat strong {
-      font-size: 20px;
+    .loading,
+    .empty {
+      text-align: center;
+      padding: 25px;
+      color: #666;
     }
 
-    .saque-pagamento {
-      font-size: 13px;
-      line-height: 1.5;
+    .mobile-menu {
+      display: none;
     }
 
-    .saque-pagamento strong {
-      display: block;
-    }
-
-    .sac-mensagem {
-      white-space: normal;
-      min-width: 250px;
-      max-width: 450px;
-      line-height: 1.5;
-    }
-
-    .sac-resposta {
-      white-space: normal;
-      min-width: 250px;
-      max-width: 450px;
-      line-height: 1.5;
-    }
-
-    @media (max-width: 900px) {
-      .cards {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .monetag-result {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 700px) {
+    @media (max-width: 800px) {
       .layout {
         display: block;
       }
 
       .sidebar {
         width: 100%;
-        display: flex;
-        overflow-x: auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 5px;
-        padding: 10px;
       }
 
-      .menu-btn {
-        width: auto;
-        min-width: max-content;
+      .sidebar button {
         margin: 0;
-        white-space: nowrap;
       }
 
       .content {
-        padding: 15px;
+        padding: 12px;
       }
 
-      .cards {
-        grid-template-columns: 1fr;
-      }
-
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .form-full {
-        grid-column: auto;
-      }
-
-      .topbar h1 {
-        font-size: 18px;
+      .mobile-menu {
+        display: block;
       }
     }
-  </style></head><body><div id="loginContainer" class="login-container">  <div class="login-box"><h1>🎯 QuizUp Admin</h1>
 
-<p>Painel administrativo</p>
+    @media (max-width: 500px) {
+      .sidebar {
+        grid-template-columns: 1fr;
+      }
 
-<form id="loginForm">
+      header {
+        padding: 12px;
+      }
 
-  <div class="form-group">
+      .content {
+        padding: 10px;
+      }
 
-    <label for="loginEmail">
-      E-mail
-    </label>
+      .card {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
 
-    <input
-      type="email"
-      id="loginEmail"
-      required
-      autocomplete="email"
-    >
+<body>
 
-  </div>
+  <!-- LOGIN -->
+  <div id="loginScreen" class="login-container">
 
-  <div class="form-group">
+    <div class="login-box">
 
-    <label for="loginSenha">
-      Senha
-    </label>
+      <h1>🎯 QuizUp Admin</h1>
 
-    <input
-      type="password"
-      id="loginSenha"
-      required
-      autocomplete="current-password"
-    >
-
-  </div>
-
-  <button
-    class="btn btn-primary"
-    type="submit"
-    style="width:100%;">
-    Entrar
-  </button>
-
-</form>
-
-<div id="loginMessage"></div>
-
-  </div></div><div id="adminPanel">  <div class="topbar"><h1>🎯 QuizUp Admin</h1>
-
-<button
-  class="logout-btn"
-  onclick="sair()">
-  Sair
-</button>
-
-  </div>  <div class="layout"><aside class="sidebar">
-
-  <button
-    class="menu-btn active"
-    onclick="mostrarPagina('dashboard', this)">
-    📊 Dashboard
-  </button>
-
-  <button
-    class="menu-btn"
-    onclick="mostrarPagina('jogadores', this)">
-    👥 Jogadores
-  </button>
-
-  <button
-    class="menu-btn"
-    onclick="mostrarPagina('perguntas', this)">
-    ❓ Perguntas
-  </button>
-
-  <button
-    class="menu-btn"
-    onclick="mostrarPagina('saques', this)">
-    💰 Saques
-  </button>
-
-  <button
-    class="menu-btn"
-    onclick="mostrarPagina('parceiros', this)">
-    🤝 Parceiros
-  </button>
-
-  <button
-    class="menu-btn"
-    onclick="mostrarPagina('movimentacoes', this)">
-    🔄 Movimentações
-  </button>
-
-  <button
-    class="menu-btn"
-    onclick="mostrarPagina('sac', this)">
-    📩 SAC
-  </button>
-
-  <button
-    class="menu-btn"
-    onclick="mostrarPagina('configuracoes', this)">
-    ⚙️ Configurações
-  </button>
-
-</aside>
-
-
-<main class="content">
-
-
-  <!-- DASHBOARD -->
-
-  <section
-    id="dashboard"
-    class="page active">
-
-    <h2>📊 Dashboard</h2>
-
-    <div class="cards">
-
-      <div class="card">
-
-        <div class="stat-title">
-          Jogadores
-        </div>
-
-        <div
-          class="stat-value"
-          id="dashJogadores">
-          0
-        </div>
-
-      </div>
-
-      <div class="card">
-
-        <div class="stat-title">
-          Perguntas
-        </div>
-
-        <div
-          class="stat-value"
-          id="dashPerguntas">
-          0
-        </div>
-
-      </div>
-
-      <div class="card">
-
-        <div class="stat-title">
-          Pontos
-        </div>
-
-        <div
-          class="stat-value"
-          id="dashPontos">
-          0
-        </div>
-
-      </div>
-
-      <div class="card">
-
-        <div class="stat-title">
-          Saldo
-        </div>
-
-        <div
-          class="stat-value"
-          id="dashSaldo">
-          R$ 0,00
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="card">
-
-      <h3>QuizUp</h3>
-
-      <p>
-        Painel administrativo conectado ao PostgreSQL Aiven
-        através do backend Render.
+      <p style="text-align:center;">
+        Acesso exclusivo do administrador
       </p>
 
-    </div>
-
-  </section>
-
-
-  <!-- JOGADORES -->
-
-  <section
-    id="jogadores"
-    class="page">
-
-    <h2>👥 Jogadores</h2>
-
-    <div id="jogadoresMensagem"></div>
-
-    <div class="table-container">
-
-      <div
-        id="jogadoresLoading"
-        class="loading">
-        Carregando jogadores...
-      </div>
-
-      <table
-        id="jogadoresTable"
-        style="display:none;">
-
-        <thead>
-
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>E-mail</th>
-            <th>CPF</th>
-            <th>Pontos</th>
-            <th>Saldo</th>
-            <th>Cadastro</th>
-          </tr>
-
-        </thead>
-
-        <tbody
-          id="jogadoresBody">
-        </tbody>
-
-      </table>
-
-    </div>
-
-  </section>
-
-
-  <!-- PERGUNTAS -->
-
-  <section
-    id="perguntas"
-    class="page">
-
-    <h2>❓ Criação de perguntas</h2>
-
-    <div id="perguntasMensagem"></div>
-
-    <div class="card">
-
-      <h3>➕ Criar pergunta</h3>
-
-      <form id="perguntaForm">
-
-        <div class="form-group">
-
-          <label>Pergunta</label>
-
-          <textarea
-            id="perguntaTexto"
-            required
-            placeholder="Digite a pergunta">
-          </textarea>
-
-        </div>
-
-        <div class="form-grid">
-
-          <div class="form-group">
-
-            <label>
-              Alternativa A
-            </label>
-
-            <input
-              id="alternativaA"
-              required>
-
-          </div>
-
-          <div class="form-group">
-
-            <label>
-              Alternativa B
-            </label>
-
-            <input
-              id="alternativaB"
-              required>
-
-          </div>
-
-          <div class="form-group">
-
-            <label>
-              Alternativa C
-            </label>
-
-            <input
-              id="alternativaC"
-              required>
-
-          </div>
-
-          <div class="form-group">
-
-            <label>
-              Alternativa D
-            </label>
-
-            <input
-              id="alternativaD"
-              required>
-
-          </div>
-
-          <div class="form-group">
-
-            <label>
-              Resposta correta
-            </label>
-
-            <select
-              id="respostaCorreta"
-              required>
-
-              <option value="">
-                Selecione
-              </option>
-
-              <option value="A">
-                A
-              </option>
-
-              <option value="B">
-                B
-              </option>
-
-              <option value="C">
-                C
-              </option>
-
-              <option value="D">
-                D
-              </option>
-
-            </select>
-
-          </div>
-
-          <div class="form-group">
-
-            <label>
-              Dificuldade
-            </label>
-
-            <select
-              id="dificuldade"
-              required>
-
-              <option value="">
-                Selecione
-              </option>
-
-              <option value="facil">
-                Fácil — 1º ao 8º ano
-              </option>
-
-              <option value="medio">
-                Médio — Científicas
-              </option>
-
-              <option value="dificil">
-                Difícil — Farmácia
-              </option>
-
-            </select>
-
-          </div>
-
-        </div>
-
-        <button
-          class="btn btn-success"
-          type="submit">
-          Salvar pergunta
-        </button>
-
-      </form>
-
-    </div>
-
-
-    <div class="card">
-
-      <h3>
-        📋 Perguntas cadastradas
-      </h3>
-
-      <div class="table-container">
-
-        <table>
-
-          <thead>
-
-            <tr>
-              <th>ID</th>
-              <th>Pergunta</th>
-              <th>Resposta</th>
-              <th>Dificuldade</th>
-            </tr>
-
-          </thead>
-
-          <tbody
-            id="perguntasBody">
-          </tbody>
-
-        </table>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- SAQUES -->
-
-  <section
-    id="saques"
-    class="page">
-
-    <h2>💰 Saques</h2>
-
-    <div id="saquesMensagem"></div>
-
-    <div class="card">
-
-      <p>
-        Aqui você pode analisar, aprovar ou reprovar as
-        solicitações de saque dos jogadores.
-      </p>
-
-      <p style="color:#666;">
-        O jogador pode solicitar por Pix ou PayPal.
-        Os pontos já são descontados no momento da solicitação.
-      </p>
-
-    </div>
-
-    <div class="table-container">
-
-      <table>
-
-        <thead>
-
-          <tr>
-            <th>ID</th>
-            <th>Jogador</th>
-            <th>Valor</th>
-            <th>Pagamento</th>
-            <th>Status</th>
-            <th>Data</th>
-            <th>Ações</th>
-          </tr>
-
-        </thead>
-
-        <tbody
-          id="saquesBody">
-        </tbody>
-
-      </table>
-
-    </div>
-
-  </section>
-
-
-  <!-- PARCEIROS -->
-
-  <section
-    id="parceiros"
-    class="page">
-
-    <h2>🤝 Parceiros</h2>
-
-    <div id="parceirosMensagem"></div>
-
-    <div class="card">
-
-      <div style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        gap:10px;
-        flex-wrap:wrap;
-      ">
-
-        <div>
-
-          <h3 style="margin:0;">
-            Parceiros cadastrados
-          </h3>
-
-          <p style="color:#666;">
-            O saldo é exibido somente neste painel administrativo.
-          </p>
-
-        </div>
-
-        <button
-          class="btn btn-primary"
-          onclick="abrirModalParceiro()">
-          ➕ Novo parceiro
-        </button>
-
-      </div>
-
-
-      <div class="monetag-box">
-
-        <h3 style="margin-top:0;">
-          📊 Monetag
-        </h3>
-
-        <p style="color:#666;">
-          Importe o relatório CSV baixado em
-          <strong>
-            Statistics → Export to CSV
-          </strong>
-          na Monetag.
-        </p>
-
-        <input
-          type="file"
-          id="monetagCsv"
-          accept=".csv,text/csv">
-
-        <div style="margin-top:12px;">
-
-          <button
-            type="button"
-            class="btn btn-primary"
-            onclick="importarCsvMonetag()">
-            📥 Importar CSV Monetag
-          </button>
-
-        </div>
-
-        <div
-          id="monetagMensagem"
-          class="page-message"
-          style="margin-top:15px;">
-        </div>
-
-        <div
-          id="monetagResultado"
-          class="monetag-result"
-          style="display:none;">
-
-          <div class="monetag-stat">
-
-            <small>
-              Impressões
-            </small>
-
-            <strong
-              id="monetagImpressoes">
-              0
-            </strong>
-
-          </div>
-
-          <div class="monetag-stat">
-
-            <small>
-              Profit
-            </small>
-
-            <strong
-              id="monetagProfit">
-              $0.00
-            </strong>
-
-          </div>
-
-          <div class="monetag-stat">
-
-            <small>
-              CPM médio
-            </small>
-
-            <strong
-              id="monetagCpm">
-              $0.00
-            </strong>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="table-container">
-
-      <div
-        id="parceirosLoading"
-        class="loading">
-        Carregando parceiros...
-      </div>
-
-      <table
-        id="parceirosTable"
-        style="display:none;">
-
-        <thead>
-
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>E-mail</th>
-            <th>Código</th>
-            <th>Pontos</th>
-            <th>Saldo</th>
-            <th>Status</th>
-            <th>Cadastro</th>
-            <th>Ações</th>
-          </tr>
-
-        </thead>
-
-        <tbody
-          id="parceirosBody">
-        </tbody>
-
-      </table>
-
-    </div>
-
-  </section>
-
-
-  <!-- MOVIMENTAÇÕES -->
-
-  <section
-    id="movimentacoes"
-    class="page">
-
-    <h2>🔄 Movimentações</h2>
-
-    <div class="card">
-
-      <p>
-        Histórico de movimentações dos parceiros.
-      </p>
-
-    </div>
-
-    <div class="table-container">
-
-      <table>
-
-        <thead>
-
-          <tr>
-            <th>Parceiro</th>
-            <th>Tipo</th>
-            <th>Pontos</th>
-            <th>Valor</th>
-            <th>Descrição</th>
-            <th>Data</th>
-          </tr>
-
-        </thead>
-
-        <tbody
-          id="movimentacoesBody">
-        </tbody>
-
-      </table>
-
-    </div>
-
-  </section>
-
-
-  <!-- SAC -->
-
-  <section
-    id="sac"
-    class="page">
-
-    <h2>📩 SAC</h2>
-
-    <div class="card">
-
-      <h3>
-        Atendimento aos jogadores
-      </h3>
-
-      <p style="color:#666;">
-        Aqui aparecem as mensagens enviadas pelos jogadores
-        através do SAC do QuizUp.
-      </p>
+      <div id="loginMessage" class="message"></div>
+
+      <label>E-mail</label>
+      <input
+        id="loginEmail"
+        type="email"
+        placeholder="Digite seu e-mail"
+        autocomplete="username"
+      >
+
+      <label>Senha</label>
+      <input
+        id="loginSenha"
+        type="password"
+        placeholder="Digite sua senha"
+        autocomplete="current-password"
+      >
 
       <button
-        class="btn btn-primary"
-        onclick="carregarSAC()">
-        🔄 Atualizar mensagens
+        class="primary"
+        onclick="entrar()"
+      >
+        Entrar
       </button>
 
     </div>
 
-    <div class="table-container">
+  </div>
 
-      <div
-        id="sacLoading"
-        class="loading">
-        Carregando mensagens...
+
+  <!-- PAINEL -->
+  <div id="adminScreen" class="hidden">
+
+    <header>
+
+      <h1>🎯 QuizUp Admin</h1>
+
+      <div>
+        <span id="adminEmail"></span>
+
+        <button
+          class="danger"
+          onclick="sair()"
+          style="margin-left:10px;"
+        >
+          Sair
+        </button>
       </div>
 
-      <table
-        id="sacTable"
-        style="display:none;">
+    </header>
 
-        <thead>
 
-          <tr>
-            <th>ID</th>
-            <th>Jogador</th>
-            <th>E-mail</th>
-            <th>Mensagem</th>
-            <th>Resposta</th>
-            <th>Status</th>
-            <th>Data</th>
-          </tr>
+    <div class="layout">
 
-        </thead>
+      <!-- MENU -->
+      <aside class="sidebar">
 
-        <tbody
-          id="sacBody">
-        </tbody>
+        <button onclick="abrirPagina('dashboard', this)">
+          📊 Dashboard
+        </button>
 
-      </table>
+        <button onclick="abrirPagina('jogadores', this)">
+          👥 Jogadores
+        </button>
+
+        <button onclick="abrirPagina('perguntas', this)">
+          ❓ Perguntas
+        </button>
+
+        <button onclick="abrirPagina('saques', this)">
+          💰 Saques
+        </button>
+
+        <button onclick="abrirPagina('parceiros', this)">
+          🤝 Parceiros
+        </button>
+
+        <button onclick="abrirPagina('movimentacoes', this)">
+          🔄 Movimentações
+        </button>
+
+        <button onclick="abrirPagina('sac', this)">
+          📩 SAC
+        </button>
+
+        <button onclick="abrirPagina('configuracoes', this)">
+          ⚙️ Configurações
+        </button>
+
+      </aside>
+
+
+      <!-- CONTEÚDO -->
+      <main class="content">
+
+        <div id="globalMessage" class="message"></div>
+
+
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="page active">
+
+          <h2>📊 Dashboard</h2>
+
+          <div class="cards">
+
+            <div class="stat-card">
+              Jogadores
+              <strong id="totalJogadores">0</strong>
+            </div>
+
+            <div class="stat-card">
+              Perguntas
+              <strong id="totalPerguntas">0</strong>
+            </div>
+
+            <div class="stat-card">
+              Saques
+              <strong id="totalSaques">0</strong>
+            </div>
+
+            <div class="stat-card">
+              Parceiros
+              <strong id="totalParceiros">0</strong>
+            </div>
+
+            <div class="stat-card">
+              SAC pendente
+              <strong id="totalSACPendente">0</strong>
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- JOGADORES -->
+        <section id="jogadores" class="page">
+
+          <h2>👥 Jogadores</h2>
+
+          <div class="table-container">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>E-mail</th>
+                  <th>CPF</th>
+                  <th>Pontos</th>
+                  <th>Saldo</th>
+                  <th>Cadastro</th>
+                </tr>
+
+              </thead>
+
+              <tbody id="jogadoresBody">
+
+                <tr>
+                  <td colspan="7" class="loading">
+                    Carregando jogadores...
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+
+        <!-- PERGUNTAS -->
+        <section id="perguntas" class="page">
+
+          <h2>❓ Perguntas</h2>
+
+          <div class="card">
+
+            <h3>Criação de perguntas</h3>
+
+            <label>Pergunta</label>
+            <textarea id="novaPergunta"></textarea>
+
+            <label>Alternativa A</label>
+            <input id="alternativaA">
+
+            <label>Alternativa B</label>
+            <input id="alternativaB">
+
+            <label>Alternativa C</label>
+            <input id="alternativaC">
+
+            <label>Alternativa D</label>
+            <input id="alternativaD">
+
+            <label>Resposta correta</label>
+            <select id="respostaCorreta">
+
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+
+            </select>
+
+            <label>Dificuldade</label>
+
+            <select id="dificuldade">
+
+              <option value="facil">
+                Fácil
+              </option>
+
+              <option value="medio">
+                Médio
+              </option>
+
+              <option value="dificil">
+                Difícil
+              </option>
+
+            </select>
+
+            <button
+              class="primary"
+              onclick="criarPergunta()"
+            >
+              Salvar pergunta
+            </button>
+
+          </div>
+
+
+          <div class="table-container">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>ID</th>
+                  <th>Pergunta</th>
+                  <th>Resposta</th>
+                  <th>Dificuldade</th>
+                </tr>
+
+              </thead>
+
+              <tbody id="perguntasBody">
+
+                <tr>
+                  <td colspan="4" class="loading">
+                    Carregando perguntas...
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+
+        <!-- SAQUES -->
+        <section id="saques" class="page">
+
+          <h2>💰 Saques</h2>
+
+          <div class="table-container">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>ID</th>
+                  <th>Jogador</th>
+                  <th>E-mail</th>
+                  <th>Valor</th>
+                  <th>Pix</th>
+                  <th>Status</th>
+                  <th>Data</th>
+                  <th>Ação</th>
+                </tr>
+
+              </thead>
+
+              <tbody id="saquesBody">
+
+                <tr>
+                  <td colspan="8" class="loading">
+                    Carregando saques...
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+
+        <!-- PARCEIROS -->
+        <section id="parceiros" class="page">
+
+          <h2>🤝 Parceiros</h2>
+
+          <div class="table-container">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>E-mail</th>
+                  <th>Código</th>
+                  <th>Pontos</th>
+                  <th>Saldo</th>
+                  <th>Status</th>
+                </tr>
+
+              </thead>
+
+              <tbody id="parceirosBody">
+
+                <tr>
+                  <td colspan="7" class="loading">
+                    Carregando parceiros...
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+
+        <!-- MOVIMENTAÇÕES -->
+        <section id="movimentacoes" class="page">
+
+          <h2>🔄 Movimentações</h2>
+
+          <div class="table-container">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>ID</th>
+                  <th>Parceiro</th>
+                  <th>Tipo</th>
+                  <th>Pontos</th>
+                  <th>Valor</th>
+                  <th>Descrição</th>
+                  <th>Data</th>
+                </tr>
+
+              </thead>
+
+              <tbody id="movimentacoesBody">
+
+                <tr>
+                  <td colspan="7" class="loading">
+                    Carregando movimentações...
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+
+        <!-- SAC -->
+        <section id="sac" class="page">
+
+          <h2>📩 SAC</h2>
+
+          <div class="card">
+
+            <h3>Atendimento aos jogadores</h3>
+
+            <p>
+              Aqui aparecem as mensagens enviadas pelos jogadores
+              através do SAC do QuizUp.
+            </p>
+
+            <button
+              class="secondary"
+              onclick="carregarSAC()"
+            >
+              🔄 Atualizar mensagens
+            </button>
+
+          </div>
+
+
+          <div class="table-container">
+
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>ID</th>
+                  <th>Jogador</th>
+                  <th>E-mail</th>
+                  <th>Mensagem</th>
+                  <th>Resposta</th>
+                  <th>Status</th>
+                  <th>Data</th>
+                </tr>
+
+              </thead>
+
+              <tbody id="sacBody">
+
+                <tr>
+                  <td colspan="7" class="loading">
+                    Carregando mensagens...
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+
+        <!-- CONFIGURAÇÕES -->
+        <section id="configuracoes" class="page">
+
+          <h2>⚙️ Configurações</h2>
+
+          <div class="card">
+
+            <p>
+              <strong>Banco:</strong> PostgreSQL Aiven
+            </p>
+
+            <p>
+              <strong>Projeto:</strong> QuizUp
+            </p>
+
+            <p>
+              <strong>Backend:</strong>
+              Render
+            </p>
+
+            <p>
+              <strong>API:</strong>
+              quizup-api-qxn2.onrender.com
+            </p>
+
+          </div>
+
+        </section>
+
+      </main>
 
     </div>
 
-  </section>
-
-
-  <!-- CONFIGURAÇÕES -->
-
-  <section
-    id="configuracoes"
-    class="page">
-
-    <h2>⚙️ Configurações</h2>
-
-    <div class="card">
-
-      <h3>
-        Banco de dados
-      </h3>
-
-      <p>
-        <strong>Banco:</strong>
-        PostgreSQL Aiven
-      </p>
-
-      <p>
-        <strong>Projeto:</strong>
-        QuizUp
-      </p>
-
-      <p>
-        <strong>Backend:</strong>
-        Render
-      </p>
-
-      <p>
-        <strong>API:</strong>
-        https://quizup-api-qxn2.onrender.com
-      </p>
-
-    </div>
-
-  </section>
-
-</main>
-
-  </div></div><!-- MODAL PARCEIRO --><div
-  id="parceiroModal"
-  class="modal">  <div class="modal-content"><div class="modal-header">
-
-  <h3 id="modalParceiroTitulo">
-    Novo parceiro
-  </h3>
-
-  <button
-    class="close-btn"
-    onclick="fecharModalParceiro()">
-    ×
-  </button>
-
-</div>
-
-<form id="parceiroForm">
-
-  <input
-    type="hidden"
-    id="parceiroId">
-
-  <div class="form-group">
-
-    <label>
-      Nome
-    </label>
-
-    <input
-      id="parceiroNome"
-      required>
-
   </div>
 
-  <div class="form-group">
 
-    <label>
-      E-mail
-    </label>
-
-    <input
-      type="email"
-      id="parceiroEmail">
-
-  </div>
-
-  <div class="form-group">
-
-    <label>
-      Código do parceiro
-    </label>
-
-    <input
-      id="parceiroCodigo">
-
-  </div>
-
-  <div class="actions">
-
-    <button
-      type="submit"
-      class="btn btn-success">
-      Salvar
-    </button>
-
-    <button
-      type="button"
-      class="btn btn-secondary"
-      onclick="fecharModalParceiro()">
-      Cancelar
-    </button>
-
-  </div>
-
-</form>
-
-  </div></div><!-- MODAL REPROVAÇÃO --><div
-  id="reprovarSaqueModal"
-  class="modal">  <div class="modal-content"><div class="modal-header">
-
-  <h3>
-    ❌ Reprovar saque
-  </h3>
-
-  <button
-    class="close-btn"
-    onclick="fecharModalReprovar()">
-    ×
-  </button>
-
-</div>
-
-<input
-  type="hidden"
-  id="reprovarSaqueId">
-
-<div class="form-group">
-
-  <label>
-    Motivo da reprovação
-  </label>
-
-  <select
-    id="motivoReprovacao"
-    required>
-
-    <option value="">
-      Selecione o motivo
-    </option>
-
-    <option value="Pontos insuficientes">
-      Pontos insuficientes
-    </option>
-
-    <option value="Dados de pagamento inválidos">
-      Dados de pagamento inválidos
-    </option>
-
-    <option value="Conta PayPal inválida">
-      Conta PayPal inválida
-    </option>
-
-    <option value="Chave Pix inválida">
-      Chave Pix inválida
-    </option>
-
-    <option value="Solicitação inválida">
-      Solicitação inválida
-    </option>
-
-    <option value="Outro">
-      Outro
-    </option>
-
-  </select>
-
-</div>
-
-<div
-  class="form-group"
-  id="outroMotivoContainer"
-  style="display:none;">
-
-  <label>
-    Informe o motivo
-  </label>
-
-  <textarea
-    id="outroMotivo"
-    placeholder="Digite o motivo da reprovação">
-  </textarea>
-
-</div>
-
-<div class="actions">
-
-  <button
-    type="button"
-    class="btn btn-danger"
-    onclick="confirmarReprovacao()">
-    ❌ Confirmar reprovação
-  </button>
-
-  <button
-    type="button"
-    class="btn btn-secondary"
-    onclick="fecharModalReprovar()">
-    Cancelar
-  </button>
-
-</div>
-
-  </div></div><script>
+<script>
 
 const API_URL =
   "https://quizup-api-qxn2.onrender.com";
 
-let parceirosCache = [];
 
-
-/* =========================
-   FUNÇÕES GERAIS
-========================= */
+/* =========================================================
+   FUNÇÕES BÁSICAS
+========================================================= */
 
 function escapar(valor) {
 
-  if (
-    valor === null ||
-    valor === undefined
-  ) {
+  if (valor === null || valor === undefined) {
     return "";
   }
 
@@ -1491,20 +843,6 @@ function escapar(valor) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
-
-}
-
-
-function formatarMoeda(valor) {
-
-  return Number(valor || 0).toLocaleString(
-    "pt-BR",
-    {
-      style: "currency",
-      currency: "BRL"
-    }
-  );
-
 }
 
 
@@ -1514,157 +852,176 @@ function formatarData(valor) {
     return "-";
   }
 
-  const data = new Date(valor);
+  try {
 
-  if (isNaN(data.getTime())) {
+    return new Date(valor).toLocaleString(
+      "pt-BR"
+    );
+
+  } catch {
+
     return valor;
   }
-
-  return data.toLocaleString("pt-BR");
-
 }
 
 
 function mostrarMensagem(
-  elemento,
-  mensagem,
-  tipo
+  texto,
+  tipo = "info"
 ) {
 
+  const elemento =
+    document.getElementById("globalMessage");
+
   elemento.className =
-    "page-message " + tipo;
+    "message show " + tipo;
 
-  elemento.innerHTML =
-    escapar(mensagem);
-
-  elemento.style.display =
-    "block";
+  elemento.textContent = texto;
 
   setTimeout(() => {
 
-    elemento.style.display =
-      "none";
+    elemento.className =
+      "message";
 
-  }, 4000);
-
+  }, 5000);
 }
 
 
-/* =========================
+/* =========================================================
    LOGIN
-========================= */
+========================================================= */
 
-document
-  .getElementById("loginForm")
-  .addEventListener(
-    "submit",
-    async function(event) {
+async function entrar() {
 
-      event.preventDefault();
+  const email =
+    document.getElementById("loginEmail")
+      .value
+      .trim();
 
-      const email =
-        document
-          .getElementById("loginEmail")
-          .value
-          .trim();
+  const senha =
+    document.getElementById("loginSenha")
+      .value;
 
-      const senha =
-        document
-          .getElementById("loginSenha")
-          .value;
+  const mensagem =
+    document.getElementById("loginMessage");
 
-      const mensagem =
-        document
-          .getElementById("loginMessage");
 
-      mensagem.className = "";
-      mensagem.textContent =
-        "Entrando...";
+  if (!email || !senha) {
 
-      try {
+    mensagem.className =
+      "message show error";
 
-        const resposta =
-          await fetch(
-            API_URL +
-            "/api/admin/login",
-            {
-              method: "POST",
+    mensagem.textContent =
+      "Digite o e-mail e a senha.";
 
-              headers: {
-                "Content-Type":
-                  "application/json"
-              },
+    return;
+  }
 
-              body:
-                JSON.stringify({
-                  email,
-                  senha
-                })
-            }
-          );
 
-        const dados =
-          await resposta.json();
+  mensagem.className =
+    "message show info";
 
-        if (
-          !resposta.ok ||
-          dados.sucesso === false
-        ) {
+  mensagem.textContent =
+    "Entrando...";
 
-          mensagem.className =
-            "error";
 
-          mensagem.textContent =
-            dados.mensagem ||
-            dados.erro ||
-            dados.message ||
-            "E-mail ou senha incorretos.";
+  try {
 
-          return;
+    const resposta = await fetch(
+      API_URL + "/api/admin/login",
+      {
+        method: "POST",
 
-        }
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
 
-        localStorage.setItem(
-          "quizup_admin",
-          JSON.stringify(
-            dados.admin || {
-              email
-            }
-          )
-        );
-
-        entrarNoPainel();
-
-      } catch (erro) {
-
-        console.error(erro);
-
-        mensagem.className =
-          "error";
-
-        mensagem.textContent =
-          "Não foi possível conectar ao backend.";
-
+        body: JSON.stringify({
+          email: email,
+          senha: senha
+        })
       }
+    );
+
+
+    const dados =
+      await resposta.json();
+
+
+    if (
+      !resposta.ok ||
+      dados.sucesso === false
+    ) {
+
+      throw new Error(
+        dados.erro ||
+        dados.mensagem ||
+        "E-mail ou senha incorretos."
+      );
 
     }
-  );
 
 
-function entrarNoPainel() {
+    localStorage.setItem(
+      "quizup_admin",
+      JSON.stringify(
+        dados.admin || dados
+      )
+    );
 
-  document
-    .getElementById("loginContainer")
-    .style.display = "none";
 
-  document
-    .getElementById("adminPanel")
-    .style.display = "block";
+    document
+      .getElementById("loginScreen")
+      .classList.add("hidden");
 
-  carregarDashboard();
+
+    document
+      .getElementById("adminScreen")
+      .classList.remove("hidden");
+
+
+    document
+      .getElementById("adminEmail")
+      .textContent =
+        dados.admin?.email ||
+        dados.email ||
+        email;
+
+
+    await carregarTudo();
+
+
+    abrirPagina(
+      "dashboard",
+      document.querySelector(
+        ".sidebar button"
+      )
+    );
+
+
+  } catch (erro) {
+
+    console.error(
+      "Erro no login:",
+      erro
+    );
+
+    mensagem.className =
+      "message show error";
+
+    mensagem.textContent =
+      erro.message ||
+      "Erro ao entrar no painel.";
+
+  }
 
 }
 
+
+/* =========================================================
+   SAIR
+========================================================= */
 
 function sair() {
 
@@ -1677,26 +1034,12 @@ function sair() {
 }
 
 
-function verificarLogin() {
+/* =========================================================
+   NAVEGAÇÃO
+========================================================= */
 
-  const admin =
-    localStorage.getItem(
-      "quizup_admin"
-    );
-
-  if (admin) {
-    entrarNoPainel();
-  }
-
-}
-
-
-/* =========================
-   MENU
-========================= */
-
-function mostrarPagina(
-  nome,
+function abrirPagina(
+  id,
   botao
 ) {
 
@@ -1710,18 +1053,10 @@ function mostrarPagina(
 
     });
 
-  document
-    .querySelectorAll(".menu-btn")
-    .forEach(btn => {
-
-      btn.classList.remove(
-        "active"
-      );
-
-    });
 
   const pagina =
-    document.getElementById(nome);
+    document.getElementById(id);
+
 
   if (pagina) {
 
@@ -1731,6 +1066,20 @@ function mostrarPagina(
 
   }
 
+
+  document
+    .querySelectorAll(
+      ".sidebar button"
+    )
+    .forEach(b => {
+
+      b.classList.remove(
+        "active"
+      );
+
+    });
+
+
   if (botao) {
 
     botao.classList.add(
@@ -1739,92 +1088,116 @@ function mostrarPagina(
 
   }
 
-  if (nome === "dashboard") {
+
+  if (id === "dashboard") {
     carregarDashboard();
   }
 
-  if (nome === "jogadores") {
+  if (id === "jogadores") {
     carregarJogadores();
   }
 
-  if (nome === "perguntas") {
+  if (id === "perguntas") {
     carregarPerguntas();
   }
 
-  if (nome === "saques") {
+  if (id === "saques") {
     carregarSaques();
   }
 
-  if (nome === "parceiros") {
-
+  if (id === "parceiros") {
     carregarParceiros();
-    carregarMonetag();
-
   }
 
-  if (nome === "movimentacoes") {
+  if (id === "movimentacoes") {
     carregarMovimentacoes();
   }
 
-  if (nome === "sac") {
+  if (id === "sac") {
     carregarSAC();
   }
 
 }
 
 
-/* =========================
-   DASHBOARD
-========================= */
+/* =========================================================
+   REQUISIÇÃO API
+========================================================= */
 
-async function carregarDashboard() {
+async function api(
+  rota,
+  opcoes = {}
+) {
+
+  const resposta =
+    await fetch(
+      API_URL + rota,
+      opcoes
+    );
+
+
+  const texto =
+    await resposta.text();
+
+
+  let dados = {};
 
   try {
 
-    const resposta =
-      await fetch(
-        API_URL +
-        "/api/admin/dashboard"
-      );
+    dados =
+      texto
+        ? JSON.parse(texto)
+        : {};
 
-    if (!resposta.ok) {
-      return;
-    }
+  } catch {
 
-    const dados =
-      await resposta.json();
+    dados = {
+      mensagem: texto
+    };
 
-    document
-      .getElementById("dashJogadores")
-      .textContent =
-      dados.totalJogadores ??
-      dados.jogadores ??
-      0;
+  }
 
-    document
-      .getElementById("dashPerguntas")
-      .textContent =
-      dados.totalPerguntas ??
-      dados.perguntas ??
-      0;
 
-    document
-      .getElementById("dashPontos")
-      .textContent =
-      dados.totalPontos ??
-      0;
+  if (!resposta.ok) {
 
-    document
-      .getElementById("dashSaldo")
-      .textContent =
-      formatarMoeda(
-        dados.saldoTotal ?? 0
-      );
+    throw new Error(
+      dados.erro ||
+      dados.mensagem ||
+      "Erro na API."
+    );
+
+  }
+
+
+  return dados;
+
+}
+
+
+/* =========================================================
+   CARREGAR TUDO
+========================================================= */
+
+async function carregarTudo() {
+
+  try {
+
+    await Promise.allSettled([
+
+      carregarDashboard(),
+      carregarJogadores(),
+      carregarPerguntas(),
+      carregarSaques(),
+      carregarParceiros(),
+      carregarMovimentacoes(),
+      carregarSAC()
+
+    ]);
 
   } catch (erro) {
 
     console.error(
-      "Erro dashboard:",
+      "Erro ao carregar painel:",
       erro
     );
 
@@ -1833,146 +1206,207 @@ async function carregarDashboard() {
 }
 
 
-/* =========================
-   JOGADORES
-========================= */
+/* =========================================================
+   DASHBOARD
+========================================================= */
 
-async function carregarJogadores() {
-
-  const loading =
-    document.getElementById(
-      "jogadoresLoading"
-    );
-
-  const tabela =
-    document.getElementById(
-      "jogadoresTable"
-    );
-
-  const corpo =
-    document.getElementById(
-      "jogadoresBody"
-    );
-
-  loading.style.display =
-    "block";
-
-  tabela.style.display =
-    "none";
+async function carregarDashboard() {
 
   try {
 
-    const resposta =
-      await fetch(
-        API_URL +
-        "/api/admin/jogadores"
-      );
-
     const dados =
-      await resposta.json();
-
-    const jogadores =
-      Array.isArray(dados)
-        ? dados
-        : dados.jogadores || [];
-
-    corpo.innerHTML = "";
-
-    if (!jogadores.length) {
-
-      corpo.innerHTML = `
-        <tr>
-          <td
-            colspan="7"
-            class="empty">
-            Nenhum jogador cadastrado.
-          </td>
-        </tr>
-      `;
-
-    } else {
-
-      jogadores.forEach(
-        jogador => {
-
-          const saldo =
-            jogador.saldo ??
-            jogador.equilibrio ??
-            0;
-
-          corpo.innerHTML += `
-            <tr>
-
-              <td>
-                ${escapar(jogador.id)}
-              </td>
-
-              <td>
-                ${escapar(
-                  jogador.nome ||
-                  jogador.nome_completo
-                )}
-              </td>
-
-              <td>
-                ${escapar(
-                  jogador.email
-                )}
-              </td>
-
-              <td>
-                ${escapar(
-                  jogador.cpf
-                )}
-              </td>
-
-              <td>
-                ${Number(
-                  jogador.pontos || 0
-                )}
-              </td>
-
-              <td>
-                ${formatarMoeda(
-                  saldo
-                )}
-              </td>
-
-              <td>
-                ${formatarData(
-                  jogador.criado_em
-                )}
-              </td>
-
-            </tr>
-          `;
-
-        }
+      await api(
+        "/api/admin/dashboard"
       );
 
-    }
 
-    loading.style.display =
-      "none";
+    document
+      .getElementById(
+        "totalJogadores"
+      )
+      .textContent =
+        dados.jogadores ??
+        dados.total_jogadores ??
+        0;
 
-    tabela.style.display =
-      "table";
+
+    document
+      .getElementById(
+        "totalPerguntas"
+      )
+      .textContent =
+        dados.perguntas ??
+        dados.total_perguntas ??
+        0;
+
+
+    document
+      .getElementById(
+        "totalSaques"
+      )
+      .textContent =
+        dados.saques ??
+        dados.total_saques ??
+        0;
+
+
+    document
+      .getElementById(
+        "totalParceiros"
+      )
+      .textContent =
+        dados.parceiros ??
+        dados.total_parceiros ??
+        0;
+
+
+    document
+      .getElementById(
+        "totalSACPendente"
+      )
+      .textContent =
+        dados.sac_pendente ??
+        dados.total_sac_pendente ??
+        0;
+
 
   } catch (erro) {
 
-    console.error(erro);
-
-    loading.textContent =
-      "Erro ao carregar jogadores.";
+    console.error(
+      "Dashboard:",
+      erro
+    );
 
   }
 
 }
 
 
-/* =========================
+/* =========================================================
+   JOGADORES
+========================================================= */
+
+async function carregarJogadores() {
+
+  const corpo =
+    document.getElementById(
+      "jogadoresBody"
+    );
+
+
+  corpo.innerHTML = `
+    <tr>
+      <td colspan="7" class="loading">
+        Carregando jogadores...
+      </td>
+    </tr>
+  `;
+
+
+  try {
+
+    const dados =
+      await api(
+        "/api/admin/jogadores"
+      );
+
+
+    const jogadores =
+      Array.isArray(dados)
+        ? dados
+        : dados.jogadores || [];
+
+
+    if (!jogadores.length) {
+
+      corpo.innerHTML = `
+        <tr>
+          <td colspan="7" class="empty">
+            Nenhum jogador encontrado.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+
+    corpo.innerHTML =
+      jogadores.map(item => `
+
+        <tr>
+
+          <td>
+            ${escapar(item.id)}
+          </td>
+
+          <td>
+            ${escapar(
+              item.nome_completo ||
+              item.nome ||
+              "-"
+            )}
+          </td>
+
+          <td>
+            ${escapar(
+              item.email || "-"
+            )}
+          </td>
+
+          <td>
+            ${escapar(
+              item.cpf || "-"
+            )}
+          </td>
+
+          <td>
+            ${escapar(
+              item.pontos ?? 0
+            )}
+          </td>
+
+          <td>
+            R$
+            ${escapar(
+              item.saldo ?? "0.00"
+            )}
+          </td>
+
+          <td>
+            ${formatarData(
+              item.criado_em
+            )}
+          </td>
+
+        </tr>
+
+      `).join("");
+
+
+  } catch (erro) {
+
+    console.error(
+      "Jogadores:",
+      erro
+    );
+
+    corpo.innerHTML = `
+      <tr>
+        <td colspan="7" class="empty">
+          Erro ao carregar jogadores.
+        </td>
+      </tr>
+    `;
+
+  }
+
+}
+
+
+/* =========================================================
    PERGUNTAS
-========================= */
+========================================================= */
 
 async function carregarPerguntas() {
 
@@ -1981,135 +1415,86 @@ async function carregarPerguntas() {
       "perguntasBody"
     );
 
+
   corpo.innerHTML = `
     <tr>
-      <td
-        colspan="4"
-        class="loading">
+      <td colspan="4" class="loading">
         Carregando perguntas...
       </td>
     </tr>
   `;
 
+
   try {
 
-    const resposta =
-      await fetch(
-        API_URL +
+    const dados =
+      await api(
         "/api/admin/perguntas"
       );
 
-    const dados =
-      await resposta.json();
 
     const perguntas =
       Array.isArray(dados)
         ? dados
         : dados.perguntas || [];
 
-    corpo.innerHTML = "";
 
     if (!perguntas.length) {
 
       corpo.innerHTML = `
         <tr>
-          <td
-            colspan="4"
-            class="empty">
-            Nenhuma pergunta cadastrada.
+          <td colspan="4" class="empty">
+            Nenhuma pergunta encontrada.
           </td>
         </tr>
       `;
 
       return;
-
     }
 
-    perguntas.forEach(
-      pergunta => {
 
-        const dificuldade =
-          String(
-            pergunta.dificuldade || ""
-          ).toLowerCase();
+    corpo.innerHTML =
+      perguntas.map(item => `
 
-        let classe =
-          "badge-easy";
+        <tr>
 
-        let nome =
-          "Fácil";
+          <td>
+            ${escapar(item.id)}
+          </td>
 
-        if (
-          dificuldade === "medio" ||
-          dificuldade === "médio"
-        ) {
+          <td>
+            ${escapar(
+              item.pergunta
+            )}
+          </td>
 
-          classe =
-            "badge-medium";
+          <td>
+            ${escapar(
+              item.resposta_correta
+            )}
+          </td>
 
-          nome =
-            "Médio";
+          <td>
+            ${escapar(
+              item.dificuldade || "-"
+            )}
+          </td>
 
-        }
+        </tr>
 
-        if (
-          dificuldade === "dificil" ||
-          dificuldade === "difícil"
-        ) {
+      `).join("");
 
-          classe =
-            "badge-hard";
-
-          nome =
-            "Difícil";
-
-        }
-
-        corpo.innerHTML += `
-          <tr>
-
-            <td>
-              ${escapar(pergunta.id)}
-            </td>
-
-            <td>
-              ${escapar(
-                pergunta.pergunta
-              )}
-            </td>
-
-            <td>
-              ${escapar(
-                pergunta.resposta_correta ??
-                pergunta.resposta ??
-                ""
-              )}
-            </td>
-
-            <td>
-
-              <span
-                class="badge ${classe}">
-                ${nome}
-              </span>
-
-            </td>
-
-          </tr>
-        `;
-
-      }
-    );
 
   } catch (erro) {
 
-    console.error(erro);
+    console.error(
+      "Perguntas:",
+      erro
+    );
 
     corpo.innerHTML = `
       <tr>
-        <td
-          colspan="4"
-          class="empty">
+        <td colspan="4" class="empty">
           Erro ao carregar perguntas.
         </td>
       </tr>
@@ -2120,147 +1505,143 @@ async function carregarPerguntas() {
 }
 
 
-document
-  .getElementById("perguntaForm")
-  .addEventListener(
-    "submit",
-    async function(event) {
+async function criarPergunta() {
 
-      event.preventDefault();
+  const dados = {
 
-      const mensagem =
-        document.getElementById(
-          "perguntasMensagem"
-        );
+    pergunta:
+      document.getElementById(
+        "novaPergunta"
+      ).value.trim(),
 
-      const dados = {
+    alternativa_a:
+      document.getElementById(
+        "alternativaA"
+      ).value.trim(),
 
-        pergunta:
-          document
-            .getElementById(
-              "perguntaTexto"
-            )
-            .value
-            .trim(),
+    alternativa_b:
+      document.getElementById(
+        "alternativaB"
+      ).value.trim(),
 
-        alternativa_a:
-          document
-            .getElementById(
-              "alternativaA"
-            )
-            .value
-            .trim(),
+    alternativa_c:
+      document.getElementById(
+        "alternativaC"
+      ).value.trim(),
 
-        alternativa_b:
-          document
-            .getElementById(
-              "alternativaB"
-            )
-            .value
-            .trim(),
+    alternativa_d:
+      document.getElementById(
+        "alternativaD"
+      ).value.trim(),
 
-        alternativa_c:
-          document
-            .getElementById(
-              "alternativaC"
-            )
-            .value
-            .trim(),
+    resposta_correta:
+      document.getElementById(
+        "respostaCorreta"
+      ).value,
 
-        alternativa_d:
-          document
-            .getElementById(
-              "alternativaD"
-            )
-            .value
-            .trim(),
+    dificuldade:
+      document.getElementById(
+        "dificuldade"
+      ).value
 
-        resposta_correta:
-          document
-            .getElementById(
-              "respostaCorreta"
-            )
-            .value,
+  };
 
-        dificuldade:
-          document
-            .getElementById(
-              "dificuldade"
-            )
-            .value
 
-      };
+  if (
+    !dados.pergunta ||
+    !dados.alternativa_a ||
+    !dados.alternativa_b ||
+    !dados.alternativa_c ||
+    !dados.alternativa_d
+  ) {
 
-      try {
+    mostrarMensagem(
+      "Preencha todos os campos da pergunta.",
+      "error"
+    );
 
-        const resposta =
-          await fetch(
-            API_URL +
-            "/api/admin/perguntas",
-            {
-              method: "POST",
+    return;
+  }
 
-              headers: {
-                "Content-Type":
-                  "application/json"
-              },
 
-              body:
-                JSON.stringify(dados)
-            }
-          );
+  try {
 
-        const resultado =
-          await resposta.json();
+    await api(
+      "/api/admin/perguntas",
+      {
+        method: "POST",
 
-        if (!resposta.ok) {
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
 
-          mostrarMensagem(
-            mensagem,
-            resultado.mensagem ||
-            resultado.erro ||
-            resultado.message ||
-            "Erro ao salvar pergunta.",
-            "error"
-          );
-
-          return;
-
-        }
-
-        mostrarMensagem(
-          mensagem,
-          "Pergunta salva com sucesso!",
-          "success"
-        );
-
-        document
-          .getElementById(
-            "perguntaForm"
-          )
-          .reset();
-
-        carregarPerguntas();
-
-      } catch (erro) {
-
-        console.error(erro);
-
-        mostrarMensagem(
-          mensagem,
-          "Erro de conexão com o backend.",
-          "error"
-        );
-
+        body:
+          JSON.stringify(dados)
       }
-
-    }
-  );
+    );
 
 
-/* =========================
+    mostrarMensagem(
+      "Pergunta salva com sucesso.",
+      "success"
+    );
+
+
+    document
+      .getElementById(
+        "novaPergunta"
+      )
+      .value = "";
+
+
+    document
+      .getElementById(
+        "alternativaA"
+      )
+      .value = "";
+
+
+    document
+      .getElementById(
+        "alternativaB"
+      )
+      .value = "";
+
+
+    document
+      .getElementById(
+        "alternativaC"
+      )
+      .value = "";
+
+
+    document
+      .getElementById(
+        "alternativaD"
+      )
+      .value = "";
+
+
+    await carregarPerguntas();
+
+
+  } catch (erro) {
+
+    mostrarMensagem(
+      erro.message ||
+      "Erro ao salvar pergunta.",
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
    SAQUES
-========================= */
+========================================================= */
 
 async function carregarSaques() {
 
@@ -2269,52 +1650,36 @@ async function carregarSaques() {
       "saquesBody"
     );
 
+
   corpo.innerHTML = `
     <tr>
-      <td
-        colspan="7"
-        class="loading">
+      <td colspan="8" class="loading">
         Carregando saques...
       </td>
     </tr>
   `;
 
+
   try {
 
-    const resposta =
-      await fetch(
-        API_URL +
+    const dados =
+      await api(
         "/api/admin/saques"
       );
 
-    const dados =
-      await resposta.json();
-
-    if (!resposta.ok) {
-
-      throw new Error(
-        dados.erro ||
-        dados.mensagem ||
-        "Erro ao carregar saques."
-      );
-
-    }
 
     const saques =
       Array.isArray(dados)
         ? dados
         : dados.saques || [];
 
-    corpo.innerHTML = "";
 
     if (!saques.length) {
 
       corpo.innerHTML = `
         <tr>
-          <td
-            colspan="7"
-            class="empty">
-            Nenhum saque registrado.
+          <td colspan="8" class="empty">
+            Nenhum saque encontrado.
           </td>
         </tr>
       `;
@@ -2322,206 +1687,127 @@ async function carregarSaques() {
       return;
     }
 
-    saques.forEach(
-      saque => {
+
+    corpo.innerHTML =
+      saques.map(item => {
 
         const status =
           String(
-            saque.status || "pendente"
+            item.status ||
+            "pendente"
           ).toLowerCase();
 
-        let classeStatus =
-          "badge-warning";
 
-        let textoStatus =
-          "Pendente";
+        let acao = "-";
+
 
         if (
-          status === "aprovado" ||
-          status === "aprovada" ||
-          status === "pago" ||
-          status === "pagamento realizado"
+          status === "pendente"
         ) {
 
-          classeStatus =
-            "badge-success";
+          acao = `
 
-          textoStatus =
-            "Aprovado";
+            <button
+              class="success"
+              onclick="alterarSaque(
+                ${Number(item.id)},
+                'aprovado'
+              )"
+            >
+              Aprovar
+            </button>
 
-        }
+            <button
+              class="danger"
+              onclick="alterarSaque(
+                ${Number(item.id)},
+                'cancelado'
+              )"
+              style="margin-top:5px;"
+            >
+              Cancelar
+            </button>
 
-        if (
-          status === "reprovado" ||
-          status === "reprovada" ||
-          status === "cancelado" ||
-          status === "cancelada"
-        ) {
-
-          classeStatus =
-            "badge-danger";
-
-          textoStatus =
-            "Reprovado";
-
-        }
-
-        const pix =
-          saque.pix_key ||
-          saque.pix ||
-          "";
-
-        const paypal =
-          saque.paypal ||
-          "";
-
-        let pagamento = "";
-
-        if (pix) {
-
-          pagamento += `
-            <div class="saque-pagamento">
-              <strong>💠 Pix</strong>
-              ${escapar(pix)}
-            </div>
           `;
 
         }
 
-        if (paypal) {
 
-          pagamento += `
-            <div class="saque-pagamento">
-              <strong>🅿️ PayPal</strong>
-              ${escapar(paypal)}
-            </div>
-          `;
+        return `
 
-        }
-
-        if (!pagamento) {
-
-          pagamento =
-            "Não informado";
-
-        }
-
-        let acoes = "-";
-
-        const pendente =
-          status === "pendente" ||
-          status === "pending";
-
-        if (pendente) {
-
-          acoes = `
-            <div class="actions">
-
-              <button
-                class="btn btn-success"
-                onclick="aprovarSaque(
-                  ${Number(saque.id)}
-                )">
-                ✅ Aprovar
-              </button>
-
-              <button
-                class="btn btn-danger"
-                onclick="abrirModalReprovar(
-                  ${Number(saque.id)}
-                )">
-                ❌ Reprovar
-              </button>
-
-            </div>
-          `;
-
-        }
-
-        corpo.innerHTML += `
           <tr>
 
             <td>
-              ${escapar(saque.id)}
+              ${escapar(item.id)}
             </td>
 
             <td>
               ${escapar(
-                saque.nome ||
-                saque.email ||
-                saque.jogador_id
+                item.jogador_id || "-"
               )}
             </td>
 
             <td>
-              <strong>
-                ${formatarMoeda(
-                  saque.valor ||
-                  saque.quantia
-                )}
-              </strong>
+              ${escapar(
+                item.email || "-"
+              )}
             </td>
 
             <td>
-              ${pagamento}
+              R$
+              ${escapar(
+                item.valor ?? "0.00"
+              )}
             </td>
 
             <td>
+              ${escapar(
+                item.pix || "-"
+              )}
+            </td>
 
-              <span
-                class="badge ${classeStatus}">
-                ${textoStatus}
+            <td>
+              <span class="badge
+                ${
+                  status === "aprovado"
+                    ? "badge-success"
+                    : status === "cancelado"
+                    ? "badge-danger"
+                    : "badge-warning"
+                }">
+
+                ${escapar(status)}
+
               </span>
-
-              ${
-                saque.motivo_reprovacao
-                  ? `
-                    <div style="
-                      margin-top:6px;
-                      white-space:normal;
-                      max-width:220px;
-                      color:#991b1b;
-                      font-size:12px;
-                    ">
-                      Motivo:
-                      ${escapar(
-                        saque.motivo_reprovacao
-                      )}
-                    </div>
-                  `
-                  : ""
-              }
-
             </td>
 
             <td>
               ${formatarData(
-                saque.criado_em
+                item.criado_em
               )}
             </td>
 
             <td>
-              ${acoes}
+              ${acao}
             </td>
 
           </tr>
+
         `;
 
-      }
-    );
+      }).join("");
+
 
   } catch (erro) {
 
     console.error(
-      "Erro ao carregar saques:",
+      "Saques:",
       erro
     );
 
     corpo.innerHTML = `
       <tr>
-        <td
-          colspan="7"
-          class="empty">
+        <td colspan="8" class="empty">
           Erro ao carregar saques.
         </td>
       </tr>
@@ -2532,280 +1818,61 @@ async function carregarSaques() {
 }
 
 
-/* =========================
-   APROVAR SAQUE
-========================= */
-
-async function aprovarSaque(id) {
-
-  const confirmar =
-    window.confirm(
-      "Tem certeza que deseja APROVAR este saque?"
-    );
-
-  if (!confirmar) {
-    return;
-  }
-
-  try {
-
-    const resposta =
-      await fetch(
-        API_URL +
-        "/api/admin/saques/" +
-        encodeURIComponent(id) +
-        "/aprovar",
-        {
-          method: "PATCH",
-
-          headers: {
-            "Content-Type":
-              "application/json"
-          }
-        }
-      );
-
-    const dados =
-      await resposta.json();
-
-    if (!resposta.ok) {
-
-      alert(
-        dados.erro ||
-        dados.mensagem ||
-        dados.message ||
-        "Não foi possível aprovar o saque."
-      );
-
-      return;
-
-    }
-
-    alert(
-      dados.mensagem ||
-      "Saque aprovado com sucesso."
-    );
-
-    carregarSaques();
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao aprovar saque:",
-      erro
-    );
-
-    alert(
-      "Erro de conexão com o backend."
-    );
-
-  }
-
-}
-
-
-/* =========================
-   MODAL REPROVAÇÃO
-========================= */
-
-function abrirModalReprovar(id) {
-
-  document
-    .getElementById(
-      "reprovarSaqueId"
-    )
-    .value = id;
-
-  document
-    .getElementById(
-      "motivoReprovacao"
-    )
-    .value = "";
-
-  document
-    .getElementById(
-      "outroMotivo"
-    )
-    .value = "";
-
-  document
-    .getElementById(
-      "outroMotivoContainer"
-    )
-    .style.display = "none";
-
-  document
-    .getElementById(
-      "reprovarSaqueModal"
-    )
-    .classList.add("show");
-
-}
-
-
-function fecharModalReprovar() {
-
-  document
-    .getElementById(
-      "reprovarSaqueModal"
-    )
-    .classList.remove(
-      "show"
-    );
-
-}
-
-
-document
-  .getElementById(
-    "motivoReprovacao"
-  )
-  .addEventListener(
-    "change",
-    function() {
-
-      const container =
-        document.getElementById(
-          "outroMotivoContainer"
-        );
-
-      if (
-        this.value === "Outro"
-      ) {
-
-        container.style.display =
-          "block";
-
-      } else {
-
-        container.style.display =
-          "none";
-
-      }
-
-    }
-  );
-
-
-async function confirmarReprovacao() {
-
-  const id =
-    document
-      .getElementById(
-        "reprovarSaqueId"
-      )
-      .value;
-
-  const motivoSelecionado =
-    document
-      .getElementById(
-        "motivoReprovacao"
-      )
-      .value;
-
-  if (!motivoSelecionado) {
-
-    alert(
-      "Selecione o motivo da reprovação."
-    );
-
-    return;
-
-  }
-
-  let motivo =
-    motivoSelecionado;
+async function alterarSaque(
+  id,
+  status
+) {
 
   if (
-    motivoSelecionado === "Outro"
+    !confirm(
+      status === "aprovado"
+        ? "Deseja aprovar este saque?"
+        : "Deseja cancelar este saque?"
+    )
   ) {
 
-    motivo =
-      document
-        .getElementById(
-          "outroMotivo"
-        )
-        .value
-        .trim();
-
-    if (!motivo) {
-
-      alert(
-        "Informe o motivo da reprovação."
-      );
-
-      return;
-
-    }
-
-  }
-
-  const confirmar =
-    window.confirm(
-      "Tem certeza que deseja REPROVAR este saque?"
-    );
-
-  if (!confirmar) {
     return;
+
   }
+
 
   try {
 
-    const resposta =
-      await fetch(
-        API_URL +
-        "/api/admin/saques/" +
-        encodeURIComponent(id) +
-        "/reprovar",
-        {
-          method: "PATCH",
+    await api(
+      "/api/admin/saques/" +
+      id +
+      "/status",
+      {
+        method: "PATCH",
 
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
 
-          body:
-            JSON.stringify({
-              motivo
-            })
-        }
-      );
-
-    const dados =
-      await resposta.json();
-
-    if (!resposta.ok) {
-
-      alert(
-        dados.erro ||
-        dados.mensagem ||
-        dados.message ||
-        "Não foi possível reprovar o saque."
-      );
-
-      return;
-
-    }
-
-    fecharModalReprovar();
-
-    alert(
-      dados.mensagem ||
-      "Saque reprovado com sucesso."
+        body:
+          JSON.stringify({
+            status: status
+          })
+      }
     );
 
-    carregarSaques();
+
+    mostrarMensagem(
+      "Saque atualizado com sucesso.",
+      "success"
+    );
+
+
+    await carregarSaques();
+
 
   } catch (erro) {
 
-    console.error(
-      "Erro ao reprovar saque:",
-      erro
-    );
-
-    alert(
-      "Erro de conexão com o backend."
+    mostrarMensagem(
+      erro.message ||
+      "Erro ao atualizar saque.",
+      "error"
     );
 
   }
@@ -2813,980 +1880,129 @@ async function confirmarReprovacao() {
 }
 
 
-/* =========================
+/* =========================================================
    PARCEIROS
-========================= */
+========================================================= */
 
 async function carregarParceiros() {
-
-  const loading =
-    document.getElementById(
-      "parceirosLoading"
-    );
-
-  const tabela =
-    document.getElementById(
-      "parceirosTable"
-    );
 
   const corpo =
     document.getElementById(
       "parceirosBody"
     );
 
-  loading.style.display =
-    "block";
 
-  tabela.style.display =
-    "none";
+  corpo.innerHTML = `
+    <tr>
+      <td colspan="7" class="loading">
+        Carregando parceiros...
+      </td>
+    </tr>
+  `;
+
 
   try {
 
-    const resposta =
-      await fetch(
-        API_URL +
+    const dados =
+      await api(
         "/api/admin/parceiros"
       );
 
-    const dados =
-      await resposta.json();
 
-    if (!resposta.ok) {
-
-      throw new Error(
-        dados.erro ||
-        dados.mensagem ||
-        "Erro ao carregar parceiros."
-      );
-
-    }
-
-    parceirosCache =
+    const parceiros =
       Array.isArray(dados)
         ? dados
         : dados.parceiros || [];
 
-    corpo.innerHTML = "";
 
-    if (!parceirosCache.length) {
+    if (!parceiros.length) {
 
       corpo.innerHTML = `
         <tr>
-          <td
-            colspan="9"
-            class="empty">
-            Nenhum parceiro cadastrado.
+          <td colspan="7" class="empty">
+            Nenhum parceiro encontrado.
           </td>
         </tr>
       `;
 
-    } else {
-
-      parceirosCache.forEach(
-        parceiro => {
-
-          const ativo =
-            parceiro.ativo !== false;
-
-          corpo.innerHTML += `
-
-            <tr>
-
-              <td>
-                ${escapar(
-                  parceiro.id
-                )}
-              </td>
-
-              <td>
-                ${escapar(
-                  parceiro.nome
-                )}
-              </td>
-
-              <td>
-                ${escapar(
-                  parceiro.email
-                )}
-              </td>
-
-              <td>
-                ${escapar(
-                  parceiro.codigo
-                )}
-              </td>
-
-              <td>
-                ${Number(
-                  parceiro.pontos || 0
-                )}
-              </td>
-
-              <td>
-
-                <strong>
-                  ${formatarMoeda(
-                    parceiro.saldo
-                  )}
-                </strong>
-
-              </td>
-
-              <td>
-
-                <span
-                  class="badge ${
-                    ativo
-                      ? "badge-success"
-                      : "badge-danger"
-                  }">
-
-                  ${
-                    ativo
-                      ? "Ativo"
-                      : "Inativo"
-                  }
-
-                </span>
-
-              </td>
-
-              <td>
-                ${formatarData(
-                  parceiro.criado_em
-                )}
-              </td>
-
-              <td>
-
-                <div class="actions">
-
-                  <button
-                    class="btn btn-warning"
-                    onclick="editarParceiro(
-                      ${Number(
-                        parceiro.id
-                      )}
-                    )">
-
-                    ✏️ Editar
-
-                  </button>
-
-                  <button
-                    class="btn ${
-                      ativo
-                        ? "btn-danger"
-                        : "btn-success"
-                    }"
-                    onclick="alterarStatusParceiro(
-                      ${Number(
-                        parceiro.id
-                      )},
-                      ${ativo}
-                    )">
-
-                    ${
-                      ativo
-                        ? "🔴 Desativar"
-                        : "🟢 Ativar"
-                    }
-
-                  </button>
-
-                </div>
-
-              </td>
-
-            </tr>
-
-          `;
-
-        }
-      );
-
+      return;
     }
 
-    loading.style.display =
-      "none";
 
-    tabela.style.display =
-      "table";
+    corpo.innerHTML =
+      parceiros.map(item => `
 
-  } catch (erro) {
+        <tr>
 
-    console.error(erro);
+          <td>
+            ${escapar(item.id)}
+          </td>
 
-    loading.textContent =
-      erro.message ||
-      "Erro ao carregar parceiros.";
+          <td>
+            ${escapar(
+              item.nome || "-"
+            )}
+          </td>
 
-  }
+          <td>
+            ${escapar(
+              item.email || "-"
+            )}
+          </td>
 
-}
+          <td>
+            ${escapar(
+              item.codigo || "-"
+            )}
+          </td>
 
+          <td>
+            ${escapar(
+              item.pontos ?? 0
+            )}
+          </td>
 
-/* =========================
-   MONETAG
-========================= */
+          <td>
+            R$
+            ${escapar(
+              item.saldo ?? "0.00"
+            )}
+          </td>
 
-async function carregarMonetag() {
+          <td>
+            ${item.ativo
+              ? "Ativo"
+              : "Inativo"}
+          </td>
 
-  const mensagem =
-    document.getElementById(
-      "monetagMensagem"
-    );
+        </tr>
 
-  const resultado =
-    document.getElementById(
-      "monetagResultado"
-    );
+      `).join("");
 
-  try {
-
-    const resposta =
-      await fetch(
-        API_URL +
-        "/api/admin/monetag"
-      );
-
-    const dados =
-      await resposta.json();
-
-    if (
-      !resposta.ok ||
-      dados.sucesso === false
-    ) {
-
-      throw new Error(
-        dados.erro ||
-        "Erro ao carregar Monetag."
-      );
-
-    }
-
-    const totais =
-      dados.totais || {};
-
-    document
-      .getElementById(
-        "monetagImpressoes"
-      )
-      .textContent =
-      Number(
-        totais.total_impressoes || 0
-      ).toLocaleString(
-        "pt-BR"
-      );
-
-    document
-      .getElementById(
-        "monetagProfit"
-      )
-      .textContent =
-      "$" +
-      Number(
-        totais.total_profit || 0
-      ).toFixed(3);
-
-    document
-      .getElementById(
-        "monetagCpm"
-      )
-      .textContent =
-      "$" +
-      Number(
-        totais.cpm_medio || 0
-      ).toFixed(2);
-
-    resultado.style.display =
-      "grid";
 
   } catch (erro) {
 
     console.error(
-      "Erro ao carregar Monetag:",
+      "Parceiros:",
       erro
     );
 
-  }
-
-}
-
-
-function numeroMonetag(valor) {
-
-  if (
-    valor === null ||
-    valor === undefined
-  ) {
-    return 0;
-  }
-
-  let texto =
-    String(valor)
-      .trim()
-      .replace(/\$/g, "")
-      .replace(/USD/gi, "")
-      .replace(/\s/g, "");
-
-  if (!texto) {
-    return 0;
-  }
-
-  if (
-    texto.includes(",") &&
-    texto.includes(".")
-  ) {
-
-    if (
-      texto.lastIndexOf(",") >
-      texto.lastIndexOf(".")
-    ) {
-
-      texto =
-        texto
-          .replace(/\./g, "")
-          .replace(",", ".");
-
-    } else {
-
-      texto =
-        texto.replace(/,/g, "");
-
-    }
-
-  } else if (
-    texto.includes(",")
-  ) {
-
-    texto =
-      texto.replace(",", ".");
-
-  }
-
-  const numero =
-    Number(texto);
-
-  return Number.isFinite(numero)
-    ? numero
-    : 0;
-
-}
-
-
-function separarLinhaCSV(linha) {
-
-  const resultado = [];
-
-  let atual = "";
-
-  let aspas = false;
-
-  for (
-    let i = 0;
-    i < linha.length;
-    i++
-  ) {
-
-    const caractere =
-      linha[i];
-
-    if (
-      caractere === '"'
-    ) {
-
-      if (
-        aspas &&
-        linha[i + 1] === '"'
-      ) {
-
-        atual += '"';
-
-        i++;
-
-      } else {
-
-        aspas =
-          !aspas;
-
-      }
-
-      continue;
-
-    }
-
-    if (
-      (
-        caractere === "," ||
-        caractere === ";"
-      ) &&
-      !aspas
-    ) {
-
-      resultado.push(
-        atual.trim()
-      );
-
-      atual = "";
-
-      continue;
-
-    }
-
-    atual += caractere;
-
-  }
-
-  resultado.push(
-    atual.trim()
-  );
-
-  return resultado;
-
-}
-
-
-function separarCSV(texto) {
-
-  const linhas =
-    texto
-      .replace(/\r\n/g, "\n")
-      .replace(/\r/g, "\n")
-      .split("\n")
-      .filter(
-        linha =>
-          linha.trim() !== ""
-      );
-
-  return linhas.map(
-    separarLinhaCSV
-  );
-
-}
-
-
-async function importarCsvMonetag() {
-
-  const arquivo =
-    document
-      .getElementById(
-        "monetagCsv"
-      )
-      .files[0];
-
-  const mensagem =
-    document
-      .getElementById(
-        "monetagMensagem"
-      );
-
-  const resultado =
-    document
-      .getElementById(
-        "monetagResultado"
-      );
-
-  if (!arquivo) {
-
-    mostrarMensagem(
-      mensagem,
-      "Selecione primeiro o arquivo CSV exportado pela Monetag.",
-      "error"
-    );
-
-    return;
-
-  }
-
-  try {
-
-    const texto =
-      await arquivo.text();
-
-    const linhas =
-      separarCSV(texto);
-
-    if (linhas.length < 2) {
-
-      mostrarMensagem(
-        mensagem,
-        "O arquivo CSV está vazio ou não possui dados.",
-        "error"
-      );
-
-      return;
-
-    }
-
-    const cabecalho =
-      linhas[0].map(
-        coluna =>
-          coluna
-            .toLowerCase()
-            .trim()
-      );
-
-    const indiceImpressions =
-      cabecalho.findIndex(
-        coluna =>
-          coluna === "impressions" ||
-          coluna.includes(
-            "impressions"
-          )
-      );
-
-    const indiceProfit =
-      cabecalho.findIndex(
-        coluna =>
-          coluna === "profit" ||
-          coluna.includes(
-            "profit"
-          )
-      );
-
-    const indiceCpm =
-      cabecalho.findIndex(
-        coluna =>
-          coluna === "cpm"
-      );
-
-    if (
-      indiceImpressions === -1 ||
-      indiceProfit === -1
-    ) {
-
-      mostrarMensagem(
-        mensagem,
-        "Não encontrei as colunas Impressions e Profit no CSV da Monetag.",
-        "error"
-      );
-
-      return;
-
-    }
-
-    let impressoes = 0;
-    let profit = 0;
-    let cpmTotal = 0;
-    let cpmQuantidade = 0;
-
-    for (
-      let i = 1;
-      i < linhas.length;
-      i++
-    ) {
-
-      const linha =
-        linhas[i];
-
-      if (!linha.length) {
-        continue;
-      }
-
-      impressoes +=
-        numeroMonetag(
-          linha[
-            indiceImpressions
-          ]
-        );
-
-      profit +=
-        numeroMonetag(
-          linha[
-            indiceProfit
-          ]
-        );
-
-      if (
-        indiceCpm !== -1
-      ) {
-
-        const cpm =
-          numeroMonetag(
-            linha[
-              indiceCpm
-            ]
-          );
-
-        if (cpm > 0) {
-
-          cpmTotal +=
-            cpm;
-
-          cpmQuantidade++;
-
-        }
-
-      }
-
-    }
-
-    const cpmMedio =
-      cpmQuantidade > 0
-        ? cpmTotal /
-          cpmQuantidade
-        : 0;
-
-    document
-      .getElementById(
-        "monetagImpressoes"
-      )
-      .textContent =
-      Math.round(
-        impressoes
-      ).toLocaleString(
-        "pt-BR"
-      );
-
-    document
-      .getElementById(
-        "monetagProfit"
-      )
-      .textContent =
-      "$" +
-      profit.toFixed(3);
-
-    document
-      .getElementById(
-        "monetagCpm"
-      )
-      .textContent =
-      "$" +
-      cpmMedio.toFixed(2);
-
-    resultado.style.display =
-      "grid";
-
-    mostrarMensagem(
-      mensagem,
-      "CSV da Monetag lido com sucesso.",
-      "success"
-    );
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao importar CSV Monetag:",
-      erro
-    );
-
-    mostrarMensagem(
-      mensagem,
-      "Não foi possível ler o arquivo CSV.",
-      "error"
-    );
+    corpo.innerHTML = `
+      <tr>
+        <td colspan="7" class="empty">
+          Erro ao carregar parceiros.
+        </td>
+      </tr>
+    `;
 
   }
 
 }
 
 
-/* =========================
-   MODAL PARCEIRO
-========================= */
-
-function abrirModalParceiro(
-  parceiro = null
-) {
-
-  document
-    .getElementById(
-      "parceiroModal"
-    )
-    .classList.add("show");
-
-  document
-    .getElementById(
-      "parceiroForm"
-    )
-    .reset();
-
-  document
-    .getElementById(
-      "parceiroId"
-    )
-    .value = "";
-
-  document
-    .getElementById(
-      "modalParceiroTitulo"
-    )
-    .textContent =
-    "Novo parceiro";
-
-  if (parceiro) {
-
-    document
-      .getElementById(
-        "modalParceiroTitulo"
-      )
-      .textContent =
-      "Editar parceiro";
-
-    document
-      .getElementById(
-        "parceiroId"
-      )
-      .value =
-      parceiro.id;
-
-    document
-      .getElementById(
-        "parceiroNome"
-      )
-      .value =
-      parceiro.nome || "";
-
-    document
-      .getElementById(
-        "parceiroEmail"
-      )
-      .value =
-      parceiro.email || "";
-
-    document
-      .getElementById(
-        "parceiroCodigo"
-      )
-      .value =
-      parceiro.codigo || "";
-
-  }
-
-}
-
-
-function fecharModalParceiro() {
-
-  document
-    .getElementById(
-      "parceiroModal"
-    )
-    .classList.remove(
-      "show"
-    );
-
-}
-
-
-function editarParceiro(id) {
-
-  const parceiro =
-    parceirosCache.find(
-      item =>
-        Number(item.id) ===
-        Number(id)
-    );
-
-  if (!parceiro) {
-    return;
-  }
-
-  abrirModalParceiro(
-    parceiro
-  );
-
-}
-
-
-document
-  .getElementById(
-    "parceiroForm"
-  )
-  .addEventListener(
-    "submit",
-    async function(event) {
-
-      event.preventDefault();
-
-      const id =
-        document
-          .getElementById(
-            "parceiroId"
-          )
-          .value;
-
-      const dados = {
-
-        nome:
-          document
-            .getElementById(
-              "parceiroNome"
-            )
-            .value
-            .trim(),
-
-        email:
-          document
-            .getElementById(
-              "parceiroEmail"
-            )
-            .value
-            .trim(),
-
-        codigo:
-          document
-            .getElementById(
-              "parceiroCodigo"
-            )
-            .value
-            .trim()
-
-      };
-
-      try {
-
-        const url =
-          id
-            ? API_URL +
-              "/api/admin/parceiros/" +
-              encodeURIComponent(id)
-            : API_URL +
-              "/api/admin/parceiros";
-
-        const resposta =
-          await fetch(
-            url,
-            {
-              method:
-                id
-                  ? "PUT"
-                  : "POST",
-
-              headers: {
-                "Content-Type":
-                  "application/json"
-              },
-
-              body:
-                JSON.stringify(
-                  dados
-                )
-            }
-          );
-
-        const resultado =
-          await resposta.json();
-
-        if (!resposta.ok) {
-
-          alert(
-            resultado.erro ||
-            resultado.mensagem ||
-            resultado.message ||
-            "Erro ao salvar parceiro."
-          );
-
-          return;
-
-        }
-
-        fecharModalParceiro();
-
-        alert(
-          id
-            ? "Parceiro atualizado com sucesso!"
-            : "Parceiro cadastrado com sucesso!"
-        );
-
-        carregarParceiros();
-
-      } catch (erro) {
-
-        console.error(erro);
-
-        alert(
-          "Erro de conexão com o backend."
-        );
-
-      }
-
-    }
-  );
-
-
-/* =========================
-   STATUS PARCEIRO
-========================= */
-
-async function alterarStatusParceiro(
-  id,
-  ativoAtual
-) {
-
-  const novoStatus =
-    !ativoAtual;
-
-  const confirmacao =
-    confirm(
-      novoStatus
-        ? "Deseja ativar este parceiro?"
-        : "Deseja desativar este parceiro?"
-    );
-
-  if (!confirmacao) {
-    return;
-  }
-
-  try {
-
-    const resposta =
-      await fetch(
-        API_URL +
-        "/api/admin/parceiros/" +
-        encodeURIComponent(id) +
-        "/status",
-        {
-          method: "PATCH",
-
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
-
-          body:
-            JSON.stringify({
-              ativo:
-                novoStatus
-            })
-        }
-      );
-
-    const resultado =
-      await resposta.json();
-
-    if (!resposta.ok) {
-
-      alert(
-        resultado.erro ||
-        resultado.mensagem ||
-        resultado.message ||
-        "Não foi possível alterar o status."
-      );
-
-      return;
-
-    }
-
-    carregarParceiros();
-
-  } catch (erro) {
-
-    console.error(erro);
-
-    alert(
-      "Erro de conexão com o backend."
-    );
-
-  }
-
-}
-
-
-/* =========================
+/* =========================================================
    MOVIMENTAÇÕES
-========================= */
+========================================================= */
 
 async function carregarMovimentacoes() {
 
@@ -3795,101 +2011,300 @@ async function carregarMovimentacoes() {
       "movimentacoesBody"
     );
 
+
   corpo.innerHTML = `
     <tr>
-      <td
-        colspan="6"
-        class="loading">
+      <td colspan="7" class="loading">
         Carregando movimentações...
       </td>
     </tr>
   `;
 
+
   try {
 
-    const resposta =
-      await fetch(
-        API_URL +
-        "/api/admin/movimentacoes-parceiros"
+    const dados =
+      await api(
+        "/api/admin/movimentacoes"
       );
 
-    if (!resposta.ok) {
-
-      corpo.innerHTML = `
-        <tr>
-          <td
-            colspan="6"
-            class="empty">
-            Nenhuma movimentação disponível.
-          </td>
-        </tr>
-      `;
-
-      return;
-
-    }
-
-    const dados =
-      await resposta.json();
 
     const movimentacoes =
       Array.isArray(dados)
         ? dados
         : dados.movimentacoes || [];
 
-    corpo.innerHTML = "";
 
     if (!movimentacoes.length) {
 
       corpo.innerHTML = `
         <tr>
-          <td
-            colspan="6"
-            class="empty">
-            Nenhuma movimentação registrada.
+          <td colspan="7" class="empty">
+            Nenhuma movimentação encontrada.
           </td>
         </tr>
       `;
 
       return;
-
     }
 
-    movimentacoes.forEach(
-      item => {
 
-        corpo.innerHTML += `
+    corpo.innerHTML =
+      movimentacoes.map(item => `
+
+        <tr>
+
+          <td>
+            ${escapar(item.id)}
+          </td>
+
+          <td>
+            ${escapar(
+              item.parceiro_id || "-"
+            )}
+          </td>
+
+          <td>
+            ${escapar(
+              item.tipo || "-"
+            )}
+          </td>
+
+          <td>
+            ${escapar(
+              item.pontos ?? 0
+            )}
+          </td>
+
+          <td>
+            R$
+            ${escapar(
+              item.valor ?? "0.00"
+            )}
+          </td>
+
+          <td>
+            ${escapar(
+              item.descricao || "-"
+            )}
+          </td>
+
+          <td>
+            ${formatarData(
+              item.criado_em
+            )}
+          </td>
+
+        </tr>
+
+      `).join("");
+
+
+  } catch (erro) {
+
+    console.error(
+      "Movimentações:",
+      erro
+    );
+
+    corpo.innerHTML = `
+      <tr>
+        <td colspan="7" class="empty">
+          Erro ao carregar movimentações.
+        </td>
+      </tr>
+    `;
+
+  }
+
+}
+
+
+/* =========================================================
+   SAC
+========================================================= */
+
+async function carregarSAC() {
+
+  const corpo =
+    document.getElementById(
+      "sacBody"
+    );
+
+
+  corpo.innerHTML = `
+    <tr>
+      <td colspan="7" class="loading">
+        Carregando mensagens...
+      </td>
+    </tr>
+  `;
+
+
+  try {
+
+    const dados =
+      await api(
+        "/api/admin/sac"
+      );
+
+
+    const mensagens =
+      Array.isArray(dados)
+        ? dados
+        : dados.mensagens || [];
+
+
+    document
+      .getElementById(
+        "totalSACPendente"
+      )
+      .textContent =
+        mensagens.filter(item =>
+          String(
+            item.status ||
+            "pendente"
+          ).toLowerCase()
+          === "pendente"
+        ).length;
+
+
+    if (!mensagens.length) {
+
+      corpo.innerHTML = `
+        <tr>
+          <td colspan="7" class="empty">
+            Nenhuma mensagem no SAC.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+
+    corpo.innerHTML =
+      mensagens.map(item => {
+
+        const status =
+          String(
+            item.status ||
+            "pendente"
+          ).toLowerCase();
+
+
+        let classeStatus =
+          "badge-warning";
+
+
+        let textoStatus =
+          "Pendente";
+
+
+        if (
+          status === "respondido" ||
+          status === "resolvido"
+        ) {
+
+          classeStatus =
+            "badge-success";
+
+          textoStatus =
+            "Respondida";
+
+        }
+
+
+        let respostaHTML = "";
+
+
+        if (
+          status === "pendente"
+        ) {
+
+          respostaHTML = `
+
+            <div class="sac-response">
+
+              <textarea
+                id="respostaSAC_${Number(item.id)}"
+                placeholder="Digite a resposta ao jogador..."
+              ></textarea>
+
+              <button
+                class="success"
+                onclick="responderSAC(${Number(item.id)})"
+              >
+                📤 Enviar resposta
+              </button>
+
+            </div>
+
+          `;
+
+        } else {
+
+          respostaHTML = `
+            <div class="sac-response">
+              ${escapar(
+                item.resposta || "-"
+              )}
+            </div>
+          `;
+
+        }
+
+
+        return `
+
           <tr>
 
             <td>
-              ${escapar(
-                item.parceiro_nome ||
-                item.parceiro_id
-              )}
+              ${escapar(item.id)}
             </td>
 
             <td>
               ${escapar(
-                item.tipo
-              )}
-            </td>
-
-            <td>
-              ${Number(
-                item.pontos || 0
-              )}
-            </td>
-
-            <td>
-              ${formatarMoeda(
-                item.valor
+                item.nome_completo ||
+                item.jogador_id ||
+                "-"
               )}
             </td>
 
             <td>
               ${escapar(
-                item.descricao
+                item.email || "-"
               )}
+            </td>
+
+            <td
+              style="
+                white-space:normal;
+                min-width:280px;
+              "
+            >
+              ${escapar(
+                item.mensagem
+              )}
+            </td>
+
+            <td
+              style="
+                white-space:normal;
+                min-width:280px;
+              "
+            >
+              ${respostaHTML}
+            </td>
+
+            <td>
+
+              <span
+                class="badge ${classeStatus}"
+              >
+                ${textoStatus}
+              </span>
+
             </td>
 
             <td>
@@ -3899,247 +2314,212 @@ async function carregarMovimentacoes() {
             </td>
 
           </tr>
+
         `;
 
-      }
-    );
+      }).join("");
 
-  } catch (erro) {
-
-    console.error(erro);
-
-    corpo.innerHTML = `
-      <tr>
-        <td
-          colspan="6"
-          class="empty">
-          Nenhuma movimentação disponível.
-        </td>
-      </tr>
-    `;
-
-  }
-
-}
-
-
-/* =========================
-   SAC
-========================= */
-
-async function carregarSAC() {
-
-  const loading =
-    document.getElementById(
-      "sacLoading"
-    );
-
-  const tabela =
-    document.getElementById(
-      "sacTable"
-    );
-
-  const corpo =
-    document.getElementById(
-      "sacBody"
-    );
-
-  loading.style.display =
-    "block";
-
-  tabela.style.display =
-    "none";
-
-  corpo.innerHTML = "";
-
-  try {
-
-    const resposta =
-      await fetch(
-        API_URL +
-        "/api/admin/sac"
-      );
-
-    const dados =
-      await resposta.json();
-
-    if (
-      !resposta.ok ||
-      dados.sucesso === false
-    ) {
-
-      throw new Error(
-        dados.mensagem ||
-        dados.erro ||
-        "Erro ao carregar mensagens do SAC."
-      );
-
-    }
-
-    const mensagens =
-      Array.isArray(dados)
-        ? dados
-        : dados.mensagens || [];
-
-    if (!mensagens.length) {
-
-      corpo.innerHTML = `
-        <tr>
-          <td
-            colspan="7"
-            class="empty">
-            Nenhuma mensagem recebida.
-          </td>
-        </tr>
-      `;
-
-    } else {
-
-      mensagens.forEach(
-        mensagem => {
-
-          const status =
-            String(
-              mensagem.status ||
-              "pendente"
-            ).toLowerCase();
-
-          let classeStatus =
-            "badge-warning";
-
-          let textoStatus =
-            "Pendente";
-
-          if (
-            status === "respondida" ||
-            status === "respondido" ||
-            status === "finalizada" ||
-            status === "resolvida"
-          ) {
-
-            classeStatus =
-              "badge-success";
-
-            textoStatus =
-              "Respondida";
-
-          }
-
-          if (
-            status === "cancelada" ||
-            status === "fechada"
-          ) {
-
-            classeStatus =
-              "badge-danger";
-
-            textoStatus =
-              "Fechada";
-
-          }
-
-          corpo.innerHTML += `
-            <tr>
-
-              <td>
-                ${escapar(
-                  mensagem.id
-                )}
-              </td>
-
-              <td>
-                ${escapar(
-                  mensagem.nome_completo ||
-                  mensagem.jogador_id ||
-                  "-"
-                )}
-              </td>
-
-              <td>
-                ${escapar(
-                  mensagem.email ||
-                  "-"
-                )}
-              </td>
-
-              <td class="sac-mensagem">
-                ${escapar(
-                  mensagem.mensagem
-                )}
-              </td>
-
-              <td class="sac-resposta">
-                ${
-                  mensagem.resposta
-                    ? escapar(
-                        mensagem.resposta
-                      )
-                    : "-"
-                }
-              </td>
-
-              <td>
-
-                <span
-                  class="badge ${classeStatus}">
-                  ${textoStatus}
-                </span>
-
-              </td>
-
-              <td>
-                ${formatarData(
-                  mensagem.criado_em
-                )}
-              </td>
-
-            </tr>
-          `;
-
-        }
-      );
-
-    }
-
-    loading.style.display =
-      "none";
-
-    tabela.style.display =
-      "table";
 
   } catch (erro) {
 
     console.error(
-      "Erro ao carregar SAC:",
+      "SAC:",
       erro
     );
 
     corpo.innerHTML = `
       <tr>
-        <td
-          colspan="7"
-          class="empty">
+        <td colspan="7" class="empty">
           Erro ao carregar mensagens do SAC.
         </td>
       </tr>
     `;
-
-    loading.style.display =
-      "none";
-
-    tabela.style.display =
-      "table";
 
   }
 
 }
 
 
-/* =========================
-   INICIAR
-========================= */
+/* =========================================================
+   RESPONDER SAC
+========================================================= */
 
-verificarLogin();
+async function responderSAC(
+  id
+) {
 
-</script></body>
+  const campo =
+    document.getElementById(
+      "respostaSAC_" + id
+    );
+
+
+  if (!campo) {
+
+    return;
+
+  }
+
+
+  const resposta =
+    campo.value.trim();
+
+
+  if (!resposta) {
+
+    alert(
+      "Digite uma resposta antes de enviar."
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    await api(
+      "/api/admin/sac/" +
+      id +
+      "/responder",
+      {
+        method: "PATCH",
+
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
+
+        body:
+          JSON.stringify({
+            resposta:
+              resposta
+          })
+      }
+    );
+
+
+    mostrarMensagem(
+      "Resposta enviada com sucesso.",
+      "success"
+    );
+
+
+    await carregarSAC();
+
+
+  } catch (erro) {
+
+    console.error(
+      "Erro ao responder SAC:",
+      erro
+    );
+
+
+    mostrarMensagem(
+      erro.message ||
+      "Não foi possível enviar a resposta.",
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
+
+function iniciar() {
+
+  const sessao =
+    localStorage.getItem(
+      "quizup_admin"
+    );
+
+
+  if (!sessao) {
+
+    return;
+
+  }
+
+
+  try {
+
+    const admin =
+      JSON.parse(sessao);
+
+
+    document
+      .getElementById(
+        "loginScreen"
+      )
+      .classList.add(
+        "hidden"
+      );
+
+
+    document
+      .getElementById(
+        "adminScreen"
+      )
+      .classList.remove(
+        "hidden"
+      );
+
+
+    document
+      .getElementById(
+        "adminEmail"
+      )
+      .textContent =
+        admin.email || "";
+
+
+    carregarTudo();
+
+
+  } catch (erro) {
+
+    console.error(
+      "Sessão inválida:",
+      erro
+    );
+
+    localStorage.removeItem(
+      "quizup_admin"
+    );
+
+  }
+
+}
+
+
+document
+  .getElementById(
+    "loginSenha"
+  )
+  .addEventListener(
+    "keydown",
+    function(event) {
+
+      if (
+        event.key === "Enter"
+      ) {
+
+        entrar();
+
+      }
+
+    }
+  );
+
+
+iniciar();
+
+</script>
+
+</body>
   </html>
