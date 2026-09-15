@@ -1,25 +1,16 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="clckd" content="b65974febfc087ea7c6fcfd81e4cb265">
-<title>QuizUp</title>
-
-<!-- MONETAG — IN-PAGE PUSH -->
-<script>
+<title>QuizUp</title><!-- MONETAG — IN-PAGE PUSH --><script>
 (function(s){
   s.dataset.zone='11646165';
   s.src='https://nap5k.com/tag.min.js';
 })([document.documentElement,document.body]
   .filter(Boolean).pop()
   .appendChild(document.createElement('script')));
-</script>
-
-<!-- GOOGLE IMA -->
-<script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-
-<style>
+</script><!-- GOOGLE IMA --><script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script><style>
 *{
   box-sizing:border-box
 }
@@ -216,6 +207,64 @@ textarea{
 }
 
 /* =====================================================
+   PREMIUM
+===================================================== */
+
+.premium-card{
+  text-align:center;
+  padding:10px 4px 4px
+}
+
+.premium-icon{
+  font-size:58px;
+  margin-bottom:8px
+}
+
+.premium-title{
+  font-size:30px;
+  font-weight:900;
+  margin:5px 0
+}
+
+.premium-price{
+  font-size:28px;
+  font-weight:900;
+  color:#ffd43b;
+  margin:14px 0 4px
+}
+
+.premium-period{
+  font-size:14px;
+  opacity:.75;
+  margin-bottom:20px
+}
+
+.premium-benefits{
+  text-align:left;
+  background:rgba(0,0,0,.18);
+  border-radius:14px;
+  padding:16px;
+  margin:16px 0
+}
+
+.premium-benefit{
+  padding:9px 0;
+  font-size:16px
+}
+
+.premium-button{
+  width:100%;
+  font-size:18px;
+  padding:16px
+}
+
+.premium-note{
+  margin-top:14px;
+  font-size:12px;
+  opacity:.65
+}
+
+/* =====================================================
    PLAYER VAST — GOOGLE IMA
 ===================================================== */
 
@@ -349,37 +398,20 @@ textarea{
     font-size:16px
   }
 }
-</style>
-</head>
+</style></head><body><!-- MÚSICA --><audio
+id="backgroundMusic"
+preload="auto"
+loop>
 
-<body>
+<source
+src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
+type="audio/mpeg">
 
-<!-- MÚSICA -->
-<audio
-  id="backgroundMusic"
-  preload="auto"
-  loop>
-
-  <source
-    src="92271695364097-EEp6N4KazrX75LzpVPn8Bm.mp3"
-    type="audio/mpeg">
-
-</audio>
-
-<div class="wrap">
-
-<div class="logo">
+</audio><div class="wrap"><div class="logo">
   QuizUp
-</div>
-
-<div class="sub">
+</div><div class="sub">
   🎲 Jogue, responda e acumule pontos
-</div>
-
-<!-- HIGHREVENUEFORMAT -->
-<div class="adbox">
-
-<script>
+</div><!-- HIGHREVENUEFORMAT --><div class="adbox"><script>
 atOptions={
   'key':'827464848b02582093e6b5d45cb10d0a',
   'format':'iframe',
@@ -387,284 +419,178 @@ atOptions={
   'width':320,
   'params':{}
 };
-</script>
-
-<script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
-
-</div>
-
-<!-- AUTENTICAÇÃO -->
-
-<section id="auth" class="card">
-
-<div class="tabs2">
-
-<button
-  class="primary"
-  onclick="authMode('register')">
-  Cadastro
+</script><script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script></div><!-- AUTENTICAÇÃO --><section id="auth" class="card"><div class="tabs2"><button
+class="primary"
+onclick="authMode('register')">
+Cadastro
 </button>
 
 <button
-  class="light"
-  onclick="authMode('login')">
-  Login
+class="light"
+onclick="authMode('login')">
+Login
 </button>
 
-</div>
-
-<div id="registerBox">
-
-<h2>📝 Cadastro</h2>
-
-<label>E-mail</label>
+</div><div id="registerBox"><h2>📝 Cadastro</h2><label>E-mail</label>
 
 <input
-  id="rEmail"
-  type="email"
-  placeholder="Seu e-mail">
+id="rEmail"
+type="email"
+placeholder="Seu e-mail">
 
 <label>Senha</label>
 
 <input
-  id="rPass"
-  type="password"
-  placeholder="Sua senha">
+id="rPass"
+type="password"
+placeholder="Sua senha">
 
 <label>Nome completo</label>
 
 <input
-  id="rName"
-  type="text"
-  placeholder="Seu nome completo">
+id="rName"
+type="text"
+placeholder="Seu nome completo">
 
 <label>CPF</label>
 
 <input
-  id="rCpf"
-  type="text"
-  inputmode="numeric"
-  maxlength="14"
-  placeholder="000.000.000-00">
+id="rCpf"
+type="text"
+inputmode="numeric"
+maxlength="14"
+placeholder="000.000.000-00">
 
 <button
-  class="primary"
-  onclick="register()">
-  Cadastrar
+class="primary"
+onclick="register()">
+Cadastrar
 </button>
 
-<p id="registerMsg" class="small"></p>
-
-</div>
-
-<div id="loginBox" class="hidden">
-
-<h2>🔐 Login</h2>
-
-<label>E-mail</label>
+<p id="registerMsg" class="small"></p></div><div id="loginBox" class="hidden"><h2>🔐 Login</h2><label>E-mail</label>
 
 <input
-  id="lEmail"
-  type="email"
-  placeholder="Seu e-mail">
+id="lEmail"
+type="email"
+placeholder="Seu e-mail">
 
 <label>Senha</label>
 
 <input
-  id="lPass"
-  type="password"
-  placeholder="Sua senha">
+id="lPass"
+type="password"
+placeholder="Sua senha">
 
 <button
-  class="primary"
-  onclick="login()">
-  Entrar
+class="primary"
+onclick="login()">
+Entrar
 </button>
 
-<p id="loginMsg" class="small"></p>
-
-</div>
-
-</section>
-
-<!-- JOGO -->
-
-<section id="game" class="hidden">
-
-<div class="top card">
-
-<div class="stat">
+<p id="loginMsg" class="small"></p></div></section><!-- JOGO --><section id="game" class="hidden"><div class="top card"><div class="stat">
 ⭐ <span id="points">0</span> pontos
-</div>
-
-<div class="stat">
+</div><div class="stat">
 🎲 Rodada <span id="round">1</span>
-</div>
-
-<button
-  class="ghost"
-  onclick="logout()">
-  Sair
+</div><button
+class="ghost"
+onclick="logout()">
+Sair
 </button>
 
-</div>
-
-<div class="nav">
-
-<button
-  class="ghost"
-  onclick="tab('quiz')">
-  🎲 Quiz
+</div><div class="nav"><button
+class="ghost"
+onclick="tab('quiz')">
+🎲 Quiz
 </button>
 
 <button
-  class="ghost"
-  onclick="tab('ref')">
-  🎁 Indicação
+class="ghost"
+onclick="tab('ref')">
+🎁 Indicação
 </button>
 
 <button
-  class="ghost"
-  onclick="tab('cash')">
-  💸 Saque
+class="ghost"
+onclick="tab('cash')">
+💸 Saque
 </button>
 
 <button
-  class="ghost"
-  onclick="tab('sac')">
-  💬 SAC
+class="ghost"
+onclick="tab('sac')">
+💬 SAC
 </button>
 
 <button
-  class="ghost"
-  onclick="tab('premium')">
-  💎 Premium
+class="ghost"
+onclick="tab('premium')">
+💎 Premium
 </button>
 
-</div>
-
-<!-- =====================================================
+</div><!-- =====================================================
      QUIZ
-===================================================== -->
-
-<div id="quizTab">
-
-<div id="rollCard" class="card">
-
-<h2 style="text-align:center">
+===================================================== --><div id="quizTab"><div id="rollCard" class="card"><h2 style="text-align:center">
   Jogue o dado
-</h2>
-
-<div id="dice" class="dice">
+</h2><div id="dice" class="dice">
   🎲
-</div>
-
-<button
-  id="rollButton"
-  class="primary roll"
-  onclick="rollDice()">
-  JOGAR DADO
+</div><button
+id="rollButton"
+class="primary roll"
+onclick="rollDice()">
+JOGAR DADO
 </button>
 
-<p id="diceResult" class="result"></p>
-
-</div>
-
-<div id="questionCard" class="card hidden">
-
-<div class="top">
-
-<b>❓ Pergunta</b>
+<p id="diceResult" class="result"></p></div><div id="questionCard" class="card hidden"><div class="top"><b>❓ Pergunta</b>
 
 <span class="timer">
 ⏱️ <span id="time">10</span>s
-</span>
-
-</div>
-
-<div class="bar">
+</span></div><div class="bar">
   <div id="progress"></div>
-</div>
-
-<h2 id="question"></h2>
-
-<div
+</div><h2 id="question"></h2><div
   id="answers"
   class="answers">
-</div>
-
-<p
+</div><p
   id="feedback"
   class="notice hidden">
-</p>
-
-<div style="
+</p><div style="
 text-align:center;
 font-size:28px;
 font-weight:900;
-margin-top:16px">
-
-⭐ Pontuação:
+margin-top:16px">⭐ Pontuação:
 <span id="totalScore">0</span>
 
-</div>
-
-<!-- ANÚNCIO VAST -->
-
-<div
+</div><!-- ANÚNCIO VAST --><div
   id="quizAdArea"
-  class="hidden">
-
-<div id="quizAdTitle">
+  class="hidden"><div id="quizAdTitle">
   🎬 Assista ao anúncio para continuar
-</div>
-
-<div id="quizAdContainer">
-
-<video
-  id="quizAdVideo"
-  playsinline
-  webkit-playsinline
-  preload="auto">
+</div><div id="quizAdContainer"><video
+id="quizAdVideo"
+playsinline
+webkit-playsinline
+preload="auto">
 </video>
 
 <div id="quizAdLoading">
   Preparando anúncio...
-</div>
-
-<button
-  id="quizAdPlay"
-  class="primary"
-  onclick="startQuizAd()">
+</div><button
+id="quizAdPlay"
+class="primary"
+onclick="startQuizAd()">
 
 ▶️ ASSISTIR ANÚNCIO
 
-</button>
-
-</div>
-
-<div id="quizAdStatus">
+</button></div><div id="quizAdStatus">
   Toque no botão para iniciar o anúncio.
-</div>
-
-<button
-  id="quizAdContinue"
-  class="primary hidden"
-  onclick="finishQuestion()">
+</div><button
+id="quizAdContinue"
+class="primary hidden"
+onclick="finishQuestion()">
 
 CONTINUAR
 
-</button>
-
-</div>
-
-<!-- HIGHREVENUEFORMAT -->
-
-<div
+</button></div><!-- HIGHREVENUEFORMAT --><div
   id="answerAd"
-  class="adbox">
-
-<script>
+  class="adbox"><script>
 atOptions={
   'key':'827464848b02582093e6b5d45cb10d0a',
   'format':'iframe',
@@ -672,227 +598,130 @@ atOptions={
   'width':320,
   'params':{}
 };
-</script>
-
-<script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- =====================================================
+</script><script src="https://www.highrevenueformat.com/827464848b02582093e6b5d45cb10d0a/invoke.js"></script></div></div></div><!-- =====================================================
      INDICAÇÃO
-===================================================== -->
-
-<div
+===================================================== --><div
   id="refTab"
-  class="hidden card">
-
-<h2>🎁 Indicação</h2>
-
-<p>
+  class="hidden card"><h2>🎁 Indicação</h2><p>
 Ganhe <b>50 pontos</b> quando seu convidado atingir
 <b>300 pontos</b>.
-</p>
-
-<input id="refCode" readonly>
-
-<input id="refLink" readonly>
-
-<button
-  class="primary"
-  onclick="copyRef()">
-  Copiar link
+</p><input id="refCode" readonly><input id="refLink" readonly><button
+class="primary"
+onclick="copyRef()">
+Copiar link
 </button>
 
 <button
-  class="light"
-  onclick="shareRef()">
-  Enviar link
+class="light"
+onclick="shareRef()">
+Enviar link
 </button>
 
-<p id="refMsg"></p>
-
-</div>
-
-<!-- =====================================================
+<p id="refMsg"></p></div><!-- =====================================================
      SAQUE
-===================================================== -->
-
-<div
+===================================================== --><div
   id="cashTab"
-  class="hidden card">
-
-<h2>💸 Saque</h2>
-
-<div class="notice">
-
-<b>Valores:</b><br>
+  class="hidden card"><h2>💸 Saque</h2><div class="notice"><b>Valores:</b><br>
 
 2.000 pontos → R$ 1,00<br>
 6.000 pontos → R$ 5,00<br>
 11.000 pontos → R$ 10,00
 
-</div>
-
-<select
-  id="payMethod"
-  onchange="payFields()">
+</div><select
+id="payMethod"
+onchange="payFields()">
 
 <option value="pix">
   Pix
-</option>
-
-<option value="paypal">
+</option><option value="paypal">
   PayPal
-</option>
+</option></select><div id="pix"><input
+id="pixKey"
+placeholder="Chave Pix">
 
-</select>
+</div><div id="paypal" class="hidden"><input
+id="paypalKey"
+type="email"
+placeholder="E-mail PayPal">
 
-<div id="pix">
-
-<input
-  id="pixKey"
-  placeholder="Chave Pix">
-
-</div>
-
-<div id="paypal" class="hidden">
-
-<input
-  id="paypalKey"
-  type="email"
-  placeholder="E-mail PayPal">
-
-</div>
-
-<select id="withdrawAmount">
-
-<option value="1">
+</div><select id="withdrawAmount"><option value="1">
 R$ 1,00 — 2.000 pontos
-</option>
-
-<option value="5">
+</option><option value="5">
 R$ 5,00 — 6.000 pontos
-</option>
-
-<option value="10">
+</option><option value="10">
 R$ 10,00 — 11.000 pontos
-</option>
-
-</select>
-
-<button
-  class="primary"
-  onclick="withdraw()">
+</option></select><button
+class="primary"
+onclick="withdraw()">
 
 Solicitar saque
 
-</button>
-
-<p
+</button><p
   id="cashMsg"
   class="notice hidden">
-</p>
-
-<p class="small">
+</p><p class="small">
 Nesta versão o saque é registrado.
-</p>
-
-</div>
-
-<!-- =====================================================
+</p></div><!-- =====================================================
      SAC
-===================================================== -->
-
-<div
+===================================================== --><div
   id="sacTab"
-  class="hidden card">
-
-<h2>💬 Atendimento</h2>
-
-<p>
+  class="hidden card"><h2>💬 Atendimento</h2><p>
 Envie sua mensagem para a equipe do QuizUp.
 Quando houver uma resposta, ela aparecerá aqui.
-</p>
-
-<div class="notice">
-
-<b>Conta:</b>
+</p><div class="notice"><b>Conta:</b>
 <span id="sacAccount"></span>
 
-</div>
-
-<label>
+</div><label>
 Mensagem
-</label>
-
-<textarea
+</label><textarea
   id="sacMessage"
   maxlength="2000"
-  placeholder="Digite sua mensagem para a equipe do QuizUp..."></textarea>
-
-<div class="sac-actions">
-
-<button
-  id="sendSacButton"
-  class="primary"
-  onclick="enviarSAC()">
+  placeholder="Digite sua mensagem para a equipe do QuizUp..."></textarea><div class="sac-actions"><button
+id="sendSacButton"
+class="primary"
+onclick="enviarSAC()">
 
 Enviar mensagem
 
-</button>
-
-<button
-  class="light"
-  onclick="carregarHistoricoSAC()">
+</button><button
+class="light"
+onclick="carregarHistoricoSAC()">
 
 🔄 Atualizar
 
-</button>
-
-</div>
-
-<p
+</button></div><p
   id="sacSendMsg"
   class="notice hidden">
-</p>
-
-<div id="sacHistory"></div>
-
-</div>
-
-<!-- =====================================================
+</p><div id="sacHistory"></div></div><!-- =====================================================
      PREMIUM
-===================================================== -->
-
-<div
+===================================================== --><div
   id="premiumTab"
-  class="hidden card">
+  class="hidden card"><div class="premium-card"><div class="premium-icon">
+  💎
+</div><div class="premium-title">
+  QuizUp Premium
+</div><div class="premium-price">
+  R$ 9,99
+</div><div class="premium-period">
+  por mês
+</div><div class="premium-benefits"><div class="premium-benefit">
+  🚫 Sem anúncios de vídeo
+</div><div class="premium-benefit">
+  🚫 Sem anúncios de jogos
+</div><div class="premium-benefit">
+  🎲 Continue jogando normalmente e acumulando pontos
+</div></div><button
+class="primary premium-button"
+onclick="assinarPremium()">
 
-<h2>💎 Premium</h2>
+💎 Assinar Premium — R$ 9,99/mês
 
-<p>
-Área Premium preparada para receber benefícios do QuizUp.
-</p>
-
-<button
-  class="primary"
-  onclick="alert('O pagamento Premium ainda será conectado.')">
-
-Quero ser Premium
-
-</button>
-
-</div>
-
-</section>
-
-</div>
-
-<script>
+</button><p class="premium-note">
+  Assinatura mensal. O pagamento será conectado nesta próxima etapa.
+</p><p
+  id="premiumMsg"
+  class="small">
+</p></div></div></section></div><script>
 
 /* =====================================================
    CONFIGURAÇÕES
@@ -1483,7 +1312,8 @@ recentQuestions:[],
 timer:QUESTION_TIME,
 answered:false,
 roundPoints:0,
-sacIds:[]
+sacIds:[],
+premium:false
 };
 
 let handle=null;
@@ -1593,7 +1423,8 @@ recentQuestions:[],
 timer:QUESTION_TIME,
 answered:false,
 roundPoints:0,
-sacIds:[]
+sacIds:[],
+premium:false
 };
 
 save();
@@ -1658,6 +1489,10 @@ s=account;
 
 if(!Array.isArray(s.sacIds)){
 s.sacIds=[];
+}
+
+if(typeof s.premium!=="boolean"){
+s.premium=false;
 }
 
 openGame();
@@ -1804,6 +1639,74 @@ ui();
 carregarHistoricoSAC();
 
 }
+
+if(x==="premium"){
+
+atualizarPremium();
+
+}
+
+}
+
+
+/* =====================================================
+   PREMIUM
+===================================================== */
+
+function atualizarPremium(){
+
+const msg=
+document.getElementById("premiumMsg");
+
+const botao=
+document.querySelector(
+"#premiumTab .premium-button"
+);
+
+if(!msg || !botao){
+return;
+}
+
+if(s.premium){
+
+botao.textContent=
+"💎 Premium ativo";
+
+botao.disabled=true;
+
+msg.textContent=
+"Seu Premium está ativo.";
+
+}else{
+
+botao.textContent=
+"💎 Assinar Premium — R$ 9,99/mês";
+
+botao.disabled=false;
+
+msg.textContent="";
+
+}
+
+}
+
+
+function assinarPremium(){
+
+const msg=
+document.getElementById("premiumMsg");
+
+if(s.premium){
+
+msg.textContent=
+"Seu Premium já está ativo.";
+
+return;
+
+}
+
+msg.textContent=
+"O pagamento Premium será conectado nesta próxima etapa.";
 
 }
 
@@ -2696,6 +2599,12 @@ s.sacIds=[];
 
 }
 
+if(typeof s.premium!=="boolean"){
+
+s.premium=false;
+
+}
+
 openGame();
 
 }
@@ -2728,7 +2637,5 @@ resetQuizAd();
 
 });
 
-</script>
-
-</body>
+</script></body>
   </html>
