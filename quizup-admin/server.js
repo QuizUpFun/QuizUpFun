@@ -61,10 +61,6 @@ app.get("/api/test-db", async (req, res) => {
 async function prepararBanco() {
   try {
 
-    // =================================================
-    // ADMINS
-    // =================================================
-
     await pool.query(`
       CREATE TABLE IF NOT EXISTS admins (
         id SERIAL PRIMARY KEY,
@@ -76,10 +72,6 @@ async function prepararBanco() {
     `);
 
     console.log("Tabela admins pronta.");
-
-    // =================================================
-    // JOGADORES
-    // =================================================
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS jogadores (
@@ -97,10 +89,6 @@ async function prepararBanco() {
 
     console.log("Tabela jogadores verificada.");
 
-    // =================================================
-    // PERGUNTAS
-    // =================================================
-
     await pool.query(`
       CREATE TABLE IF NOT EXISTS perguntas (
         id SERIAL PRIMARY KEY,
@@ -117,14 +105,6 @@ async function prepararBanco() {
 
     console.log("Tabela perguntas verificada.");
 
-    // =================================================
-    // PARCEIROS
-    // IMPORTANTE:
-    // A TABELA EXISTENTE NO AIVEN USA:
-    // saldo
-    // ativo
-    // =================================================
-
     await pool.query(`
       CREATE TABLE IF NOT EXISTS parceiros (
         id SERIAL PRIMARY KEY,
@@ -139,10 +119,6 @@ async function prepararBanco() {
     `);
 
     console.log("Tabela parceiros verificada.");
-
-    // =================================================
-    // MOVIMENTAÇÕES DOS PARCEIROS
-    // =================================================
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS movimentacoes_parceiros (
@@ -160,10 +136,6 @@ async function prepararBanco() {
       "Tabela movimentacoes_parceiros verificada."
     );
 
-    // =================================================
-    // SAQUES
-    // =================================================
-
     await pool.query(`
       CREATE TABLE IF NOT EXISTS saques (
         id SERIAL PRIMARY KEY,
@@ -180,10 +152,6 @@ async function prepararBanco() {
 
     console.log("Tabela saques verificada.");
 
-    // =================================================
-    // MONETAG
-    // =================================================
-
     await pool.query(`
       CREATE TABLE IF NOT EXISTS monetag_relatorios (
         id SERIAL PRIMARY KEY,
@@ -198,10 +166,6 @@ async function prepararBanco() {
     console.log(
       "Tabela monetag_relatorios verificada."
     );
-
-    // =================================================
-    // SAC
-    // =================================================
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS sac_mensagens (
@@ -1257,9 +1221,6 @@ app.put(
         pontos
       } = req.body;
 
-      // Aceita tanto os nomes novos quanto
-      // os nomes antigos enviados pelo painel.
-
       const saldo =
         req.body.saldo !== undefined
           ? req.body.saldo
@@ -1523,10 +1484,6 @@ app.post(
             item.cpm || 0
           );
 
-        // ---------------------------------------------
-        // VERIFICAR SE O MESMO RELATÓRIO JÁ EXISTE
-        // ---------------------------------------------
-
         const existente =
           await pool.query(
             `
@@ -1555,40 +1512,30 @@ app.post(
           continue;
         }
 
-        // ---------------------------------------------
-        // SALVAR RELATÓRIO
-        // ---------------------------------------------
-
-        const inserido =
-          await pool.query(
-            `
-            INSERT INTO monetag_relatorios (
-              data,
-              impressoes,
-              profit,
-              cpm
-            )
-            VALUES (
-              $1,
-              $2,
-              $3,
-              $4
-            )
-            RETURNING id
-            `,
-            [
-              data,
-              impressoes,
-              profit,
-              cpm
-            ]
-          );
+        await pool.query(
+          `
+          INSERT INTO monetag_relatorios (
+            data,
+            impressoes,
+            profit,
+            cpm
+          )
+          VALUES (
+            $1,
+            $2,
+            $3,
+            $4
+          )
+          `,
+          [
+            data,
+            impressoes,
+            profit,
+            cpm
+          ]
+        );
 
         importados++;
-
-        // ---------------------------------------------
-        // SE HOUVER RECEITA REAL
-        // ---------------------------------------------
 
         if (
           profit > 0
@@ -1613,10 +1560,6 @@ app.post(
             const parceiroId =
               parceiro.rows[0].id;
 
-            // -----------------------------------------
-            // SOMAR RECEITA AO SALDO DO MONETAG
-            // -----------------------------------------
-
             await pool.query(
               `
               UPDATE parceiros
@@ -1629,10 +1572,6 @@ app.post(
                 parceiroId
               ]
             );
-
-            // -----------------------------------------
-            // REGISTRAR MOVIMENTAÇÃO
-            // -----------------------------------------
 
             const descricao =
               data
@@ -1971,10 +1910,6 @@ app.post(
         ? String(nome_completo).trim()
         : null;
 
-      // -----------------------------------------------
-      // TENTA LOCALIZAR PELO E-MAIL
-      // -----------------------------------------------
-
       if (
         !jogador_id &&
         email
@@ -2010,10 +1945,6 @@ app.post(
         }
       }
 
-      // -----------------------------------------------
-      // TENTA LOCALIZAR PELO ID
-      // -----------------------------------------------
-
       if (jogador_id) {
 
         const jogador =
@@ -2044,10 +1975,6 @@ app.post(
             jogador.rows[0].nome_completo;
         }
       }
-
-      // -----------------------------------------------
-      // SALVAR
-      // -----------------------------------------------
 
       const resultado =
         await pool.query(
