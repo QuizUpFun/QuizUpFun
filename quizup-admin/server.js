@@ -34,6 +34,7 @@ app.get("/", (req, res) => {
 
 app.get("/api/test-db", async (req, res) => {
   try {
+
     const resultado = await pool.query(
       "SELECT NOW() AS agora"
     );
@@ -45,6 +46,7 @@ app.get("/api/test-db", async (req, res) => {
     });
 
   } catch (erro) {
+
     console.error("Erro no banco:", erro);
 
     res.status(500).json({
@@ -83,8 +85,27 @@ async function prepararBanco() {
         codigo_indicacao VARCHAR(100),
         pontos INTEGER DEFAULT 0,
         equilibrio NUMERIC(12,2) DEFAULT 0,
+        premium_ativo BOOLEAN DEFAULT FALSE,
+        premium_expira_em TIMESTAMP,
+        hotmart_subscription_id TEXT,
         criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
+    `);
+
+    // Caso a tabela jogadores já existisse antes do Premium
+    await pool.query(`
+      ALTER TABLE jogadores
+      ADD COLUMN IF NOT EXISTS premium_ativo BOOLEAN DEFAULT FALSE
+    `);
+
+    await pool.query(`
+      ALTER TABLE jogadores
+      ADD COLUMN IF NOT EXISTS premium_expira_em TIMESTAMP
+    `);
+
+    await pool.query(`
+      ALTER TABLE jogadores
+      ADD COLUMN IF NOT EXISTS hotmart_subscription_id TEXT
     `);
 
     console.log("Tabela jogadores verificada.");
@@ -206,6 +227,7 @@ async function atualizarSaldoHilltopAds() {
   try {
 
     if (!process.env.HILLTOPADS_API_KEY) {
+
       console.log(
         "HILLTOPADS_API_KEY não configurada."
       );
@@ -229,6 +251,7 @@ async function atualizarSaldoHilltopAds() {
     );
 
     if (!resposta.ok) {
+
       console.log(
         "Não foi possível atualizar o saldo HilltopAds."
       );
@@ -280,6 +303,449 @@ async function atualizarSaldoHilltopAds() {
 }
 
 // =====================================================
+// HOTMART PREMIUM
+// =====================================================
+
+// Procura um valor em qualquer nível do payload.
+// Isso deixa o webhook mais resistente a pequenas
+// diferenças no formato enviado pela Hotmart.
+
+function encontrarValor(obj, chaves) {
+
+  if (!obj || typeof obj !== "object") {
+    return null;
+  }
+
+  for (const chave of chaves) {
+
+    if (
+      Object.prototype.hasOwnProperty.call(
+        obj,
+        chave
+      )
+    ) {
+
+      const valor = obj[chave];
+
+      if (
+        valor !== null &&
+        valor !== undefined &&
+        valor !== ""
+      ) {
+        return valor;
+      }
+    }
+  }
+
+  for (const chave of Object.keys(obj)) {
+
+    const valor = obj[chave];
+
+    if (
+      valor &&
+      typeof valor === "object"
+    ) {
+
+      const encontrado =
+        encontrarValor(
+          valor,
+          chaves
+        );
+
+      if (
+        encontrado !== null &&
+        encontrado !== undefined
+      ) {
+        return encontrado;
+      }
+    }
+  }
+
+  return null;
+}
+
+// =====================================================
+// HOTMART WEBHOOK
+// =====================================================
+
+app.post(
+  "/api/hotmart/webhook",
+  async (req, res) => {
+
+    try {
+
+      console.log(
+        "======================================"
+      );
+
+      console.log(
+        "HOTMART WEBHOOK RECEBIDO"
+      );
+
+      console.log(
+        "======================================"
+      );
+
+      const tokenRecebido =
+        req.headers["x-hotmart-hottok"] ||
+        req.headers["x-hotmart-token"] ||
+        req.headers["authorization"] ||
+        "";
+
+      const tokenConfigurado =
+        process.env.HOTMART_WEBHOOK_TOKEN || "";
+
+      // Se o token estiver configurado no Render,
+      // valida a chamada da Hotmart.
+      if (tokenConfigurado) {
+
+        const tokenTexto =
+          String(tokenRecebido)
+            .replace(/^Bearer\s+/i, "")
+            .trim();
+
+        if (
+          tokenTexto !==
+          String(tokenConfigurado).trim()
+        ) {
+
+          console.error(
+            "Webhook Hotmart recusado: token inválido."
+          );
+
+          return res.status(401).json({
+            sucesso: false,
+            erro: "Webhook não autorizado."
+          });
+        }
+      }
+
+      const payload = req.body || {};
+
+      console.log(
+        "Payload Hotmart recebido."
+      );
+
+      // -------------------------------------------------
+      // EVENTO
+      // -------------------------------------------------
+
+      let evento =
+        payload.event ||
+        payload.event_type ||
+        payload.type ||
+        "";
+
+      evento =
+        String(evento)
+          .trim()
+          .toUpperCase();
+
+      // -------------------------------------------------
+      // E-MAIL DO COMPRADOR
+      // -------------------------------------------------
+
+      let email =
+        encontrarValor(
+          payload,
+          [
+            "email",
+            "buyer_email"
+          ]
+        );
+
+      if (email) {
+
+        email =
+          String(email)
+            .trim()
+            .toLowerCase();
+      }
+
+      // -------------------------------------------------
+      // ID DA ASSINATURA
+      // -------------------------------------------------
+
+      let subscriptionId =
+        encontrarValor(
+          payload,
+          [
+            "subscription_id",
+            "subscriber_code",
+            "subscriberCode"
+          ]
+        );
+
+      if (
+        subscriptionId !== null &&
+        subscriptionId !== undefined
+      ) {
+
+        subscriptionId =
+          String(subscriptionId);
+      }
+
+      console.log(
+        "Evento Hotmart:",
+        evento
+      );
+
+      console.log(
+        "E-mail Hotmart:",
+        email
+      );
+
+      console.log(
+        "Assinatura Hotmart:",
+        subscriptionId
+      );
+
+      // -------------------------------------------------
+      // EVENTOS QUE ATIVAM PREMIUM
+      // -------------------------------------------------
+
+      const eventosAtivacao = [
+        "PURCHASE_APPROVED",
+        "PURCHASE_COMPLETE",
+        "SUBSCRIPTION_REACTIVATED"
+      ];
+
+      // -------------------------------------------------
+      // EVENTOS QUE DESATIVAM PREMIUM
+      // -------------------------------------------------
+
+      const eventosDesativacao = [
+        "PURCHASE_CANCELED",
+        "PURCHASE_REFUNDED",
+        "PURCHASE_CHARGEBACK",
+        "CHARGEBACK",
+        "SUBSCRIPTION_CANCELLATION",
+        "SUBSCRIPTION_CANCELLED",
+        "SUBSCRIPTION_CANCELED"
+      ];
+
+      // Pedido de reembolso não desativa imediatamente.
+      // A desativação ocorre quando houver cancelamento,
+      // reembolso efetivado ou chargeback.
+
+      // -------------------------------------------------
+      // ATIVAR PREMIUM
+      // -------------------------------------------------
+
+      if (
+        eventosAtivacao.includes(evento)
+      ) {
+
+        if (!email) {
+
+          console.error(
+            "Hotmart: e-mail do comprador não encontrado."
+          );
+
+          return res.status(200).json({
+            sucesso: true,
+            processado: false,
+            mensagem:
+              "Webhook recebido, mas e-mail não encontrado."
+          });
+        }
+
+        const resultado =
+          await pool.query(
+            `
+            UPDATE jogadores
+            SET
+              premium_ativo = TRUE,
+              premium_expira_em = NULL,
+              hotmart_subscription_id =
+                COALESCE($1, hotmart_subscription_id)
+            WHERE LOWER(email) = LOWER($2)
+            RETURNING
+              id,
+              nome_completo,
+              email,
+              premium_ativo,
+              premium_expira_em,
+              hotmart_subscription_id
+            `,
+            [
+              subscriptionId,
+              email
+            ]
+          );
+
+        if (
+          resultado.rows.length === 0
+        ) {
+
+          console.error(
+            "Hotmart: jogador não encontrado pelo e-mail:",
+            email
+          );
+
+          return res.status(200).json({
+            sucesso: true,
+            processado: false,
+            mensagem:
+              "Webhook recebido, mas jogador não encontrado."
+          });
+        }
+
+        console.log(
+          "PREMIUM ATIVADO:",
+          resultado.rows[0]
+        );
+
+        return res.status(200).json({
+          sucesso: true,
+          processado: true,
+          premium: true
+        });
+      }
+
+      // -------------------------------------------------
+      // DESATIVAR PREMIUM
+      // -------------------------------------------------
+
+      if (
+        eventosDesativacao.includes(evento)
+      ) {
+
+        if (!email && !subscriptionId) {
+
+          console.error(
+            "Hotmart: não foi possível identificar o comprador."
+          );
+
+          return res.status(200).json({
+            sucesso: true,
+            processado: false,
+            mensagem:
+              "Webhook recebido, mas comprador não identificado."
+          });
+        }
+
+        let resultado;
+
+        if (subscriptionId) {
+
+          resultado =
+            await pool.query(
+              `
+              UPDATE jogadores
+              SET
+                premium_ativo = FALSE,
+                premium_expira_em = CURRENT_TIMESTAMP
+              WHERE hotmart_subscription_id = $1
+              RETURNING
+                id,
+                nome_completo,
+                email,
+                premium_ativo,
+                premium_expira_em
+              `,
+              [
+                subscriptionId
+              ]
+            );
+        }
+
+        if (
+          !resultado ||
+          resultado.rows.length === 0
+        ) {
+
+          if (email) {
+
+            resultado =
+              await pool.query(
+                `
+                UPDATE jogadores
+                SET
+                  premium_ativo = FALSE,
+                  premium_expira_em =
+                    CURRENT_TIMESTAMP
+                WHERE LOWER(email) =
+                      LOWER($1)
+                RETURNING
+                  id,
+                  nome_completo,
+                  email,
+                  premium_ativo,
+                  premium_expira_em
+                `,
+                [
+                  email
+                ]
+              );
+          }
+        }
+
+        if (
+          !resultado ||
+          resultado.rows.length === 0
+        ) {
+
+          console.error(
+            "Hotmart: jogador não encontrado para desativação."
+          );
+
+          return res.status(200).json({
+            sucesso: true,
+            processado: false,
+            mensagem:
+              "Webhook recebido, mas jogador não encontrado."
+          });
+        }
+
+        console.log(
+          "PREMIUM DESATIVADO:",
+          resultado.rows[0]
+        );
+
+        return res.status(200).json({
+          sucesso: true,
+          processado: true,
+          premium: false
+        });
+      }
+
+      // -------------------------------------------------
+      // OUTROS EVENTOS
+      // -------------------------------------------------
+
+      console.log(
+        "Evento Hotmart recebido sem alteração de Premium:",
+        evento
+      );
+
+      return res.status(200).json({
+        sucesso: true,
+        processado: false,
+        evento
+      });
+
+    } catch (erro) {
+
+      console.error(
+        "ERRO NO WEBHOOK HOTMART:",
+        erro
+      );
+
+      // Retornamos 200 somente quando conseguimos
+      // receber/processar a notificação de forma segura.
+      // Em caso de erro interno, 500 permite que a Hotmart
+      // tente novamente.
+      return res.status(500).json({
+        sucesso: false,
+        erro:
+          "Erro interno ao processar webhook Hotmart."
+      });
+    }
+  }
+);
+
+// =====================================================
 // LOGIN ADMIN
 // =====================================================
 
@@ -299,21 +765,24 @@ app.post("/api/admin/login", async (req, res) => {
       });
     }
 
-    const resultado = await pool.query(
-      `
-      SELECT
-        id,
-        nome,
-        email,
-        senha
-      FROM admins
-      WHERE LOWER(email) = LOWER($1)
-      LIMIT 1
-      `,
-      [email]
-    );
+    const resultado =
+      await pool.query(
+        `
+        SELECT
+          id,
+          nome,
+          email,
+          senha
+        FROM admins
+        WHERE LOWER(email) = LOWER($1)
+        LIMIT 1
+        `,
+        [email]
+      );
 
-    if (resultado.rows.length === 0) {
+    if (
+      resultado.rows.length === 0
+    ) {
 
       return res.status(401).json({
         sucesso: false,
@@ -321,7 +790,8 @@ app.post("/api/admin/login", async (req, res) => {
       });
     }
 
-    const admin = resultado.rows[0];
+    const admin =
+      resultado.rows[0];
 
     let senhaCorreta = false;
 
@@ -444,6 +914,9 @@ app.get("/api/admin/jogadores", async (req, res) => {
           codigo_indicacao,
           pontos,
           equilibrio,
+          premium_ativo,
+          premium_expira_em,
+          hotmart_subscription_id,
           criado_em
         FROM jogadores
         ORDER BY id DESC
@@ -451,7 +924,8 @@ app.get("/api/admin/jogadores", async (req, res) => {
 
     res.json({
       sucesso: true,
-      jogadores: resultado.rows
+      jogadores:
+        resultado.rows
     });
 
   } catch (erro) {
@@ -463,7 +937,8 @@ app.get("/api/admin/jogadores", async (req, res) => {
 
     res.status(500).json({
       sucesso: false,
-      erro: "Erro ao carregar jogadores."
+      erro:
+        "Erro ao carregar jogadores."
     });
   }
 });
@@ -504,7 +979,8 @@ app.get(
 
       res.json({
         sucesso: true,
-        jogador: resultado.rows[0]
+        jogador:
+          resultado.rows[0]
       });
 
     } catch (erro) {
@@ -516,7 +992,8 @@ app.get(
 
       res.status(500).json({
         sucesso: false,
-        erro: "Erro ao consultar jogador."
+        erro:
+          "Erro ao consultar jogador."
       });
     }
   }
@@ -548,11 +1025,16 @@ app.put(
           `
           UPDATE jogadores
           SET
-            nome_completo = COALESCE($1, nome_completo),
-            email = COALESCE($2, email),
-            cpf = COALESCE($3, cpf),
-            pontos = COALESCE($4, pontos),
-            equilibrio = COALESCE($5, equilibrio)
+            nome_completo =
+              COALESCE($1, nome_completo),
+            email =
+              COALESCE($2, email),
+            cpf =
+              COALESCE($3, cpf),
+            pontos =
+              COALESCE($4, pontos),
+            equilibrio =
+              COALESCE($5, equilibrio)
           WHERE id = $6
           RETURNING *
           `,
@@ -578,7 +1060,8 @@ app.put(
 
       res.json({
         sucesso: true,
-        jogador: resultado.rows[0]
+        jogador:
+          resultado.rows[0]
       });
 
     } catch (erro) {
@@ -590,7 +1073,8 @@ app.put(
 
       res.status(500).json({
         sucesso: false,
-        erro: "Erro ao atualizar jogador."
+        erro:
+          "Erro ao atualizar jogador."
       });
     }
   }
@@ -670,7 +1154,8 @@ app.post(
             cpf,
             codigo_indicacao,
             pontos,
-            equilibrio
+            equilibrio,
+            premium_ativo
           )
           VALUES (
             $1,
@@ -679,7 +1164,8 @@ app.post(
             $4,
             $5,
             0,
-            0
+            0,
+            FALSE
           )
           RETURNING
             id,
@@ -689,6 +1175,9 @@ app.post(
             codigo_indicacao,
             pontos,
             equilibrio,
+            premium_ativo,
+            premium_expira_em,
+            hotmart_subscription_id,
             criado_em
           `,
           [
@@ -702,7 +1191,8 @@ app.post(
 
       res.json({
         sucesso: true,
-        jogador: resultado.rows[0]
+        jogador:
+          resultado.rows[0]
       });
 
     } catch (erro) {
@@ -822,7 +1312,8 @@ app.post(
 
         return res.status(400).json({
           sucesso: false,
-          erro: "Preencha todos os campos."
+          erro:
+            "Preencha todos os campos."
         });
       }
 
@@ -911,7 +1402,8 @@ app.get(
 
       res.json({
         sucesso: true,
-        perguntas: resultado.rows
+        perguntas:
+          resultado.rows
       });
 
     } catch (erro) {
@@ -1136,7 +1628,8 @@ app.get(
 
       res.json({
         sucesso: true,
-        perguntas: resultado.rows
+        perguntas:
+          resultado.rows
       });
 
     } catch (erro) {
@@ -1182,7 +1675,8 @@ app.get(
 
       res.json({
         sucesso: true,
-        parceiros: resultado.rows
+        parceiros:
+          resultado.rows
       });
 
     } catch (erro) {
@@ -1234,6 +1728,7 @@ app.put(
       if (
         typeof ativo === "string"
       ) {
+
         ativo =
           ativo.toLowerCase() === "ativo" ||
           ativo.toLowerCase() === "true";
@@ -1335,6 +1830,7 @@ app.post(
       if (
         typeof ativo === "string"
       ) {
+
         ativo =
           ativo.toLowerCase() === "ativo" ||
           ativo.toLowerCase() === "true";
@@ -1671,7 +2167,8 @@ app.get(
 
       res.json({
         sucesso: true,
-        movimentacoes: resultado.rows
+        movimentacoes:
+          resultado.rows
       });
 
     } catch (erro) {
