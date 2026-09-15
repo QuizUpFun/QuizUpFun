@@ -59,7 +59,6 @@ app.get("/api/test-db", async (req, res) => {
 // =====================================================
 
 async function prepararBanco() {
-
   try {
 
     // =================================================
@@ -120,6 +119,10 @@ async function prepararBanco() {
 
     // =================================================
     // PARCEIROS
+    // IMPORTANTE:
+    // A TABELA EXISTENTE NO AIVEN USA:
+    // saldo
+    // ativo
     // =================================================
 
     await pool.query(`
@@ -129,8 +132,8 @@ async function prepararBanco() {
         email VARCHAR(255),
         codigo VARCHAR(100),
         pontos INTEGER DEFAULT 0,
-        valor NUMERIC(12,2) DEFAULT 0,
-        status VARCHAR(30) DEFAULT 'ativo',
+        saldo NUMERIC(12,2) DEFAULT 0,
+        ativo BOOLEAN DEFAULT TRUE,
         criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
@@ -153,7 +156,9 @@ async function prepararBanco() {
       )
     `);
 
-    console.log("Tabela movimentacoes_parceiros verificada.");
+    console.log(
+      "Tabela movimentacoes_parceiros verificada."
+    );
 
     // =================================================
     // SAQUES
@@ -190,7 +195,9 @@ async function prepararBanco() {
       )
     `);
 
-    console.log("Tabela monetag_relatorios verificada.");
+    console.log(
+      "Tabela monetag_relatorios verificada."
+    );
 
     // =================================================
     // SAC
@@ -210,7 +217,9 @@ async function prepararBanco() {
       )
     `);
 
-    console.log("Tabela sac_mensagens verificada.");
+    console.log(
+      "Tabela sac_mensagens verificada."
+    );
 
     console.log("Banco preparado.");
 
@@ -230,8 +239,15 @@ async function prepararBanco() {
 // =====================================================
 
 async function atualizarSaldoHilltopAds() {
-
   try {
+
+    if (!process.env.HILLTOPADS_API_KEY) {
+      console.log(
+        "HILLTOPADS_API_KEY não configurada."
+      );
+
+      return;
+    }
 
     const resposta = await fetch(
       "https://hilltopads.com/api/v1/publisher/balance",
@@ -249,6 +265,10 @@ async function atualizarSaldoHilltopAds() {
     );
 
     if (!resposta.ok) {
+      console.log(
+        "Não foi possível atualizar o saldo HilltopAds."
+      );
+
       return;
     }
 
@@ -271,12 +291,14 @@ async function atualizarSaldoHilltopAds() {
 
     if (saldo !== null) {
 
-      await pool.query(`
+      await pool.query(
+        `
         UPDATE parceiros
-        SET valor = $1
-        WHERE LOWER(nome) LIKE '%hilltop%'
-           OR LOWER(email) LIKE '%hilltop%'
-      `, [saldo]);
+        SET saldo = $1
+        WHERE UPPER(codigo) = 'HILLTOP'
+        `,
+        [saldo]
+      );
 
       console.log(
         "Saldo HilltopAds salvo:",
@@ -298,7 +320,6 @@ async function atualizarSaldoHilltopAds() {
 // =====================================================
 
 app.post("/api/admin/login", async (req, res) => {
-
   try {
 
     const {
@@ -390,7 +411,6 @@ app.post("/api/admin/login", async (req, res) => {
 // =====================================================
 
 app.get("/api/admin/dashboard", async (req, res) => {
-
   try {
 
     const jogadores =
@@ -448,7 +468,6 @@ app.get("/api/admin/dashboard", async (req, res) => {
 // =====================================================
 
 app.get("/api/admin/jogadores", async (req, res) => {
-
   try {
 
     const resultado =
@@ -617,193 +636,203 @@ app.put(
 // REGISTRO DO JOGADOR
 // =====================================================
 
-app.post("/api/jogadores/registrar", async (req, res) => {
+app.post(
+  "/api/jogadores/registrar",
+  async (req, res) => {
 
-  try {
+    try {
 
-    const {
-      nome_completo,
-      email,
-      senha,
-      cpf,
-      codigo_indicacao
-    } = req.body;
+      const {
+        nome_completo,
+        email,
+        senha,
+        cpf,
+        codigo_indicacao
+      } = req.body;
 
-    if (
-      !nome_completo ||
-      !email ||
-      !senha ||
-      !cpf
-    ) {
+      if (
+        !nome_completo ||
+        !email ||
+        !senha ||
+        !cpf
+      ) {
 
-      return res.status(400).json({
-        sucesso: false,
-        erro: "Preencha todos os campos obrigatórios."
+        return res.status(400).json({
+          sucesso: false,
+          erro:
+            "Preencha todos os campos obrigatórios."
+        });
+      }
+
+      const existente =
+        await pool.query(
+          `
+          SELECT id
+          FROM jogadores
+          WHERE LOWER(email) = LOWER($1)
+             OR cpf = $2
+          LIMIT 1
+          `,
+          [
+            email,
+            cpf
+          ]
+        );
+
+      if (
+        existente.rows.length > 0
+      ) {
+
+        return res.status(400).json({
+          sucesso: false,
+          erro:
+            "E-mail ou CPF já cadastrado."
+        });
+      }
+
+      const senhaHash =
+        await bcrypt.hash(
+          senha,
+          10
+        );
+
+      const resultado =
+        await pool.query(
+          `
+          INSERT INTO jogadores (
+            nome_completo,
+            email,
+            senha,
+            cpf,
+            codigo_indicacao,
+            pontos,
+            equilibrio
+          )
+          VALUES (
+            $1,
+            $2,
+            $3,
+            $4,
+            $5,
+            0,
+            0
+          )
+          RETURNING
+            id,
+            nome_completo,
+            email,
+            cpf,
+            codigo_indicacao,
+            pontos,
+            equilibrio,
+            criado_em
+          `,
+          [
+            nome_completo,
+            String(email).toLowerCase(),
+            senhaHash,
+            cpf,
+            codigo_indicacao || null
+          ]
+        );
+
+      res.json({
+        sucesso: true,
+        jogador: resultado.rows[0]
       });
-    }
 
-    const existente =
-      await pool.query(
-        `
-        SELECT id
-        FROM jogadores
-        WHERE LOWER(email) = LOWER($1)
-           OR cpf = $2
-        LIMIT 1
-        `,
-        [
-          email,
-          cpf
-        ]
+    } catch (erro) {
+
+      console.error(
+        "Erro registro jogador:",
+        erro
       );
 
-    if (
-      existente.rows.length > 0
-    ) {
-
-      return res.status(400).json({
+      res.status(500).json({
         sucesso: false,
         erro:
-          "E-mail ou CPF já cadastrado."
+          "Erro ao cadastrar jogador."
       });
     }
-
-    const senhaHash =
-      await bcrypt.hash(
-        senha,
-        10
-      );
-
-    const resultado =
-      await pool.query(
-        `
-        INSERT INTO jogadores (
-          nome_completo,
-          email,
-          senha,
-          cpf,
-          codigo_indicacao,
-          pontos,
-          equilibrio
-        )
-        VALUES (
-          $1,
-          $2,
-          $3,
-          $4,
-          $5,
-          0,
-          0
-        )
-        RETURNING
-          id,
-          nome_completo,
-          email,
-          cpf,
-          codigo_indicacao,
-          pontos,
-          equilibrio,
-          criado_em
-        `,
-        [
-          nome_completo,
-          String(email).toLowerCase(),
-          senhaHash,
-          cpf,
-          codigo_indicacao || null
-        ]
-      );
-
-    res.json({
-      sucesso: true,
-      jogador: resultado.rows[0]
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro registro jogador:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro ao cadastrar jogador."
-    });
   }
-});
+);
 
 // =====================================================
 // LOGIN DO JOGADOR
 // =====================================================
 
-app.post("/api/jogadores/login", async (req, res) => {
+app.post(
+  "/api/jogadores/login",
+  async (req, res) => {
 
-  try {
+    try {
 
-    const {
-      email,
-      senha
-    } = req.body;
+      const {
+        email,
+        senha
+      } = req.body;
 
-    const resultado =
-      await pool.query(
-        `
-        SELECT *
-        FROM jogadores
-        WHERE LOWER(email) = LOWER($1)
-        LIMIT 1
-        `,
-        [email]
+      const resultado =
+        await pool.query(
+          `
+          SELECT *
+          FROM jogadores
+          WHERE LOWER(email) = LOWER($1)
+          LIMIT 1
+          `,
+          [email]
+        );
+
+      if (
+        resultado.rows.length === 0
+      ) {
+
+        return res.status(401).json({
+          sucesso: false,
+          erro:
+            "E-mail ou senha incorretos."
+        });
+      }
+
+      const jogador =
+        resultado.rows[0];
+
+      const senhaCorreta =
+        await bcrypt.compare(
+          senha,
+          jogador.senha
+        );
+
+      if (!senhaCorreta) {
+
+        return res.status(401).json({
+          sucesso: false,
+          erro:
+            "E-mail ou senha incorretos."
+        });
+      }
+
+      delete jogador.senha;
+
+      res.json({
+        sucesso: true,
+        jogador
+      });
+
+    } catch (erro) {
+
+      console.error(
+        "Erro login jogador:",
+        erro
       );
 
-    if (
-      resultado.rows.length === 0
-    ) {
-
-      return res.status(401).json({
+      res.status(500).json({
         sucesso: false,
-        erro: "E-mail ou senha incorretos."
+        erro: "Erro no login."
       });
     }
-
-    const jogador =
-      resultado.rows[0];
-
-    const senhaCorreta =
-      await bcrypt.compare(
-        senha,
-        jogador.senha
-      );
-
-    if (!senhaCorreta) {
-
-      return res.status(401).json({
-        sucesso: false,
-        erro: "E-mail ou senha incorretos."
-      });
-    }
-
-    delete jogador.senha;
-
-    res.json({
-      sucesso: true,
-      jogador
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro login jogador:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro: "Erro no login."
-    });
   }
-});
+);
 
 // =====================================================
 // RECUPERAÇÃO DE SENHA
@@ -930,7 +959,8 @@ app.get(
 
       res.status(500).json({
         sucesso: false,
-        erro: "Erro ao carregar perguntas."
+        erro:
+          "Erro ao carregar perguntas."
       });
     }
   }
@@ -1005,7 +1035,8 @@ app.post(
 
       res.status(500).json({
         sucesso: false,
-        erro: "Erro ao criar pergunta."
+        erro:
+          "Erro ao criar pergunta."
       });
     }
   }
@@ -1172,7 +1203,15 @@ app.get(
 
       const resultado =
         await pool.query(`
-          SELECT *
+          SELECT
+            id,
+            nome,
+            email,
+            codigo,
+            pontos,
+            saldo,
+            ativo,
+            criado_em
           FROM parceiros
           ORDER BY id DESC
         `);
@@ -1215,10 +1254,29 @@ app.put(
         nome,
         email,
         codigo,
-        pontos,
-        valor,
-        status
+        pontos
       } = req.body;
+
+      // Aceita tanto os nomes novos quanto
+      // os nomes antigos enviados pelo painel.
+
+      const saldo =
+        req.body.saldo !== undefined
+          ? req.body.saldo
+          : req.body.valor;
+
+      let ativo =
+        req.body.ativo !== undefined
+          ? req.body.ativo
+          : req.body.status;
+
+      if (
+        typeof ativo === "string"
+      ) {
+        ativo =
+          ativo.toLowerCase() === "ativo" ||
+          ativo.toLowerCase() === "true";
+      }
 
       const resultado =
         await pool.query(
@@ -1229,8 +1287,8 @@ app.put(
             email = COALESCE($2, email),
             codigo = COALESCE($3, codigo),
             pontos = COALESCE($4, pontos),
-            valor = COALESCE($5, valor),
-            status = COALESCE($6, status)
+            saldo = COALESCE($5, saldo),
+            ativo = COALESCE($6, ativo)
           WHERE id = $7
           RETURNING *
           `,
@@ -1239,8 +1297,8 @@ app.put(
             email,
             codigo,
             pontos,
-            valor,
-            status,
+            saldo,
+            ativo,
             id
           ]
         );
@@ -1292,10 +1350,34 @@ app.post(
         nome,
         email,
         codigo,
-        pontos,
-        valor,
-        status
+        pontos
       } = req.body;
+
+      const saldo =
+        req.body.saldo !== undefined
+          ? req.body.saldo
+          : (
+              req.body.valor !== undefined
+                ? req.body.valor
+                : 0
+            );
+
+      let ativo =
+        req.body.ativo !== undefined
+          ? req.body.ativo
+          : (
+              req.body.status !== undefined
+                ? req.body.status
+                : true
+            );
+
+      if (
+        typeof ativo === "string"
+      ) {
+        ativo =
+          ativo.toLowerCase() === "ativo" ||
+          ativo.toLowerCase() === "true";
+      }
 
       const resultado =
         await pool.query(
@@ -1305,8 +1387,8 @@ app.post(
             email,
             codigo,
             pontos,
-            valor,
-            status
+            saldo,
+            ativo
           )
           VALUES (
             $1,
@@ -1323,8 +1405,8 @@ app.post(
             email,
             codigo,
             pontos || 0,
-            valor || 0,
-            status || "ativo"
+            saldo || 0,
+            ativo
           ]
         );
 
@@ -1364,7 +1446,7 @@ app.get(
         await pool.query(`
           SELECT *
           FROM monetag_relatorios
-          ORDER BY data DESC, id DESC
+          ORDER BY data DESC NULLS LAST, id DESC
         `);
 
       res.json({
@@ -1414,40 +1496,195 @@ app.post(
       }
 
       let importados = 0;
+      let duplicados = 0;
+      let movimentacoesCriadas = 0;
 
       for (
         const item of relatorios
       ) {
 
-        await pool.query(
-          `
-          INSERT INTO monetag_relatorios (
-            data,
-            impressoes,
-            profit,
-            cpm
-          )
-          VALUES (
-            $1,
-            $2,
-            $3,
-            $4
-          )
-          `,
-          [
-            item.data,
-            Number(item.impressoes || 0),
-            Number(item.profit || 0),
-            Number(item.cpm || 0)
-          ]
-        );
+        const data =
+          item.data
+            ? item.data
+            : null;
+
+        const impressoes =
+          Number(
+            item.impressoes || 0
+          );
+
+        const profit =
+          Number(
+            item.profit || 0
+          );
+
+        const cpm =
+          Number(
+            item.cpm || 0
+          );
+
+        // ---------------------------------------------
+        // VERIFICAR SE O MESMO RELATÓRIO JÁ EXISTE
+        // ---------------------------------------------
+
+        const existente =
+          await pool.query(
+            `
+            SELECT id
+            FROM monetag_relatorios
+            WHERE data IS NOT DISTINCT FROM $1::date
+              AND impressoes = $2
+              AND profit = $3
+              AND cpm = $4
+            LIMIT 1
+            `,
+            [
+              data,
+              impressoes,
+              profit,
+              cpm
+            ]
+          );
+
+        if (
+          existente.rows.length > 0
+        ) {
+
+          duplicados++;
+
+          continue;
+        }
+
+        // ---------------------------------------------
+        // SALVAR RELATÓRIO
+        // ---------------------------------------------
+
+        const inserido =
+          await pool.query(
+            `
+            INSERT INTO monetag_relatorios (
+              data,
+              impressoes,
+              profit,
+              cpm
+            )
+            VALUES (
+              $1,
+              $2,
+              $3,
+              $4
+            )
+            RETURNING id
+            `,
+            [
+              data,
+              impressoes,
+              profit,
+              cpm
+            ]
+          );
 
         importados++;
+
+        // ---------------------------------------------
+        // SE HOUVER RECEITA REAL
+        // ---------------------------------------------
+
+        if (
+          profit > 0
+        ) {
+
+          const parceiro =
+            await pool.query(
+              `
+              SELECT
+                id,
+                saldo
+              FROM parceiros
+              WHERE UPPER(codigo) = 'MONETAG'
+              LIMIT 1
+              `
+            );
+
+          if (
+            parceiro.rows.length > 0
+          ) {
+
+            const parceiroId =
+              parceiro.rows[0].id;
+
+            // -----------------------------------------
+            // SOMAR RECEITA AO SALDO DO MONETAG
+            // -----------------------------------------
+
+            await pool.query(
+              `
+              UPDATE parceiros
+              SET saldo =
+                COALESCE(saldo, 0) + $1
+              WHERE id = $2
+              `,
+              [
+                profit,
+                parceiroId
+              ]
+            );
+
+            // -----------------------------------------
+            // REGISTRAR MOVIMENTAÇÃO
+            // -----------------------------------------
+
+            const descricao =
+              data
+                ? `Receita Monetag - ${data}`
+                : "Receita Monetag - relatório sem data";
+
+            await pool.query(
+              `
+              INSERT INTO movimentacoes_parceiros (
+                parceiro_id,
+                tipo,
+                pontos,
+                valor,
+                descricao
+              )
+              VALUES (
+                $1,
+                'RECEITA',
+                0,
+                $2,
+                $3
+              )
+              `,
+              [
+                parceiroId,
+                profit,
+                descricao
+              ]
+            );
+
+            movimentacoesCriadas++;
+
+            console.log(
+              "Receita Monetag registrada:",
+              profit
+            );
+
+          } else {
+
+            console.log(
+              "Parceiro MONETAG não encontrado."
+            );
+          }
+        }
       }
 
       res.json({
         sucesso: true,
-        importados
+        importados,
+        duplicados,
+        movimentacoes_criadas:
+          movimentacoesCriadas
       });
 
     } catch (erro) {
@@ -1699,166 +1936,169 @@ app.post(
 // SAC — JOGADOR ENVIA MENSAGEM
 // =====================================================
 
-app.post("/api/sac", async (req, res) => {
+app.post(
+  "/api/sac",
+  async (req, res) => {
 
-  try {
+    try {
 
-    let {
-      jogador_id,
-      email,
-      nome_completo,
-      mensagem
-    } = req.body;
+      let {
+        jogador_id,
+        email,
+        nome_completo,
+        mensagem
+      } = req.body;
 
-    if (
-      !mensagem ||
-      !String(mensagem).trim()
-    ) {
+      if (
+        !mensagem ||
+        !String(mensagem).trim()
+      ) {
 
-      return res.status(400).json({
-        sucesso: false,
+        return res.status(400).json({
+          sucesso: false,
+          mensagem:
+            "Digite uma mensagem."
+        });
+      }
+
+      email = email
+        ? String(email)
+            .trim()
+            .toLowerCase()
+        : null;
+
+      nome_completo = nome_completo
+        ? String(nome_completo).trim()
+        : null;
+
+      // -----------------------------------------------
+      // TENTA LOCALIZAR PELO E-MAIL
+      // -----------------------------------------------
+
+      if (
+        !jogador_id &&
+        email
+      ) {
+
+        const jogador =
+          await pool.query(
+            `
+            SELECT
+              id,
+              email,
+              nome_completo
+            FROM jogadores
+            WHERE LOWER(email) =
+                  LOWER($1)
+            LIMIT 1
+            `,
+            [email]
+          );
+
+        if (
+          jogador.rows.length > 0
+        ) {
+
+          jogador_id =
+            jogador.rows[0].id;
+
+          email =
+            jogador.rows[0].email;
+
+          nome_completo =
+            jogador.rows[0].nome_completo;
+        }
+      }
+
+      // -----------------------------------------------
+      // TENTA LOCALIZAR PELO ID
+      // -----------------------------------------------
+
+      if (jogador_id) {
+
+        const jogador =
+          await pool.query(
+            `
+            SELECT
+              id,
+              email,
+              nome_completo
+            FROM jogadores
+            WHERE id = $1
+            LIMIT 1
+            `,
+            [jogador_id]
+          );
+
+        if (
+          jogador.rows.length > 0
+        ) {
+
+          jogador_id =
+            jogador.rows[0].id;
+
+          email =
+            jogador.rows[0].email;
+
+          nome_completo =
+            jogador.rows[0].nome_completo;
+        }
+      }
+
+      // -----------------------------------------------
+      // SALVAR
+      // -----------------------------------------------
+
+      const resultado =
+        await pool.query(
+          `
+          INSERT INTO sac_mensagens (
+            jogador_id,
+            email,
+            nome_completo,
+            mensagem,
+            status
+          )
+          VALUES (
+            $1,
+            $2,
+            $3,
+            $4,
+            'pendente'
+          )
+          RETURNING *
+          `,
+          [
+            jogador_id || null,
+            email || null,
+            nome_completo || null,
+            String(mensagem).trim()
+          ]
+        );
+
+      res.json({
+        sucesso: true,
         mensagem:
-          "Digite uma mensagem."
+          "Mensagem enviada com sucesso.",
+        sac:
+          resultado.rows[0]
       });
-    }
 
-    email = email
-      ? String(email)
-          .trim()
-          .toLowerCase()
-      : null;
+    } catch (erro) {
 
-    nome_completo = nome_completo
-      ? String(nome_completo).trim()
-      : null;
-
-    // -----------------------------------------------
-    // TENTA LOCALIZAR PELO E-MAIL
-    // -----------------------------------------------
-
-    if (
-      !jogador_id &&
-      email
-    ) {
-
-      const jogador =
-        await pool.query(
-          `
-          SELECT
-            id,
-            email,
-            nome_completo
-          FROM jogadores
-          WHERE LOWER(email) =
-                LOWER($1)
-          LIMIT 1
-          `,
-          [email]
-        );
-
-      if (
-        jogador.rows.length > 0
-      ) {
-
-        jogador_id =
-          jogador.rows[0].id;
-
-        email =
-          jogador.rows[0].email;
-
-        nome_completo =
-          jogador.rows[0].nome_completo;
-      }
-    }
-
-    // -----------------------------------------------
-    // TENTA LOCALIZAR PELO ID
-    // -----------------------------------------------
-
-    if (jogador_id) {
-
-      const jogador =
-        await pool.query(
-          `
-          SELECT
-            id,
-            email,
-            nome_completo
-          FROM jogadores
-          WHERE id = $1
-          LIMIT 1
-          `,
-          [jogador_id]
-        );
-
-      if (
-        jogador.rows.length > 0
-      ) {
-
-        jogador_id =
-          jogador.rows[0].id;
-
-        email =
-          jogador.rows[0].email;
-
-        nome_completo =
-          jogador.rows[0].nome_completo;
-      }
-    }
-
-    // -----------------------------------------------
-    // SALVAR
-    // -----------------------------------------------
-
-    const resultado =
-      await pool.query(
-        `
-        INSERT INTO sac_mensagens (
-          jogador_id,
-          email,
-          nome_completo,
-          mensagem,
-          status
-        )
-        VALUES (
-          $1,
-          $2,
-          $3,
-          $4,
-          'pendente'
-        )
-        RETURNING *
-        `,
-        [
-          jogador_id || null,
-          email || null,
-          nome_completo || null,
-          String(mensagem).trim()
-        ]
+      console.error(
+        "Erro SAC:",
+        erro
       );
 
-    res.json({
-      sucesso: true,
-      mensagem:
-        "Mensagem enviada com sucesso.",
-      sac:
-        resultado.rows[0]
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro SAC:",
-      erro
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      mensagem:
-        "Erro ao enviar mensagem."
-    });
+      res.status(500).json({
+        sucesso: false,
+        mensagem:
+          "Erro ao enviar mensagem."
+      });
+    }
   }
-});
+);
 
 // =====================================================
 // SAC — ADMIN LISTA MENSAGENS
